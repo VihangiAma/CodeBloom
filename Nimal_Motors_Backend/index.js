@@ -7,14 +7,13 @@ app.use(bodyParser.json())
 
 
 //Database coonection String
-const connectionString ="mongodb+srv://Admin2:4321@cluster0.b9xf2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
+const connectionString =process.env.MONGO_URL
 //Database Connection
-mongoose.connect(connectionString).then(
+/*mongoose.connect(connectionString).then(
     ()=>{
         console.log("Connected to the databased")
     }
-)
+)*/
 
 //create a api request eka hadanne methanin(get/ post/delete)
 /*app.use("/api/",)*/
