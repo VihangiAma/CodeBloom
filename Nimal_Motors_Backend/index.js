@@ -6,7 +6,7 @@ const app = express()
 app.use(bodyParser.json())
 
 
-//Database coonection String
+//Database coonection Strin
 //user Name =Admin2, password= 4321
 const connectionString ="mongodb+srv://Admin2:4321@cluster0.b9xf2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
