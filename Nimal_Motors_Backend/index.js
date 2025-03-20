@@ -9,11 +9,7 @@ app.use(bodyParser.json())
 //Database coonection String
 const connectionString =process.env.MONGO_URL
 //Database Connection
-/*mongoose.connect(connectionString).then(
-    ()=>{
-        console.log("Connected to the databased")
-    }
-)*/
+
 
 //create a api request eka hadanne methanin(get/ post/delete)
 /*app.use("/api/",)*/
