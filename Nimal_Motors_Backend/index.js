@@ -1,43 +1,23 @@
-import bodyParser from "body-parser"
-import express from "express"
-import { mongoose } from "mongoose";
-import dotenv from 'dotenv'
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./Models/db");
+const middleware = require("./MiddleWare/middleware"); 
 
-dotenv.config()
-const app = express()
-app.use(bodyParser.json())
+dotenv.config();
+connectDB(); // Connect to MongoDB
 
+app.use(middleware);
 
-const connectionString =process.env.MONGO_URL
-//Database Connection
-mongoose.connect(connectionString).then(
-    ()=>{
-        console.log("Database is conect")
-    }
-).catch(
-    ()=>{
-        console.log("database is connection failde")
-    }
-)
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-//create a api request eka hadanne methanin(get/ post/delete)
-/*app.use("/api/",)*/
+app.use(express.json());
+app.use(cors());
 
-/*app.get("/",(req,res)=>{
- console.log("Hello world")
- res.json({
-    message :"hi"
- })
-})*/
-/*app.post("/",(req,res)=>{
-    const name =req.body.name
-    const message ="hi " + " "+ name
-    console.log("this is post request")
-    res.json({
-        message:message
-    })
-})*/
+const stockRoutes = require("./Routers/stockRoutes.mjs");
+app.use("/api/stock", stockRoutes);
 
-app.listen(5000,(req,res)=>{
-    console.log("sever is running port 5000")
-})
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
