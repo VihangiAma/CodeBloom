@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose"; 
 
 const stockSchema = new mongoose.Schema({
   partName: { type: String, required: true }, // Name of the spare part
@@ -10,4 +10,4 @@ const stockSchema = new mongoose.Schema({
   lastUpdated: { type: Date, default: Date.now }, // Timestamp for tracking updates
 });
 
-module.exports = mongoose.model("Stock", stockSchema);
+export default mongoose.model("Stock", stockSchema);
