@@ -146,3 +146,69 @@ export async function putUserById(req, res) {
 
 
 
+export async function LoginUser(req, res) {
+    try {
+        const { email, password } = req.body;
+
+        // Find the user by email
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Compare hashed passwords
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(403).json({ message: "Incorrect password" });
+        }
+
+        // Create JWT payload
+        const payload = {
+            id: user._id,
+            email: user.email,
+            type: user.type
+        };
+
+        // Generate token
+        const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: "1h" });
+
+        res.status(200).json({
+            message: "Login successful",
+            user,
+            token
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Login failed",
+            error: error.message || "Internal Server Error"
+        });
+    }
+}
+
+
+export async function isAdminValid(req) {
+    try {
+        if (!req.user || req.user.type !== "admin") {
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error("Error in admin validation:", error);
+        return false;
+    }
+}
+
+export async function isCustomerValid(req) {
+    try {
+        if (!req.user) {
+            return false;
+        }
+        console.log(req.user);
+        return req.user.type === "customer";
+    } catch (error) {
+        console.error("Error in customer validation:", error);
+        return false;
+    }
+}
