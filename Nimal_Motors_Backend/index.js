@@ -3,12 +3,18 @@ import express from "express"
 import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
 
+//Import Routes
+import washingRouter from "./Routers/WashingRouter.js";
+
 dotenv.config()
 const app = express()
 app.use(bodyParser.json())
+//app.use(express.json());
 
 
 const connectionString =process.env.MONGO_URL
+
+
 //Database Connection
 mongoose.connect(connectionString).then(
     ()=>{
@@ -19,6 +25,10 @@ mongoose.connect(connectionString).then(
         console.log("database is connection failde")
     }
 )
+
+
+app.use("/api/washing" , washingRouter);
+
 
 //create a api request eka hadanne methanin(get/ post/delete)
 /*app.use("/api/",)*/
