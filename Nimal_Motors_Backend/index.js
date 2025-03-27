@@ -1,7 +1,13 @@
+
+
 import bodyParser from "body-parser"
 import express from "express"
 import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
+import UserRouter from "./Routers/UseRouter.js";
+//import UseRouter from "../Routers/UseRouter.js";
+
+
 
 dotenv.config()
 const app = express()
@@ -20,6 +26,8 @@ mongoose.connect(connectionString).then(
     }
 )
 
+
+app.use("/api/user",UserRouter)
 //create a api request eka hadanne methanin(get/ post/delete)
 /*app.use("/api/",)*/
 
