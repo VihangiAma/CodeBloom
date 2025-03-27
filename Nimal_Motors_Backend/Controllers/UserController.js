@@ -68,6 +68,7 @@ export async function getUserById(req, res) {
     }
 }
 // detele by user Id
+
 /*export async function deleteUserbyId(req, res) {
     try {
         const { userId } = req.query;
@@ -142,3 +143,6 @@ export async function putUserById(req, res) {
         });
     }
 }
+
+
+
