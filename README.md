@@ -9,7 +9,12 @@ The Motor Garage Management System is a comprehensive solution for managing a ga
 - **Real-Time Updates**: Prevent overstocking or stock shortages with real-time updates.  
 - **Automated Stock Alerts**: Receive alerts when stock levels fall below the minimum threshold.  
 - **Stock Categorization & Search**: Organize inventory into categories and enable a robust search and filter system for quick part retrieval.  
-- **Supplier Management**: Track suppliers and manage purchase orders effectively.  
+- **Supplier Management**: Track suppliers and manage purchase orders effectively.
+
+### 👤 **Customer Management**
+- **Customer Data Handling**: Maintain customer records, including contact details and service history.  
+- **User Roles & Permissions**: Set user roles (e.g., admin, garage staff) with specific permissions for access and functionality.  
+- **Service History**: Track services done for each customer, including parts used and total costs.  
 
 ### 🔧 **Section Handling**
 - **Service Section Management**: Manage sections like engine, electrical, bodywork, etc.  
