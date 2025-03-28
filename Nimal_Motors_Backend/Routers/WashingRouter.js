@@ -1,10 +1,12 @@
 import express from "express";
+
 import {
     createBooking,
     getAllBookings,
     updateBooking,
     deleteBooking 
-} from "../Controllers/WashingController.js";
+} 
+from "../Controllers/WashingController.js";
 const washingRouter = express.Router();
 
 
