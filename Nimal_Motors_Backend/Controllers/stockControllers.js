@@ -3,13 +3,22 @@ import Stock from "../Models/Stock.js"; // Import the Stock model
 // Get all stock items
 export const getStockItems = async (req, res) => {
     try {
-        const stockItems = await Stock.find().populate("supplierId"); // Populate supplier details
+        const { itemName, category } = req.query;
+        let filter = {};
+
+        if (itemName) {
+            filter.itemName = { $regex: itemName, $options: "i" }; // Case-insensitive search
+        }
+        if (category) {
+            filter.category = category;
+        }
+
+        const stockItems = await Stock.find(filter); // Fetch stock items with filtering
         res.status(200).json(stockItems);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
 // Get a stock item by ID
 export const getStockItemById = async (req, res) => {
     const { id } = req.params;
