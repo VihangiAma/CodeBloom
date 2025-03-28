@@ -3,13 +3,13 @@ import { getSuppliers, addSupplier, updateSupplier, deleteSupplier } from "../Co
 
 const router = express.Router();
 
-// ✅ Test Route
+// Test Route
 router.get("/", (req, res) => {
     console.log("Supplier route working!");
     res.json({ message: "Supplier API is working!" });
 });
 
-// ✅ Supplier CRUD Routes
+// Supplier CRUD Routes
 router.get("/list", getSuppliers);  // Get all suppliers
 router.post("/add", addSupplier);    // Add a new supplier
 router.put("/update/:id", updateSupplier);  // Update supplier by ID
