@@ -22,6 +22,7 @@ app.use(cors()); // Enable CORS
 
 // Stock Routes
 app.use("/api/stock", stockRoutes);
+//supplier routes
 app.use("/api/supplier",supplierRoutes);
 
 app.listen(PORT, () => {
