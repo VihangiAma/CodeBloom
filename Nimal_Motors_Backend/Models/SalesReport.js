@@ -23,5 +23,5 @@ const SalesreportSchema = mongoose.Schema({
     }
 })
 
-const SalesReport = mongoose.model('Report',SalesreportSchema)
+const SalesReport = mongoose.model('SalesReport',SalesreportSchema)
 export default SalesReport;

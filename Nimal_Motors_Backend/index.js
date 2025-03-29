@@ -2,6 +2,8 @@ import bodyParser from "body-parser"
 import express from "express"
 import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
+import userRRouter from "./Routers/userreport.js";
+import SalesRoter from "./Routers/SalesReport.js";
 
 dotenv.config()
 
@@ -24,7 +26,8 @@ mongoose.connect(connectionString).then(
 
 
 //create a api request eka hadanne methanin(get/ post/delete)
-/*app.use("/api/",)*/
+app.use("/api/Report",userRRouter);
+app.use("/api/SalesReport",SalesRoter);
 
 /*app.get("/",(req,res)=>{
  console.log("Hello world")
