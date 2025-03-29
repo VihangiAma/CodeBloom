@@ -1,29 +1,7 @@
 import mongoose from "mongoose"
 import UserReport from "../Models/UserReport.js"
 
-/*export function postUserReport(req,res){
-    const report =req.body
-    const NewReport = new Report(report)
-    NewReport.save().then(
-        ()=>{
-            res.json({
-                message :"Report Create successfully"
-            })
-        }
-    ).catch(
-        ()=>{
-            res.json({
-                message :"Report Create faild"
-            })
-        }
 
-    )
-
-
-
-
-
-}*/
 export async function postUserReport(req, res) {
     try {
       const report = req.body;
@@ -52,7 +30,7 @@ export async function postUserReport(req, res) {
         res.status(200).json(reports);
     } catch (error) {
         res.status(500).json({
-            message: "Failed to retrieve reports",
+            message: "Failed to retrieve Sales reports",
             error: error.message
         });
     }
