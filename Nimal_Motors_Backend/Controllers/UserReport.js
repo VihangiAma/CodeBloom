@@ -27,7 +27,7 @@ import UserReport from "../Models/UserReport.js"
 export async function postUserReport(req, res) {
     try {
       const report = req.body;
-      const newReport = new UserReportlk(report);
+      const newReport = new UserReport(report);
   
       await newReport.save();
   
@@ -36,11 +36,7 @@ export async function postUserReport(req, res) {
         report: newReport
       });
     } catch (error) {
-      /*res.status(500).json({
-        message: "Report creation failed",
-        error: error.message
-      });
-    }*/
+      
       res.status(500).json({
         message: "Report creation failed",
         error: error.message
