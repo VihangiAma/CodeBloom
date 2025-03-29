@@ -5,6 +5,10 @@ import express from "express"
 import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
 import UserRouter from "./Routers/UseRouter.js";
+
+
+// Adjust the path
+
 //import UseRouter from "../Routers/UseRouter.js";
 
 
