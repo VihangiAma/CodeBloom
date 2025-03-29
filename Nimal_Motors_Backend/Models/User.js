@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         default:"Customer"
     }
+    
 });
 const Users = mongoose.model('User', userSchema);
 export default Users;

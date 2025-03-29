@@ -1,4 +1,6 @@
 import Users from '../Models/User.js';
+import jwt from 'jsonwebtoken';
+
 
 export async function postUser(req, res) {
     try { 
@@ -144,3 +146,71 @@ export async function putUserById(req, res) {
 }
 
 
+/*export function LogInUser(req, res) {
+    const credentials = req.body;
+
+    Users.findOne({ 
+        email: credentials.email, 
+        password: credentials.password 
+    })
+    .then((user) => {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Create JWT token
+        const token = jwt.sign({ userId: user.userId }, "secret", { expiresIn: "1h" });
+
+        // Send success response with user data and token
+        res.json({
+            message: "User found",
+            user: user,
+            token: token
+        });
+    })
+    .catch((error) => {
+        res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
+    });
+}
+*/
+
+
+export function LogInUser(req, res) {
+    const credentials = req.body;
+
+    Users.findOne({ 
+        email: credentials.email, 
+        password: credentials.password 
+    })
+    .then((user) => {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Create payload with user details
+        const payload = {
+            id: user.userId,  // Matching the schema's 'userId' field
+            email: user.email,
+            fullname: user.fullName,  // Matching the schema's 'fullName' field
+            type: user.type
+        };
+
+        // Create JWT token
+        const token = jwt.sign(payload, "secret", { expiresIn: "1h" });
+
+        // Send success response with user data and token
+        res.json({
+            message: "User found",
+            user: {
+                id: user.userId,
+                email: user.email,
+                fullname: user.fullName,  // Corrected to match the schema
+                type: user.type
+            },
+            token: token
+        });
+    })
+    .catch((error) => {
+        res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
+    });
+}
