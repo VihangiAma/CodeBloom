@@ -7,7 +7,7 @@ import{
     deleteService
 }
 
-from" ../Controllers/serviceController.js";
+from "../Controllers/ServiceController.js";
 const serviceRouter = express.Router();
 
 

@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 
 //Import Routes
 import washingRouter from "./Routers/WashingRouter.js";
-import serviceRouter from "./Routers/ServiceRouter.js";
+import serviceRouter from "./Routers/ServiceRouter.js"
 
 dotenv.config()
 const app = express()
@@ -29,7 +29,7 @@ mongoose.connect(connectionString).then(
 
 
 app.use("/api/washing" , washingRouter);
-app.use("/api/service", serviceRouter);
+app.use("/api/service" , serviceRouter);
 
 
 //create a api request eka hadanne methanin(get/ post/delete)
