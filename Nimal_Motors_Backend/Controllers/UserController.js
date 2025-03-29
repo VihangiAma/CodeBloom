@@ -286,5 +286,3 @@ export function LogInUser(req, res) {
         res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
     });
 }
-
-

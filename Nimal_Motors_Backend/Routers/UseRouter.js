@@ -1,4 +1,3 @@
-
 import express from "express";
 import { postUser, getAllUsers, getUserById, deleteUserbyId, putUserById, LogInUser } from "../Controllers/UserController.js";
 
