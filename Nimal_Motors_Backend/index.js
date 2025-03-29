@@ -5,6 +5,8 @@ import express from "express"
 import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
 import UserRouter from "./Routers/UseRouter.js";
+import jwt from 'jsonwebtoken';
+
 
 
 // Adjust the path
@@ -49,6 +51,45 @@ app.use("/api/user",UserRouter)
         message:message
     })
 })*/
+
+/*app.use((req,res,next)=>{
+    const token = req.header("Authorization")?.replace
+    
+    ("Bearer", "")
+  if(token != null){
+  jwt.verify(token, "secret", (err, decoded) => {
+    if (decoded != null){
+    req.user= decoded
+    console.log(decoded)
+    next()
+}
+    }
+    }
+  })*/
+
+//MIDDLEWEAR
+
+app.use((req, res, next) => {
+    const token = req.header("Authorization")?.replace("Bearer ", ""); // Corrected replace syntax
+
+    if (token) {
+        jwt.verify(token, "secret", (err, decoded) => {
+            if (err) {
+                return res.status(401).json({ message: "Invalid or expired token" }); // Handle token error
+            }
+            
+            if (decoded) {
+                req.user = decoded; // Attach decoded user info to request
+                console.log(decoded); // Log decoded user information (optional)
+                next(); // Proceed to the next middleware
+            }
+        });
+    } else {
+        return res.status(403).json({ message: "Authorization token required" }); // Token is missing
+    }
+});
+    
+
 
 app.listen(5000,(req,res)=>{
     console.log("sever is running port 5000")

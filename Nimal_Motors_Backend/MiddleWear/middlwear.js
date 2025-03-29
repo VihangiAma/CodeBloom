@@ -1,1 +1,4 @@
-applicati
+
+/*app.use(requestAnimationFrame,resizeBy,next
+
+)*/
