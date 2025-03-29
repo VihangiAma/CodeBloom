@@ -1,4 +1,3 @@
-
 import bodyParser from "body-parser"
 import express from "express"
 import { mongoose } from "mongoose";
@@ -93,3 +92,4 @@ app.use((req, res, next) => {
 app.listen(5000,(req,res)=>{
     console.log("sever is running port 5000")
 })
+

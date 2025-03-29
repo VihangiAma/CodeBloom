@@ -2,8 +2,6 @@ import express from "express";
 import { postUser, getAllUsers, getUserById, deleteUserbyId, putUserById, LogInUser } from "../Controllers/UserController.js";
 
 const UserRouter = express.Router();
-
-
 UserRouter.post("/", postUser);
 UserRouter.get("/", getAllUsers);
 UserRouter.get("/:userId", getUserById);
