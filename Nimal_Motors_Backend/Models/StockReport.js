@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const SalesreportSchema = mongoose.Schema({
+const StockreportSchema = mongoose.Schema({
     itemId :{
         type: String,
         required: true,
@@ -23,5 +23,5 @@ const SalesreportSchema = mongoose.Schema({
     }
 })
 
-const SalesReport = mongoose.model('SalesReport',SalesreportSchema)
-export default SalesReport;
+const StockReport = mongoose.model('StockReter',StockreportSchema)
+export default StockReport;

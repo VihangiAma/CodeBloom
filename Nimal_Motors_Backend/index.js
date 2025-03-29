@@ -3,7 +3,7 @@ import express from "express"
 import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
 import userRRouter from "./Routers/userreport.js";
-import SalesRoter from "./Routers/SalesReport.js";
+import StockRoter from "./Routers/Stock.js";
 
 dotenv.config()
 
@@ -27,22 +27,9 @@ mongoose.connect(connectionString).then(
 
 //create a api request eka hadanne methanin(get/ post/delete)
 app.use("/api/Report",userRRouter);
-app.use("/api/SalesReport",SalesRoter);
+app.use("/api/StockReter",StockRoter);
 
-/*app.get("/",(req,res)=>{
- console.log("Hello world")
- res.json({
-    message :"hi"
- })
-})*/
-/*app.post("/",(req,res)=>{
-    const name =req.body.name
-    const message ="hi " + " "+ name
-    console.log("this is post request")
-    res.json({
-        message:message
-    })
-})*/
+
 
 app.listen(5000,(req,res)=>{
     console.log("sever is running port 5000")
