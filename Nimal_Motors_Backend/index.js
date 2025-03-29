@@ -4,6 +4,7 @@ import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
 import userRRouter from "./Routers/userreport.js";
 import StockRoter from "./Routers/Stock.js";
+import SalesRouter from "./Routers/SalesReport.js";
 
 dotenv.config()
 
@@ -28,6 +29,7 @@ mongoose.connect(connectionString).then(
 //create a api request eka hadanne methanin(get/ post/delete)
 app.use("/api/Report",userRRouter);
 app.use("/api/StockReter",StockRoter);
+app.use("/api/SalesReports",SalesRouter)
 
 
 

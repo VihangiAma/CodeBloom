@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import StockReport from '../Models/StockReport.js';
 
 //post function
-export async function CreateSalesReport(req,res) {
+export async function CreateStockReport(req,res) {
 
     try {
         const Sreport = req.body;
@@ -27,7 +27,7 @@ export async function CreateSalesReport(req,res) {
 }
 
 // get All users function
- export async function getSalesReport(req,res) {
+ export async function getStockReport(req,res) {
     try {
         const reports = await StockReport.find(); // Retrieves all user reports
         res.status(200).json(reports);
@@ -40,7 +40,7 @@ export async function CreateSalesReport(req,res) {
  }
 
  // delete Sales Report
- export async function deleteSalesReport(req, res) {
+ export async function deleteStockReport(req, res) {
    try {
        const { id } = req.params; // User ID from the URL parameters
        const report = await StockReport.findOneAndDelete({ itemId: id });
@@ -62,8 +62,8 @@ export async function CreateSalesReport(req,res) {
    }
  }
 
- //Delete function
- export async function updateSalesReport(req, res) {
+ //Update function
+ export async function updateStockReport(req, res) {
    try {
        const { id } = req.params; // User ID from the URL parameters
        const updatedData = req.body; // Data to update

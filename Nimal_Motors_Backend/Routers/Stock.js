@@ -1,11 +1,11 @@
 import express from 'express'
-import{CreateSalesReport,getSalesReport,deleteSalesReport, updateSalesReport}from '../Controllers/StockReport.js'
+import{CreateStockReport,getStockReport,deleteStockReport, updateStockReport}from '../Controllers/StockReport.js'
 
 const StockRoter = express.Router();
 
-StockRoter.post("/",CreateSalesReport);
-StockRoter.get("/",getSalesReport);
-StockRoter.delete("/:id",deleteSalesReport);
-StockRoter.put("/:id",updateSalesReport);
+StockRoter.post("/",CreateStockReport);
+StockRoter.get("/",getStockReport);
+StockRoter.delete("/:id",deleteStockReport);
+StockRoter.put("/:id",updateStockReport);
 
 export default StockRoter;
