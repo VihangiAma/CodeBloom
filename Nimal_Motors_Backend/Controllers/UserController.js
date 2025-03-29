@@ -1,27 +1,49 @@
 import Users from '../Models/User.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
+
+
 
 
 export async function postUser(req, res) {
     try { 
         const user = req.body;
-        const newUser = new Users(user);
+        const password = req.body.password; // Get only the password
+        const saltRounds = 10;
+        const passwordHash = bcrypt.hashSync(password,saltRounds); // Use 10 as salt rounds for hashing
 
-        await newUser.save();
-        
-        res.status(201).json({
-            message: "User created successfully",
-            user: newUser
-        });
+        console.log(passwordHash);
+        user.password = passwordHash;
+
+        const newUser = new Users(user);
+        await newUser.save()
+            .then(() => {
+                res.status(201).json({
+                    message: "User created successfully",
+                    user: newUser
+                });
+            })
+            .catch((error) => {
+                res.status(500).json({
+                    message: "User creation failed",
+                    error: error.message || "Internal Server Error"
+                });
+            });
 
     } catch (error) {
-        // Send a 500 status for server errors
         res.status(500).json({
             message: "User creation failed",
-            error: error.message || 'Internal Server Error'
+            error: error.message || "Internal Server Error"
         });
     }
 }
+
+
+
+
+
+
 
 export async function getAllUsers(req, res) {
     try {
@@ -45,6 +67,12 @@ export async function getAllUsers(req, res) {
         });
     }
 }
+
+
+
+
+
+
 
 export async function getUserById(req, res) {
     try {
@@ -146,45 +174,29 @@ export async function putUserById(req, res) {
 }
 
 
-/*export function LogInUser(req, res) {
-    const credentials = req.body;
 
-    Users.findOne({ 
-        email: credentials.email, 
-        password: credentials.password 
-    })
-    .then((user) => {
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Create JWT token
-        const token = jwt.sign({ userId: user.userId }, "secret", { expiresIn: "1h" });
-
-        // Send success response with user data and token
-        res.json({
-            message: "User found",
-            user: user,
-            token: token
-        });
-    })
-    .catch((error) => {
-        res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
-    });
-}
-*/
-
-
+/*
 export function LogInUser(req, res) {
     const credentials = req.body;
 
+    const passwordHash = bcrypt.hashSync(credentials.password,10)
+
     Users.findOne({ 
         email: credentials.email, 
-        password: credentials.password 
+        password: passwordHash
     })
     .then((user) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
+        } else {
+            const isPasswordValid = bcrypt.compareSync(credintials.password,user.password);
+            if(!isPasswordValid){
+                res.status(403).json(
+                    {
+                        message: "Incorrect Password"
+                    }
+                );
+            }
         }
 
         // Create payload with user details
@@ -205,6 +217,66 @@ export function LogInUser(req, res) {
                 id: user.userId,
                 email: user.email,
                 fullname: user.fullName,  // Corrected to match the schema
+                type: user.type
+            },
+            token: token
+        });
+    })
+    .catch((error) => {
+        res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
+    });
+}
+ */   
+
+
+
+
+
+
+
+export function LogInUser(req, res) {
+    const credentials = req.body;
+
+    // Find the user by email
+    Users.findOne({ 
+        email: credentials.email
+    })
+    .then((user) => {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Compare the plain text password with the hashed password stored in the database
+        const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(403).json({
+                message: "Incorrect Password"
+            });
+        }
+
+        // Create payload with user details
+        const payload = {
+            id: user.userId,  // Matching the schema's 'userId' field
+            email: user.email,
+            fullname: user.fullName,
+            phoneNumber: user.phoneNumber,  // User Phone Number
+            password: user.password,  // Matching the schema's 'fullName' field
+            type: user.type
+        };
+
+        // Create JWT token
+        const token = jwt.sign(payload, "secret", { expiresIn: "1h" });
+
+        // Send success response with user data and token
+        res.json({
+            message: "User found",
+            user: {
+                id: user.userId,
+                email: user.email,
+                fullname: user.fullName,
+                phoneNumber: user.phoneNumber,  // User Phone Number
+                password: user.password,
                 type: user.type
             },
             token: token
