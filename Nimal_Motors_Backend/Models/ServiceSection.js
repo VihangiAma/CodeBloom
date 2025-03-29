@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
 
 const serviceSchema = new mongoose.Schema({
   serviceID: { type: String, required: true, unique: true },
@@ -16,4 +17,4 @@ const serviceSchema = new mongoose.Schema({
   totalCost: { type: Number, required: true }
 });
 
-module.exports = mongoose.model("ServiceSection", serviceSchema);
+export default mongoose.model("ServiceSection", serviceSchema);
