@@ -9,7 +9,7 @@ Report_id:{
 },
 User_id :{
            type :String,
-            required :true,
+            required :true
 },          
 
 fullName :{
@@ -35,7 +35,7 @@ Discount :{
 
 
 }
-
+ 
 
 )
 const UserReport = mongoose.model('Report', userReportSchema);
