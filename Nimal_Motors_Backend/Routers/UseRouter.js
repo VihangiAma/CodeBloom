@@ -1,32 +1,20 @@
-
 import express from "express";
-import { postUser, getAllUsers, getUserById, deleteUserbyId, putUserById, LogInUser,isAdminValid,isCustomerValid } from "../Controllers/UserController.js";
-
-
-import { authenticateToken } from "../MiddleWare/authMiddleware.js";  // ✅ Fix import
-
-
-
-
-
-
-
+import { postUser, getAllUsers, getUserById, deleteUserbyId, putUserById, LogInUser, isAdminValid, isCustomerValid } from "../Controllers/UserController.js";
+import { authenticateToken } from '../MiddleWare/authMiddleware.js';
 
 const UserRouter = express.Router();
 
-// Protected routes (requires authentication)
-UserRouter.use(authenticateToken);
+// Public routes - No authentication required
+UserRouter.post("/", postUser);  // User Registration (POST)
+UserRouter.post("/login", LogInUser);  // User Login (POST)
+
+// Protected routes (requires authentication token)
+UserRouter.use(authenticateToken);  // Middleware that applies only to the below routes
+
 UserRouter.get("/", getAllUsers);
 UserRouter.get("/:userId", getUserById);
 UserRouter.delete("/:userId", deleteUserbyId);
-UserRouter.put("/:userId", putUserById);  // Changed from DELETE to PUT
-
-// Public routes
-UserRouter.post("/login", LogInUser);
-UserRouter.post("/", postUser);
-
-
-
+UserRouter.put("/:userId", putUserById);
 
 // Admin-only route
 UserRouter.get("/admin", (req, res) => {
