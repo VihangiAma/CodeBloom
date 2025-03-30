@@ -1,3 +1,4 @@
+
 import Users from '../Models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -286,3 +287,28 @@ export function LogInUser(req, res) {
         res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
     });
 }
+
+
+// Admin validation
+export function isAdminValid(req) {
+    if (req.user == null) {
+      return false;
+    }
+    if (req.user.type != "admin") {
+      return false;
+    }
+    return true;
+  }
+  
+  export function isCustomerValid(req) {
+    if (req.user == null) {
+      return false;
+    }
+    if (req.user.type != "customer") {
+      return true;
+    }
+    return true;
+  }
+  
+
+
