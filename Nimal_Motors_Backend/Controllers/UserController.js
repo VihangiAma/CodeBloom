@@ -235,7 +235,7 @@ export function LogInUser(req, res) {
 
 
 
-export function LogInUser(req, res) {
+/*export function LogInUser(req, res) {
     const credentials = req.body;
 
     // Find the user by email
@@ -308,7 +308,66 @@ export function isAdminValid(req) {
       return true;
     }
     return true;
-  }
+  }*/
   
 
+
+ // Function to generate token
+const generateToken = (user) => {
+    return jwt.sign(
+        { id: user.userId, email: user.email, role: user.type }, // Payload (Excluding Password)
+        process.env.JWT_SECRET, // Secret key (Store in .env)
+        { expiresIn: '1h' } // Token expires in 1 hour
+    );
+};
+
+export function LogInUser(req, res) {
+    const { email, password } = req.body;
+
+    // Find the user by email
+    Users.findOne({ email })
+        .then((user) => {
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            // Compare password with hashed password in the database
+            const isPasswordValid = bcrypt.compareSync(password, user.password);
+            if (!isPasswordValid) {
+                return res.status(403).json({ message: "Incorrect Password" });
+            }
+
+            // Generate JWT token
+            const token = generateToken(user);
+
+            // Send response with token (Excluding Password)
+            res.status(200).json({
+                message: "User logged in successfully",
+                user: {
+                    id: user.userId,
+                    email: user.email,
+                    fullName: user.fullName,
+                    phoneNumber: user.phoneNumber,
+                    type: user.type
+                },
+                token: token
+            });
+        })
+        .catch((error) => {
+            res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
+        });
+}
+
+
+
+
+const isAdminValid = (req) => {
+    return req.user && req.user.type === "admin";
+};
+
+const isCustomerValid = (req) => {
+    return req.user && req.user.type === "customer";
+};
+
+export { isAdminValid, isCustomerValid };
 
