@@ -45,5 +45,3 @@ UserRouter.get("/customer", (req, res) => {
 });
 
 export default UserRouter;
-
-
