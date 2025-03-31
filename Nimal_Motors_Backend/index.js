@@ -5,7 +5,8 @@ import dotenv from 'dotenv'
 
 //Import Routes
 import serviceRouter from "./Routers/ServiceRouter.js";
-import repairRouter from "./Routers/RepairRouter.js"
+import repairRouter from "./Routers/RepairRouter.js";
+import appointmentRouter from "./Routers/AppointmentRoutes.js";
 
 dotenv.config()
 const app = express()
@@ -27,9 +28,19 @@ mongoose.connect(connectionString).then(
     }
 )
 
+/*mongoose.connect(connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Database is connected");
+}).catch(() => {
+    console.log("Database connection failed");
+});*/
+
 
 app.use("/api/service" , serviceRouter);
 app.use("/api/repair" , repairRouter);
+app.use("/api/appointments" ,appointmentRouter);
 
 
 //create a api request eka hadanne methanin(get/ post/delete)
