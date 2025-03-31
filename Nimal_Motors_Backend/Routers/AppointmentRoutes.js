@@ -1,18 +1,18 @@
 import express from "express";
 
-import {
+import{
     createAppointment,
     getAppointments,
     updateAppointment,
     deleteAppointment
-} from "../Controllers/AppointmentController";
+} from "../Controllers/AppointmentController.js";
 
-const repairRouter = express.Router();
+const appointmentRouter = express.Router();
 
 
-repairRouter.post("/", createAppointment);
-repairRouter.get("/", getAppointments);
-repairRouter.put("/:id", updateAppointment);
-repairRouter.delete("/:id", deleteAppointment);
+appointmentRouter.post("/", createAppointment);
+appointmentRouter.get("/", getAppointments);
+appointmentRouter.put("/:id", updateAppointment);
+appointmentRouter.delete("/:id", deleteAppointment);
 
-export default router;
+export default appointmentRouter;
