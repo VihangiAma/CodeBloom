@@ -1,7 +1,9 @@
+
+
 import ServiceSection from "../Models/ServiceSection.js";
 
 // Create Service
-export function createService(req, res){
+export function createService(req, res) {
   try {
     const newService = new ServiceSection(req.body);
     newService.save();
@@ -9,20 +11,20 @@ export function createService(req, res){
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+}
 
 // Get All Services
-export function getAllServices(req, res){
+export function getAllServices(req, res) {
   try {
     const services = ServiceSection.find();
     res.status(200).json(services);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+}
 
 // Update Service Status
-export function updateService(req, res){
+export function updateService(req, res) {
   try {
     const { id } = req.params;
     const updatedService = ServiceSection.findByIdAndUpdate(id, req.body, { new: true });
@@ -30,10 +32,10 @@ export function updateService(req, res){
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+}
 
 // Delete Service
-export function deleteService(req, res){
+export function deleteService(req, res) {
   try {
     const { id } = req.params;
     ServiceSection.findByIdAndDelete(id);
@@ -41,4 +43,5 @@ export function deleteService(req, res){
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+}
+

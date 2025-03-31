@@ -1,20 +1,12 @@
+
 import mongoose from "mongoose";
 
-
 const serviceSchema = new mongoose.Schema({
-  serviceID: { type: String, required: true, unique: true },
+  serviceID: { type: String, required: true, unique: true }, 
   customerID: { type: mongoose.Schema.Types.ObjectId, ref: "Customer", required: true },
   vehicleID: { type: mongoose.Schema.Types.ObjectId, ref: "Vehicle", required: true },
-  serviceType: { 
-    type: String, 
-    enum: ["Mechanical", "Electrical", "Bodyshop"], 
-    required: true 
-  },
-  serviceDetails: { type: String, required: true },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date },
-  status: { type: String, enum: ["Pending", "In Progress", "Completed"], default: "Pending" },
-  totalCost: { type: Number, required: true }
+  serviceDate: { type: Date, required: true, default: Date.now }, // Changed from bookingDate to serviceDate
+  status: { type: String, enum: ["Pending", "Completed", "Cancelled"], default: "Pending" }
 });
 
-export default mongoose.model("ServiceSection", serviceSchema);
+export default mongoose.model("ServiceSection", serviceSchema); 
