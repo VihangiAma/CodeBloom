@@ -1,27 +1,19 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import connectDB from "./Models/db.js";
-import stockRoutes from "./Routers/stockRoutes.js";
-import supplierRoutes from "./Routers/supplierRoutes.js";
-
-
-//Import Routes
-import serviceRouter from "./Routers/ServiceRouter.js";
-import repairRouter from "./Routers/RepairRouter.js";
-import appointmentRouter from "./Routers/AppointmentRoutes.js";
+import bodyParser from "body-parser"
+import express from "express"
+import { mongoose } from "mongoose";
+import dotenv from 'dotenv'
+import userRRouter from "./Routers/userreport.js";
+import StockRoter from "./Routers/Stock.js";
+import SalesRouter from "./Routers/SalesReport.js";
 
 dotenv.config()
+
 const app = express()
 app.use(bodyParser.json())
-//app.use(express.json());
 
 
-const app = express();
-const PORT = process.env.PORT || 5000;
-
+//Database coonection String
 const connectionString =process.env.MONGO_URL
-
 
 //Database Connection
 mongoose.connect(connectionString).then(
@@ -33,6 +25,19 @@ mongoose.connect(connectionString).then(
         console.log("database is connection failde")
     }
 )
+
+
+
+//create a api request eka hadanne methanin(get/ post/delete)
+app.use("/api/Report",userRRouter);
+app.use("/api/StockReter",StockRoter);
+app.use("/api/SalesReports",SalesRouter)
+
+
+
+app.listen(5000,(req,res)=>{
+    console.log("sever is running port 5000")
+})
 
 /*mongoose.connect(connectionString, {
     useNewUrlParser: true,
@@ -61,3 +66,4 @@ app.use("/api/supplier",supplierRoutes);
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
