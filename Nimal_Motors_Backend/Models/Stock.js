@@ -1,13 +1,38 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const stockSchema = new mongoose.Schema({
-  partName: { type: String, required: true }, // Name of the spare part
-  category: { type: String, required: true }, // Category (e.g., Engine, Electrical, Body)
-  quantity: { type: Number, required: true, min: 0 }, // Current stock level
-  reorderLevel: { type: Number, required: true, min: 0 }, // Minimum quantity before alert
-  supplier: { type: String, required: true }, // Supplier information
-  price: { type: Number, required: true, min: 0 }, // Price per unit
-  lastUpdated: { type: Date, default: Date.now }, // Timestamp for tracking updates
+    category: {
+        type: String,
+        required: true,
+    },
+    stockQuantity: {
+        type: Number,
+        required: true,
+    },
+    supplierId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Supplier", // Reference to the Supplier entity
+        required: true,
+    },
+    itemId: {
+        type: String,
+        required: true,
+        unique: true, // Ensuring uniqueness for each stock item
+    },
+    pricePerUnit: {
+        type: Number,
+        required: true,
+    },
+    itemName: {
+        type: String,
+        required: true,
+    },
+    lastUpdated: {
+        type: Date,
+        default: Date.now,
+    }
 });
 
-module.exports = mongoose.model("Stock", stockSchema);
+const Stock = mongoose.model("Stock", stockSchema);
+
+export default Stock;
