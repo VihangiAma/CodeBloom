@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { StockProvider } from "./context/StockContext";
 import Dashboard from "./Pages/Dashboard";
 import AppointmentForm from "./Components/AppointmentForm";
+import SupervisorDashboard from "./Components/SupervisorDashboard";
+import AppointmentManagement from "./Components/Appointmentmanagement";
 
 function App() {
     return (
@@ -13,7 +15,8 @@ function App() {
                 </Routes>
             </Router>
         </StockProvider>,
-        <AppointmentForm/>
+        <AppointmentForm/>,
+        <SupervisorDashboard/>
     );
 }
 
