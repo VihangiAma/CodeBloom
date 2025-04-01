@@ -14,6 +14,7 @@ app.use(bodyParser.json())
 
 //Database coonection String
 const connectionString =process.env.MONGO_URL
+
 //Database Connection
 mongoose.connect(connectionString).then(
     ()=>{
@@ -26,6 +27,7 @@ mongoose.connect(connectionString).then(
 )
 
 
+
 //create a api request eka hadanne methanin(get/ post/delete)
 app.use("/api/Report",userRRouter);
 app.use("/api/StockReter",StockRoter);
@@ -36,3 +38,32 @@ app.use("/api/SalesReports",SalesRouter)
 app.listen(5000,(req,res)=>{
     console.log("sever is running port 5000")
 })
+
+/*mongoose.connect(connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Database is connected");
+}).catch(() => {
+    console.log("Database connection failed");
+});*/
+
+
+app.use("/api/service" , serviceRouter);
+app.use("/api/repair" , repairRouter);
+app.use("/api/appointments" ,appointmentRouter);
+
+
+//create a api request eka hadanne methanin(get/ post/delete)
+/*app.use("/api/",)*/
+
+
+// Stock Routes
+app.use("/api/stock", stockRoutes);
+//supplier routes
+app.use("/api/supplier",supplierRoutes);
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
