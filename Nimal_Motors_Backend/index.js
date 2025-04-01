@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import mongoose from "mongoose"; 
 import connectDB from "./Models/db.js";
 import stockRoutes from "./Routers/stockRoutes.js";
 import supplierRoutes from "./Routers/supplierRoutes.js";
@@ -13,11 +14,11 @@ import appointmentRouter from "./Routers/AppointmentRoutes.js";
 
 dotenv.config()
 const app = express()
-app.use(bodyParser.json())
+
 //app.use(express.json());
 
 
-const app = express();
+//const app = express();
 const PORT = process.env.PORT || 5000;
 
 const connectionString =process.env.MONGO_URL
