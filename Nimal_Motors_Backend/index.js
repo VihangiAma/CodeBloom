@@ -1,7 +1,10 @@
-import bodyParser from "body-parser"
-import express from "express"
-import { mongoose } from "mongoose";
-import dotenv from 'dotenv'
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./Models/db.js";
+import stockRoutes from "./Routers/stockRoutes.js";
+import supplierRoutes from "./Routers/supplierRoutes.js";
+
 
 //Import Routes
 import serviceRouter from "./Routers/ServiceRouter.js";
@@ -13,6 +16,9 @@ const app = express()
 app.use(bodyParser.json())
 //app.use(express.json());
 
+
+const app = express();
+const PORT = process.env.PORT || 5000;
 
 const connectionString =process.env.MONGO_URL
 
@@ -46,21 +52,12 @@ app.use("/api/appointments" ,appointmentRouter);
 //create a api request eka hadanne methanin(get/ post/delete)
 /*app.use("/api/",)*/
 
-/*app.get("/",(req,res)=>{
- console.log("Hello world")
- res.json({
-    message :"hi"
- })
-})*/
-/*app.post("/",(req,res)=>{
-    const name =req.body.name
-    const message ="hi " + " "+ name
-    console.log("this is post request")
-    res.json({
-        message:message
-    })
-})*/
 
-app.listen(5000,(req,res)=>{
-    console.log("sever is running port 5000")
-})
+// Stock Routes
+app.use("/api/stock", stockRoutes);
+//supplier routes
+app.use("/api/supplier",supplierRoutes);
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
