@@ -20,33 +20,43 @@ const AppointmentForm = () => {
     date: "",
     time: "",
   });
-  
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validateForm = () => {
+    for (let key in formData) {
+      if (!formData[key]) {
+        alert("All fields are required.");
+        return false;
+      }
+    }
+
+    if (!/^\d{10}$/.test(formData.phone)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return false;
+    }
+
+    if (!timeSlots.includes(formData.time)) {
+      alert("Invalid time slot selected.");
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validation
-    for (let key in formData) {
-      if (!formData[key]) {
-        alert("All fields are required");
-        return;
-      }
-    }
-    
-    if (!timeSlots.includes(formData.time)) {
-      alert("Invalid time slot selected.");
-      return;
-    }
-    
-    // Confirmation popup
+    if (!validateForm()) return;
+
     const confirmSubmission = window.confirm("Are you sure you want to submit the appointment?");
     if (!confirmSubmission) {
+      alert("Please re-enter your appointment details.");
       return;
     }
-    
+
     try {
       await axios.post("http://localhost:5000/api/appointments", formData);
       alert("Appointment booked successfully! Notification sent to supervisor.");
@@ -63,7 +73,7 @@ const AppointmentForm = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input type="text" name="customerName" placeholder="Customer Name" value={formData.customerName} onChange={handleChange} required className="w-full p-2 border rounded" />
         <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required className="w-full p-2 border rounded" />
-        <input type="text" name="phone" placeholder="Telephone Number" value={formData.phone} onChange={handleChange} required className="w-full p-2 border rounded" />
+        <input type="tel" name="phone" placeholder="Telephone Number" value={formData.phone} onChange={handleChange} required pattern="\d{10}" className="w-full p-2 border rounded" />
         <input type="text" name="vehicleType" placeholder="Vehicle Type" value={formData.vehicleType} onChange={handleChange} required className="w-full p-2 border rounded" />
         <input type="text" name="vehicleNumber" placeholder="Vehicle Number" value={formData.vehicleNumber} onChange={handleChange} required className="w-full p-2 border rounded" />
         <input type="date" name="date" value={formData.date} onChange={handleChange} required className="w-full p-2 border rounded" />
@@ -73,7 +83,8 @@ const AppointmentForm = () => {
             <option key={index} value={slot}>{slot}</option>
           ))}
         </select>
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Book Appointment</button>
+        <button type="submit" className="w-full bg-blue-500 text-black p-2 rounded">Book Appointment</button>
+
       </form>
     </div>
   );
