@@ -2,9 +2,14 @@ import bodyParser from "body-parser"
 import express from "express"
 import { mongoose } from "mongoose";
 import dotenv from 'dotenv'
-import userRRouter from "./Routers/userreport.js";
+import userRouter from "./Routers/userreport.js";
 import StockRoter from "./Routers/Stock.js";
 import SalesRouter from "./Routers/SalesReport.js";
+import serviceRouter from "./Routers/ServiceRouter.js";
+import repairRouter from "./Routers/RepairRouter.js";
+import appointmentRouter from "./Routers/AppointmentRoutes.js" 
+import stockRoutes from "./Routers/stockRoutes.js";
+import supplierRoutes from "./Routers/supplierRoutes.js"
 
 dotenv.config()
 
@@ -29,8 +34,8 @@ mongoose.connect(connectionString).then(
 
 
 //create a api request eka hadanne methanin(get/ post/delete)
-app.use("/api/Report",userRRouter);
-app.use("/api/StockReter",StockRoter);
+app.use("/api/Report",userRouter);
+app.use("/api/StockReport",StockRoter);
 app.use("/api/SalesReports",SalesRouter)
 
 
@@ -39,14 +44,7 @@ app.listen(5000,(req,res)=>{
     console.log("sever is running port 5000")
 })
 
-/*mongoose.connect(connectionString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("Database is connected");
-}).catch(() => {
-    console.log("Database connection failed");
-});*/
+
 
 
 app.use("/api/service" , serviceRouter);
@@ -54,8 +52,7 @@ app.use("/api/repair" , repairRouter);
 app.use("/api/appointments" ,appointmentRouter);
 
 
-//create a api request eka hadanne methanin(get/ post/delete)
-/*app.use("/api/",)*/
+
 
 
 // Stock Routes
@@ -63,7 +60,5 @@ app.use("/api/stock", stockRoutes);
 //supplier routes
 app.use("/api/supplier",supplierRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+
 

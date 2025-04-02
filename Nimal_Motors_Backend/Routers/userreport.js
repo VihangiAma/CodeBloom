@@ -1,13 +1,13 @@
 import express from 'express'
  import {postUserReport,getUserReports,deleteUserReport,updateUserReport} from '../Controllers/UserReport.js'
 
- const userRRouter= express.Router();
+ const userRouter= express.Router();
 
- userRRouter.post("/",postUserReport )
- userRRouter.get("/",getUserReports)
- userRRouter.delete("/:id",deleteUserReport)
- userRRouter.put("/:id",updateUserReport)
+ userRouter.post("/",postUserReport )
+ userRouter.get("/",getUserReports)
+ userRouter.delete("/:id",deleteUserReport)
+ userRouter.put("/:id",updateUserReport)
 
 
-export default userRRouter;
+export default userRouter;
  
