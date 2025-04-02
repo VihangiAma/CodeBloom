@@ -118,7 +118,7 @@ const SalesReportAdd = ({ onAdd }) => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg w-full transition-all duration-300"
         >
-          Add Sale
+          Add Sales
         </button>
       </form>
     </div>
