@@ -2,7 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { StockProvider } from "./context/StockContext";
 import Dashboard from "./Pages/Dashboard";
 import SupervisorLoginForm from "./Pages/SupervisorLoginForm";
-import SupervisorDashboard from "./Components/SupervisorDashboard";
+import SupervisorDashboard from "./Components/SupervisorSection/SupervisorDashboard";
+import SupervisorProfile from "./Components/SupervisorSection/SupervisorProfile";
+
 
 
 function App() {
@@ -13,11 +15,13 @@ function App() {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/" element={<SupervisorLoginForm />} />
                     <Route path="/supervisor-dashboard/:section" element={<SupervisorDashboard />} />
+                    <Route path="/supervisor-profile" element={<SupervisorProfile />} />
                 </Routes>
             </Router>
         </StockProvider>,
         <SupervisorLoginForm/>,
-        <SupervisorDashboard/>
+        <SupervisorDashboard/>,
+        <SupervisorProfile/>
     );
 }
 
