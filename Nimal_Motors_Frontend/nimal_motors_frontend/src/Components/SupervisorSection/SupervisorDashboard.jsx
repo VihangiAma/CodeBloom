@@ -133,6 +133,7 @@
 // export default SupervisorDashboard;
 
 import React, { useState } from "react";
+import NotificationBar from "./Notification";
 
 const Sidebar = () => {
   return (
@@ -172,6 +173,8 @@ const Header = () => {
     </header>
   );
 };
+
+
 
 const TaskTable = () => {
   const [tasks, setTasks] = useState([
@@ -297,6 +300,7 @@ const SupervisorDashboard = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
+        <NotificationBar /> 
         <TaskTable />
       </div>
     </div>
