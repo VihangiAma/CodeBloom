@@ -10,23 +10,9 @@ router.get("/", (req, res) => {
 });
 
 // Stock CRUD Routes
-router.get("/items", async (req, res) => {
-    try {
-        const { itemName } = req.query;
 
-        if (!itemName) {
-            return res.status(400).json({ error: "Item name is required" });
-        }
 
-        const results = await Stock.find({ itemName: { $regex: itemName, $options: "i" } });
-
-        res.json(results);
-    } catch (error) {
-        console.error("Search Error:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
-
+router.get("/items",getStockItems);
 router.post("/add", addStockItem);
 router.put("/update/:id", updateStockItem);
 router.delete("/delete/:id", deleteStockItem);
