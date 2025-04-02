@@ -1,16 +1,22 @@
-import Sidebar from "../components/Sidebar";
+import React from "react";
 import Header from "../components/Header";
-import StatsCards from "../components/StatsCards";
+import Sidebar from "../components/Sidebar";
 import InventoryTable from "../components/InventoryTable";
+import StatsCards from "../components/StatsCards";
 
 const Dashboard = () => {
   return (
-    <div className="flex h-screen">
+    <div className="flex">
+      {/* Sidebar */}
       <Sidebar />
-      <div className="flex-1 p-6 bg-gray-100">
+
+      {/* Main Content */}
+      <div className="flex-1">
         <Header />
-        <StatsCards />
-        <InventoryTable />
+        <div className="p-4">
+          <InventoryTable />
+          <StatsCards />
+        </div>
       </div>
     </div>
   );
