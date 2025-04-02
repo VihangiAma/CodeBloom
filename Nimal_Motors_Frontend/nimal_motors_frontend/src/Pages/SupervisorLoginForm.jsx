@@ -6,7 +6,9 @@ const SupervisorLogin = () => {
   const [selectedSection, setSelectedSection] = useState("mechanical");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+
     navigate(`/supervisor-dashboard/${selectedSection}`);
   };
 
@@ -42,4 +44,4 @@ const  SupervisorLoginForm = () => (
   </Router>
 );
 
-export default SupervisorLoginForm;
+export default SupervisorLogin;
