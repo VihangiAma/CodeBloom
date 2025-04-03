@@ -9,8 +9,8 @@ const stockSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    supplierId: {
-        type: mongoose.Schema.Types.ObjectId,
+    companyName: {
+        type: String,
         ref: "Supplier", // Reference to the Supplier entity
         required: true,
     },

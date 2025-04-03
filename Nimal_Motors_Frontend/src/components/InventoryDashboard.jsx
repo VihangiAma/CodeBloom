@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //import { useHistory } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import logoImage from "../assets/logo.jpg"
 
 
 const InventoryDashboard = () => {
@@ -19,20 +20,20 @@ const InventoryDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [categories, setCategories] = useState([]);
-  const [lowStockItems, setLowStockItems] = useState([]);
+  //const [lowStockItems, setLowStockItems] = useState([]);
 
   /*const history = useHistory();
 history.push('/some-route');
  */
     const navigate = useNavigate();
-    const fetchLowStockItems = async () => {
+    /*const fetchLowStockItems = async () => {
       try {
         const response = await axios.get("http://localhost:5001/api/stock/low-stock");
         setLowStockItems(response.data);
       } catch (error) {
         console.error("Error fetching low stock items:", error);
       }
-    };
+    };*/
 
   useEffect(() => {
     axios.get("http://localhost:5001/api/stock/items")
@@ -42,11 +43,11 @@ history.push('/some-route');
         setCategories(uniqueCategories);
         setTotalStock(response.data.length);
         setLowStockCount(response.data.filter(item => item.stockQuantity < 50).length);
-        setTotalSuppliers(new Set(response.data.map(item => item.supplierId)).size);
+        setTotalSuppliers(new Set(response.data.map(item => item.companyName)).size);
         setRecentUpdates(response.data.slice(-3));
-fetchLowStockItems();
-  const interval = setInterval(fetchLowStockItems, 60000); // Refresh every minute
-    return () => clearInterval(interval);
+//fetchLowStockItems();
+ // const interval = setInterval(fetchLowStockItems, 60000); // Refresh every minute
+  //  return () => clearInterval(interval);
 
         // Prevent multiple warnings by checking previous alerts
        /*response.data.forEach(item => {
@@ -82,32 +83,51 @@ fetchLowStockItems();
  
   
   const handleUpdate = () => {
-    if (!editItem) return;
-  
-    const updatedItem = {
-      ...formData,
-      itemId: editItem.itemId, // Ensure item ID is retained
-    };
-  
-    console.log("Sending update request with data:", updatedItem); // Debugging step
-  
-    axios.put(`http://localhost:5000/api/stock/update/${editItem.itemId}`, updatedItem)
+    if (!editItem) {
+        toast.error("No item to edit!");
+        return;
+    }
+
+    const updatedFields = {};
+    Object.keys(formData).forEach(key => {
+        if (formData[key] !== editItem[key]) { // Only include changed fields
+            updatedFields[key] = formData[key];
+        }
+    });
+
+    // If no fields were changed, show a message and return
+    if (Object.keys(updatedFields).length === 0) {
+        toast.info("No changes detected.");
+        return;
+    }
+
+    console.log("Sending update request with:", updatedFields); // Debugging
+
+    axios.put(`http://localhost:5001/api/stock/update/${editItem.itemId}`, updatedFields)
       .then((response) => {
-        console.log("Update Response:", response.data); // Debugging step
-  
-        // Fetch the updated inventory from the backend
-        axios.get("http://localhost:5000/api/stock/items").then((res) => {
-          setInventory(res.data); // Update the UI with new data
-        });
-  
+        console.log("Update Response:", response.data);
+
+        // Refresh the inventory after the update
+        axios.get("http://localhost:5001/api/stock/items")
+          .then((res) => {
+            setInventory(res.data); // Assuming setInventory updates your state
+          })
+          .catch(err => {
+            console.error("Error fetching inventory:", err);
+            toast.error("Failed to refresh inventory.");
+          });
+
         toast.success("Stock item updated successfully!");
-        setEditItem(null); // Close the modal after update
+        setEditItem(null);  // Reset editItem after the update
       })
       .catch(error => {
         console.error("Error updating stock:", error);
         toast.error("Failed to update item!");
       });
-  };
+};
+
+
+
   
     
   
@@ -119,7 +139,7 @@ fetchLowStockItems();
   const handleDeleteConfirm = () => {
     if (!deleteItemId) return;
   
-    axios.delete(`http://localhost:5000/api/stock/delete/${deleteItemId}`)
+    axios.delete(`http://localhost:5001/api/stock/delete/${deleteItemId}`)
       .then(() => {
         setInventory(prevInventory => prevInventory.filter(item => item.itemId !== deleteItemId));
         toast.success("Stock item deleted successfully!");
@@ -138,7 +158,10 @@ fetchLowStockItems();
     <div className="flex h-screen">
       {/* Sidebar */}
       <aside className="w-64 bg-blue-700 text-white p-5 space-y-4">
+      <img src={logoImage} alt="logo" className="w-25 h-20 mb-2" />
+
         <h2 className="text-2xl font-bold">Nimal Motors</h2>
+
         <nav>
           <ul className="space-y-2">
             <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded">
@@ -158,9 +181,6 @@ fetchLowStockItems();
       <main className="flex-1 bg-gray-100 p-6">
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold">Inventory Management</h1>
-          
-    
-  
           <div className="flex items-center gap-4">
             <input type="text" placeholder="Search..." className="p-2 border rounded" value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)} />
@@ -218,25 +238,26 @@ fetchLowStockItems();
           <table className="w-full border-collapse border">
             <thead>
               <tr className="bg-blue-600 text-white">
+
+                <th className="p-3">Item ID</th>
+                <th className="p-3">Item Name</th>
                 <th className="p-3">Category</th>
                 <th className="p-3">Quantity</th>
-                <th className="p-3">Supplier</th>
-                <th className="p-3">ID</th>
                 <th className="p-3">Price</th>
-                <th className="p-3">Item Name</th>
+                <th className="p-3">Company Name</th>
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
             {filteredInventory.map((item, index) => (
                 <tr key={index} className="text-center border-t">
+                   <td className="p-3">{item.itemId}</td>
+                  <td className="p-3">{item.itemName}</td>
                   <td className="p-3">{item.category}</td>
                   <td className="p-3">{item.stockQuantity}</td>
-                  <td className="p-3">{item.supplierId}</td>
-                  <td className="p-3">{item.itemId}</td>
-                  <td className="p-3">{item.pricePerUnit}</td>
-                  <td className="p-3">{item.itemName}</td>
-                  <td className="p-3">
+                   <td className="p-3">{item.pricePerUnit}</td>
+                  <td className="p-3">{item.companyName}</td>
+                       <td className="p-3">
                     <button onClick={() => handleEditClick(item)} className="text-blue-600 p-1">
                       <FaEdit />
                     </button>
@@ -270,10 +291,10 @@ fetchLowStockItems();
   className="p-2 border w-full mb-2" 
 />
 <input 
-  type="text" 
-  value={formData.supplierId} 
-  onChange={e => setFormData({ ...formData, supplierId: e.target.value })} 
-  placeholder="Supplier" 
+  type="String" 
+  value={formData.companyName} 
+  onChange={e => setFormData({ ...formData, companyName: e.target.value })} 
+  placeholder="Company Name" 
   className="p-2 border w-full mb-2" 
 />
 <input 
@@ -296,18 +317,24 @@ fetchLowStockItems();
   placeholder="Item Name" 
   className="p-2 border w-full mb-4" 
 />
-<button onClick={handleUpdate} className="bg-blue-600 text-white p-2 rounded">Update</button>
+<button onClick={() => {
+  console.log("Update button clicked!");
+  handleUpdate();
+}}>Update</button>
+
 <button onClick={() => setEditItem(null)} className="ml-3 p-2">Cancel</button>
 
     </div>
   </div>
 )}
-
 {deleteItemId && (  // Check if there's an item to delete
   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
     <div className="bg-white p-5 rounded shadow-md w-1/3">
       <h2 className="text-xl font-bold mb-4">Confirm Delete?</h2>
-      <button onClick={handleDeleteConfirm} className="text-red-600 p-1 ml-3">Yes</button>
+      <button onClick={() => {
+  console.log("Delete button clicked!");
+  handleDeleteConfirm();
+}}>Yes</button>
 
       <button onClick={() => setDeleteItemId(null)} className="ml-3 p-2">Cancel</button>
     </div>
