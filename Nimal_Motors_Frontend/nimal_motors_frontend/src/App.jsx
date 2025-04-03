@@ -11,6 +11,10 @@ const App = () => {
       <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<SupervisorLoginForm />} />
         <Route path="/dashboard" element={<SupervisorDashboard />} />
+
+        {/* <Route path="/supervisor-dashboard" element={<SupervisorDashboard />} />
+        <Route path="/supervisor-profile" element={<SupervisorProfile />} /> */}
+
       </Routes>
     </Router>
   );

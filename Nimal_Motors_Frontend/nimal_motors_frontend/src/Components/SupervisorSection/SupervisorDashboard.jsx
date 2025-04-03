@@ -39,6 +39,7 @@ const Header = () => {
       <div className="flex items-center space-x-4">
         <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">🔔</button>
         <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">👤</button>
+
         <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
           Logout
         </button>
@@ -46,6 +47,8 @@ const Header = () => {
     </header>
   );
 };
+
+
 
 
 
