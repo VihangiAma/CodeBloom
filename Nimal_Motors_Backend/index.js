@@ -1,33 +1,48 @@
-// import bodyParser from "body-parser"
-// import express from "express"
-// import { mongoose } from "mongoose";
-// import dotenv from 'dotenv'
-// import UserRouter from "./Routers/UseRouter.js";
-// import jwt from 'jsonwebtoken';
-// import cors from 'cors';  // Add this line to import cors
+
+import bodyParser from "body-parser"
+import express from "express"
+import { mongoose } from "mongoose";
+import dotenv from 'dotenv'
+
+import UserRouter from "./Routers/UseRouter.js";
+import jwt from 'jsonwebtoken';
+import userRRouter from "./Routers/userreport.js";
+import StockRoter from "./Routers/Stock.js";
+import SalesRouter from "./Routers/SalesReport.js";
+
+dotenv.config()
+
+//const app = express()
+app.use(bodyParser.json())
+
+
+//Database coonection String
+//const connectionString =process.env.MONGO_URL
+
+//Database Connection
+mongoose.connect(connectionString).then(
+    ()=>{
+        console.log("Database is conect")
+    }
+).catch(
+    ()=>{
+        console.log("database is connection failde")
+    }
+)
 
 
 
-
-// // Adjust the path
-
-// //import UseRouter from "../Routers/UseRouter.js";
-
+app.use("/api/user",UserRouter)
+//create a api request eka hadanne methanin(get/ post/delete)
+/*app.use("/api/",)*/
 
 
-// dotenv.config()
-// const app = express()
 
+//create a api request eka hadanne methanin(get/ post/delete)
+app.use("/api/Report",userRRouter);
+app.use("/api/StockReter",StockRoter);
+app.use("/api/SalesReports",SalesRouter)
 
-// app.use(cors({
-//     origin: "http://localhost:5173", // Frontend URL
-//     methods: "GET, POST, PUT, DELETE",
-//     credentials: true,
-//   }));
-  
-
-
-// app.use(bodyParser.json())
 
 
 // const connectionString =process.env.MONGO_URL
@@ -172,3 +187,33 @@ app.use((req, res, next) => {
 app.listen(5000, () => {
   console.log("Server is running on port 5000.");
 });
+
+/*mongoose.connect(connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Database is connected");
+}).catch(() => {
+    console.log("Database connection failed");
+});*/
+
+
+app.use("/api/service" , serviceRouter);
+app.use("/api/repair" , repairRouter);
+app.use("/api/appointments" ,appointmentRouter);
+
+
+//create a api request eka hadanne methanin(get/ post/delete)
+/*app.use("/api/",)*/
+
+
+// Stock Routes
+app.use("/api/stock", stockRoutes);
+//supplier routes
+app.use("/api/supplier",supplierRoutes);
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+
