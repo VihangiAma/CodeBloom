@@ -53,6 +53,7 @@ export default function LoginForm() {
           case "supervisor":
             navigate("/supervisor-profile");
             break;
+            
           default:
             navigate("/");
         }
