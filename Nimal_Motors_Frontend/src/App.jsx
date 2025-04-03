@@ -13,8 +13,13 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
         <Route path="/sales-report" element={<SalesReport />} />
-        <Route path="/add-sales-report" element={<SalesReportAdd />} />
+        <Route
+          path="/add-sales-report"
+          element={<SalesReportAdd onAdd={() => {}} />}
+        />
+
         <Route path="/update-sales-report" element={<SalesReportUpdate />} />
         <Route path="/delete-sales-report" element={<SalesReportDelete />} />
       </Routes>

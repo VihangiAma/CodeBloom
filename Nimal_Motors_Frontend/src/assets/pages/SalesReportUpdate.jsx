@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const SalesReportUpdate = ({ onUpdate, initialData }) => {
   const [formData, setFormData] = useState({
-    id: "",
-    name: "",
-    cost: "",
-    netPrice: "",
-    quantity: "",
-    profit: "",
+    itemId: "",
+    itemName: "",
+    price: "",
+    net_price_for_item: "",
+    Sales_Quntity: "",
+    profite: "",
   });
-
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  // Prepopulate the form with the initial data
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -23,105 +23,114 @@ const SalesReportUpdate = ({ onUpdate, initialData }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation: Check if all fields are filled out
     if (
-      !formData.id ||
-      !formData.name ||
-      !formData.cost ||
-      !formData.netPrice ||
-      !formData.quantity ||
-      !formData.profit
+      !formData.itemId ||
+      !formData.itemName ||
+      !formData.price ||
+      !formData.net_price_for_item ||
+      !formData.Sales_Quntity ||
+      !formData.profite
     ) {
       setError("Please fill in all fields.");
-      return; // Stop the form submission if validation fails
+      return;
     }
 
-    // Clear error if validation passes
+    if (
+      isNaN(formData.price) ||
+      isNaN(formData.net_price_for_item) ||
+      isNaN(formData.Sales_Quntity) ||
+      isNaN(formData.profite)
+    ) {
+      setError("Price, Net Price, Sales Quantity, and Profit must be numbers.");
+      return;
+    }
+
     setError("");
+    setSuccessMessage("");
 
-    // Pass the updated form data to the parent component
-    onUpdate(formData);
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/SalesReports/${formData.itemId}`,
+        formData
+      );
 
-    // Reset form
-    setFormData({
-      id: "",
-      name: "",
-      cost: "",
-      netPrice: "",
-      quantity: "",
-      profit: "",
-    });
+      console.log("Update Success:", response.data);
+      onUpdate(formData);
+      setSuccessMessage("Sales report updated successfully!");
+    } catch (error) {
+      console.error("Error updating sales report:", error);
+      setError("Error updating sales report. Please try again.");
+    }
   };
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-xl max-w-lg mx-auto">
-      <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Update Sales Report</h2>
+      <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">
+        Update Sales Report
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && <p className="text-red-500 text-center">{error}</p>} {/* Display error message */}
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        {successMessage && (
+          <p className="text-green-500 text-center">{successMessage}</p>
+        )}
 
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="id"
-            value={formData.id}
-            onChange={handleChange}
-            placeholder="Item ID"
-            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            required
-          />
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Item Name"
-            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            required
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="number"
-            name="cost"
-            value={formData.cost}
-            onChange={handleChange}
-            placeholder="Cost Per Item"
-            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            required
-          />
-          <input
-            type="number"
-            name="netPrice"
-            value={formData.netPrice}
-            onChange={handleChange}
-            placeholder="Net Price"
-            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            required
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="number"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            placeholder="Sales Quantity"
-            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            required
-          />
-          <input
-            type="number"
-            name="profit"
-            value={formData.profit}
-            onChange={handleChange}
-            placeholder="Profit"
-            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            required
-          />
-        </div>
+        <input
+          type="text"
+          name="itemId"
+          value={formData.itemId}
+          onChange={handleChange}
+          placeholder="Item ID"
+          className="border border-gray-300 p-3 rounded-lg w-full"
+          disabled
+        />
+        <input
+          type="text"
+          name="itemName"
+          value={formData.itemName}
+          onChange={handleChange}
+          placeholder="Item Name"
+          className="border border-gray-300 p-3 rounded-lg w-full"
+          required
+        />
+        <input
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          placeholder="Cost Per Item"
+          className="border border-gray-300 p-3 rounded-lg w-full"
+          required
+        />
+        <input
+          type="number"
+          name="net_price_for_item"
+          value={formData.net_price_for_item}
+          onChange={handleChange}
+          placeholder="Net Price"
+          className="border border-gray-300 p-3 rounded-lg w-full"
+          required
+        />
+        <input
+          type="number"
+          name="Sales_Quntity"
+          value={formData.Sales_Quntity}
+          onChange={handleChange}
+          placeholder="Sales Quantity"
+          className="border border-gray-300 p-3 rounded-lg w-full"
+          required
+        />
+        <input
+          type="number"
+          name="profite"
+          value={formData.profite}
+          onChange={handleChange}
+          placeholder="Profit"
+          className="border border-gray-300 p-3 rounded-lg w-full"
+          required
+        />
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg w-full transition-all duration-300"

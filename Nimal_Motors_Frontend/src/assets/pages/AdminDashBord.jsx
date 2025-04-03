@@ -1,32 +1,46 @@
-// AdminDashboard.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import SalesReport from "./SalesReport";
+import ProfilePage from "./ProfilePage";
 
 const Sidebar = ({ setReport }) => {
   return (
     <aside className="w-64 h-screen bg-blue-600 text-white p-5">
       <h2 className="text-xl font-bold mb-6">Admin Dashboard</h2>
       <nav className="space-y-4">
-        <Link
-          to="/admin-dashboard"
+        <a
+          href="#"
+          onClick={() => setReport("Dashboard")}
           className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
         >
           <span>📊 Dashboard</span>
-        </Link>
-        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg bg-white text-blue-600">
+        </a>
+        <a
+          href="#"
+          onClick={() => setReport("Booking")}
+          className="flex items-center space-x-3 p-2 rounded-lg bg-white text-blue-600"
+        >
           <span>🛒 Booking</span>
         </a>
-        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
+        <a
+          href="#"
+          onClick={() => setReport("Section Management")}
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
           <span>📦 Section Management</span>
         </a>
-        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
+        <a
+          href="#"
+          onClick={() => setReport("User Management")}
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
           <span>📦 User Management</span>
         </a>
         <div>
           <p className="text-sm font-semibold mb-2">🏬 Reports</p>
-          <Link to="/sales-report" className="block p-2 rounded-lg hover:bg-blue-500">
+          <a href="#" onClick={() => setReport("Sales Report")} className="block p-2 rounded-lg hover:bg-blue-500">
             Sales Report
-          </Link>
+          </a>
           <a href="#" onClick={() => setReport("Inventory Report")} className="block p-2 rounded-lg hover:bg-blue-500">
             Inventory Report
           </a>
@@ -40,12 +54,19 @@ const Sidebar = ({ setReport }) => {
 };
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header className="flex justify-between items-center p-4 bg-white shadow-md">
-      <h1 className="text-lg font-semibold">Order Management</h1>
+      <h1 className="text-lg font-semibold">Reports</h1>
       <div className="flex items-center space-x-4">
         <span className="text-gray-600 cursor-pointer">⚙️</span>
-        <span className="text-gray-600 cursor-pointer">👤</span>
+        <span 
+          className="text-gray-600 cursor-pointer" 
+          onClick={() => navigate("/profile")}
+        >
+          👤
+        </span>
       </div>
     </header>
   );
@@ -55,13 +76,13 @@ const ReportSection = ({ reportType }) => {
   return (
     <div className="p-4">
       <h2 className="text-lg font-bold mb-4">{reportType}</h2>
-      <p>Displaying {reportType} data...</p>
+      {reportType === "Sales Report" ? <SalesReport /> : <p>Displaying {reportType} data...</p>}
     </div>
   );
 };
 
 const AdminDashboard = () => {
-  const [selectedReport, setSelectedReport] = useState(null);
+  const [selectedReport, setSelectedReport] = useState("Dashboard");
 
   return (
     <div className="flex h-screen bg-gray-100">

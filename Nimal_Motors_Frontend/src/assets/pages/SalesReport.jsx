@@ -59,7 +59,7 @@ const SalesReport = () => {
         </div>
       </div>
 
-      <h3 className="text-lg font-semibold text-gray-700 mb-4">Sales Data for Selected Period</h3>
+      
 
       <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
         <thead className="bg-blue-600 text-white">
