@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUserShield, FaPhone, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaUserShield, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt, FaBell, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const AdminProfile = () => {
@@ -62,10 +62,10 @@ const AdminProfile = () => {
               <FaUserShield /> <span className="font-semibold">Personal Information</span>
             </li>
             <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
-              <FaPhone /> <span className="font-semibold">Notifications</span>
+              <FaBell /> <span className="font-semibold">Notifications</span>
             </li>
             <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
-              <FaMapMarkerAlt /> <span className="font-semibold">Privacy</span>
+              <FaLock /> <span className="font-semibold">Privacy</span>
             </li>
           </ul>
         </nav>

@@ -58,7 +58,7 @@ const PremiumCustomerProfile = () => {
 
   const handleLogout = () => {
     alert("Logged out successfully!");
-    navigate("/login");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const PremiumCustomerProfile = () => {
       <aside className="w-72 bg-blue-800 text-white p-6 flex flex-col">
         <div className="flex flex-col items-center mb-8">
           <img src="https://via.placeholder.com/150" alt="User" className="w-24 h-24 rounded-full mb-3 cursor-pointer border-2 border-white hover:opacity-80 transition" />
-          <h2 className="text-lg font-bold">Premium Customer Profile</h2>
+          <h2 className="text-lg font-bold">Amanda Perera <><br /></><></>Premium Customer</h2>
         </div>
         <nav className="flex-1">
           <ul className="space-y-4">
@@ -105,7 +105,7 @@ const PremiumCustomerProfile = () => {
 
         {currentSection === "profile" && (
           <div className="bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Personal Information</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">Premium Customer Personal Info</h1>
             <form className="grid grid-cols-2 gap-6">
               {["firstName", "lastName", "username", "email", "phoneNumber", "address"].map((field) => (
                 <div key={field}>
@@ -197,7 +197,7 @@ const PremiumCustomerProfile = () => {
             <h1 className="text-3xl font-bold text-gray-900 mb-6">Change Password</h1>
             <form>
               <div>
-                <label className="block font-semibold text-gray-800">Current Password</label>
+                <label className="block font-semibold text-gray-800">Temporary Password</label>
                 <input
                   type="password"
                   name="currentPassword"
