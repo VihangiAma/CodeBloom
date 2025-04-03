@@ -4,6 +4,10 @@ import { authenticateToken } from '../MiddleWare/authMiddleware.js';
 
 const UserRouter = express.Router();
 
+
+
+
+
 // Public routes - No authentication required
 UserRouter.post("/", postUser);  // User Registration (POST)
 UserRouter.post("/login", LogInUser);  // User Login (POST)
@@ -32,4 +36,7 @@ UserRouter.get("/customer", (req, res) => {
     res.json({ message: "Welcome Customer!" });
 });
 
+
+
 export default UserRouter;
+

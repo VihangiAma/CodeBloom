@@ -1,4 +1,3 @@
-
 import Users from '../Models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -370,4 +369,19 @@ const isCustomerValid = (req) => {
 };
 
 export { isAdminValid, isCustomerValid };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
