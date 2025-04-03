@@ -1,28 +1,21 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { StockProvider } from "./context/StockContext";
-import Dashboard from "./Pages/Dashboard";
-import SupervisorLoginForm from "./Pages/SupervisorLoginForm";
+import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
 import SupervisorDashboard from "./Components/SupervisorSection/SupervisorDashboard";
-//import SupervisorProfile from "./Components/SupervisorSection/SupervisorProfile";
 
-
-
-function App() {
-    return (
-        <StockProvider>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/" element={<SupervisorLoginForm />} />
-                    <Route path="/supervisor-dashboard/:section" element={<SupervisorDashboard />} />
-                    {/* <Route path="/supervisor-profile" element={<SupervisorProfile />} /> */}
-                </Routes>
-            </Router>
-        </StockProvider>,
-        <SupervisorLoginForm/>,
-        <SupervisorDashboard/>
-        //<SupervisorProfile/>
-    );
-}
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        {/* Route for Supervisor Login */}
+        <Route path="/" element={<SupervisorLoginForm />} />
+        
+        {/* Dynamic route to Supervisor Dashboard based on the selected section */}
+        <Route path="/supervisor-dashboard/:section" element={<SupervisorDashboard />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
+

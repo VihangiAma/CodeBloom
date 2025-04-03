@@ -1,153 +1,93 @@
-import React, { useState } from "react";
+
+import React from "react";
+import { FaBoxes, FaUserCog, FaBell, FaLock, FaSignOutAlt, FaArrowLeft } from "react-icons/fa";
+import { BrowserRouter as Router, useNavigate } from "react-router-dom";
 
 const SupervisorProfile = () => {
-  // Sample supervisor data
-  const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "+1234567890",
-    department: "Mechanical",
-    role: "Senior Supervisor",
-    profilePic: "https://via.placeholder.com/150", // Placeholder image
-  });
-
-  const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState(profile);
-  const [password, setPassword] = useState(""); // For password change
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  // Handle form input changes
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Handle profile picture upload
-  const handleProfilePicChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, profilePic: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Save updated profile
-  const handleSave = () => {
-    setProfile(formData);
-    setEditMode(false);
-  };
-
-  // Handle password update
-  const handleChangePassword = () => {
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-    alert("Password updated successfully!");
-    setPassword("");
-    setConfirmPassword("");
-  };
+  const navigate = useNavigate();
+  const defaultUserImage = "https://via.placeholder.com/150"; // Default user image
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-md p-6 rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Supervisor Profile</h2>
-
-      {/* Profile Picture */}
-      <div className="flex flex-col items-center mb-4">
-        <img src={formData.profilePic} alt="Profile" className="w-24 h-24 rounded-full" />
-        {editMode && (
-          <input type="file" accept="image/*" onChange={handleProfilePicChange} className="mt-2" />
-        )}
-      </div>
-
-      {/* Profile Info */}
-      <div className="space-y-3">
-        <div>
-          <label className="font-semibold">Name:</label>
-          {editMode ? (
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className="border p-2 rounded w-full" />
-          ) : (
-            <p>{profile.name}</p>
-          )}
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      <aside className="w-64 bg-blue-700 text-white p-5 flex flex-col space-y-6">
+        <div className="flex flex-col items-center">
+          <img src={defaultUserImage} alt="User" className="w-20 h-20 rounded-full mb-2" />
+          <h2 className="text-lg font-semibold">John Doe</h2>
         </div>
+        <nav className="flex-grow">
+          <ul className="space-y-4">
+            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer">
+              <FaUserCog /> Account Settings
+            </li>
+            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer">
+              <FaBoxes /> Personal Information
+            </li>
+            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer">
+              <FaBell /> Notification
+            </li>
+            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer">
+              <FaLock /> Privacy
+            </li>
+          </ul>
+        </nav>
+        <button
+          className="flex items-center gap-2 p-2 bg-red-600 hover:bg-red-700 rounded mt-auto"
+          onClick={() => navigate("/")}
+        >
+          <FaSignOutAlt /> Sign Out
+        </button>
+      </aside>
+      
+      {/* Main Content */}
+      <main className="flex-1 bg-gray-100 p-10">
+        <header className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold">Account Settings</h1>
+          <button
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            onClick={() => navigate("/supervisor-dashboard")}
+          >
+            <FaArrowLeft /> Supervisor Dashboard
+          </button>
+        </header>
 
-        <div>
-          <label className="font-semibold">Email:</label>
-          {editMode ? (
-            <input type="email" name="email" value={formData.email} onChange={handleChange} className="border p-2 rounded w-full" />
-          ) : (
-            <p>{profile.email}</p>
-          )}
+        <div className="bg-white p-6 rounded shadow-md">
+          <form className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block font-semibold">First Name</label>
+              <input type="text" className="w-full p-2 border rounded" defaultValue="John" />
+            </div>
+            <div>
+              <label className="block font-semibold">Last Name</label>
+              <input type="text" className="w-full p-2 border rounded" defaultValue="Doe" />
+            </div>
+            <div>
+              <label className="block font-semibold">Username</label>
+              <input type="text" className="w-full p-2 border rounded" defaultValue="john.doe" />
+            </div>
+            <div>
+              <label className="block font-semibold">Password</label>
+              <input type="password" className="w-full p-2 border rounded" defaultValue="" placeholder="Enter new password" />
+            </div>
+            <div>
+              <label className="block font-semibold">Email</label>
+              <input type="email" className="w-full p-2 border rounded" defaultValue="john.doe@example.com" />
+            </div>
+            <div>
+              <label className="block font-semibold">Phone Number</label>
+              <input type="text" className="w-full p-2 border rounded" defaultValue="0918873724" />
+            </div>
+          </form>
+          <div className="flex justify-end mt-6">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded mr-4">Save</button>
+            <button className="bg-gray-300 hover:bg-gray-400 text-black px-6 py-2 rounded">Cancel</button>
+          </div>
         </div>
-
-        <div>
-          <label className="font-semibold">Phone:</label>
-          {editMode ? (
-            <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="border p-2 rounded w-full" />
-          ) : (
-            <p>{profile.phone}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="font-semibold">Department:</label>
-          {editMode ? (
-            <select name="department" value={formData.department} onChange={handleChange} className="border p-2 rounded w-full">
-              <option>Mechanical</option>
-              <option>Electrical</option>
-              <option>Bodyshop</option>
-              <option>Service</option>
-            </select>
-          ) : (
-            <p>{profile.department}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="font-semibold">Role:</label>
-          {editMode ? (
-            <input type="text" name="role" value={formData.role} onChange={handleChange} className="border p-2 rounded w-full" />
-          ) : (
-            <p>{profile.role}</p>
-          )}
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="mt-4 flex space-x-2">
-        {editMode ? (
-          <>
-            <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
-            <button onClick={() => setEditMode(false)} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
-          </>
-        ) : (
-          <button onClick={() => setEditMode(true)} className="bg-green-600 text-white px-4 py-2 rounded">Edit Profile</button>
-        )}
-      </div>
-
-      {/* Change Password Section */}
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-2">Change Password</h3>
-        <input
-          type="password"
-          placeholder="New Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2 rounded w-full mb-2"
-        />
-        <input
-          type="password"
-          placeholder="Confirm New Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="border p-2 rounded w-full mb-2"
-        />
-        <button onClick={handleChangePassword} className="bg-red-600 text-white px-4 py-2 rounded">Update Password</button>
-      </div>
+      </main>
     </div>
   );
 };
+
+
 
 export default SupervisorProfile;

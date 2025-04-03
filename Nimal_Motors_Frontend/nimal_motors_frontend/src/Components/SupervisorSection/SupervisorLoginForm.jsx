@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BrowserRouter as Router } from "react-router-dom";
 
-const SupervisorLogin = () => {
+
+const SupervisorLoginForm = () => {
   const [selectedSection, setSelectedSection] = useState("mechanical");
   const navigate = useNavigate();
 
@@ -38,10 +38,5 @@ const SupervisorLogin = () => {
   );
 };
 
-const  SupervisorLoginForm = () => (
-  <Router>
-    <SupervisorLogin />
-  </Router>
-);
 
-export default SupervisorLogin;
+export default SupervisorLoginForm;
