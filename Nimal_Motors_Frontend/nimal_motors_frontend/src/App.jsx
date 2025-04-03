@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
 import SupervisorDashboard from "./Components/SupervisorSection/SupervisorDashboard";
 import SupervisorProfile from "./Components/SupervisorSection/SupervisorProfile"; // Import SupervisorProfile
+//import UpdateForm from "./Components/SupervisorSection/UpdateForm";
 
 const App = () => {
   const isAuthenticated = () => localStorage.getItem("authToken") !== null;
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/dashboard" element={isAuthenticated() ? <SupervisorDashboard /> : <Navigate to="/login" />} />
         <Route path="/profile" element={isAuthenticated() ? <SupervisorProfile /> : <Navigate to="/login" />} /> {/* Added Route */}
         <Route path="/supervisor-dashboard" element={<SupervisorDashboard />} />
+        {/* <Route path="/update/:taskId" element={<UpdateForm />} /> */}
       </Routes>
     </Router>
   );
