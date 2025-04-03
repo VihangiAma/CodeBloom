@@ -6,13 +6,13 @@ const SupervisorProfile = () => {
   const navigate = useNavigate();
 
   const initialSupervisorData = {
-    name: "Kamal Perera",
-    phoneNumber: "+94 702358966",
-    email: "kamalperera@gmail.com",
-    address: "No78/B, Kandy",
-    role: "Body Shop Supervisor",
-    experience: "2 Years",
-    department: "Body Repair & Painting",
+    name: "Nimal Fernando",
+    phoneNumber: "+94 762358432",
+    email: "nimal.fernando@gmail.com",
+    address: "No 12/A, Galle Road, Colombo",
+    role: "Mechanical Supervisor",
+    experience: "5 Years",
+    department: "Mechanical Repairs & Maintenance",
     photo: "https://via.placeholder.com/150", // Replace with actual image URL
   };
 
@@ -41,7 +41,6 @@ const SupervisorProfile = () => {
 
   const handleLogout = () => {
     alert("Logging out...");
-    // Here, you can clear authentication data if necessary, then redirect to login page
     navigate("/"); // Redirect to login page after logout
   };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUserTie, FaPhone, FaEnvelope, FaMapMarkerAlt, FaTools, FaSignOutAlt } from "react-icons/fa";
+import { FaUserTie, FaPhone, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt, FaBell, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const SupervisorProfile = () => {
@@ -7,12 +7,13 @@ const SupervisorProfile = () => {
 
   const initialSupervisorData = {
     name: "Kamal Perera",
-    phoneNumber: "+94 702358966",
+    username: "kamalperera",
     email: "kamalperera@gmail.com",
-    address: "No78/B, Kandy",
+    phoneNumber: "+94 702358966",
+    address: "No 78/B, Kandy",
     role: "Body Shop Supervisor",
-    experience: "2 Years",
     department: "Body Repair & Painting",
+    experience: "2 Years",
     photo: "https://via.placeholder.com/150", // Replace with actual image URL
   };
 
@@ -41,8 +42,7 @@ const SupervisorProfile = () => {
 
   const handleLogout = () => {
     alert("Logging out...");
-    // Here, you can add actual logout functionality like redirecting or clearing authentication
-    navigate("/login"); // Redirect to login page after logout
+    navigate("/");
   };
 
   return (
@@ -60,13 +60,16 @@ const SupervisorProfile = () => {
         <nav className="flex-1">
           <ul className="space-y-4">
             <li className="flex items-center gap-3 p-3 bg-blue-700 rounded cursor-pointer hover:bg-blue-600 transition">
-              <FaTools /> <span className="font-semibold">Supervisor Dashboard</span>
+              <FaCog /> <span className="font-semibold">Account Settings</span>
             </li>
             <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
-              <FaPhone /> <span className="font-semibold">Notifications</span>
+              <FaUserTie /> <span className="font-semibold">Personal Information</span>
             </li>
             <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
-              <FaMapMarkerAlt /> <span className="font-semibold">Privacy Settings</span>
+              <FaBell /> <span className="font-semibold">Notifications</span>
+            </li>
+            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
+              <FaLock /> <span className="font-semibold">Privacy</span>
             </li>
           </ul>
         </nav>
