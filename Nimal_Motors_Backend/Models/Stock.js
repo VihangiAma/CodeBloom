@@ -30,7 +30,8 @@ const stockSchema = new mongoose.Schema({
     lastUpdated: {
         type: Date,
         default: Date.now,
-    }
+    },
+    threshold: { type: Number, default: 10 },
 });
 
 const Stock = mongoose.model("Stock", stockSchema);

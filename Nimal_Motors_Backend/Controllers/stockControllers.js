@@ -103,3 +103,16 @@ export const deleteStockItem = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+export const checkLowStock = async (req, res) => {
+    try {
+      const lowStockItems = await Stock.find({ stockQuantity: { $lt: '$threshold' } });
+  
+      if (lowStockItems.length === 0) {
+        return res.status(200).json({ message: "No low stock items." });
+      }
+  
+      res.status(200).json(lowStockItems);  // Return low stock items
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };

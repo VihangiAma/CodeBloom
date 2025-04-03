@@ -15,24 +15,41 @@ const InventoryDashboard = () => {
   const [recentUpdates, setRecentUpdates] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [deleteItemId, setDeleteItemId] = useState(null);
-  const [formData, setFormData] = useState({ category: "", stock: "", supplier: "", id: "", price: "", name: "" });
+  const [formData, setFormData] = useState({ category: "", stockQuantity: "", supplierId: "", id: "", pricePerUnit: "", itemName: "" });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [lowStockItems, setLowStockItems] = useState([]);
 
   /*const history = useHistory();
 history.push('/some-route');
  */
     const navigate = useNavigate();
+    const fetchLowStockItems = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/api/stock/low-stock");
+        setLowStockItems(response.data);
+      } catch (error) {
+        console.error("Error fetching low stock items:", error);
+      }
+    };
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/stock/items")
+    axios.get("http://localhost:5001/api/stock/items")
       .then((response) => {
         setInventory(response.data);
+        const uniqueCategories = [...new Set(response.data.map(item => item.category))];
+        setCategories(uniqueCategories);
         setTotalStock(response.data.length);
         setLowStockCount(response.data.filter(item => item.stockQuantity < 50).length);
         setTotalSuppliers(new Set(response.data.map(item => item.supplierId)).size);
         setRecentUpdates(response.data.slice(-3));
-  
+fetchLowStockItems();
+  const interval = setInterval(fetchLowStockItems, 60000); // Refresh every minute
+    return () => clearInterval(interval);
+
         // Prevent multiple warnings by checking previous alerts
-        response.data.forEach(item => {
+       /*response.data.forEach(item => {
           if (item.stockQuantity < 50) {
             toast.warning(`Low Stock Alert: ${item.itemName} has only ${item.stockQuantity} left!`, {
               position: "top-right",
@@ -43,10 +60,15 @@ history.push('/some-route');
               draggable: true,
             });
           }
-        });
+        });*/
       })
       .catch(error => console.error("Error fetching inventory:", error));
   }, []);
+  const filteredInventory = inventory.filter(item =>
+    item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    (categoryFilter === "" || item.category === categoryFilter)
+  );
+
   
  const handleEditClick = (item) => {
     setEditItem(item);
@@ -59,33 +81,34 @@ history.push('/some-route');
 
  
   
-    // Ensure we send the correct updated data (formData)
-    const handleUpdate = () => {
-      if (!editItem) return;
-    
-      // Ensure we send the correct updated data (formData)
-      const updatedItem = {
-        ...formData,
-        itemId: editItem.itemId,  // Ensuring the item ID is retained for the update
-      };
-    
-      axios.put(`http://localhost:5000/api/stock/update/${editItem.itemId}`, updatedItem)
-        .then((response) => {
-          console.log("Update Response:", response);
-          // Update the inventory state by replacing the updated item
-          setInventory(prevInventory =>
-            prevInventory.map(item =>
-              item.itemId === editItem.itemId ? { ...item, ...formData } : item
-            )
-          );
-          toast.success("Stock item updated successfully!");
-          setEditItem(null); // Close the modal after update
-        })
-        .catch(error => {
-          console.error("Error updating stock:", error);
-          toast.error("Failed to update item!");
-        });
+  const handleUpdate = () => {
+    if (!editItem) return;
+  
+    const updatedItem = {
+      ...formData,
+      itemId: editItem.itemId, // Ensure item ID is retained
     };
+  
+    console.log("Sending update request with data:", updatedItem); // Debugging step
+  
+    axios.put(`http://localhost:5000/api/stock/update/${editItem.itemId}`, updatedItem)
+      .then((response) => {
+        console.log("Update Response:", response.data); // Debugging step
+  
+        // Fetch the updated inventory from the backend
+        axios.get("http://localhost:5000/api/stock/items").then((res) => {
+          setInventory(res.data); // Update the UI with new data
+        });
+  
+        toast.success("Stock item updated successfully!");
+        setEditItem(null); // Close the modal after update
+      })
+      .catch(error => {
+        console.error("Error updating stock:", error);
+        toast.error("Failed to update item!");
+      });
+  };
+  
     
   
  /* const handleDeleteClick = (id) => {
@@ -135,8 +158,22 @@ history.push('/some-route');
       <main className="flex-1 bg-gray-100 p-6">
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold">Inventory Management</h1>
+          
+    
+  
           <div className="flex items-center gap-4">
-            <input type="text" placeholder="Search..." className="p-2 border rounded" />
+            <input type="text" placeholder="Search..." className="p-2 border rounded" value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} />
+            <select
+              className="p-2 border rounded"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {categories.map((category, index) => (
+                <option key={index} value={category}>{category}</option>
+              ))}
+            </select>
             <FaUser  onClick={() => navigate("/accountant")} className="text-2xl cursor-pointer" />
           </div>
         </header>
@@ -191,7 +228,7 @@ history.push('/some-route');
               </tr>
             </thead>
             <tbody>
-              {inventory.map((item, index) => (
+            {filteredInventory.map((item, index) => (
                 <tr key={index} className="text-center border-t">
                   <td className="p-3">{item.category}</td>
                   <td className="p-3">{item.stockQuantity}</td>
@@ -227,15 +264,15 @@ history.push('/some-route');
 />
 <input 
   type="number" 
-  value={formData.stock} 
-  onChange={e => setFormData({ ...formData, stock: e.target.value })} 
+  value={formData.stockQuantity} 
+  onChange={e => setFormData({ ...formData, stockQuantity: e.target.value })} 
   placeholder="Stock" 
   className="p-2 border w-full mb-2" 
 />
 <input 
   type="text" 
-  value={formData.supplier} 
-  onChange={e => setFormData({ ...formData, supplier: e.target.value })} 
+  value={formData.supplierId} 
+  onChange={e => setFormData({ ...formData, supplierId: e.target.value })} 
   placeholder="Supplier" 
   className="p-2 border w-full mb-2" 
 />
@@ -247,15 +284,15 @@ history.push('/some-route');
 />
 <input 
   type="text" 
-  value={formData.price} 
-  onChange={e => setFormData({ ...formData, price: e.target.value })} 
+  value={formData.pricePerUnit} 
+  onChange={e => setFormData({ ...formData, pricePerUnit: e.target.value })} 
   placeholder="Price" 
   className="p-2 border w-full mb-2" 
 />
 <input 
   type="text" 
-  value={formData.name} 
-  onChange={e => setFormData({ ...formData, name: e.target.value })} 
+  value={formData.itemName} 
+  onChange={e => setFormData({ ...formData, itemName: e.target.value })} 
   placeholder="Item Name" 
   className="p-2 border w-full mb-4" 
 />
