@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,8 +11,10 @@ const SupervisorLoginForm = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    navigate(`/supervisor-dashboard/${selectedSection}`);
-  };
+     // Perform login authentication (this is a simple example)
+     localStorage.setItem("authToken", "123456"); // Store authentication token
+     navigate("/dashboard"); // Redirect to dashboard after login
+   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">

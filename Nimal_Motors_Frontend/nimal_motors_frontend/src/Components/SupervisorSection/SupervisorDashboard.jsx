@@ -1,5 +1,4 @@
 
-
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import NotificationBar from "./Notification";
@@ -27,19 +26,20 @@ const Sidebar = () => {
 const Header = () => {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    // Perform logout actions (e.g., clearing session storage or authentication token)
+    localStorage.removeItem("authToken"); // Example: Remove authentication token
+    navigate("/login"); // Redirect to login page
+  };
 
   return (
     <header className="flex justify-between items-center p-4 bg-white shadow-md">
       <h1 className="text-lg font-semibold">Service Supervisor</h1>
       
       <div className="flex items-center space-x-4">
-        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-          🔔 {/* Notification Icon */}
-        </button>
-        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-          👤 {/* Profile Icon */}
-        </button>
-        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">🔔</button>
+        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">👤</button>
+        <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
           Logout
         </button>
       </div>
@@ -184,4 +184,5 @@ const SupervisorDashboard = () => {
 };
 
 export default SupervisorDashboard;
+
 

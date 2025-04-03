@@ -1,5 +1,6 @@
+
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route,Navigate } from "react-router-dom";
 import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
 import SupervisorDashboard from "./Components/SupervisorSection/SupervisorDashboard";
 
@@ -7,15 +8,20 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Route for Supervisor Login */}
-        <Route path="/" element={<SupervisorLoginForm />} />
-        
-        {/* Dynamic route to Supervisor Dashboard based on the selected section */}
-        <Route path="/supervisor-dashboard/:section" element={<SupervisorDashboard />} />
+      <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<SupervisorLoginForm />} />
+        <Route path="/dashboard" element={<SupervisorDashboard />} />
       </Routes>
     </Router>
   );
 };
 
+const isAuthenticated = () => {
+    return localStorage.getItem("authToken") !== null;
+  };
+
+  <Route path="/dashboard" element={isAuthenticated() ? <SupervisorDashboard /> : <Navigate to="/login" />} />
+
 export default App;
+
 
