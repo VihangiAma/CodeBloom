@@ -6,6 +6,7 @@ import SalesReport from "./assets/pages/SalesReport";
 import SalesReportAdd from "./assets/pages/SalesReportAdd";
 import SalesReportUpdate from "./assets/pages/SalesReportUpdate";
 import SalesReportDelete from "./assets/pages/SalesReportDelete";
+import SalesReportView from "./assets/pages/SalesReportView";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
 
         <Route path="/update-sales-report" element={<SalesReportUpdate />} />
         <Route path="/delete-sales-report" element={<SalesReportDelete />} />
+        <Route path ="/view-sales-report" element={<SalesReportView/>}/>
       </Routes>
     </Router>
   );

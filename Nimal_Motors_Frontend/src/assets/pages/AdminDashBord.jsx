@@ -18,7 +18,7 @@ const Sidebar = ({ setReport }) => {
         <a
           href="#"
           onClick={() => setReport("Booking")}
-          className="flex items-center space-x-3 p-2 rounded-lg bg-white text-blue-600"
+          className="flex items-center space-x-3 p-2 rounded-lg bg-blue-500 text-blue-600"
         >
           <span>🛒 Booking</span>
         </a>

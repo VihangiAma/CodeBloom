@@ -5,6 +5,7 @@ import SalesReportUpdate from "./SalesReportUpdate";
 import SalesReportDelete from "./SalesReportDelete";
 import AdminDashboard from "./AdminDashBord";
 import ProfilePage from "./ProfilePage";
+import SalesReportView from "./SalesReportView";
 
 export default function HomePage() {
   const [salesReports, setSalesReports] = useState([]);
@@ -24,6 +25,7 @@ export default function HomePage() {
       <SalesReportUpdate />
       <SalesReportDelete />
       <ProfilePage/>
+      <SalesReportView/>
     </div>
   );
 }
