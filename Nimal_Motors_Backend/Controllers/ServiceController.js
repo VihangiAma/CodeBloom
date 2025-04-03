@@ -1,11 +1,10 @@
-
 import ServiceSection from "../Models/ServiceSection.js";
 
 // Create Service
-export function createService(req, res) {
+export async function createService(req, res) {
   try {
     const newService = new ServiceSection(req.body);
-    newService.save();
+    await newService.save();
     res.status(201).json({ message: "Service Created", data: newService });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -13,9 +12,9 @@ export function createService(req, res) {
 }
 
 // Get All Services
-export function getAllServices(req, res) {
+export async function getAllServices(req, res) {
   try {
-    const services = ServiceSection.find();
+    const services = await ServiceSection.find();
     res.status(200).json(services);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -23,10 +22,15 @@ export function getAllServices(req, res) {
 }
 
 // Update Service Status
-export function updateService(req, res) {
+export async function updateService(req, res) {
   try {
     const { id } = req.params;
-    const updatedService = ServiceSection.findByIdAndUpdate(id, req.body, { new: true });
+    const updatedService = await ServiceSection.findByIdAndUpdate(id, req.body, { new: true });
+
+    if (!updatedService) {
+      return res.status(404).json({ error: "Service not found" });
+    }
+
     res.status(200).json({ message: "Service Updated", data: updatedService });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -34,13 +38,17 @@ export function updateService(req, res) {
 }
 
 // Delete Service
-export function deleteService(req, res) {
+export async function deleteService(req, res) {
   try {
     const { id } = req.params;
-    ServiceSection.findByIdAndDelete(id);
+    const deletedService = await ServiceSection.findByIdAndDelete(id);
+
+    if (!deletedService) {
+      return res.status(404).json({ error: "Service not found" });
+    }
+
     res.status(200).json({ message: "Service Deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
-

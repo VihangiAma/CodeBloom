@@ -1,14 +1,16 @@
 
 
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import NotificationBar from "./Notification";
+import React, { useEffect, useState } from "react";
+import { Route, useNavigate, useParams } from "react-router-dom";
+//import NotificationBar from "./Notification";
+import axios from "axios";
 
 // Sidebar Component
-const Sidebar = () => {
+function Sidebar() {
   return (
     <aside className="w-64 h-screen bg-blue-600 text-white p-5">
-      <h2 className="text-xl font-bold mb-6">Supervisor Dashboard</h2>
+       <h2 className="text-xl font-bold mb-6">Nimal Motors</h2>
+      <h3 className="text-xl font-bold mb-6">Supervisor Dashboard</h3>
       <nav className="space-y-4">
         <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
           <span>📋 Tasks</span>
@@ -19,10 +21,13 @@ const Sidebar = () => {
         <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
           <span>📊 Reports</span>
         </a>
+        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
+          <span>📅 Appointment</span>
+        </a>
       </nav>
     </aside>
   );
-};
+}
 
 // Header Component
 const Header = () => {
@@ -56,18 +61,21 @@ const Header = () => {
 };
 
 // Task Table Component
+// Task Table Component
 const TaskTable = () => {
   const [tasks, setTasks] = useState([
-    { id: "#001", name: "John Doe", contact: "1234567890", vehicleType: "Sedan", vehicleId: "XYZ123", date: "01-Apr", time: "10:00 AM", status: "Pending" },
-    { id: "#002", name: "Jane Smith", contact: "9876543210", vehicleType: "SUV", vehicleId: "ABC456", date: "02-Apr", time: "11:30 AM", status: "In Progress" },
-    { id: "#003", name: "Alice Brown", contact: "5556667777", vehicleType: "Truck", vehicleId: "LMN789", date: "03-Apr", time: "02:15 PM", status: "Completed" },
+    { serviceId: "2025#1", customerID: "001", vehicleId: "XYZ123", serviceDateate: "01-Apr-2025", status: "Pending" },
+    { serviceId: "2025#2", customerID: "002", vehicleId: "ABC123", serviceDateate: "03-Aug-2025", status: "Complete" },
+    { serviceId: "2025#3", customerID: "003", vehicleId: "SQR123", serviceDateate: "25-Apr-2025", status: "Pending" },
+    { serviceId: "2025#4", customerID: "004", vehicleId: "PMV123", serviceDateate: "08-Aug-2025", status: "Complete" },
+    { serviceId: "2025#5", customerID: "005", vehicleId: "SQR567", serviceDateate: "25-Apr-2025", status: "Pending" },
+    { serviceId: "2025#6", customerID: "006", vehicleId: "PMV879", serviceDateate: "08-Aug-2025", status: "Complete" }
   ]);
+  const [selectedTask, setSelectedTask] = useState(null);
 
-  const [selectedTask, setSelectedTask] = useState(null); // Store task for update modal
-
-  const deleteTask = (id) => {
+  const deleteTask = (serviceId) => {
     if (window.confirm("Are you sure you want to delete this service?")) {
-      setTasks(tasks.filter(task => task.id !== id));
+      setTasks(tasks.filter(task => task.serviceId !== serviceId));  // Ensure serviceId is used
     }
   };
 
@@ -80,7 +88,7 @@ const TaskTable = () => {
   };
 
   const handleUpdate = (updatedTask) => {
-    setTasks(tasks.map(task => (task.id === updatedTask.id ? updatedTask : task)));
+    setTasks(tasks.map(task => (task.serviceId === updatedTask.serviceId ? updatedTask : task)));
     closeUpdateForm();
   };
 
@@ -88,7 +96,7 @@ const TaskTable = () => {
     <div className="p-4">
       <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200">
-        <tr>
+          <tr>
             <th className="p-3 text-left">Service ID</th>
             <th className="p-3 text-left">Customer ID</th>
             <th className="p-3 text-left">Vehicle ID</th>
@@ -99,17 +107,17 @@ const TaskTable = () => {
         </thead>
         <tbody>
           {tasks.map((task) => (
-            <tr key={task.id} className="border-b hover:bg-gray-100">
-              <td className="p-3">{task.serviceIDid}</td>
+            <tr key={task.serviceId} className="border-b hover:bg-gray-100">
+              <td className="p-3">{task.serviceId}</td>
               <td className="p-3">{task.customerID}</td>
               <td className="p-3">{task.vehicleId}</td>
-              <td className="p-3">{new Date(task.Servicedate).toLocaleDateString()}</td>
+              <td className="p-3">{new Date(task.serviceDateate).toLocaleDateString()}</td>
               <td className={`p-3 ${task.status === "Pending" ? "text-yellow-500" : task.status === "Completed" ? "text-green-500" : "text-red-500"}`}>
                 {task.status}
               </td>
               <td className="p-3 flex space-x-2">
                 <button onClick={() => openUpdateForm(task)} className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">📝</button>
-                <button onClick={() => deleteTask(task.id)} className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">🗑️</button>
+                <button onClick={() => deleteTask(task.serviceId)} className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">🗑️</button>  {/* Use serviceId here */}
               </td>
             </tr>
           ))}
@@ -120,6 +128,8 @@ const TaskTable = () => {
     </div>
   );
 };
+
+
 
 // Update Form Component
 const UpdateForm = ({ task, onUpdate, onClose }) => {
@@ -140,36 +150,20 @@ const UpdateForm = ({ task, onUpdate, onClose }) => {
         <h2 className="text-lg font-bold mb-4">Update Service</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
-            <label className="block mb-2">ID:</label>
+            <label className="block mb-2">Service ID:</label>
             <input
               type="text"
-              name="id"
-              value={formData.id}
+              name="serviceId"
+              value={formData.serviceId}
               onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
               disabled
             />
-            <label className="block mb-2">Customer:</label>
+            <label className="block mb-2">Customer ID:</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-2 border rounded mb-3"
-            />
-            <label className="block mb-2">Contact:</label>
-            <input
-              type="text"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
-              className="w-full p-2 border rounded mb-3"
-            />
-            <label className="block mb-2">Vehicle Type:</label>
-            <input
-              type="text"
-              name="vehicleType"
-              value={formData.vehicleType}
+              name="customerId"
+              value={formData.customerId}
               onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
             />
@@ -183,19 +177,11 @@ const UpdateForm = ({ task, onUpdate, onClose }) => {
               onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
             />
-            <label className="block mb-2">Date:</label>
+            <label className="block mb-2">Service Date:</label>
             <input
-              type="text"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full p-2 border rounded mb-3"
-            />
-            <label className="block mb-2">Time:</label>
-            <input
-              type="text"
-              name="time"
-              value={formData.time}
+              type="date"
+              name="serviceDate"
+              value={formData.serviceDate}
               onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
             />
@@ -211,7 +197,6 @@ const UpdateForm = ({ task, onUpdate, onClose }) => {
               <option>Completed</option>
             </select>
           </div>
-
           <div className="col-span-2 flex justify-end space-x-4 mt-4">
             <button
               type="submit"
@@ -233,8 +218,15 @@ const UpdateForm = ({ task, onUpdate, onClose }) => {
   );
 };
 
-// Supervisor Dashboard Component
 const SupervisorDashboard = () => {
+  const [service, setService] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:5001/api/service")
+      .then(response => setService(response.data))  // Use setService here
+      .catch(error => console.error("Error fetching data", error));
+  }, []);
+
   const { section } = useParams();
 
   return (
@@ -242,11 +234,11 @@ const SupervisorDashboard = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header section={section} />
-        <NotificationBar />
+        {/* <NotificationBar /> */}
         <TaskTable />
       </div>
     </div>
   );
-};
+}
 
 export default SupervisorDashboard;

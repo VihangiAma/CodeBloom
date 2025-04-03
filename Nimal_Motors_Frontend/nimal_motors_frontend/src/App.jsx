@@ -6,7 +6,7 @@ import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginF
 import SupervisorDashboard from "./Components/SupervisorSection/SupervisorDashboard";
 import SupervisorProfile from "./Components/SupervisorSection/SupervisorProfile"; // Import SupervisorProfile
 //import UpdateForm from "./Components/SupervisorSection/UpdateForm";
-import AppointmentDashboard from "./Components/SupervisorSection/AppointmentDashboard";
+//import AppointmentTable from "./Components/SupervisorSection/AppointmentDashboard";
 
 const App = () => {
   const isAuthenticated = () => localStorage.getItem("authToken") !== null;
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/profile" element={isAuthenticated() ? <SupervisorProfile /> : <Navigate to="/login" />} /> {/* Added Route */}
         <Route path="/supervisor-dashboard" element={<SupervisorDashboard />} />
         {/* <Route path="/update/:taskId" element={<UpdateForm />} /> */}
-        <Route path="/dashboard" element={isAuthenticated() ? <SupervisorDashboard /> : <Navigate to="/appointment" />} />
+        {/* <Route path="/appointment" element={isAuthenticated() ? <AppointmentTable /> : <Navigate to="/appointment" />} /> */}
       </Routes>
     </Router>
   );
