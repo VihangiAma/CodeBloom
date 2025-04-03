@@ -1,40 +1,23 @@
+// 
+
 import React, { useState } from "react";
-import { FaUserShield, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt, FaBell, FaLock } from "react-icons/fa";
+import { FaBoxes, FaUserCog, FaBell, FaLock, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const AccountantProfile = () => {
   const navigate = useNavigate();
 
-  const initialFormData = {
-    firstName: "Tharindu",
-    lastName: "Silva",
-    username: "tharindu.silva",
-    password: "accountant123", // Default password (view only)
-    email: "tharindu.silva@gmail.com",
-    phoneNumber: "0781122334",
-    address: "123 Main Street,Ratnapura",
-  };
+  const [formData, setFormData] = useState({
+    firstName: "John",
+    lastName: "Doe",
+    username: "nj",
+    email: "john.doe@example.com",
+    phoneNumber: "0918873724",
+  });
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [isEditing, setIsEditing] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    setIsEditing(false);
-    setSuccessMessage("Profile saved successfully! ✅");
-    setTimeout(() => {
-      setSuccessMessage("");
-    }, 3000);
-  };
-
-  const handleCancel = () => {
-    setFormData(initialFormData);
-    setIsEditing(false);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   return (
@@ -47,15 +30,18 @@ const AccountantProfile = () => {
             alt="User"
             className="w-24 h-24 rounded-full mb-3 cursor-pointer border-2 border-white hover:opacity-80 transition"
           />
-          <h2 className="text-lg font-bold">{`${formData.firstName} ${formData.lastName}`}</h2>
+          <h2 className="text-lg font-bold">Accountant Profile</h2>
         </div>
         <nav className="flex-1">
           <ul className="space-y-4">
             <li className="flex items-center gap-3 p-3 bg-blue-700 rounded cursor-pointer hover:bg-blue-600 transition">
-              <FaCog /> <span className="font-semibold">Account Settings</span>
+              <FaUserCog /> <span className="font-semibold">Account Settings</span>
             </li>
-            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition" onClick={() => navigate("/personalinfo-accountant")}> 
-              <FaUserShield /> <span className="font-semibold">Personal Information</span>
+            <li
+              className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition"
+              onClick={() => navigate("/personalinfo-acc")}
+            >
+              <FaBoxes /> <span className="font-semibold">Personal Information</span>
             </li>
             <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
               <FaBell /> <span className="font-semibold">Notifications</span>
@@ -75,62 +61,41 @@ const AccountantProfile = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Accountant Profile</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Account Settings</h1>
         <div className="bg-white p-8 rounded-lg shadow-md">
-          {successMessage && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-500 text-green-700 rounded-lg">
-              {successMessage}
-            </div>
-          )}
           <form className="grid grid-cols-2 gap-6">
-            {Object.entries(formData).map(([key, value], index) => (
-              <div key={index}>
+            {Object.entries(formData).map(([key, value]) => (
+              <div key={key}>
                 <label className="block font-semibold text-gray-800">
                   {key.replace(/([A-Z])/g, " $1").trim()}
                 </label>
-                {key === "password" ? (
-                  <p className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 text-black">
-                    {value}
-                  </p>
-                ) : (
-                  <input
-                    type="text"
-                    name={key}
-                    value={value}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className={`w-full p-3 border border-gray-300 rounded-lg text-black ${
-                      isEditing ? "bg-white" : "bg-gray-200"
-                    }`}
-                  />
-                )}
+                <input
+                  type="text"
+                  name={key}
+                  value={value}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 text-black"
+                />
               </div>
             ))}
           </form>
-          <div className="flex gap-4 mt-6">
-            {isEditing ? (
-              <>
-                <button
-                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
-                  onClick={handleSave}
-                >
-                  Save Changes
-                </button>
-                <button
-                  className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <button
-                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit Profile
-              </button>
-            )}
+          
+          <div className="flex justify-end mt-6 space-x-4">
+            {/* Back Button */}
+            <button
+              className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400 transition"
+              onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/accountant-dashboard"))}
+            >
+              Back
+            </button>
+
+            {/* Cancel Button */}
+            <button
+              className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition"
+              onClick={() => navigate("/accountant-dashboard")}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </main>
@@ -138,4 +103,6 @@ const AccountantProfile = () => {
   );
 };
 
-export default AccountantProfile;
+export default AccountantProfile; // Ensure default export
+
+
