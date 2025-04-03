@@ -2,6 +2,7 @@
 import React from "react";
 import { FaBoxes, FaUserCog, FaBell, FaLock, FaSignOutAlt, FaArrowLeft } from "react-icons/fa";
 import { BrowserRouter as Router, useNavigate } from "react-router-dom";
+import supervisor1 from "../../assets/supervisor1.png"; // Importing the supervisor image
 
 const SupervisorProfile = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const SupervisorProfile = () => {
       {/* Sidebar */}
       <aside className="w-64 bg-blue-700 text-white p-5 flex flex-col space-y-6">
         <div className="flex flex-col items-center">
-          <img src={defaultUserImage} alt="User" className="w-20 h-20 rounded-full mb-2" />
+          <img src ={supervisor1} alt="Supervisor" className="w-24 h-24 rounded-full mb-4" />
           <h2 className="text-lg font-semibold">John Doe</h2>
         </div>
         <nav className="flex-grow">
@@ -86,8 +87,7 @@ const SupervisorProfile = () => {
       </main>
     </div>
   );
+  
 };
-
-
 
 export default SupervisorProfile;

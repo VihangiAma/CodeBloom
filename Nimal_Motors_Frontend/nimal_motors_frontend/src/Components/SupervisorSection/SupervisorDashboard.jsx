@@ -9,8 +9,8 @@ function Sidebar() {
   return (
     <aside className="w-64 h-screen bg-blue-600 text-white p-5">
      
-        <img src={logo} alt="Logo" className="w-12 h-12 mr-2" />
-      <h2 className="text-xl font-bold mb-6">Nimal Motors</h2>
+      <img src={logo} alt="Logo" className="w-24 h-24 rounded-full mb-4" />
+      <h1 className="text-xl font-bold mb-6">Nimal Motors</h1>
       <h3 className="text-xl font-bold mb-6">Supervisor Dashboard</h3>
       <nav className="space-y-4">
         <a
@@ -340,6 +340,7 @@ const SupervisorDashboard = () => {
       <div className="flex-1 flex flex-col">
         <Header section={section} />
         {/* <NotificationBar /> */}
+        
         <TaskTable />
       </div>
     </div>

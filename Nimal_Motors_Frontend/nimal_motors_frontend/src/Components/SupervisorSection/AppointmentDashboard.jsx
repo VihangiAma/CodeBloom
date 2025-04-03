@@ -5,7 +5,7 @@ const AppointmentTable = () => {
 
   // Fetch appointments from the database
   useEffect(() => {
-    fetch("http://localhost:5000/api/appointments")  // Change this URL to your API endpoint
+    fetch("http://localhost:5001/api/appointments")  // Change this URL to your API endpoint
       .then((res) => res.json())
       .then((data) => setAppointments(data))
       .catch((error) => console.error("Error fetching appointments:", error));
