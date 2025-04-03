@@ -2,13 +2,18 @@ import Users from '../Models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-export async function postUser(req, res) {
-    try {
-        const user = req.body;
-        const password = req.body.password;
-        const saltRounds = 10;
-        const passwordHash = bcrypt.hashSync(password, saltRounds);
 
+
+
+
+export async function postUser(req, res) {
+    try { 
+        const user = req.body;
+        const password = req.body.password; // Get only the password
+        const saltRounds = 10;
+        const passwordHash = bcrypt.hashSync(password,saltRounds); // Use 10 as salt rounds for hashing
+
+        console.log(passwordHash);
         user.password = passwordHash;
 
         const newUser = new Users(user);
@@ -25,6 +30,7 @@ export async function postUser(req, res) {
                     error: error.message || "Internal Server Error"
                 });
             });
+
     } catch (error) {
         res.status(500).json({
             message: "User creation failed",
@@ -33,18 +39,27 @@ export async function postUser(req, res) {
     }
 }
 
+
+
+
+
+
+
 export async function getAllUsers(req, res) {
     try {
-        const users = await Users.find();
+        const users = await Users.find();  // Fetch all users from the database
+
         if (!users || users.length === 0) {
             return res.status(404).json({
                 message: "No users found"
             });
         }
+
         res.status(200).json({
             message: "Users fetched successfully",
             users
         });
+
     } catch (error) {
         res.status(500).json({
             message: "Error fetching users",
@@ -53,19 +68,28 @@ export async function getAllUsers(req, res) {
     }
 }
 
+
+
+
+
+
+
 export async function getUserById(req, res) {
     try {
-        const { userId } = req.params;
-        const user = await Users.findOne({ userId });
+        const { userId } = req.params; // Get the userId from the URL parameters
+        const user = await Users.findOne({ userId }); // Find the user by userId
+
         if (!user) {
             return res.status(404).json({
                 message: "User not found"
             });
         }
+
         res.status(200).json({
             message: "User fetched successfully",
             user
         });
+
     } catch (error) {
         res.status(500).json({
             message: "Error fetching user",
@@ -73,20 +97,47 @@ export async function getUserById(req, res) {
         });
     }
 }
-
-export async function deleteUserById(req, res) {  // Changed from deleteUserbyId to deleteUserById
+// detele by user Id
+/*export async function deleteUserbyId(req, res) {
     try {
-        const { userId } = req.params;
+        const { userId } = req.query;
         const user = await Users.findOneAndDelete({ userId });
+
         if (!user) {
             return res.status(404).json({
                 message: "User not found"
             });
         }
+
         res.status(200).json({
             message: "User deleted successfully",
             user
         });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting user",
+            error: error.message || 'Internal Server Error'
+        });
+    }
+}*/
+
+export async function deleteUserbyId(req, res) {
+    try {
+        const { userId } = req.params; // Get the userId from the URL parameters
+        const user = await Users.findOneAndDelete({ userId }); // Find and delete the user by userId
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "User deleted successfully",
+            user
+        });
+
     } catch (error) {
         res.status(500).json({
             message: "Error deleting user",
@@ -97,18 +148,23 @@ export async function deleteUserById(req, res) {  // Changed from deleteUserbyId
 
 export async function putUserById(req, res) {
     try {
-        const { userId } = req.params;
-        const updates = req.body;
+        const { userId } = req.params; // Get the userId from the URL parameters
+        const updates = req.body; // Get the data to update from the request body
+
+        // Find the user by userId and update the user
         const updatedUser = await Users.findOneAndUpdate({ userId }, updates, { new: true });
+
         if (!updatedUser) {
             return res.status(404).json({
                 message: "User not found"
             });
         }
+
         res.status(200).json({
             message: "User updated successfully",
             user: updatedUser
         });
+
     } catch (error) {
         res.status(500).json({
             message: "Error updating user",
@@ -117,58 +173,215 @@ export async function putUserById(req, res) {
     }
 }
 
-export async function LogInUser(req, res) {
-    const { email, password } = req.body;
 
-    try {
-        if (!email || !password) {
-            return res.status(400).json({ message: "Email and password are required" });
+
+/*
+export function LogInUser(req, res) {
+    const credentials = req.body;
+
+    const passwordHash = bcrypt.hashSync(credentials.password,10)
+
+    Users.findOne({ 
+        email: credentials.email, 
+        password: passwordHash
+    })
+    .then((user) => {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        } else {
+            const isPasswordValid = bcrypt.compareSync(credintials.password,user.password);
+            if(!isPasswordValid){
+                res.status(403).json(
+                    {
+                        message: "Incorrect Password"
+                    }
+                );
+            }
         }
 
-        const user = await Users.findOne({ email });
+        // Create payload with user details
+        const payload = {
+            id: user.userId,  // Matching the schema's 'userId' field
+            email: user.email,
+            fullname: user.fullName,  // Matching the schema's 'fullName' field
+            type: user.type
+        };
+
+        // Create JWT token
+        const token = jwt.sign(payload, "secret", { expiresIn: "1h" });
+
+        // Send success response with user data and token
+        res.json({
+            message: "User found",
+            user: {
+                id: user.userId,
+                email: user.email,
+                fullname: user.fullName,  // Corrected to match the schema
+                type: user.type
+            },
+            token: token
+        });
+    })
+    .catch((error) => {
+        res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
+    });
+}
+ */   
+
+
+
+
+
+
+
+/*export function LogInUser(req, res) {
+    const credentials = req.body;
+
+    // Find the user by email
+    Users.findOne({ 
+        email: credentials.email
+    })
+    .then((user) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const isPasswordValid = bcrypt.compareSync(password, user.password);
+        // Compare the plain text password with the hashed password stored in the database
+        const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
+
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(403).json({
+                message: "Incorrect Password"
+            });
         }
 
-        const token = jwt.sign(
-            {
-                id: user.userId,
-                email: user.email,
-                type: user.type
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
+        // Create payload with user details
+        const payload = {
+            id: user.userId,  // Matching the schema's 'userId' field
+            email: user.email,
+            fullname: user.fullName,
+            phoneNumber: user.phoneNumber,  // User Phone Number
+            password: user.password,  // Matching the schema's 'fullName' field
+            type: user.type
+        };
 
-        res.status(200).json({
-            message: "Login successful",
-            token,
+        // Create JWT token
+        const token = jwt.sign(payload, "secret", { expiresIn: "1h" });
+
+        // Send success response with user data and token
+        res.json({
+            message: "User found",
             user: {
                 id: user.userId,
                 email: user.email,
-                fullName: user.fullName,
+                fullname: user.fullName,
+                phoneNumber: user.phoneNumber,  // User Phone Number
+                password: user.password,
                 type: user.type
-            }
+            },
+            token: token
         });
-
-    } catch (error) {
-        console.error("Login error:", error);
-        res.status(500).json({
-            message: "Login failed",
-            error: error.message
-        });
-    }
+    })
+    .catch((error) => {
+        res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
+    });
 }
 
+
+// Admin validation
 export function isAdminValid(req) {
-    return req.user && req.user.type === "admin";
+    if (req.user == null) {
+      return false;
+    }
+    if (req.user.type != "admin") {
+      return false;
+    }
+    return true;
+  }
+  
+  export function isCustomerValid(req) {
+    if (req.user == null) {
+      return false;
+    }
+    if (req.user.type != "customer") {
+      return true;
+    }
+    return true;
+  }*/
+  
+
+
+ // Function to generate token
+const generateToken = (user) => {
+    return jwt.sign(
+        { id: user.userId, email: user.email, role: user.type }, // Payload (Excluding Password)
+        process.env.JWT_SECRET, // Secret key (Store in .env)
+        { expiresIn: '1h' } // Token expires in 1 hour
+    );
+};
+
+export function LogInUser(req, res) {
+    const { email, password } = req.body;
+
+    // Find the user by email
+    Users.findOne({ email })
+        .then((user) => {
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            // Compare password with hashed password in the database
+            const isPasswordValid = bcrypt.compareSync(password, user.password);
+            if (!isPasswordValid) {
+                return res.status(403).json({ message: "Incorrect Password" });
+            }
+
+            // Generate JWT token
+            const token = generateToken(user);
+
+            // Send response with token (Excluding Password)
+            res.status(200).json({
+                message: "User logged in successfully",
+                user: {
+                    id: user.userId,
+                    email: user.email,
+                    fullName: user.fullName,
+                    phoneNumber: user.phoneNumber,
+                    type: user.type
+                },
+                token: token
+            });
+        })
+        .catch((error) => {
+            res.status(500).json({ message: "Login failed", error: error.message || 'Internal Server Error' });
+        });
 }
 
-export function isCustomerValid(req) {
+
+
+
+const isAdminValid = (req) => {
+    return req.user && req.user.type === "admin";
+};
+
+const isCustomerValid = (req) => {
     return req.user && req.user.type === "customer";
-}
+};
+
+export { isAdminValid, isCustomerValid };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
