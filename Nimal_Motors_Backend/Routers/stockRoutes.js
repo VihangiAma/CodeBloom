@@ -15,6 +15,6 @@ router.get("/", (req, res) => {
 router.get("/items",getStockItems);
 router.post("/add", addStockItem);
 router.put("/update/:id", updateStockItem);
-router.delete("/delete/:id", deleteStockItem);
+router.delete("/delete/:itemId", deleteStockItem);
 
 export default router;

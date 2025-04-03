@@ -60,34 +60,39 @@ export const addStockItem = async (req, res) => {
     }
 };
 
-// Update a stock item
+
+// Update a stock item using itemId (custom identifier)
+// Update a stock item by ID
 export const updateStockItem = async (req, res) => {
     const { id } = req.params;
     const { category, stockQuantity, supplierId, itemId, pricePerUnit, itemName } = req.body;
 
     try {
-        const updatedStockItem = await Stock.findByIdAndUpdate(
+        const updatedItem = await Stock.findByIdAndUpdate(
             id,
             { category, stockQuantity, supplierId, itemId, pricePerUnit, itemName },
-            { new: true }
+            { new: true } // To return the updated document
         );
 
-        if (!updatedStockItem) {
+        if (!updatedItem) {
             return res.status(404).json({ message: "Stock item not found." });
         }
 
-        res.status(200).json({ message: "Stock item updated successfully.", updatedStockItem });
+        res.status(200).json(updatedItem);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
+
+
 // Delete a stock item
 export const deleteStockItem = async (req, res) => {
-    const { id } = req.params;
+    const { itemId } = req.params;
 
     try {
-        const deletedStockItem = await Stock.findByIdAndDelete(id);
+        const deletedStockItem = await Stock.findOneAndDelete({ itemId });
+
 
         if (!deletedStockItem) {
             return res.status(404).json({ message: "Stock item not found." });

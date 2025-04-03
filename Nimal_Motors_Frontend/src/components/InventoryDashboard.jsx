@@ -3,6 +3,9 @@ import { FaBoxes, FaChartPie, FaCog, FaUser, FaExclamationTriangle, FaTruck, FaH
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+//import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 const InventoryDashboard = () => {
   const [inventory, setInventory] = useState([]);
@@ -14,6 +17,11 @@ const InventoryDashboard = () => {
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [formData, setFormData] = useState({ category: "", stock: "", supplier: "", id: "", price: "", name: "" });
 
+  /*const history = useHistory();
+history.push('/some-route');
+ */
+    const navigate = useNavigate();
+
   useEffect(() => {
     axios.get("http://localhost:5000/api/stock/items")
       .then((response) => {
@@ -22,9 +30,10 @@ const InventoryDashboard = () => {
         setLowStockCount(response.data.filter(item => item.stockQuantity < 50).length);
         setTotalSuppliers(new Set(response.data.map(item => item.supplierId)).size);
         setRecentUpdates(response.data.slice(-3));
-
+  
+        // Prevent multiple warnings by checking previous alerts
         response.data.forEach(item => {
-          if (item.stock < 50) {
+          if (item.stockQuantity < 50) {
             toast.warning(`Low Stock Alert: ${item.itemName} has only ${item.stockQuantity} left!`, {
               position: "top-right",
               autoClose: 3000,
@@ -38,8 +47,8 @@ const InventoryDashboard = () => {
       })
       .catch(error => console.error("Error fetching inventory:", error));
   }, []);
-
-  const handleEditClick = (item) => {
+  
+ const handleEditClick = (item) => {
     setEditItem(item);
     setFormData(item);
   };
@@ -48,25 +57,59 @@ const InventoryDashboard = () => {
     setDeleteItemId(id);
   };
 
-  const handleUpdate = () => {
-    axios.put(`http://localhost:5000/api/stock/items/${editItem.id}`, formData)
-      .then(() => {
-        setInventory(inventory.map(item => (item.id === editItem.id ? formData : item)));
-        toast.success("Stock item updated successfully!");
-        setEditItem(null);
-      })
-      .catch(error => console.error("Error updating stock:", error));
-  };
-
+ 
+  
+    // Ensure we send the correct updated data (formData)
+    const handleUpdate = () => {
+      if (!editItem) return;
+    
+      // Ensure we send the correct updated data (formData)
+      const updatedItem = {
+        ...formData,
+        itemId: editItem.itemId,  // Ensuring the item ID is retained for the update
+      };
+    
+      axios.put(`http://localhost:5000/api/stock/update/${editItem.itemId}`, updatedItem)
+        .then((response) => {
+          console.log("Update Response:", response);
+          // Update the inventory state by replacing the updated item
+          setInventory(prevInventory =>
+            prevInventory.map(item =>
+              item.itemId === editItem.itemId ? { ...item, ...formData } : item
+            )
+          );
+          toast.success("Stock item updated successfully!");
+          setEditItem(null); // Close the modal after update
+        })
+        .catch(error => {
+          console.error("Error updating stock:", error);
+          toast.error("Failed to update item!");
+        });
+    };
+    
+  
+ /* const handleDeleteClick = (id) => {
+    console.log("Delete button clicked for ID:", id); // Debugging step
+    setDeleteItemId(id);
+  };*/
+  
   const handleDeleteConfirm = () => {
-    axios.delete(`http://localhost:5000/api/stock/items/${deleteItemId}`)
+    if (!deleteItemId) return;
+  
+    axios.delete(`http://localhost:5000/api/stock/delete/${deleteItemId}`)
       .then(() => {
-        setInventory(inventory.filter(item => item.id !== deleteItemId));
+        setInventory(prevInventory => prevInventory.filter(item => item.itemId !== deleteItemId));
         toast.success("Stock item deleted successfully!");
         setDeleteItemId(null);
       })
-      .catch(error => console.error("Error deleting stock:", error));
+      .catch(error => {
+        console.error("Error deleting stock:", error);
+        toast.error("Failed to delete item!");
+      });
   };
+  /*const navigateToAccountantProfile = () => {
+    history.push("/accountant"); // Navigating to the accountant's profile page
+  };*/
 
   return (
     <div className="flex h-screen">
@@ -94,7 +137,7 @@ const InventoryDashboard = () => {
           <h1 className="text-3xl font-semibold">Inventory Management</h1>
           <div className="flex items-center gap-4">
             <input type="text" placeholder="Search..." className="p-2 border rounded" />
-            <FaUser className="text-2xl" />
+            <FaUser  onClick={() => navigate("/accountant")} className="text-2xl cursor-pointer" />
           </div>
         </header>
          {/* Stats Cards */}
@@ -160,7 +203,7 @@ const InventoryDashboard = () => {
                     <button onClick={() => handleEditClick(item)} className="text-blue-600 p-1">
                       <FaEdit />
                     </button>
-                    <button onClick={() => handleDeleteClick(item.id)} className="text-red-600 p-1 ml-3">
+                    <button onClick={() => handleDeleteClick(item.itemId)} className="text-red-600 p-1 ml-3">
                       <FaTrash />
                     </button>
                   </td>
@@ -170,34 +213,70 @@ const InventoryDashboard = () => {
           </table>
         </div>
 
-        {/* Edit Stock Modal */}
-        {editItem && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-white p-5 rounded shadow-md w-1/3">
-              <h2 className="text-xl font-bold mb-4">Edit Stock Item</h2>
-              <input type="text" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} placeholder="Category" className="p-2 border w-full mb-2" />
-              <input type="number" value={formData.quantity} onChange={e => setFormData({ ...formData, stock: e.target.value })} placeholder="Stock" className="p-2 border w-full mb-2" />
-              <input type="text" value={formData.supplier} onChange={e => setFormData({ ...formData, supplier: e.target.value })} placeholder="Supplier" className="p-2 border w-full mb-2" />
-              <input type="text" value={formData.id} disabled className="p-2 border w-full mb-2" />
-              <input type="text" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} placeholder="Price" className="p-2 border w-full mb-2" />
-              <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="Item Name" className="p-2 border w-full mb-4" />
-              <button onClick={handleUpdate} className="bg-blue-600 text-white p-2 rounded">Update</button>
-              <button onClick={() => setEditItem(null)} className="ml-3 p-2">Cancel</button>
-            </div>
-          </div>
-        )}
+        {editItem && (  // Check if an item is being edited
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div className="bg-white p-5 rounded shadow-md w-1/3">
+      <h2 className="text-xl font-bold mb-4">Edit Stock Item</h2>
 
-        {/* Delete Confirmation Modal */}
-        {deleteItemId && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-white p-5 rounded shadow-md w-1/3">
-              <h2 className="text-xl font-bold mb-4">Confirm Delete?</h2>
-              <button onClick={handleDeleteConfirm} className="bg-red-600 text-white p-2 rounded">Delete</button>
-              <button onClick={() => setDeleteItemId(null)} className="ml-3 p-2">Cancel</button>
-            </div>
-          </div>
-        )}
-      </main>
+      <input 
+  type="text" 
+  value={formData.category} 
+  onChange={e => setFormData({ ...formData, category: e.target.value })} 
+  placeholder="Category" 
+  className="p-2 border w-full mb-2" 
+/>
+<input 
+  type="number" 
+  value={formData.stock} 
+  onChange={e => setFormData({ ...formData, stock: e.target.value })} 
+  placeholder="Stock" 
+  className="p-2 border w-full mb-2" 
+/>
+<input 
+  type="text" 
+  value={formData.supplier} 
+  onChange={e => setFormData({ ...formData, supplier: e.target.value })} 
+  placeholder="Supplier" 
+  className="p-2 border w-full mb-2" 
+/>
+<input 
+  type="text" 
+  value={formData.id} 
+  disabled 
+  className="p-2 border w-full mb-2" 
+/>
+<input 
+  type="text" 
+  value={formData.price} 
+  onChange={e => setFormData({ ...formData, price: e.target.value })} 
+  placeholder="Price" 
+  className="p-2 border w-full mb-2" 
+/>
+<input 
+  type="text" 
+  value={formData.name} 
+  onChange={e => setFormData({ ...formData, name: e.target.value })} 
+  placeholder="Item Name" 
+  className="p-2 border w-full mb-4" 
+/>
+<button onClick={handleUpdate} className="bg-blue-600 text-white p-2 rounded">Update</button>
+<button onClick={() => setEditItem(null)} className="ml-3 p-2">Cancel</button>
+
+    </div>
+  </div>
+)}
+
+{deleteItemId && (  // Check if there's an item to delete
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div className="bg-white p-5 rounded shadow-md w-1/3">
+      <h2 className="text-xl font-bold mb-4">Confirm Delete?</h2>
+      <button onClick={handleDeleteConfirm} className="text-red-600 p-1 ml-3">Yes</button>
+
+      <button onClick={() => setDeleteItemId(null)} className="ml-3 p-2">Cancel</button>
+    </div>
+  </div>
+)}
+ </main>
     </div>
   );
 };
