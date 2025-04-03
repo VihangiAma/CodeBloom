@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Route, useNavigate, useParams } from "react-router-dom";
-//import NotificationBar from "./Notification";
 import axios from "axios";
+//import NotificationBar from "./Notification";
+import logo from "../../assets/logo.jpg"; // Adjust the path as necessary
 
 // Sidebar Component
 function Sidebar() {
   return (
     <aside className="w-64 h-screen bg-blue-600 text-white p-5">
+     
+        <img src={logo} alt="Logo" className="w-12 h-12 mr-2" />
       <h2 className="text-xl font-bold mb-6">Nimal Motors</h2>
       <h3 className="text-xl font-bold mb-6">Supervisor Dashboard</h3>
       <nav className="space-y-4">
