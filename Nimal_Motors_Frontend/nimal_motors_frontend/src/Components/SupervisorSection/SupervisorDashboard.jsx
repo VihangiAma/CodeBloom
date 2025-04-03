@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import { Route, useNavigate, useParams } from "react-router-dom";
 //import NotificationBar from "./Notification";
@@ -9,19 +7,31 @@ import axios from "axios";
 function Sidebar() {
   return (
     <aside className="w-64 h-screen bg-blue-600 text-white p-5">
-       <h2 className="text-xl font-bold mb-6">Nimal Motors</h2>
+      <h2 className="text-xl font-bold mb-6">Nimal Motors</h2>
       <h3 className="text-xl font-bold mb-6">Supervisor Dashboard</h3>
       <nav className="space-y-4">
-        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
+        <a
+          href="#"
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
           <span>📋 Tasks</span>
         </a>
-        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
+        <a
+          href="#"
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
           <span>🔄 Progress</span>
         </a>
-        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
+        <a
+          href="#"
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
           <span>📊 Reports</span>
         </a>
-        <a href="#" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500">
+        <a
+          href="#"
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
           <span>📅 Appointment</span>
         </a>
       </nav>
@@ -42,7 +52,9 @@ const Header = () => {
     <header className="flex justify-between items-center p-4 bg-white shadow-md">
       <h1 className="text-lg font-semibold">Service Supervisor</h1>
       <div className="flex items-center space-x-4">
-        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">🔔</button>
+        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+          🔔
+        </button>
         <button
           className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"
           onClick={() => navigate("/profile")}
@@ -60,35 +72,74 @@ const Header = () => {
   );
 };
 
-// Task Table Component
-// Task Table Component
 const TaskTable = () => {
-  const [tasks, setTasks] = useState([
-    { serviceId: "2025#1", customerID: "001", vehicleId: "XYZ123", serviceDateate: "01-Apr-2025", status: "Pending" },
-    { serviceId: "2025#2", customerID: "002", vehicleId: "ABC123", serviceDateate: "03-Aug-2025", status: "Complete" },
-    { serviceId: "2025#3", customerID: "003", vehicleId: "SQR123", serviceDateate: "25-Apr-2025", status: "Pending" },
-    { serviceId: "2025#4", customerID: "004", vehicleId: "PMV123", serviceDateate: "08-Aug-2025", status: "Complete" },
-    { serviceId: "2025#5", customerID: "005", vehicleId: "SQR567", serviceDateate: "25-Apr-2025", status: "Pending" },
-    { serviceId: "2025#6", customerID: "006", vehicleId: "PMV879", serviceDateate: "08-Aug-2025", status: "Complete" }
-  ]);
+  const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  const deleteTask = (serviceId) => {
+  useEffect(() => {
+    // Fetch data from your API using axios
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/api/service");
+        setTasks(response.data); // Assuming the API returns an array of tasks
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // const deleteTask = (serviceId) => {
+  //   if (window.confirm("Are you sure you want to delete this service?")) {
+  //     setTasks(tasks.filter(task => task.serviceId !== serviceId));  // Ensure serviceId is used
+  //   }
+  // };
+
+  const deleteTask = async (serviceID) => {
     if (window.confirm("Are you sure you want to delete this service?")) {
-      setTasks(tasks.filter(task => task.serviceId !== serviceId));  // Ensure serviceId is used
+      try {
+        // Send DELETE request to backend
+        await axios.delete(`http://localhost:5001/api/service/${serviceID}`);
+  
+        // Remove the task from frontend state only after successful deletion
+        setTasks((prevTasks) => prevTasks.filter((task) => task.serviceID !== serviceID));
+      } catch (error) {
+        console.error("Error deleting service:", error);
+      }
     }
   };
+  
 
-  const openUpdateForm = (task) => {
-    setSelectedTask(task);
+  // const openUpdateForm = (task) => {
+  //   setSelectedTask(task);
+  // };
+
+  const openUpdateForm = async (taskId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5001/api/service/${taskId}`
+      );
+      setSelectedTask(response.data);
+    } catch (error) {
+      console.error("Error fetching service details:", error);
+    }
   };
 
   const closeUpdateForm = () => {
     setSelectedTask(null);
   };
 
+  // const handleUpdate = (updatedTask) => {
+  //   setTasks(tasks.map(task => (task.serviceId === updatedTask.serviceId ? updatedTask : task)));
+  //   closeUpdateForm();
+  // };
   const handleUpdate = (updatedTask) => {
-    setTasks(tasks.map(task => (task.serviceId === updatedTask.serviceId ? updatedTask : task)));
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.serviceID === updatedTask.serviceID ? updatedTask : task
+      )
+    );
     closeUpdateForm();
   };
 
@@ -107,29 +158,54 @@ const TaskTable = () => {
         </thead>
         <tbody>
           {tasks.map((task) => (
-            <tr key={task.serviceId} className="border-b hover:bg-gray-100">
-              <td className="p-3">{task.serviceId}</td>
+            <tr key={task.serviceID} className="border-b hover:bg-gray-100">
+              <td className="p-3">{task.serviceID}</td>{" "}
+              {/* Make sure the correct field is being referenced */}
               <td className="p-3">{task.customerID}</td>
-              <td className="p-3">{task.vehicleId}</td>
-              <td className="p-3">{new Date(task.serviceDateate).toLocaleDateString()}</td>
-              <td className={`p-3 ${task.status === "Pending" ? "text-yellow-500" : task.status === "Completed" ? "text-green-500" : "text-red-500"}`}>
+              <td className="p-3">{task.vehicleID}</td>
+              <td className="p-3">
+                {new Date(task.serviceDate).toLocaleDateString()}
+              </td>
+              <td
+                className={`p-3 ${
+                  task.status === "Pending"
+                    ? "text-yellow-500"
+                    : task.status === "Completed"
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
                 {task.status}
               </td>
               <td className="p-3 flex space-x-2">
-                <button onClick={() => openUpdateForm(task)} className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">📝</button>
-                <button onClick={() => deleteTask(task.serviceId)} className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">🗑️</button>  {/* Use serviceId here */}
+                <button
+                  onClick={() => openUpdateForm(task.serviceID)}
+                  className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                >
+                  📝
+                </button>
+                <button
+                  onClick={() => deleteTask(task.serviceID)}
+                  className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                >
+                  🗑️
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {selectedTask && <UpdateForm task={selectedTask} onUpdate={handleUpdate} onClose={closeUpdateForm} />}
+      {selectedTask && (
+        <UpdateForm
+          task={selectedTask}
+          onUpdate={handleUpdate}
+          onClose={closeUpdateForm}
+        />
+      )}
     </div>
   );
 };
-
-
 
 // Update Form Component
 const UpdateForm = ({ task, onUpdate, onClose }) => {
@@ -139,23 +215,40 @@ const UpdateForm = ({ task, onUpdate, onClose }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   onUpdate(formData);
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate(formData);
+    try {
+      await axios.put(
+        `http://localhost:5001/api/service/${formData.serviceID}`,
+        formData
+      );
+      onUpdate(formData); // Refresh table with updated data
+      onClose(); // Close modal
+    } catch (error) {
+      console.error("Error updating service:", error);
+    }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 lg:w-2/3">
         <h2 className="text-lg font-bold mb-4">Update Service</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        >
           <div>
             <label className="block mb-2">Service ID:</label>
             <input
               type="text"
               name="serviceId"
-              value={formData.serviceId}
-              onChange={handleChange}
+              value={formData.serviceID}
+              // onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
               disabled
             />
@@ -163,9 +256,10 @@ const UpdateForm = ({ task, onUpdate, onClose }) => {
             <input
               type="text"
               name="customerId"
-              value={formData.customerId}
-              onChange={handleChange}
+              value={formData.customerID || ""}
+              // onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
+              disabled
             />
           </div>
           <div>
@@ -173,22 +267,29 @@ const UpdateForm = ({ task, onUpdate, onClose }) => {
             <input
               type="text"
               name="vehicleId"
-              value={formData.vehicleId}
-              onChange={handleChange}
+              value={formData.vehicleID || ""}
+              // onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
+              disabled
             />
             <label className="block mb-2">Service Date:</label>
             <input
               type="date"
               name="serviceDate"
-              value={formData.serviceDate}
-              onChange={handleChange}
+              // value={formData.serviceDate}
+              value={
+                formData.serviceDate
+                  ? new Date(formData.serviceDate).toISOString().split("T")[0]
+                  : ""
+              }
+              // onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
+              disabled
             />
             <label className="block mb-2">Status:</label>
             <select
               name="status"
-              value={formData.status}
+              value={formData.status || "Pending"}
               onChange={handleChange}
               className="w-full p-2 border rounded mb-3"
             >
@@ -222,9 +323,10 @@ const SupervisorDashboard = () => {
   const [service, setService] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/service")
-      .then(response => setService(response.data))  // Use setService here
-      .catch(error => console.error("Error fetching data", error));
+    axios
+      .get("http://localhost:5001/api/service")
+      .then((response) => setService(response.data)) // Use setService here
+      .catch((error) => console.error("Error fetching data", error));
   }, []);
 
   const { section } = useParams();
@@ -239,6 +341,6 @@ const SupervisorDashboard = () => {
       </div>
     </div>
   );
-}
+};
 
 export default SupervisorDashboard;
