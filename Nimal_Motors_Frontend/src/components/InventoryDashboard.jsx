@@ -164,13 +164,13 @@ history.push('/some-route');
 
         <nav>
           <ul className="space-y-2">
-            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded">
+            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("dashboard")}>
               <FaChartPie /> Dashboard
             </li>
-            <li className="flex items-center gap-3 p-2 bg-white text-blue-700 rounded">
+            <li className="flex items-center gap-3 p-2 bg-white text-blue-700 rounded" onClick={() => setActiveSection("inventory")} >
               <FaBoxes /> Inventory
             </li>
-            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded">
+            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("settings")}>
               <FaCog /> Settings
             </li>
           </ul>

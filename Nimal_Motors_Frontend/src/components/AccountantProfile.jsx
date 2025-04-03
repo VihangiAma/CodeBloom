@@ -25,15 +25,13 @@ const AccountantProfile = () => {
         <nav>
           <ul className="space-y-4">
 
-<li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer" onClick={() => setActiveSection("personalInfo")}>
+           <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer" onClick={() => setActiveSection("personalInfo")}>
               <FaBoxes /> Personal Information
             </li>
 
             <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer" onClick={() => setActiveSection("accountSettings")}>
               <FaUserCog /> Account Settings
             </li>
-
-
             
             <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer" onClick={() => setActiveSection("notifications")}>
               <FaBell /> Notification
