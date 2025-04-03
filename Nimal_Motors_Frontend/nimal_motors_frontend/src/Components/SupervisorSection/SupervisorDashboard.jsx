@@ -88,14 +88,11 @@ const TaskTable = () => {
     <div className="p-4">
       <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200">
-          <tr>
-            <th className="p-3 text-left">ID</th>
-            <th className="p-3 text-left">Customer</th>
-            <th className="p-3 text-left">Contact</th>
-            <th className="p-3 text-left">Vehicle Type</th>
+        <tr>
+            <th className="p-3 text-left">Service ID</th>
+            <th className="p-3 text-left">Customer ID</th>
             <th className="p-3 text-left">Vehicle ID</th>
-            <th className="p-3 text-left">Date</th>
-            <th className="p-3 text-left">Time</th>
+            <th className="p-3 text-left">Service Date</th>
             <th className="p-3 text-left">Status</th>
             <th className="p-3 text-left">Actions</th>
           </tr>
@@ -103,14 +100,11 @@ const TaskTable = () => {
         <tbody>
           {tasks.map((task) => (
             <tr key={task.id} className="border-b hover:bg-gray-100">
-              <td className="p-3">{task.id}</td>
-              <td className="p-3">{task.name}</td>
-              <td className="p-3">{task.contact}</td>
-              <td className="p-3">{task.vehicleType}</td>
+              <td className="p-3">{task.serviceIDid}</td>
+              <td className="p-3">{task.customerID}</td>
               <td className="p-3">{task.vehicleId}</td>
-              <td className="p-3">{task.date}</td>
-              <td className="p-3">{task.time}</td>
-              <td className={`p-3 ${task.status === "Pending" ? "text-yellow-500" : task.status === "In Progress" ? "text-blue-500" : "text-green-500"}`}>
+              <td className="p-3">{new Date(task.Servicedate).toLocaleDateString()}</td>
+              <td className={`p-3 ${task.status === "Pending" ? "text-yellow-500" : task.status === "Completed" ? "text-green-500" : "text-red-500"}`}>
                 {task.status}
               </td>
               <td className="p-3 flex space-x-2">
@@ -256,6 +250,3 @@ const SupervisorDashboard = () => {
 };
 
 export default SupervisorDashboard;
-
-
-
