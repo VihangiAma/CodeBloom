@@ -1,3 +1,13 @@
-pic-Bg{
-    background-image:url(bgimage.jpg) ;
-}
+.pic-Bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("/bgimage.jpg"); /* Should be in /public */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1; /* Make sure it stays behind everything */
+  }
+  
