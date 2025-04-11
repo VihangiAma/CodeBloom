@@ -1,8 +1,10 @@
-// Greeting.js
+// Greeting.test.js
 import React from 'react';
+import { render, screen } from '@testing-library/react';
+import Greeting from './Greeting';
 
-const Greeting = ({ name }) => {
-  return <h1>Hello, {name}!</h1>;
-};
-
-export default Greeting;
+test('renders greeting with name', () => {
+  render(<Greeting name="Alice" />);
+  const greetingElement = screen.getByText(/hello, alice/i);
+  expect(greetingElement).toBeInTheDocument();
+});
