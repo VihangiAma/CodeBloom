@@ -1,67 +1,75 @@
-// import express from "express";
-// import {
-//     postUser,
-//     getAllUsers,
-//     getUserById,
-//     deleteUserById,  // Changed from deleteUserbyId
-//     putUserById,
-//     LogInUser,
-//     isAdminValid,
-//     isCustomerValid
-// } from "../Controllers/UserController.js";
-// import { authenticateToken } from '../MiddleWare/authMiddleware.js';
+import express from "express";
+//import { authenticateToken } from '../MiddleWare/authMiddleware.js';
+import { protect, authorize } from '../MiddleWare/authMiddleware.js';
 
-// const UserRouter = express.Router();
+import {
+    postUser,
+    getAllUsers,
+    getUserById,
+    deleteUserById,  // Changed from deleteUserbyId
+    putUserById,
+    LogInUser,
+    isAdminValid,
+    isCustomerValid
+} from "../Controllers/userController.js";
+//import { authenticateToken } from '../MiddleWare/authMiddleware.js';
 
-// // Public routes - No authentication required
-// UserRouter.post("/", postUser);  // User Registration (POST)
-// UserRouter.post("/login", LogInUser);  // User Login (POST)
+const UserRouter = express.Router();
 
-// // Protected routes (requires authentication token)
-// UserRouter.use(authenticateToken);
+// Public routes - No authentication required
+UserRouter.post("/", postUser);  // User Registration (POST)
+UserRouter.post("/login", LogInUser);  // User Login (POST)
 
-// UserRouter.get("/", getAllUsers);
-// UserRouter.get("/:userId", getUserById);
-// UserRouter.delete("/:userId", deleteUserById);  // Changed from deleteUserbyId
-// UserRouter.put("/:userId", putUserById);
+// Protected routes (requires authentication token)
+UserRouter.use(protect);
 
-// // Admin-only route
-// UserRouter.get("/admin", (req, res) => {
-//     if (!isAdminValid(req)) {
-//         return res.status(403).json({ message: "Admin access required" });
-//     }
-//     res.json({ message: "Welcome Admin!" });
-// });
+UserRouter.get("/", getAllUsers);
+UserRouter.get("/:userId", getUserById);
+UserRouter.delete("/:userId", deleteUserById);  // Changed from deleteUserbyId
+UserRouter.put("/:userId", putUserById);
 
-// // Customer-only route
-// UserRouter.get("/customer", (req, res) => {
-//     if (!isCustomerValid(req)) {
-//         return res.status(403).json({ message: "Customer access required" });
-//     }
-//     res.json({ message: "Welcome Customer!" });
-// });
+// Admin-only route
+UserRouter.get("/admin", (req, res) => {
+    if (!isAdminValid(req)) {
+        return res.status(403).json({ message: "Admin access required" });
+    }
+    res.json({ message: "Welcome Admin!" });
+});
 
-// export default UserRouter;
+// Customer-only route
+UserRouter.get("/customer", (req, res) => {
+    if (!isCustomerValid(req)) {
+        return res.status(403).json({ message: "Customer access required" });
+    }
+    res.json({ message: "Welcome Customer!" });
+});
+UserRouter.use(protect);
 
-const express = require('express');
-const { registerUser, loginUser, getUserProfile, updateUserProfile, getAllUsers } = require('../Controllers/userController');
-const { protect, authorize } = require('../middleware/authMiddleware');
 
-const router = express.Router();
+export default UserRouter;
 
-// User registration
-router.post('/register', registerUser);
+// const express = require('express');
+// const { registerUser, loginUser, getUserProfile, updateUserProfile, getAllUsers } = require('../Controllers/userController');
+// const { protect, authorize } = require('../middleware/authMiddleware');
 
-// User login
-router.post('/login', loginUser);
+// const router = express.Router();
+// router.get('/', (req, res) => {
+//     res.send('User routes working!');
+//   });
 
-// Get user profile (protected route)
-router.get('/profile', protect, getUserProfile);
+// // User registration
+// router.post('/register', registerUser);
 
-// Update user profile (protected route)
-router.put('/profile', protect, updateUserProfile);
+// // User login
+// router.post('/login', loginUser);
 
-// Get all users (admin-only route)
-router.get('/', protect, authorize('admin'), getAllUsers);
+// // Get user profile (protected route)
+// router.get('/profile', protect, getUserProfile);
 
-module.exports = router;
+// // Update user profile (protected route)
+// router.put('/profile', protect, updateUserProfile);
+
+// // Get all users (admin-only route)
+// router.get('/', protect, authorize('admin'), getAllUsers);
+
+// module.exports = router;
