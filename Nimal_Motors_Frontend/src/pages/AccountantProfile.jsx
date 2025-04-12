@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProfile, logout } from '../api/userApi';
+//import { getProfile, logout } from '../api/userApi';
 
 const AccountantProfile = () => {
     const navigate = useNavigate();

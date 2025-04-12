@@ -2,16 +2,16 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/login/LoginPage';
+import RegisterPage from './pages/register/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
-import AdminDashboard from './pages/AdminDashboard';
-import MechanicalSupervisorProfile from './pages/MechanicalSupervisorProfile';
-import BodyshopSupervisorProfile from './pages/BodyshopSupervisorProfile';
-import ServiceSupervisorProfile from './pages/ServiceSupervisorProfile';
-import ElectricalSupervisorProfile from './pages/ElectricalSupervisorProfile';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import MechanicalSupervisor from './pages/supervisors/MechanicalSupervisor';
+import BodyshopSupervisor from './pages/supervisors/BodyshopSupervisor';
+import ServiceSupervisor from './pages/supervisors/ServiceSupervisor';
+import ElectricalSupervisor from './pages/supervisors/ElectricalSupervisor';
 import AccountantProfile from './pages/AccountantProfile';
-import PremiumCustomerProfile from './pages/PremiumCustomerProfile';
+import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
 
 // Protected Route Component
 const PrivateRoute = ({ children }) => {
@@ -20,6 +20,8 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
+    console.log("App rendered ✅"); // For debugging
+    
     return (
         <Router>
             <div className="App">
@@ -49,7 +51,7 @@ function App() {
                         path="/mechanical-supervisor"
                         element={
                             <PrivateRoute>
-                                <MechanicalSupervisorProfile />
+                                <MechanicalSupervisor />
                             </PrivateRoute>
                         }
                     />
@@ -57,7 +59,7 @@ function App() {
                         path="/bodyshop-supervisor"
                         element={
                             <PrivateRoute>
-                                <BodyshopSupervisorProfile />
+                                <BodyshopSupervisor />
                             </PrivateRoute>
                         }
                     />
@@ -65,7 +67,7 @@ function App() {
                         path="/service-supervisor"
                         element={
                             <PrivateRoute>
-                                <ServiceSupervisorProfile />
+                                <ServiceSupervisor />
                             </PrivateRoute>
                         }
                     />
@@ -73,7 +75,7 @@ function App() {
                         path="/electrical-supervisor"
                         element={
                             <PrivateRoute>
-                                <ElectricalSupervisorProfile />
+                                <ElectricalSupervisor />
                             </PrivateRoute>
                         }
                     />

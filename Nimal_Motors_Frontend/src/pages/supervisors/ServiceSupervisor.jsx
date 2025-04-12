@@ -1,150 +1,130 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getProfile, logout } from '../api/userApi';
+// 
 
-const ServiceSupervisorProfile = () => {
-    const navigate = useNavigate();
-    const [profile, setProfile] = useState(null);
-    const [error, setError] = useState('');
+// 
+import React, { useState } from "react";
+import { FaUserTie, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt, FaToolbox } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-    const fetchProfile = async () => {
-        try {
-            const data = await getProfile();
-            if (data.role !== 'service') {
-                navigate('/profile');
-                return;
-            }
-            setProfile(data);
-        } catch (err) {
-            setError('Failed to fetch profile');
-        }
-    };
+const ServiceSupervisor = () => {
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchProfile();
-    }, []);
+  const initialFormData = {
+    firstName: "Nuwan",
+    lastName: "Silva",
+    username: "nuwansilva",
+    password: "securePass456",
+    email: "nuwan.silva@example.com",
+    phoneNumber: "+9477 1234567",
+    address: "No 42, Matara Road, Galle",
+  };
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
+  const [formData, setFormData] = useState(initialFormData);
+  const [isEditing, setIsEditing] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
-    if (!profile) {
-        return (
-            <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-                <div className="text-center">Loading...</div>
-            </div>
-        );
-    }
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    return (
-        <div className="min-h-screen bg-gray-100">
-            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 py-6 sm:px-0">
-                    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                        <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">Service Supervisor Dashboard</h3>
-                            <button
-                                onClick={handleLogout}
-                                className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                            >
-                                Logout
-                            </button>
-                        </div>
+  const handleSave = () => {
+    console.log("Saved Data:", formData);
+    setIsEditing(false);
+    setSuccessMessage("Profile saved successfully! ✅");
+    setTimeout(() => setSuccessMessage(""), 3000);
+  };
 
-                        {error && (
-                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mx-6" role="alert">
-                                <span className="block sm:inline">{error}</span>
-                            </div>
-                        )}
+  const handleCancel = () => {
+    setFormData(initialFormData);
+    setIsEditing(false);
+  };
 
-                        <div className="border-t border-gray-200">
-                            <dl>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Name</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{profile.name}</dd>
-                                </div>
-                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{profile.email}</dd>
-                                </div>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Role</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            {profile.role}
-                                        </span>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-
-                        {/* Service-specific functionality */}
-                        <div className="px-4 py-5 sm:px-6">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Service Actions</h4>
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-tools mr-2"></i>
-                                    Service Management
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-calendar-check mr-2"></i>
-                                    Schedule Services
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-comments mr-2"></i>
-                                    Customer Feedback
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-chart-line mr-2"></i>
-                                    Performance Reports
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Service Statistics */}
-                        <div className="px-4 py-5 sm:px-6 border-t border-gray-200">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Service Statistics</h4>
-                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Active Services
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-indigo-600">4</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Completed Services
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-green-600">30</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Pending Requests
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-yellow-600">5</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Customer Satisfaction
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-blue-600">4.8/5</dd>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside className="w-72 bg-yellow-800 text-white p-6 flex flex-col">
+        <div className="flex flex-col items-center mb-8">
+          <img
+            src="https://via.placeholder.com/150"
+            alt="User"
+            className="w-24 h-24 rounded-full mb-3 border-2 border-white"
+          />
+          <h2 className="text-lg font-bold">{`${formData.firstName} ${formData.lastName}`}</h2>
         </div>
-    );
+        <nav className="flex-1">
+          <ul className="space-y-4">
+            <li className="flex items-center gap-3 p-3 bg-yellow-700 rounded">
+              <FaCog /> <span>Account Settings</span>
+            </li>
+            <li className="flex items-center gap-3 p-3 hover:bg-yellow-600 rounded cursor-pointer" onClick={() => navigate("/personalinfo-bodyshop")}>
+              <FaUserTie /> <span>Personal Info</span>
+            </li>
+            <li className="flex items-center gap-3 p-3 hover:bg-yellow-600 rounded cursor-pointer">
+              <FaToolbox /> <span>Bodyshop Tasks</span>
+            </li>
+          </ul>
+        </nav>
+        <button
+          className="flex items-center gap-2 p-3 bg-red-600 hover:bg-red-700 rounded mt-auto"
+          onClick={() => navigate("/")}
+        >
+          <FaSignOutAlt /> <span>Sign Out</span>
+        </button>
+      </aside>
+
+      {/* Main */}
+      <main className="flex-1 p-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Bodyshop Supervisor Profile</h1>
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-100 border border-green-500 text-green-700 rounded-lg">
+              {successMessage}
+            </div>
+          )}
+          <form className="grid grid-cols-2 gap-6">
+            {Object.entries(formData).map(([key, value], index) => (
+              <div key={index}>
+                <label className="block font-semibold text-gray-800">
+                  {key.replace(/([A-Z])/g, " $1").trim()}
+                </label>
+                {key === "password" ? (
+                  <p className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 text-black">{value}</p>
+                ) : (
+                  <input
+                    type="text"
+                    name={key}
+                    value={value}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full p-3 border border-gray-300 rounded-lg text-black ${
+                      isEditing ? "bg-white" : "bg-gray-200"
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </form>
+
+          <div className="flex gap-4 mt-6">
+            {isEditing ? (
+              <>
+                <button className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700" onClick={handleSave}>
+                  Save Changes
+                </button>
+                <button className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600" onClick={handleCancel}>
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <button
+                className="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 };
 
-export default ServiceSupervisorProfile;
+export default ServiceSupervisor;

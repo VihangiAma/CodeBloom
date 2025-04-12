@@ -1,34 +1,33 @@
 import express from "express";
-//import { authenticateToken } from '../MiddleWare/authMiddleware.js';
-import { protect, authorize } from '../MiddleWare/authMiddleware.js';
+import { protect } from '../MiddleWare/authMiddleware.js';
 
 import {
     postUser,
     getAllUsers,
     getUserById,
-    deleteUserById,  // Changed from deleteUserbyId
+    deleteUserById,
     putUserById,
     LogInUser,
     isAdminValid,
     isCustomerValid
 } from "../Controllers/userController.js";
-//import { authenticateToken } from '../MiddleWare/authMiddleware.js';
+
 
 const UserRouter = express.Router();
 
-// Public routes - No authentication required
-UserRouter.post("/", postUser);  // User Registration (POST)
-UserRouter.post("/login", LogInUser);  // User Login (POST)
+// ✅ Public routes (no token required)
+UserRouter.post("/register", postUser);    // User Registration
+UserRouter.post("/login", LogInUser);      // User Login
 
-// Protected routes (requires authentication token)
+// 🔐 Protected routes (token required)
 UserRouter.use(protect);
 
-UserRouter.get("/", getAllUsers);
-UserRouter.get("/:userId", getUserById);
-UserRouter.delete("/:userId", deleteUserById);  // Changed from deleteUserbyId
-UserRouter.put("/:userId", putUserById);
+UserRouter.get("/", getAllUsers);          // Get all users
+UserRouter.get("/:userId", getUserById);   // Get user by ID
+UserRouter.delete("/:userId", deleteUserById); // Delete user
+UserRouter.put("/:userId", putUserById);   // Update user
 
-// Admin-only route
+// 🔐 Admin-only route
 UserRouter.get("/admin", (req, res) => {
     if (!isAdminValid(req)) {
         return res.status(403).json({ message: "Admin access required" });
@@ -36,17 +35,16 @@ UserRouter.get("/admin", (req, res) => {
     res.json({ message: "Welcome Admin!" });
 });
 
-// Customer-only route
+// 🔐 Customer-only route
 UserRouter.get("/customer", (req, res) => {
     if (!isCustomerValid(req)) {
         return res.status(403).json({ message: "Customer access required" });
     }
     res.json({ message: "Welcome Customer!" });
 });
-UserRouter.use(protect);
-
 
 export default UserRouter;
+
 
 // const express = require('express');
 // const { registerUser, loginUser, getUserProfile, updateUserProfile, getAllUsers } = require('../Controllers/userController');

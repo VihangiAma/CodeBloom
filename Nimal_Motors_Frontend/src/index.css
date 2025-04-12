@@ -31,11 +31,16 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
-
+/* 
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
+/* index.css */
+#root {
+  min-height: 100vh;
+  background: #eee;
+}
 
 
 h1 {

@@ -1,149 +1,88 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { register } from '../api/userApi';
 
 const RegisterPage = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        phone: '',
-        vehicleDetails: ''
-    });
-    const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [message, setMessage] = useState('');
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+  const handleRegister = (e) => {
+    e.preventDefault();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await register(formData);
-            navigate('/login');
-        } catch (err) {
-            setError(err.message || 'Registration failed');
-        }
-    };
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match.');
+      return;
+    }
 
-    return (
-        <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Create your account
-                </h2>
-            </div>
+    // Simulate register API
+    console.log('Registering:', { email, password });
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    {error && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <span className="block sm:inline">{error}</span>
-                        </div>
-                    )}
-                    
-                    <form className="space-y-6" onSubmit={handleSubmit}>
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                Full Name
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+    setMessage('Registered successfully!');
+  };
 
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email address
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+  const handleChangePassword = () => {
+    // Simulate change password logic
+    if (newPassword.trim() === '') {
+      setMessage('New password cannot be empty.');
+      return;
+    }
 
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+    setPassword(newPassword);
+    setConfirmPassword(newPassword);
+    setNewPassword('');
+    setShowChangePassword(false);
+    setMessage('Password changed successfully!');
+  };
 
-                        <div>
-                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                                Phone Number
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="phone"
-                                    name="phone"
-                                    type="tel"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+  return (
+    <div style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', border: '1px solid #ccc' }}>
+      <h2>Register</h2>
 
-                        <div>
-                            <label htmlFor="vehicleDetails" className="block text-sm font-medium text-gray-700">
-                                Vehicle Details
-                            </label>
-                            <div className="mt-1">
-                                <textarea
-                                    id="vehicleDetails"
-                                    name="vehicleDetails"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.vehicleDetails}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+      {message && <p style={{ color: 'green' }}>{message}</p>}
 
-                        <div>
-                            <button
-                                type="submit"
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                                Register
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+      <form onSubmit={handleRegister}>
+        <div>
+          <label>Email:</label><br />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
-    );
+
+        <div>
+          <label>Password:</label><br />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </div>
+
+        <div>
+          <label>Confirm Password:</label><br />
+          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+        </div>
+
+        <button type="submit" style={{ marginTop: '10px' }}>Register</button>
+      </form>
+
+      <hr />
+
+      <button onClick={() => setShowChangePassword(!showChangePassword)}>
+        {showChangePassword ? 'Cancel Change Password' : 'Change Password'}
+      </button>
+
+      {showChangePassword && (
+        <div style={{ marginTop: '10px' }}>
+          <label>New Password:</label><br />
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <br />
+          <button onClick={handleChangePassword} style={{ marginTop: '5px' }}>
+            Update Password
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default RegisterPage;

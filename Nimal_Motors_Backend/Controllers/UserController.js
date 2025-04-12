@@ -2,9 +2,9 @@
 
 // Controllers/UserController.js (ES Module version)
 
-import userModel from '../Models/userModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import userModel from '../Models/userModel.js';
 
 // Register a new user
 export const postUser = async (req, res) => {
@@ -18,12 +18,12 @@ export const postUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
-        name,
+        userId,username,fullname,
         email,
         password: hashedPassword,
         phone,
         vehicleDetails,
-        role: 'premium'
+        type: 'premium'
     });
 
     await user.save();

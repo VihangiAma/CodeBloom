@@ -1,201 +1,149 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getProfile, logout } from '../api/userApi';
+// 
+import React, { useState } from "react";
+import { FaUserShield, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt, FaBell, FaLock } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const AdminProfile = () => {
-    const navigate = useNavigate();
-    const [profile, setProfile] = useState(null);
-    const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchProfile();
-    }, []);
+  const initialFormData = {
+    firstName: "Dinuka",
+    lastName: "Heshan",
+    username: "dinukaheshan",
+    password: "password123", // Default password (view only)
+    email: "heshandinuka.hd@gmail.com",
+    phoneNumber: "+9471 7286020",
+    address: "No 321/A, Galle Road, Aluthgama",
+  };
 
-    const fetchProfile = async () => {
-        try {
-            const data = await getProfile();
-            if (data.role !== 'admin') {
-                navigate('/profile');
-                return;
-            }
-            setProfile(data);
-        } catch (err) {
-            setError('Failed to fetch profile');
-        }
-    };
+  const [formData, setFormData] = useState(initialFormData);
+  const [isEditing, setIsEditing] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // New state for message
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    if (!profile) {
-        return (
-            <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-                <div className="text-center">Loading...</div>
-            </div>
-        );
-    }
+  const handleSave = () => {
+    console.log("Saved Data:", formData);
+    setIsEditing(false);
 
-    return (
-        <div className="min-h-screen bg-gray-100">
-            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 py-6 sm:px-0">
-                    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                        <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">Administrator Dashboard</h3>
-                            <button
-                                onClick={handleLogout}
-                                className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                            >
-                                Logout
-                            </button>
-                        </div>
+    // Show success message
+    setSuccessMessage("Profile saved successfully! ✅");
+    
+    // Hide message after 3 seconds
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+  };
 
-                        {error && (
-                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mx-6" role="alert">
-                                <span className="block sm:inline">{error}</span>
-                            </div>
-                        )}
+  const handleCancel = () => {
+    setFormData(initialFormData);
+    setIsEditing(false);
+  };
 
-                        <div className="border-t border-gray-200">
-                            <dl>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Name</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{profile.name}</dd>
-                                </div>
-                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{profile.email}</dd>
-                                </div>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Role</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                                            {profile.role}
-                                        </span>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-
-                        {/* Administrative Actions */}
-                        <div className="px-4 py-5 sm:px-6">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Administrative Actions</h4>
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-users-cog mr-2"></i>
-                                    Manage Users
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-user-shield mr-2"></i>
-                                    Role Management
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-cogs mr-2"></i>
-                                    System Settings
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-shield-alt mr-2"></i>
-                                    Security Settings
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Department Overview */}
-                        <div className="px-4 py-5 sm:px-6 border-t border-gray-200">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Department Overview</h4>
-                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Total Users
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-indigo-600">124</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Active Services
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-green-600">45</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            System Health
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-blue-600">98%</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Pending Approvals
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-yellow-600">7</dd>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* System Logs */}
-                        <div className="px-4 py-5 sm:px-6 border-t border-gray-200">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Recent System Logs</h4>
-                            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                                <ul className="divide-y divide-gray-200">
-                                    <li className="px-4 py-4">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0">
-                                                    <i className="fas fa-user-plus text-green-500"></i>
-                                                </div>
-                                                <div className="ml-3">
-                                                    <p className="text-sm font-medium text-gray-900">New user registration</p>
-                                                    <p className="text-sm text-gray-500">User ID: 12345</p>
-                                                </div>
-                                            </div>
-                                            <div className="text-sm text-gray-500">5 minutes ago</div>
-                                        </div>
-                                    </li>
-                                    <li className="px-4 py-4">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0">
-                                                    <i className="fas fa-shield-alt text-yellow-500"></i>
-                                                </div>
-                                                <div className="ml-3">
-                                                    <p className="text-sm font-medium text-gray-900">Security alert</p>
-                                                    <p className="text-sm text-gray-500">Failed login attempt</p>
-                                                </div>
-                                            </div>
-                                            <div className="text-sm text-gray-500">15 minutes ago</div>
-                                        </div>
-                                    </li>
-                                    <li className="px-4 py-4">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0">
-                                                    <i className="fas fa-cog text-blue-500"></i>
-                                                </div>
-                                                <div className="ml-3">
-                                                    <p className="text-sm font-medium text-gray-900">System update</p>
-                                                    <p className="text-sm text-gray-500">Version 2.0.1 deployed</p>
-                                                </div>
-                                            </div>
-                                            <div className="text-sm text-gray-500">1 hour ago</div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside className="w-72 bg-blue-800 text-white p-6 flex flex-col">
+        <div className="flex flex-col items-center mb-8">
+          <img
+            src="https://via.placeholder.com/150"
+            alt="User"
+            className="w-24 h-24 rounded-full mb-3 cursor-pointer border-2 border-white hover:opacity-80 transition"
+          />
+          <h2 className="text-lg font-bold">{`${formData.firstName} ${formData.lastName}`}</h2> {/* Admin's name */}
         </div>
-    );
+        <nav className="flex-1">
+          <ul className="space-y-4">
+            <li className="flex items-center gap-3 p-3 bg-blue-700 rounded cursor-pointer hover:bg-blue-600 transition">
+              <FaCog /> <span className="font-semibold">Account Settings</span>
+            </li>
+            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition" onClick={() => navigate("/personalinfo-admin")}>
+              <FaUserShield /> <span className="font-semibold">Personal Information</span>
+            </li>
+            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
+              <FaBell /> <span className="font-semibold">Notifications</span>
+            </li>
+            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
+              <FaLock /> <span className="font-semibold">Privacy</span>
+            </li>
+          </ul>
+        </nav>
+        <button
+          className="flex items-center gap-2 p-3 bg-red-600 hover:bg-red-700 rounded mt-auto transition"
+          onClick={() => navigate("/")}
+        >
+          <FaSignOutAlt /> <span className="font-semibold">Sign Out</span>
+        </button>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Admin Profile</h1>
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-100 border border-green-500 text-green-700 rounded-lg">
+              {successMessage}
+            </div>
+          )}
+
+          <form className="grid grid-cols-2 gap-6">
+            {Object.entries(formData).map(([key, value], index) => (
+              <div key={index}>
+                <label className="block font-semibold text-gray-800">
+                  {key.replace(/([A-Z])/g, " $1").trim()}
+                </label>
+                {key === "password" ? (
+                  <p className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 text-black">
+                    {value}
+                  </p>
+                ) : (
+                  <input
+                    type="text"
+                    name={key}
+                    value={value}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full p-3 border border-gray-300 rounded-lg text-black ${
+                      isEditing ? "bg-white" : "bg-gray-200"
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </form>
+
+          {/* Buttons */}
+          <div className="flex gap-4 mt-6">
+            {isEditing ? (
+              <>
+                <button
+                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+                  onClick={handleSave}
+                >
+                  Save Changes
+                </button>
+                <button
+                  className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <button
+                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 };
 
 export default AdminProfile;
