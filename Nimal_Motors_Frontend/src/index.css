@@ -32,6 +32,12 @@ body {
   min-height: 100vh;
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
