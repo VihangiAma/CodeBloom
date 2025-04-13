@@ -1,216 +1,204 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-//import { getProfile, logout } from '../api/userApi';
+import { useState } from "react";
+import {
+  FaChartPie,
+  FaFileInvoice,
+  FaMoneyCheckAlt,
+  FaCogs,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
-const AccountantProfile = () => {
-    const navigate = useNavigate();
-    const [profile, setProfile] = useState(null);
-    const [error, setError] = useState('');
+export default function AccountantProfile() {
+  const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
-    const fetchProfile = async () => {
-        try {
-            const data = await getProfile();
-            if (data.role !== 'accountant') {
-                navigate('/profile');
-                return;
-            }
-            setProfile(data);
-        } catch (err) {
-            setError('Failed to fetch profile');
-        }
-    };
+  const [profile, setProfile] = useState({
+    fullName: "Sahan Samarasinghe",
+    mobile: "077 998 8776",
+    email: "sahan.samarasinghe@gmail.com",
+    username: "sahan.samarasinghe",
+    location: "Colombo, Sri Lanka",
+  });
 
-    useEffect(() => {
-        fetchProfile();
-    }, []);
+  const [accountSettings] = useState({
+    financialView: "Monthly Overview",
+    exportFormat: "PDF",
+    twoFA: "Biometric Authentication",
+  });
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
+  };
 
-    if (!profile) {
-        return (
-            <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-                <div className="text-center">Loading...</div>
-            </div>
-        );
-    }
+  const saveProfile = () => {
+    setIsEditing(false);
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-100">
-            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 py-6 sm:px-0">
-                    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                        <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">Accountant Dashboard</h3>
-                            <button
-                                onClick={handleLogout}
-                                className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                            >
-                                Logout
-                            </button>
-                        </div>
+  const handleSignOut = () => {
+    // Clear any auth data if necessary
+    navigate("/login");
+  };
 
-                        {error && (
-                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mx-6" role="alert">
-                                <span className="block sm:inline">{error}</span>
-                            </div>
-                        )}
-
-                        <div className="border-t border-gray-200">
-                            <dl>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Name</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{profile.name}</dd>
-                                </div>
-                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{profile.email}</dd>
-                                </div>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">Role</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            {profile.role}
-                                        </span>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-
-                        {/* Financial Actions */}
-                        <div className="px-4 py-5 sm:px-6">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Financial Actions</h4>
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-file-invoice-dollar mr-2"></i>
-                                    Generate Invoices
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-chart-line mr-2"></i>
-                                    Financial Reports
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-money-check-alt mr-2"></i>
-                                    Process Payments
-                                </button>
-                                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <i className="fas fa-file-alt mr-2"></i>
-                                    Expense Reports
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Financial Statistics */}
-                        <div className="px-4 py-5 sm:px-6 border-t border-gray-200">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Financial Overview</h4>
-                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Today's Revenue
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-green-600">$2,854</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Pending Invoices
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-yellow-600">18</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Monthly Revenue
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-blue-600">$45,875</dd>
-                                    </div>
-                                </div>
-                                <div className="bg-white overflow-hidden shadow rounded-lg">
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500 truncate">
-                                            Outstanding Balance
-                                        </dt>
-                                        <dd className="mt-1 text-3xl font-semibold text-red-600">$12,450</dd>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Recent Transactions */}
-                        <div className="px-4 py-5 sm:px-6 border-t border-gray-200">
-                            <h4 className="text-lg font-medium text-gray-900 mb-4">Recent Transactions</h4>
-                            <div className="flex flex-col">
-                                <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                    <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                                        <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                            <table className="min-w-full divide-y divide-gray-200">
-                                                <thead className="bg-gray-50">
-                                                    <tr>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                            Date
-                                                        </th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                            Description
-                                                        </th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                            Amount
-                                                        </th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                            Status
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="bg-white divide-y divide-gray-200">
-                                                    {/* Sample transactions - In a real app, this would be dynamic */}
-                                                    <tr>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            2023-04-11
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                            Service Invoice #1234
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                            $350.00
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                Paid
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            2023-04-10
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                            Parts Order #5678
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                            $1,200.00
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                                Pending
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="flex h-screen bg-gray-900 text-white font-sans">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold text-gray-400 mb-6">🚗 NIMAL MOTORS</h1>
+          <nav className="space-y-2">
+            {[
+              { name: "Dashboard", icon: FaChartPie, path: "/dashboard" },
+              { name: "Financial Reports", icon: FaFileInvoice, path: "/financial-reports" },
+              { name: "Invoices", icon: FaMoneyCheckAlt, path: "/invoices" },
+              { name: "Transactions", icon: FaMoneyCheckAlt, path: "/transactions" },
+              { name: "Settings", icon: FaCogs, path: "/settings" },
+            ].map(({ name, icon: Icon, path }, idx) => (
+              <Link
+                key={idx}
+                to={path}
+                className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition duration-150"
+              >
+                <Icon className="text-lg" />
+                <span>{name}</span>
+              </Link>
+            ))}
+          </nav>
         </div>
-    );
-};
 
-export default AccountantProfile;
+        <div className="pt-6 border-t border-gray-600">
+          <nav className="space-y-2">
+            <Link
+              to="/profile"
+              className="flex items-center gap-3 px-3 py-2 rounded-md text-blue-400 hover:bg-gray-700 transition duration-150 font-semibold"
+            >
+              <FaUserCircle className="text-lg" />
+              Profile
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-3 px-3 py-2 rounded-md text-red-400 hover:bg-gray-700 transition duration-150 w-full text-left"
+            >
+              <FaSignOutAlt className="text-lg" />
+              Sign Out
+            </button>
+          </nav>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-6 overflow-auto">
+        {/* Header */}
+        <div
+          className="rounded-xl h-48 bg-cover bg-center relative"
+          style={{ backgroundImage: `url("/bgimage.jpg")` }}
+        >
+          <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
+            <img
+              src="/accprofile.jpg"
+              alt="profile"
+              className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+            />
+            <div className="text-white drop-shadow-lg">
+              <h2 className="text-2xl font-bold">{profile.fullName}</h2>
+              <p className="text-sm">Accountant - Nimal Motors</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* System Preferences */}
+          <div className="bg-gray-800 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">System Preferences</h3>
+            <div className="text-sm space-y-3">
+              <p><strong>Financial Summary View:</strong> {accountSettings.financialView}</p>
+              <p><strong>Report Export Format:</strong> {accountSettings.exportFormat}</p>
+              <p><strong>Authentication Method:</strong> {accountSettings.twoFA}</p>
+            </div>
+          </div>
+
+          {/* Profile Info */}
+          <div className="bg-gray-800 rounded-xl shadow-md p-6 text-gray-200">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Accountant Profile</h3>
+              {isEditing ? (
+                <div className="space-x-2">
+                  <button
+                    onClick={saveProfile}
+                    className="text-green-400 text-sm hover:underline"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="text-red-400 text-sm hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="text-blue-400 text-sm hover:underline"
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+            {isEditing ? (
+              <div className="text-sm space-y-2">
+                {[
+                  ["Full Name", "fullName"],
+                  ["Mobile", "mobile"],
+                  ["Email", "email"],
+                  ["Username", "username"],
+                  ["Location", "location"],
+                ].map(([label, name]) => (
+                  <div key={name} className="flex flex-col">
+                    <label className="font-medium">{label}:</label>
+                    <input
+                      type="text"
+                      name={name}
+                      value={profile[name]}
+                      onChange={handleChange}
+                      className="border border-gray-500 bg-gray-900 rounded p-1 text-white"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-gray-400 mb-4">
+                  Hello, I'm {profile.fullName}. I manage the financial records, oversee reports and ensure transparent accounting for Nimal Motors.
+                </p>
+                <div className="text-sm space-y-2">
+                  <p><strong>Full Name:</strong> {profile.fullName}</p>
+                  <p><strong>Mobile:</strong> {profile.mobile}</p>
+                  <p><strong>Email:</strong> {profile.email}</p>
+                  <p><strong>Username:</strong> {profile.username}</p>
+                  <p><strong>Location:</strong> {profile.location}</p>
+                  <div className="flex items-center space-x-3 mt-2">
+                    <a href="https://facebook.com/sahan.samarasinghe" target="_blank" rel="noreferrer">
+                      <FaFacebook className="text-blue-600 hover:text-blue-400 text-xl" />
+                    </a>
+                    <a href="https://twitter.com/sahan_s" target="_blank" rel="noreferrer">
+                      <FaTwitter className="text-sky-500 hover:text-sky-300 text-xl" />
+                    </a>
+                    <a href="https://instagram.com/sahan.s" target="_blank" rel="noreferrer">
+                      <FaInstagram className="text-pink-500 hover:text-pink-400 text-xl" />
+                    </a>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
