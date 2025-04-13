@@ -1,128 +1,144 @@
-// 
-import React, { useState } from "react";
-//import { FaUserTie, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt, FaToolbox } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import {
+  FaUserTie,
+  FaToolbox,
+  FaCogs,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
-const BodyshopSupervisor = () => {
+export default function BodyshopSupervisorProfile() {
+  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
-  const initialFormData = {
-    firstName: "Nuwan",
-    lastName: "Silva",
-    username: "nuwansilva",
-    password: "securePass456",
+  const [profile, setProfile] = useState({
+    fullName: "Nuwan Silva",
+    mobile: "077 123 4567",
     email: "nuwan.silva@example.com",
-    phoneNumber: "+9477 1234567",
-    address: "No 42, Matara Road, Galle",
+    username: "nuwansilva",
+    location: "Galle, Sri Lanka",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [isEditing, setIsEditing] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
+  const saveProfile = () => {
     setIsEditing(false);
-    setSuccessMessage("Profile saved successfully! ✅");
-    setTimeout(() => setSuccessMessage(""), 3000);
   };
 
-  const handleCancel = () => {
-    setFormData(initialFormData);
-    setIsEditing(false);
+  const handleSignOut = () => {
+    navigate("/login");
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
-      <aside className="w-72 bg-yellow-800 text-white p-6 flex flex-col">
-        <div className="flex flex-col items-center mb-8">
-          <img
-            src="https://via.placeholder.com/150"
-            alt="User"
-            className="w-24 h-24 rounded-full mb-3 border-2 border-white"
-          />
-          <h2 className="text-lg font-bold">{`${formData.firstName} ${formData.lastName}`}</h2>
-        </div>
-        <nav className="flex-1">
-          <ul className="space-y-4">
-            <li className="flex items-center gap-3 p-3 bg-yellow-700 rounded">
-              <FaCog /> <span>Account Settings</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 hover:bg-yellow-600 rounded cursor-pointer" onClick={() => navigate("/personalinfo-bodyshop")}>
-              <FaUserTie /> <span>Personal Info</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 hover:bg-yellow-600 rounded cursor-pointer">
+      <aside className="w-64 bg-yellow-800 p-6 flex flex-col justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold text-white mb-6">🚗 NIMAL MOTORS</h1>
+          <nav className="space-y-2">
+            <Link to="/bodyshop-tasks" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-yellow-700 transition">
               <FaToolbox /> <span>Bodyshop Tasks</span>
-            </li>
-          </ul>
-        </nav>
-        <button
-          className="flex items-center gap-2 p-3 bg-red-600 hover:bg-red-700 rounded mt-auto"
-          onClick={() => navigate("/")}
-        >
-          <FaSignOutAlt /> <span>Sign Out</span>
-        </button>
+            </Link>
+            <Link to="/settings" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-yellow-700 transition">
+              <FaCogs /> <span>Settings</span>
+            </Link>
+          </nav>
+        </div>
+
+        <div className="pt-6 border-t border-yellow-600">
+          <nav className="space-y-2">
+            <Link to="/profile" className="flex items-center gap-3 px-3 py-2 rounded-md text-yellow-200 hover:bg-yellow-700 transition font-semibold">
+              <FaUserCircle /> Profile
+            </Link>
+            <button onClick={handleSignOut} className="flex items-center gap-3 px-3 py-2 rounded-md text-red-300 hover:bg-red-600 transition w-full text-left">
+              <FaSignOutAlt /> Sign Out
+            </button>
+          </nav>
+        </div>
       </aside>
 
-      {/* Main */}
-      <main className="flex-1 p-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Bodyshop Supervisor Profile</h1>
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          {successMessage && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-500 text-green-700 rounded-lg">
-              {successMessage}
+      {/* Main Content */}
+      <main className="flex-1 p-6 overflow-auto">
+        {/* Header */}
+        <div className="rounded-xl h-48 bg-cover bg-center relative" style={{ backgroundImage: `url("/garage-bg.jpg")` }}>
+          <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
+            <img src="/bodyshop-profile.jpg" alt="profile" className="w-20 h-20 rounded-full border-4 border-white shadow-lg" />
+            <div className="text-white drop-shadow-lg">
+              <h2 className="text-2xl font-bold">{profile.fullName}</h2>
+              <p className="text-sm">Bodyshop Supervisor - Nimal Motors</p>
             </div>
-          )}
-          <form className="grid grid-cols-2 gap-6">
-            {Object.entries(formData).map(([key, value], index) => (
-              <div key={index}>
-                <label className="block font-semibold text-gray-800">
-                  {key.replace(/([A-Z])/g, " $1").trim()}
-                </label>
-                {key === "password" ? (
-                  <p className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 text-black">{value}</p>
-                ) : (
-                  <input
-                    type="text"
-                    name={key}
-                    value={value}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className={`w-full p-3 border border-gray-300 rounded-lg text-black ${
-                      isEditing ? "bg-white" : "bg-gray-200"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </form>
+          </div>
+        </div>
 
-          <div className="flex gap-4 mt-6">
+        {/* Content */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Description */}
+          <div className="bg-gray-800 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-3">About Me</h3>
+            <p className="text-sm text-gray-400">
+              Hi, I'm {profile.fullName}. I handle the operations and management of the bodyshop unit to ensure top-quality service delivery.
+            </p>
+          </div>
+
+          {/* Profile Info */}
+          <div className="bg-gray-800 rounded-xl shadow-md p-6 text-gray-200">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Bodyshop Supervisor Profile</h3>
+              {isEditing ? (
+                <div className="space-x-2">
+                  <button onClick={saveProfile} className="text-green-400 text-sm hover:underline">Save</button>
+                  <button onClick={() => setIsEditing(false)} className="text-red-400 text-sm hover:underline">Cancel</button>
+                </div>
+              ) : (
+                <button onClick={() => setIsEditing(true)} className="text-yellow-400 text-sm hover:underline">Edit</button>
+              )}
+            </div>
+
             {isEditing ? (
-              <>
-                <button className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700" onClick={handleSave}>
-                  Save Changes
-                </button>
-                <button className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600" onClick={handleCancel}>
-                  Cancel
-                </button>
-              </>
+              <div className="text-sm space-y-2">
+                {[
+                  ["Full Name", "fullName"],
+                  ["Mobile", "mobile"],
+                  ["Email", "email"],
+                  ["Username", "username"],
+                  ["Location", "location"],
+                ].map(([label, name]) => (
+                  <div key={name} className="flex flex-col">
+                    <label className="font-medium">{label}:</label>
+                    <input
+                      type="text"
+                      name={name}
+                      value={profile[name]}
+                      onChange={handleChange}
+                      className="border border-gray-500 bg-gray-900 rounded p-1 text-white"
+                    />
+                  </div>
+                ))}
+              </div>
             ) : (
-              <button
-                className="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit Profile
-              </button>
+              <div className="text-sm space-y-2">
+                <p><strong>Full Name:</strong> {profile.fullName}</p>
+                <p><strong>Mobile:</strong> {profile.mobile}</p>
+                <p><strong>Email:</strong> {profile.email}</p>
+                <p><strong>Username:</strong> {profile.username}</p>
+                <p><strong>Location:</strong> {profile.location}</p>
+                <div className="flex items-center space-x-3 mt-2">
+                  <a href="https://facebook.com/nuwan.silva" target="_blank" rel="noreferrer"><FaFacebook className="text-blue-600 hover:text-blue-400 text-xl" /></a>
+                  <a href="https://twitter.com/nuwan_s" target="_blank" rel="noreferrer"><FaTwitter className="text-sky-500 hover:text-sky-300 text-xl" /></a>
+                  <a href="https://instagram.com/nuwan.s" target="_blank" rel="noreferrer"><FaInstagram className="text-pink-500 hover:text-pink-400 text-xl" /></a>
+                </div>
+              </div>
             )}
           </div>
         </div>
       </main>
     </div>
   );
-};
-
-export default BodyshopSupervisor;
+}
