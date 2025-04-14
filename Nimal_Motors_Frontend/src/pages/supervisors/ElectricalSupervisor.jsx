@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   FaBolt,
-  FaClipboardCheck,
+  FaClipboardList,
   FaUsersCog,
   FaCogs,
   FaUserCircle,
@@ -12,22 +12,22 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function ElectricalSupervisorProfile() {
+export default function PremiumCustomerProfile() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    fullName: "Nuwan Silva",
-    mobile: "+94771234567",
-    email: "nuwan.silva@example.com",
-    username: "nuwan.silva",
-    location: "Galle, Sri Lanka",
+    fullName: "Dinesh Perera",
+    mobile: "0771122334",
+    email: "dinesh.perera@gmail.com",
+    username: "dinesh.perera",
+    location: "Kandy, Sri Lanka",
   });
 
   const [systemSettings] = useState({
-    electricalZone: "High Voltage Maintenance",
+    serviceArea: "Electrical Diagnostics & Repair",
     shiftSchedule: "9 AM - 6 PM",
-    safetyCompliance: "ISO 45001",
+    performanceMode: "Precision Focused",
   });
 
   const handleChange = (e) => {
@@ -36,7 +36,7 @@ export default function ElectricalSupervisorProfile() {
   };
 
   const saveProfile = () => {
-    // TODO: API integration
+    // TODO: Add API integration
     setIsEditing(false);
   };
 
@@ -52,10 +52,10 @@ export default function ElectricalSupervisorProfile() {
           <h1 className="text-2xl font-extrabold text-gray-300 mb-6">⚡ NIMAL MOTORS</h1>
           <nav className="space-y-2">
             {[
-              { name: "Dashboard", icon: FaBolt, href: "/supervisor/dashboard" },
-              { name: "Electrical Reports", icon: FaClipboardCheck, href: "/supervisor/reports" },
-              { name: "Team Management", icon: FaUsersCog, href: "/supervisor/team" },
-              { name: "Settings", icon: FaCogs, href: "/supervisor/settings" },
+              { name: "Dashboard", icon: FaBolt, href: "/electrical/dashboard" },
+              { name: "Electrical Reports", icon: FaClipboardList, href: "/electrical/reports" },
+              { name: "Staff Management", icon: FaUsersCog, href: "/electrical/staff" },
+              { name: "Settings", icon: FaCogs, href: "/electrical/settings" },
             ].map(({ name, icon: Icon, href }, idx) => (
               <a
                 key={idx}
@@ -94,11 +94,11 @@ export default function ElectricalSupervisorProfile() {
         {/* Header */}
         <div
           className="rounded-xl h-48 bg-cover bg-center relative"
-          style={{ backgroundImage: `url("/electrical-bg.jpg")` }}
+          style={{ backgroundImage: `url("/bgimage.jpg")` }}
         >
           <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
             <img
-              src="/electricprofile.jpg"
+              src="/electrical-profile.jpg"
               alt="profile"
               className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
             />
@@ -115,9 +115,9 @@ export default function ElectricalSupervisorProfile() {
           <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">System Settings</h3>
             <div className="text-sm space-y-3">
-              <p><strong>Electrical Zone:</strong> {systemSettings.electricalZone}</p>
+              <p><strong>Service Area:</strong> {systemSettings.serviceArea}</p>
               <p><strong>Shift Schedule:</strong> {systemSettings.shiftSchedule}</p>
-              <p><strong>Compliance:</strong> {systemSettings.safetyCompliance}</p>
+              <p><strong>Performance Mode:</strong> {systemSettings.performanceMode}</p>
             </div>
           </div>
 
@@ -127,26 +127,11 @@ export default function ElectricalSupervisorProfile() {
               <h3 className="text-lg font-semibold">Supervisor Profile</h3>
               {isEditing ? (
                 <div className="space-x-2">
-                  <button
-                    onClick={saveProfile}
-                    className="text-green-400 text-sm hover:underline"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="text-red-400 text-sm hover:underline"
-                  >
-                    Cancel
-                  </button>
+                  <button onClick={saveProfile} className="text-green-400 text-sm hover:underline">Save</button>
+                  <button onClick={() => setIsEditing(false)} className="text-red-400 text-sm hover:underline">Cancel</button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="text-blue-400 text-sm hover:underline"
-                >
-                  Edit
-                </button>
+                <button onClick={() => setIsEditing(true)} className="text-blue-400 text-sm hover:underline">Edit</button>
               )}
             </div>
             {isEditing ? (
@@ -173,7 +158,7 @@ export default function ElectricalSupervisorProfile() {
             ) : (
               <>
                 <p className="text-sm text-gray-400 mb-4">
-                  Hello, I'm {profile.fullName}. I ensure all electrical systems are safely managed and maintained at Nimal Motors.
+                  Hello, I'm {profile.fullName}. I ensure electrical systems are safe and functional at Nimal Motors.
                 </p>
                 <div className="text-sm space-y-2">
                   <p><strong>Full Name:</strong> {profile.fullName}</p>
@@ -201,3 +186,4 @@ export default function ElectricalSupervisorProfile() {
     </div>
   );
 }
+

@@ -6,6 +6,7 @@ import LoginPage from './pages/login/LoginPage';
 import RegisterPage from './pages/register/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProfile from './pages/admin/AdminProfile';
 import MechanicalSupervisor from './pages/supervisors/MechanicalSupervisor';
 import BodyshopSupervisor from './pages/supervisors/BodyshopSupervisor';
 import ServiceSupervisor from './pages/supervisors/ServiceSupervisor';
@@ -47,6 +48,22 @@ function App() {
                             </PrivateRoute>
                         }
                     />
+                    <Route
+                        path="/admin-dashboard"
+                        element={
+                            <PrivateRoute>
+                                <AdminDashboard />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                    path="/admin-profile"
+                    element={
+                        <PrivateRoute>
+                            <AdminProfile />
+                        </PrivateRoute>
+                    }
+                />
                     <Route
                         path="/mechanical-supervisor"
                         element={

@@ -1,249 +1,250 @@
-// 
-import React, { useState, useEffect } from "react";
-//import { FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt, FaHistory, FaCalendarCheck, FaSignOutAlt, FaLock } from "react-icons/fa";
+import { useState } from "react";
+import {
+  FaUserEdit,
+  FaCalendarAlt,
+  FaHistory,
+  FaKey,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const PremiumCustomerProfile = () => {
+export default function PremiumCustomerProfile() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: "Amanda", lastName: "Perera", username: "amanda.perera", email: "amandaperera@gmail.com", phoneNumber: "0 702315077", address: "New Town, Kaduwela",
+  const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  const [profile, setProfile] = useState({
+    fullName: "Sahan Samarasinghe",
+    mobile: "0779988776",
+    email: "sahan.samarasinghe@gmail.com",
+    username: "sahan.samarasinghe",
+    location: "Galle, Sri Lanka",
   });
-  const [passwordData, setPasswordData] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
-  const [appointmentData, setAppointmentData] = useState({ service: "", date: "", time: "" });
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errors, setErrors] = useState({});
-  const [currentSection, setCurrentSection] = useState("profile");
 
-  const [bookingHistory, setBookingHistory] = useState([
-    { id: 1, service: "Oil Change", date: "2025-03-01", status: "Completed" },
-    { id: 2, service: "Tire Rotation", date: "2025-03-15", status: "Upcoming" },
-  ]);
+  const [passwords, setPasswords] = useState({
+    current: "",
+    newPassword: "",
+    confirmNew: "",
+  });
 
-  const handleSave = () => {
-    // Save profile data (You can add backend functionality here if needed)
-    setSuccessMessage("Profile details saved successfully! ✅");
-    setTimeout(() => setSuccessMessage(""), 3000);
-  };
-
-  const handleChange = (e) => {
+  const handleProfileChange = (e) => {
     const { name, value } = e.target;
-    if (currentSection === "profile") setFormData((prev) => ({ ...prev, [name]: value }));
-    else if (currentSection === "makeAppointment") setAppointmentData((prev) => ({ ...prev, [name]: value }));
-    else if (currentSection === "changePassword") setPasswordData((prev) => ({ ...prev, [name]: value }));
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const validatePasswordForm = () => {
-    let newErrors = {};
-    if (!passwordData.currentPassword) newErrors.currentPassword = "Current password is required";
-    if (!passwordData.newPassword) newErrors.newPassword = "New password is required";
-    if (passwordData.newPassword !== passwordData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
-    setErrors(newErrors);
-    return !Object.keys(newErrors).length;
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePasswordSubmit = () => {
-    if (validatePasswordForm()) {
-      setSuccessMessage("Password changed successfully! ✅");
-      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      setTimeout(() => setSuccessMessage(""), 3000);
+  const saveProfile = () => {
+    // TODO: API call
+    setIsEditing(false);
+  };
+
+  const changePassword = () => {
+    if (passwords.newPassword !== passwords.confirmNew) {
+      alert("Passwords do not match.");
+      return;
     }
+    // TODO: Password update API
+    setPasswords({ current: "", newPassword: "", confirmNew: "" });
+    setIsChangingPassword(false);
   };
 
-  const handleAppointmentSubmit = () => {
-    if (appointmentData.service && appointmentData.date && appointmentData.time) {
-      setSuccessMessage("Appointment booked successfully! ✅");
-      setAppointmentData({ service: "", date: "", time: "" });
-      setTimeout(() => setSuccessMessage(""), 3000);
-    } else alert("Please fill in all the fields.");
+  const handleSignOut = () => {
+    navigate("/login");
   };
-
-  const handleLogout = () => {
-    alert("Logged out successfully!");
-    navigate("/");
-  };
-
-  useEffect(() => {
-    if (currentSection !== "changePassword") {
-      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      setErrors({});
-    }
-  }, [currentSection]);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <aside className="w-72 bg-blue-800 text-white p-6 flex flex-col">
-        <div className="flex flex-col items-center mb-8">
-          <img src="https://via.placeholder.com/150" alt="User" className="w-24 h-24 rounded-full mb-3 cursor-pointer border-2 border-white hover:opacity-80 transition" />
-          <h2 className="text-lg font-bold">Amanda Perera <><br /></><></>Premium Customer</h2>
+    <div className="flex h-screen bg-gray-900 text-white font-sans">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🚗 NIMAL MOTORS</h1>
+          <nav className="space-y-2">
+            {[
+              { name: "Edit Profile", icon: FaUserEdit },
+              { name: "Book Appointment", icon: FaCalendarAlt },
+              { name: "Booking History", icon: FaHistory },
+              { name: "Change Password", icon: FaKey },
+            ].map(({ name, icon: Icon }, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setIsEditing(name === "Edit Profile");
+                  setIsChangingPassword(name === "Change Password");
+                }}
+                className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition duration-150"
+              >
+                <Icon className="text-lg" />
+                <span>{name}</span>
+              </button>
+            ))}
+          </nav>
         </div>
-        <nav className="flex-1">
-          <ul className="space-y-4">
-            <li className="flex items-center gap-3 p-3 cursor-pointer hover:bg-blue-600 rounded transition" onClick={() => setCurrentSection("profile")}>
-              <FaUser /> <span className="font-semibold">Personal Information</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 cursor-pointer hover:bg-blue-600 rounded transition" onClick={() => setCurrentSection("bookingHistory")}>
-              <FaHistory /> <span className="font-semibold">Booking History</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 cursor-pointer hover:bg-blue-600 rounded transition" onClick={() => setCurrentSection("makeAppointment")}>
-              <FaCalendarCheck /> <span className="font-semibold">Make Appointment</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 cursor-pointer hover:bg-blue-600 rounded transition" onClick={() => setCurrentSection("changePassword")}>
-              <FaLock /> <span className="font-semibold">Change Password</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 cursor-pointer hover:bg-blue-600 rounded transition" onClick={handleLogout}>
-              <FaSignOutAlt /> <span className="font-semibold">Logout</span>
-            </li>
-          </ul>
-        </nav>
+
+        <div className="pt-6 border-t border-gray-600">
+          <nav className="space-y-2">
+            <a
+              href="#"
+              className="flex items-center gap-3 px-3 py-2 rounded-md text-blue-400 hover:bg-gray-700 transition duration-150 font-semibold"
+            >
+              <FaUserCircle className="text-lg" />
+              Profile
+            </a>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-3 px-3 py-2 rounded-md text-red-400 hover:bg-gray-700 transition duration-150 w-full text-left"
+            >
+              <FaSignOutAlt className="text-lg" />
+              Sign Out
+            </button>
+          </nav>
+        </div>
       </aside>
 
-      <main className="flex-1 p-10">
-        {successMessage && (
-          <div className="mb-4 p-3 bg-green-100 border border-green-500 text-green-700 rounded-lg">
-            {successMessage}
-          </div>
-        )}
-
-        {currentSection === "profile" && (
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Premium Customer Personal Info</h1>
-            <form className="grid grid-cols-2 gap-6">
-              {["firstName", "lastName", "username", "email", "phoneNumber", "address"].map((field) => (
-                <div key={field}>
-                  <label className="block font-semibold text-gray-800">{field.replace(/([A-Z])/g, " $1").trim()}</label>
-                  <input
-                    type="text"
-                    name={field}
-                    value={formData[field]}
-                    onChange={handleChange}
-                    className="w-full p-3 border rounded-lg focus:ring-2 transition text-black"
-                  />
-                </div>
-              ))}
-            </form>
-            <div className="flex justify-end mt-6 space-x-4">
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleSave}>
-                Save
-              </button>
-              <button className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400 transition" onClick={() => setCurrentSection("profile")}>
-                Cancel
-              </button>
+      {/* Main Content */}
+      <main className="flex-1 p-6 overflow-auto">
+        {/* Header */}
+        <div
+          className="rounded-xl h-48 bg-cover bg-center relative"
+          style={{ backgroundImage: `url("/bgimage.jpg")` }}
+        >
+          <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
+            <img
+              src="/custprofile.jpg"
+              alt="profile"
+              className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+            />
+            <div className="text-white drop-shadow-lg">
+              <h2 className="text-2xl font-bold">{profile.fullName}</h2>
+              <p className="text-sm">Premium Customer - Nimal Motors</p>
             </div>
           </div>
-        )}
+        </div>
 
-        {currentSection === "makeAppointment" && (
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Make Appointment</h1>
-            <form>
-              <div>
-                <label className="block font-semibold text-gray-800">Service</label>
-                <input
-                  type="text"
-                  name="service"
-                  value={appointmentData.service}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 transition text-black"
-                />
+        {/* Content */}
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Profile Section */}
+          <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Profile Information</h3>
+            {isEditing ? (
+              <div className="space-y-3 text-sm">
+                {["fullName", "mobile", "email", "username", "location"].map((field) => (
+                  <div key={field} className="flex flex-col">
+                    <label className="font-medium capitalize">{field}:</label>
+                    <input
+                      name={field}
+                      value={profile[field]}
+                      onChange={handleProfileChange}
+                      className="bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    />
+                  </div>
+                ))}
+                <div className="space-x-2 mt-2">
+                  <button onClick={saveProfile} className="text-green-400 text-sm hover:underline">
+                    Save
+                  </button>
+                  <button onClick={() => setIsEditing(false)} className="text-red-400 text-sm hover:underline">
+                    Cancel
+                  </button>
+                </div>
               </div>
-              <div>
-                <label className="block font-semibold text-gray-800">Date</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={appointmentData.date}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 transition text-black"
-                />
+            ) : (
+              <div className="text-sm space-y-2">
+                <p><strong>Full Name:</strong> {profile.fullName}</p>
+                <p><strong>Mobile:</strong> {profile.mobile}</p>
+                <p><strong>Email:</strong> {profile.email}</p>
+                <p><strong>Username:</strong> {profile.username}</p>
+                <p><strong>Location:</strong> {profile.location}</p>
+                <div className="flex items-center space-x-3 mt-2">
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                    <FaFacebook className="text-blue-600" />
+                  </a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                    <FaTwitter className="text-sky-500" />
+                  </a>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                    <FaInstagram className="text-pink-500" />
+                  </a>
+                </div>
               </div>
-              <div>
-                <label className="block font-semibold text-gray-800">Time</label>
-                <input
-                  type="time"
-                  name="time"
-                  value={appointmentData.time}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 transition text-black"
-                />
-              </div>
-              <div className="flex justify-end mt-6 space-x-4">
-                <button type="button" className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleAppointmentSubmit}>
-                  Book Appointment
-                </button>
-                <button type="button" className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400 transition" onClick={() => setCurrentSection("profile")}>
-                  Cancel
-                </button>
-              </div>
-            </form>
+            )}
           </div>
-        )}
 
-        {currentSection === "bookingHistory" && (
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Booking History</h1>
-            <ul className="space-y-4">
-              {bookingHistory.map((booking) => (
-                <li key={booking.id} className="p-4 border rounded-lg">
-                  <h3 className="text-lg font-semibold">{booking.service}</h3>
-                  <p>{booking.date}</p>
-                  <p className="text-sm text-gray-500">{booking.status}</p>
-                </li>
-              ))}
-            </ul>
+          {/* Password Change or Booking Section */}
+          <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            {isChangingPassword ? (
+              <>
+                <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                <div className="space-y-3 text-sm">
+                  <input
+                    name="current"
+                    value={passwords.current}
+                    onChange={handlePasswordChange}
+                    type="password"
+                    placeholder="Current Password"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                  />
+                  <input
+                    name="newPassword"
+                    value={passwords.newPassword}
+                    onChange={handlePasswordChange}
+                    type="password"
+                    placeholder="New Password"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                  />
+                  <input
+                    name="confirmNew"
+                    value={passwords.confirmNew}
+                    onChange={handlePasswordChange}
+                    type="password"
+                    placeholder="Confirm New Password"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                  />
+                  <div className="space-x-2">
+                    <button onClick={changePassword} className="text-green-400 hover:underline text-sm">
+                      Save
+                    </button>
+                    <button onClick={() => setIsChangingPassword(false)} className="text-red-400 hover:underline text-sm">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="text-lg font-semibold mb-4">Book an Appointment</h3>
+                <form className="text-sm space-y-3">
+                  <input
+                    type="date"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                  />
+                  <input
+                    type="time"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                  />
+                  <textarea
+                    placeholder="Service Details..."
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                  ></textarea>
+                  <button
+                    type="submit"
+                    className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
+                  >
+                    Submit Booking
+                  </button>
+                </form>
+              </>
+            )}
           </div>
-        )}
-
-        {currentSection === "changePassword" && (
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Change Password</h1>
-            <form>
-              <div>
-                <label className="block font-semibold text-gray-800">Temporary Password</label>
-                <input
-                  type="password"
-                  name="currentPassword"
-                  value={passwordData.currentPassword}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 transition text-black"
-                />
-                {errors.currentPassword && <p className="text-red-500 text-sm">{errors.currentPassword}</p>}
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-800">New Password</label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  value={passwordData.newPassword}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 transition text-black"
-                />
-                {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword}</p>}
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-800">Confirm New Password</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={passwordData.confirmPassword}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 transition text-black"
-                />
-                {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-              </div>
-              <div className="flex justify-end mt-6 space-x-4">
-                <button type="button" className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handlePasswordSubmit}>
-                  Change Password
-                </button>
-                <button type="button" className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400 transition" onClick={() => setCurrentSection("profile")}>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+        </div>
       </main>
     </div>
   );
-};
-
-export default PremiumCustomerProfile;
+}

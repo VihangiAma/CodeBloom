@@ -1,149 +1,196 @@
-// 
-import React, { useState } from "react";
-import { FaUserShield, FaEnvelope, FaMapMarkerAlt, FaCog, FaSignOutAlt, FaBell, FaLock } from "react-icons/fa";
+import { useState } from "react";
+import {
+  FaUserCog,
+  FaCalendarCheck,
+  FaLock,
+  FaHistory,
+  FaSignOutAlt,
+  FaUserCircle,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const AdminProfile = () => {
+export default function AdminProfile() {
   const navigate = useNavigate();
-
-  const initialFormData = {
-    firstName: "Dinuka",
-    lastName: "Heshan",
-    username: "dinukaheshan",
-    password: "password123", // Default password (view only)
-    email: "heshandinuka.hd@gmail.com",
-    phoneNumber: "+9471 7286020",
-    address: "No 321/A, Galle Road, Aluthgama",
-  };
-
-  const [formData, setFormData] = useState(initialFormData);
   const [isEditing, setIsEditing] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // New state for message
+
+  const [profile, setProfile] = useState({
+    fullName: "Sahan Samarasinghe",
+    mobile: "0779988776",
+    email: "sahan.samarasinghe@gmail.com",
+    username: "sahan.samarasinghe",
+    location: "Colombo, Sri Lanka",
+  });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
+  const saveProfile = () => {
+    // TODO: Add API call here
     setIsEditing(false);
-
-    // Show success message
-    setSuccessMessage("Profile saved successfully! ✅");
-    
-    // Hide message after 3 seconds
-    setTimeout(() => {
-      setSuccessMessage("");
-    }, 3000);
   };
 
-  const handleCancel = () => {
-    setFormData(initialFormData);
-    setIsEditing(false);
+  const handleSignOut = () => {
+    navigate("/login");
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
-      <aside className="w-72 bg-blue-800 text-white p-6 flex flex-col">
-        <div className="flex flex-col items-center mb-8">
-          <img
-            src="https://via.placeholder.com/150"
-            alt="User"
-            className="w-24 h-24 rounded-full mb-3 cursor-pointer border-2 border-white hover:opacity-80 transition"
-          />
-          <h2 className="text-lg font-bold">{`${formData.firstName} ${formData.lastName}`}</h2> {/* Admin's name */}
+      <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold text-gray-300 mb-6">👑 ADMIN PANEL</h1>
+          <nav className="space-y-2">
+            {[
+              { name: "Edit Profile", icon: FaUserCog, href: "#" },
+              { name: "Appointments", icon: FaCalendarCheck, href: "#" },
+              { name: "Change Password", icon: FaLock, href: "#" },
+              { name: "Booking History", icon: FaHistory, href: "#" },
+            ].map(({ name, icon: Icon, href }, idx) => (
+              <a
+                key={idx}
+                href={href}
+                className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition duration-150"
+              >
+                <Icon className="text-lg" />
+                <span>{name}</span>
+              </a>
+            ))}
+          </nav>
         </div>
-        <nav className="flex-1">
-          <ul className="space-y-4">
-            <li className="flex items-center gap-3 p-3 bg-blue-700 rounded cursor-pointer hover:bg-blue-600 transition">
-              <FaCog /> <span className="font-semibold">Account Settings</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition" onClick={() => navigate("/personalinfo-admin")}>
-              <FaUserShield /> <span className="font-semibold">Personal Information</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
-              <FaBell /> <span className="font-semibold">Notifications</span>
-            </li>
-            <li className="flex items-center gap-3 p-3 hover:bg-blue-600 rounded cursor-pointer transition">
-              <FaLock /> <span className="font-semibold">Privacy</span>
-            </li>
-          </ul>
-        </nav>
-        <button
-          className="flex items-center gap-2 p-3 bg-red-600 hover:bg-red-700 rounded mt-auto transition"
-          onClick={() => navigate("/")}
-        >
-          <FaSignOutAlt /> <span className="font-semibold">Sign Out</span>
-        </button>
+
+        <div className="pt-6 border-t border-gray-600">
+          <nav className="space-y-2">
+            <a
+              href="#"
+              className="flex items-center gap-3 px-3 py-2 rounded-md text-blue-400 hover:bg-gray-700 transition duration-150 font-semibold"
+            >
+              <FaUserCircle className="text-lg" />
+              Profile
+            </a>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-3 px-3 py-2 rounded-md text-red-400 hover:bg-gray-700 transition duration-150 w-full text-left"
+            >
+              <FaSignOutAlt className="text-lg" />
+              Sign Out
+            </button>
+          </nav>
+        </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Admin Profile</h1>
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          {successMessage && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-500 text-green-700 rounded-lg">
-              {successMessage}
+      <main className="flex-1 p-6 overflow-auto">
+        {/* Header */}
+        <div
+          className="rounded-xl h-48 bg-cover bg-center relative"
+          style={{ backgroundImage: `url("/bgimage.jpg")` }}
+        >
+          <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
+            <img
+              src="/adminprofile.jpg"
+              alt="profile"
+              className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+            />
+            <div className="text-white drop-shadow-lg">
+              <h2 className="text-2xl font-bold">{profile.fullName}</h2>
+              <p className="text-sm">Admin - Nimal Motors</p>
             </div>
-          )}
+          </div>
+        </div>
 
-          <form className="grid grid-cols-2 gap-6">
-            {Object.entries(formData).map(([key, value], index) => (
-              <div key={index}>
-                <label className="block font-semibold text-gray-800">
-                  {key.replace(/([A-Z])/g, " $1").trim()}
-                </label>
-                {key === "password" ? (
-                  <p className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 text-black">
-                    {value}
-                  </p>
-                ) : (
-                  <input
-                    type="text"
-                    name={key}
-                    value={value}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className={`w-full p-3 border border-gray-300 rounded-lg text-black ${
-                      isEditing ? "bg-white" : "bg-gray-200"
-                    }`}
-                  />
+        {/* Content */}
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Admin Info */}
+          <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Admin Profile</h3>
+              {isEditing ? (
+                <div className="space-x-2">
+                  <button
+                    onClick={saveProfile}
+                    className="text-green-400 text-sm hover:underline"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="text-red-400 text-sm hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="text-blue-400 text-sm hover:underline"
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+            {isEditing ? (
+              <div className="text-sm space-y-2">
+                {[["Full Name", "fullName"], ["Mobile", "mobile"], ["Email", "email"], ["Username", "username"], ["Location", "location"]].map(
+                  ([label, name]) => (
+                    <div key={name} className="flex flex-col">
+                      <label className="font-medium">{label}:</label>
+                      <input
+                        type="text"
+                        name={name}
+                        value={profile[name]}
+                        onChange={handleChange}
+                        className="border border-gray-500 bg-gray-800 rounded p-1 text-white"
+                      />
+                    </div>
+                  )
                 )}
               </div>
-            ))}
-          </form>
-
-          {/* Buttons */}
-          <div className="flex gap-4 mt-6">
-            {isEditing ? (
-              <>
-                <button
-                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
-                  onClick={handleSave}
-                >
-                  Save Changes
-                </button>
-                <button
-                  className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-              </>
             ) : (
-              <button
-                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit Profile
-              </button>
+              <>
+                <p className="text-sm text-gray-400 mb-4">
+                  Hello, I'm {profile.fullName}. I manage the overall operations at Nimal Motors.
+                </p>
+                <div className="text-sm space-y-2">
+                  <p><strong>Full Name:</strong> {profile.fullName}</p>
+                  <p><strong>Mobile:</strong> {profile.mobile}</p>
+                  <p><strong>Email:</strong> {profile.email}</p>
+                  <p><strong>Username:</strong> {profile.username}</p>
+                  <p><strong>Location:</strong> {profile.location}</p>
+                  <div className="flex items-center space-x-3 mt-2">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                      <FaFacebook className="text-blue-600" />
+                    </a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                      <FaTwitter className="text-sky-500" />
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                      <FaInstagram className="text-pink-500" />
+                    </a>
+                  </div>
+                </div>
+              </>
             )}
+          </div>
+
+          {/* Additional Admin Tools (Optional for Expansion) */}
+          <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-300">
+            <h3 className="text-lg font-semibold mb-3">Admin Quick Tools</h3>
+            <p className="text-sm text-gray-400 mb-2">Easily manage appointments, monitor history, or change credentials.</p>
+            <ul className="space-y-2 text-sm">
+              <li>✔️ View Appointment Logs</li>
+              <li>✔️ Access All User Data</li>
+              <li>✔️ Adjust Admin Privileges</li>
+              <li>✔️ View Booking History</li>
+              <li>✔️ Reset Passwords</li>
+            </ul>
           </div>
         </div>
       </main>
     </div>
   );
-};
-
-export default AdminProfile;
+}
