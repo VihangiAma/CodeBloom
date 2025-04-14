@@ -1,10 +1,10 @@
-// Greeting.test.js
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import Greeting from './Greeting';
+import ReactDOM from 'react-dom/client';
 
-test('renders greeting with name', () => {
-  render(<Greeting name="Alice" />);
-  const greetingElement = screen.getByText(/hello, alice/i);
-  expect(greetingElement).toBeInTheDocument();
-});
+function App() {
+  return <h1>Hello, World!</h1>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
