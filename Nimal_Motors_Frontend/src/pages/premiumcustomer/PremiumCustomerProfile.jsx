@@ -16,6 +16,7 @@ export default function PremiumCustomerProfile() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isBooking, setIsBooking] = useState(true); // default shows booking form
 
   const [profile, setProfile] = useState({
     fullName: "Sahan Samarasinghe",
@@ -31,6 +32,16 @@ export default function PremiumCustomerProfile() {
     confirmNew: "",
   });
 
+  const [booking, setBooking] = useState({
+    vehicleType: "",
+    vehicleModel: "",
+    registrationNumber: "",
+    serviceType: "",
+    preferredDate: "",
+    preferredTime: "",
+    notes: "",
+  });
+
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -39,6 +50,11 @@ export default function PremiumCustomerProfile() {
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswords((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBookingChange = (e) => {
+    const { name, value } = e.target;
+    setBooking((prev) => ({ ...prev, [name]: value }));
   };
 
   const saveProfile = () => {
@@ -54,6 +70,22 @@ export default function PremiumCustomerProfile() {
     // TODO: Password update API
     setPasswords({ current: "", newPassword: "", confirmNew: "" });
     setIsChangingPassword(false);
+  };
+
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+    console.log("Booking Submitted:", booking);
+    alert("Appointment Booked Successfully!");
+    // TODO: Submit to backend
+    setBooking({
+      vehicleType: "",
+      vehicleModel: "",
+      registrationNumber: "",
+      serviceType: "",
+      preferredDate: "",
+      preferredTime: "",
+      notes: "",
+    });
   };
 
   const handleSignOut = () => {
@@ -78,6 +110,7 @@ export default function PremiumCustomerProfile() {
                 onClick={() => {
                   setIsEditing(name === "Edit Profile");
                   setIsChangingPassword(name === "Change Password");
+                  setIsBooking(name === "Book Appointment");
                 }}
                 className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition duration-150"
               >
@@ -117,7 +150,7 @@ export default function PremiumCustomerProfile() {
         >
           <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
             <img
-              src="/custprofile.jpg"
+              src="/accprofile.jpg"
               alt="profile"
               className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
             />
@@ -177,7 +210,7 @@ export default function PremiumCustomerProfile() {
             )}
           </div>
 
-          {/* Password Change or Booking Section */}
+          {/* Booking or Password Section */}
           <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             {isChangingPassword ? (
               <>
@@ -219,18 +252,69 @@ export default function PremiumCustomerProfile() {
               </>
             ) : (
               <>
-                <h3 className="text-lg font-semibold mb-4">Book an Appointment</h3>
-                <form className="text-sm space-y-3">
+                <h3 className="text-lg font-semibold mb-4">Book Vehicle Service</h3>
+                <form onSubmit={handleBookingSubmit} className="text-sm space-y-3">
                   <input
+                    name="vehicleType"
+                    value={booking.vehicleType}
+                    onChange={handleBookingChange}
+                    type="text"
+                    placeholder="Vehicle Type (e.g., Car, Van)"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    required
+                  />
+                  <input
+                    name="vehicleModel"
+                    value={booking.vehicleModel}
+                    onChange={handleBookingChange}
+                    type="text"
+                    placeholder="Vehicle Model"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    required
+                  />
+                  <input
+                    name="registrationNumber"
+                    value={booking.registrationNumber}
+                    onChange={handleBookingChange}
+                    type="text"
+                    placeholder="Registration Number"
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    required
+                  />
+                  <select
+                    name="serviceType"
+                    value={booking.serviceType}
+                    onChange={handleBookingChange}
+                    className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    required
+                  >
+                    <option value="">Select Service Type</option>
+                    <option value="General Service">General Service</option>
+                    <option value="Oil Change">Oil Change</option>
+                    <option value="Engine Tune-up">Engine Tune-up</option>
+                    <option value="Full Inspection">Full Inspection</option>
+                  </select>
+                  <input
+                    name="preferredDate"
+                    value={booking.preferredDate}
+                    onChange={handleBookingChange}
                     type="date"
                     className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    required
                   />
                   <input
+                    name="preferredTime"
+                    value={booking.preferredTime}
+                    onChange={handleBookingChange}
                     type="time"
                     className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    required
                   />
                   <textarea
-                    placeholder="Service Details..."
+                    name="notes"
+                    value={booking.notes}
+                    onChange={handleBookingChange}
+                    placeholder="Additional Notes (Optional)"
                     className="w-full bg-gray-800 border border-gray-500 p-2 rounded text-white"
                   ></textarea>
                   <button
