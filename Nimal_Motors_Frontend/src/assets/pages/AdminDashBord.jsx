@@ -6,7 +6,7 @@ import ProfilePage from "./ProfilePage";
 const Sidebar = ({ setReport }) => {
   return (
     <aside className="w-64 h-screen bg-blue-600 text-white p-5">
-      <h2 className="text-xl font-bold mb-6">Admin Dashboard</h2>
+      <h2 className="text-xl font-bold mb-6">Admin  Dashboard</h2>
       <nav className="space-y-4">
         <a
           href="#"
