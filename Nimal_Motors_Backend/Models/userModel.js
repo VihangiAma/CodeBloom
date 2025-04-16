@@ -1,5 +1,3 @@
-// 
-
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -10,12 +8,15 @@ const userSchema = new mongoose.Schema({
     },
     fullName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true
     },
     phoneNumber: {
         type: String,
@@ -24,7 +25,8 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
     },
     password: {
         type: String,
@@ -33,11 +35,10 @@ const userSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        default: "Customer"
+        default: "Customer",
+        enum: ["Customer", "admin", "supervisor"] // optional: limit to roles
     }
-});
+}, { timestamps: true }); // adds createdAt and updatedAt
 
-// Prevent model overwrite error in dev (if using Next.js or hot reload)
-const Users = mongoose.models.User || mongoose.model('User', userSchema);
-
-export default Users;
+const User = mongoose.model("User", userSchema);
+export default User;

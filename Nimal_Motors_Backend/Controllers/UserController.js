@@ -1,78 +1,174 @@
-// 
-
-// Controllers/UserController.js (ES Module version)
-
-import bcrypt from 'bcrypt';
+import Users from '../Models/userModel.js';
 import jwt from 'jsonwebtoken';
-import userModel from '../Models/userModel.js';
+import bcrypt from 'bcrypt';
 
-// Register a new user
-export const postUser = async (req, res) => {
-    const { name, email, password, phone, vehicleDetails } = req.body;
+export async function postUser(req, res) {
+    try {
+        const user = req.body;
+        const password = req.body.password;
+        const saltRounds = 10;
+        const passwordHash = bcrypt.hashSync(password, saltRounds);
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        return res.status(400).json({ message: 'User already exists' });
+        user.password = passwordHash;
+
+        const newUser = new Users(user);
+        await newUser.save()
+            .then(() => {
+                res.status(201).json({
+                    message: "User created successfully",
+                    user: newUser
+                });
+            })
+            .catch((error) => {
+                res.status(500).json({
+                    message: "User creation failed",
+                    error: error.message || "Internal Server Error"
+                });
+            });
+    } catch (error) {
+        res.status(500).json({
+            message: "User creation failed",
+            error: error.message || "Internal Server Error"
+        });
     }
+}
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+export async function getAllUsers(req, res) {
+    try {
+        const users = await Users.find();
+        if (!users || users.length === 0) {
+            return res.status(404).json({
+                message: "No users found"
+            });
+        }
+        res.status(200).json({
+            message: "Users fetched successfully",
+            users
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching users",
+            error: error.message || 'Internal Server Error'
+        });
+    }
+}
 
-    const user = new User({
-        userId,username,fullname,
-        email,
-        password: hashedPassword,
-        phone,
-        vehicleDetails,
-        type: 'premium'
-    });
+export async function getUserById(req, res) {
+    try {
+        const { userId } = req.params;
+        const user = await Users.findOne({ userId });
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        res.status(200).json({
+            message: "User fetched successfully",
+            user
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching user",
+            error: error.message || 'Internal Server Error'
+        });
+    }
+}
 
-    await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
-};
+export async function deleteUserById(req, res) {  // Changed from deleteUserbyId to deleteUserById
+    try {
+        const { userId } = req.params;
+        const user = await Users.findOneAndDelete({ userId });
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        res.status(200).json({
+            message: "User deleted successfully",
+            user
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting user",
+            error: error.message || 'Internal Server Error'
+        });
+    }
+}
 
-// User login
-export const LogInUser = async (req, res) => {
+export async function putUserById(req, res) {
+    try {
+        const { userId } = req.params;
+        const updates = req.body;
+        const updatedUser = await Users.findOneAndUpdate({ userId }, updates, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        res.status(200).json({
+            message: "User updated successfully",
+            user: updatedUser
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating user",
+            error: error.message || 'Internal Server Error'
+        });
+    }
+}
+
+export async function LogInUser(req, res) {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+    try {
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+
+        const user = await Users.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isPasswordValid = bcrypt.compareSync(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user.userId,
+                email: user.email,
+                type: user.type
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+            message: "Login successful",
+            token,
+            user: {
+                id: user.userId,
+                email: user.email,
+                fullName: user.fullName,
+                type: user.type
+            }
+        });
+
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({
+            message: "Login failed",
+            error: error.message
+        });
     }
+}
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid credentials' });
-    }
+export function isAdminValid(req) {
+    return req.user && req.user.type === "admin";
+}
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
-};
-
-// Get all users
-export const getAllUsers = async (req, res) => {
-    const users = await User.find();
-    res.json(users);
-};
-
-// Get user by ID
-export const getUserById = async (req, res) => {
-    const user = await User.findById(req.params.userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-};
-
-// Delete user by ID
-export const deleteUserById = async (req, res) => {
-    await User.findByIdAndDelete(req.params.userId);
-    res.json({ message: "User deleted successfully" });
-};
-
-// Update user by ID
-export const putUserById = async (req, res) => {
-    const updated = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
-    res.json(updated);
-};
-
-// Helpers for roles
-export const isAdminValid = (req) => req.user?.role === 'admin';
-export const isCustomerValid = (req) => req.user?.role === 'premium';
+export function isCustomerValid(req) {
+    return req.user && req.user.type === "customer";
+}

@@ -3,8 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import userRouter from './Routers/userRoutes.js';
-//import UserRouter from "./Routers/UseRouter.js";
+import userRoutes from "./Routers/userRoutes.js";  // ✅ Correct import
 
 dotenv.config();
 
@@ -26,7 +25,7 @@ mongoose.connect(process.env.MONGO_URL)
     .catch(err => console.error("Database connection failed:", err));
 
 // Routes
-app.use("/api/user", userRouter);
+app.use("/api/user", userRoutes);  // ✅ Fixed: use userRoutes
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -38,4 +37,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-

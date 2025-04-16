@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');  
 const connectDB = require('./db');  
-const errorHandler = require('./utils/errorHandler');  
+//const errorHandler = require('./utils/errorHandler');  
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 
 // Error handling middleware
-app.use(errorHandler);
+//app.use(errorHandler);
 
 // Start the server
 const PORT = process.env.PORT || 5000;

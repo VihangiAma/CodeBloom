@@ -1,38 +1,21 @@
-// 
-
-
-
-// authMiddleware.js
 import jwt from 'jsonwebtoken';
-import User from '../Models/userModel.js'; // Make sure the path is correct and has .js
+import dotenv from 'dotenv';
 
-// Protect routes
-export const protect = async (req, res, next) => {
-    let token;
+dotenv.config();
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
+export function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ message: 'Not authorized, no token' });
+        return res.status(401).json({ message: "No token provided" });
     }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await User.findById(decoded.id).select('-password');
-        next();
-    } catch (error) {
-        return res.status(401).json({ message: 'Not authorized' });
-    }
-};
-
-// Authorize specific roles
-export const authorize = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({ message: 'Not authorized' });
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: "Invalid or expired token" });
         }
+        req.user = user;
         next();
-    };
-};
+    });
+}
