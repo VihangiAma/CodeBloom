@@ -1,5 +1,3 @@
-// 
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login/LoginPage';
@@ -16,109 +14,99 @@ import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfi
 
 // Protected Route Component
 const PrivateRoute = ({ children }) => {
-    const token = localStorage.getItem('token');
-    return token ? children : <Navigate to="/login" />;
+  const token = localStorage.getItem('token');
+  return token ? children : <Navigate to="/login" />;
 };
 
 function App() {
-    console.log("App rendered ✅"); // For debugging
-    
-    return (
-        <Router>
-            <div className="App">
-                <Routes>
-                    {/* Public Routes */}
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    
-                    {/* Protected Routes */}
-                    <Route
-                        path="/profile"
-                        element={
-                            <PrivateRoute>
-                                <ProfilePage />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin-dashboard"
-                        element={
-                            <PrivateRoute>
-                                <AdminDashboard />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin-dashboard"
-                        element={
-                            <PrivateRoute>
-                                <AdminDashboard />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                    path="/admin-profile"
-                    element={
-                        <PrivateRoute>
-                            <AdminProfile />
-                        </PrivateRoute>
-                    }
-                />
-                    <Route
-                        path="/mechanical-supervisor"
-                        element={
-                            <PrivateRoute>
-                                <MechanicalSupervisor />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/bodyshop-supervisor"
-                        element={
-                            <PrivateRoute>
-                                <BodyshopSupervisor />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/service-supervisor"
-                        element={
-                            <PrivateRoute>
-                                <ServiceSupervisor />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/electrical-supervisor"
-                        element={
-                            <PrivateRoute>
-                                <ElectricalSupervisor />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/accountant"
-                        element={
-                            <PrivateRoute>
-                                <AccountantProfile />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/premium-customer"
-                        element={
-                            <PrivateRoute>
-                                <PremiumCustomerProfile />
-                            </PrivateRoute>
-                        }
-                    />
-                    
-                    {/* Redirect root to login */}
-                    <Route path="/" element={<Navigate to="/login" />} />
-                </Routes>
-            </div>
-        </Router>
-    );
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <ProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <PrivateRoute>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-profile"
+            element={
+              <PrivateRoute>
+                <AdminProfile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/mechanical-supervisor"
+            element={
+              <PrivateRoute>
+                <MechanicalSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/bodyshop-supervisor"
+            element={
+              <PrivateRoute>
+                <BodyshopSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/service-supervisor"
+            element={
+              <PrivateRoute>
+                <ServiceSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/electrical-supervisor"
+            element={
+              <PrivateRoute>
+                <ElectricalSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/accountant"
+            element={
+              <PrivateRoute>
+                <AccountantProfile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/premium-customer"
+            element={
+              <PrivateRoute>
+                <PremiumCustomerProfile />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Redirect root to login */}
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
