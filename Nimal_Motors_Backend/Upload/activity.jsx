@@ -26,7 +26,7 @@ const RegistrationForm = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md p-6 rounded-2xl shadow-lg">
         <CardContent>
-          <h2 className="text-2xl font-bold mb-6 text-center">User Registration Form</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">User Registration</h2>
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <Input
               type="text"
