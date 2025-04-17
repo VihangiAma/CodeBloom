@@ -136,7 +136,7 @@ export default function Login() {
       // Redirect based on user role
       switch (user.type) {
         case "admin":
-          navigate("/admin-dashboard");
+          navigate("/admin-profile");
           break;
           // case "admin-profile":
           // navigate("/admin-profile");
