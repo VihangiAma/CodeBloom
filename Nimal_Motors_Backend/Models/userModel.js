@@ -35,8 +35,7 @@ const userSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        default: "Customer",
-        enum: ["Customer", "admin", "supervisor"] // optional: limit to roles
+        enum: ["premiumCustomer", "admin", "bosyshopsupervisor","electricalsupervisor","mechanicalsupervisor","servicesupervisor","accountant"] // optional: limit to roles
     }
 }, { timestamps: true }); // adds createdAt and updatedAt
 

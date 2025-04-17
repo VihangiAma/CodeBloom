@@ -17,10 +17,10 @@ export default function AccountantProfile() {
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState({
-    fullName: "Sahan Samarasinghe",
-    mobile: "077 998 8776",
-    email: "sahan.samarasinghe@gmail.com",
-    username: "sahan.samarasinghe",
+    fullName: "Tharindu Silva",
+    mobile: "0781122334",
+    email: "tharindu.silva@gmail.com",
+    username: "tharindu.silva",
     location: "Colombo, Sri Lanka",
   });
 

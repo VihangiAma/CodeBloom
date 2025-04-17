@@ -19,9 +19,9 @@ export default function PremiumCustomerProfile() {
   const [isBooking, setIsBooking] = useState(true); // default shows booking form
 
   const [profile, setProfile] = useState({
-    fullName: "Sahan Samarasinghe",
-    mobile: "0779988776",
-    email: "sahan.samarasinghe@gmail.com",
+    fullName: "Sunimali Perera",
+    mobile: "07823623584",
+    email: "Sunimaliperera@gmail.com",
     username: "sahan.samarasinghe",
     location: "Galle, Sri Lanka",
   });
