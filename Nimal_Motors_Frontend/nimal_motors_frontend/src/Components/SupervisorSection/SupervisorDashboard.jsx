@@ -38,7 +38,7 @@ function Sidebar() {
           <span>📅 Appointment</span>
         </a> */}
         <Link to="/appointments" className="block p-2 hover:bg-gray-100 rounded">
-  📅  Manage Appointments
+  📅 Appointments
         </Link>
       </nav>
     </aside>
