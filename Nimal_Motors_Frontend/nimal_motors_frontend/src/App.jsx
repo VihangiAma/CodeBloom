@@ -8,6 +8,8 @@ import SupervisorProfile from "./Components/SupervisorSection/SupervisorProfile"
 //import UpdateForm from "./Components/SupervisorSection/UpdateForm";
 import BookAppointment from "./Components/CustomerSection/BookAppoinment";
 import AppointmentDashboard from "./Components/SupervisorSection/AppointmentDashboard"; // Import AppointmentDashboard
+import ProgressPage from "./Components/SupervisorSection/ProgressPage"; // Import ProgressPage
+import ReportPage from "./Components/SupervisorSection/ReportPage"; // Import ReportPage
 
 
 const App = () => {
@@ -23,6 +25,9 @@ const App = () => {
         <Route path="/supervisor-dashboard" element={<SupervisorDashboard />} />
         <Route path="/book-appointment" element={<BookAppointment />} />
         <Route path="/appointments" element={<AppointmentDashboard />} /> 
+        <Route path="/progress" element={<ProgressPage />} />
+        <Route path="/report" element={<ReportPage />} />
+        
        
       </Routes>
     </Router>

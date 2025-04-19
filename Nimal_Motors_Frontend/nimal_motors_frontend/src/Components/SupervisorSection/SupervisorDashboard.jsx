@@ -8,7 +8,6 @@ import logo from "../../assets/logo.jpg"; // Adjust the path as necessary
 function Sidebar() {
   return (
     <aside className="w-64 h-screen bg-blue-600 text-white p-5">
-     
       <img src={logo} alt="Logo" className="w-24 h-24 rounded-full mb-4" />
       <h1 className="text-xl font-bold mb-6">Nimal Motors</h1>
       <h3 className="text-xl font-bold mb-6">Supervisor Dashboard</h3>
@@ -19,17 +18,34 @@ function Sidebar() {
         >
           <span>📋 Tasks</span>
         </a>
-        <a
+        {/* <a
           href="#"
           className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
         >
           <span>🔄 Progress</span>
-        </a>
-        <a
+        </a> */}
+        <Link
+          to="/supervisor/progress"
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
+          <span>🔄 Progress</span>
+        </Link>
+        {/* <a
           href="#"
           className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
         >
           <span>📊 Reports</span>
+        </a> */}
+        <a
+          href="#"
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+        >
+          <Link
+            to="/supervisor/report"
+            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
+          >
+            <span>📋 Report</span>
+          </Link>
         </a>
         {/* <a
           href="#"
@@ -37,14 +53,16 @@ function Sidebar() {
         >
           <span>📅 Appointment</span>
         </a> */}
-        <Link to="/appointments" className="block p-2 hover:bg-gray-100 rounded">
-  📅 Appointments
+        <Link
+          to="/appointments"
+          className="block p-2 hover:bg-gray-100 rounded"
+        >
+          📅 Appointments
         </Link>
       </nav>
     </aside>
   );
 }
-
 
 // Header Component
 const Header = () => {
@@ -108,15 +126,16 @@ const TaskTable = () => {
       try {
         // Send DELETE request to backend
         await axios.delete(`http://localhost:5001/api/service/${serviceID}`);
-  
+
         // Remove the task from frontend state only after successful deletion
-        setTasks((prevTasks) => prevTasks.filter((task) => task.serviceID !== serviceID));
+        setTasks((prevTasks) =>
+          prevTasks.filter((task) => task.serviceID !== serviceID)
+        );
       } catch (error) {
         console.error("Error deleting service:", error);
       }
     }
   };
-  
 
   // const openUpdateForm = (task) => {
   //   setSelectedTask(task);
@@ -344,7 +363,7 @@ const SupervisorDashboard = () => {
       <div className="flex-1 flex flex-col">
         <Header section={section} />
         {/* <NotificationBar /> */}
-        
+
         <TaskTable />
       </div>
     </div>
