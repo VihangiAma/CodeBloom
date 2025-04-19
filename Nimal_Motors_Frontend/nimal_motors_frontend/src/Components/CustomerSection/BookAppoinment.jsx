@@ -25,7 +25,7 @@ const BookAppointment = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/appointments", formData); // adjust URL if needed
+      await axios.post("http://localhost:5001/api/appointments", formData); // adjust URL if needed
       setSuccessMessage("Appointment booked successfully!");
       setErrorMessage("");
       setFormData({
