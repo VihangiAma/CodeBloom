@@ -6,7 +6,8 @@ import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginF
 import SupervisorDashboard from "./Components/SupervisorSection/SupervisorDashboard";
 import SupervisorProfile from "./Components/SupervisorSection/SupervisorProfile"; // Import SupervisorProfile
 //import UpdateForm from "./Components/SupervisorSection/UpdateForm";
-
+import BookAppointment from "./Components/CustomerSection/BookAppoinment";
+import AppointmentDashboard from "./Components/SupervisorSection/AppointmentDashboard"; // Import AppointmentDashboard
 
 
 const App = () => {
@@ -20,6 +21,8 @@ const App = () => {
         <Route path="/dashboard" element={isAuthenticated() ? <SupervisorDashboard /> : <Navigate to="/login" />} />
         <Route path="/profile" element={isAuthenticated() ? <SupervisorProfile /> : <Navigate to="/login" />} /> {/* Added Route */}
         <Route path="/supervisor-dashboard" element={<SupervisorDashboard />} />
+        <Route path="/book-appointment" element={<BookAppointment />} />
+        <Route path="/appointments" element={<AppointmentDashboard />} /> 
        
       </Routes>
     </Router>

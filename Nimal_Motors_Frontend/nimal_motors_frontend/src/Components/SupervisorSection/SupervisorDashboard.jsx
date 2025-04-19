@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Route, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-//import NotificationBar from "./Notification";
+import { Link } from "react-router-dom";
 import logo from "../../assets/logo.jpg"; // Adjust the path as necessary
 
 // Sidebar Component
@@ -31,16 +31,20 @@ function Sidebar() {
         >
           <span>📊 Reports</span>
         </a>
-        <a
+        {/* <a
           href="#"
           className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500"
         >
           <span>📅 Appointment</span>
-        </a>
+        </a> */}
+        <Link to="/appointments" className="block p-2 hover:bg-gray-100 rounded">
+  📅  Appointments
+        </Link>
       </nav>
     </aside>
   );
 }
+
 
 // Header Component
 const Header = () => {

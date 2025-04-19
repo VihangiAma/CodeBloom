@@ -1,45 +1,85 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const AppointmentTable = () => {
+const AppointmentDashboard = () => {
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Fetch appointments from the database
+  const fetchAppointments = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/appointments");
+      setAppointments(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to fetch appointments.");
+      setLoading(false);
+    }
+  };
+
+  const deleteAppointment = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this appointment?")) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/appointments/${id}`);
+      setAppointments(appointments.filter(app => app._id !== id));
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to delete appointment.");
+    }
+  };
+
   useEffect(() => {
-    fetch("http://localhost:5001/api/appointments")  // Change this URL to your API endpoint
-      .then((res) => res.json())
-      .then((data) => setAppointments(data))
-      .catch((error) => console.error("Error fetching appointments:", error));
+    fetchAppointments();
   }, []);
 
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Appointment Details</h2>
-      <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-3 text-left">Appointment ID</th>
-            <th className="p-3 text-left">Customer Name</th>
-            <th className="p-3 text-left">Vehicle ID</th>
-            <th className="p-3 text-left">Date</th>
-            <th className="p-3 text-left">Time</th>
-            <th className="p-3 text-left">Status</th>
+    <div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
+      <h2 className="text-2xl font-bold mb-6 text-center">Appointments Dashboard</h2>
+
+      {errorMessage && <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{errorMessage}</div>}
+
+      <table className="min-w-full table-auto">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="px-4 py-2">Customer</th>
+            <th className="px-4 py-2">Phone</th>
+            <th className="px-4 py-2">Vehicle</th>
+            <th className="px-4 py-2">Date</th>
+            <th className="px-4 py-2">Time</th>
+            <th className="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           {appointments.map((appointment) => (
-            <tr key={appointment.id} className="border-b hover:bg-gray-100">
-              <td className="p-3">{appointment.id}</td>
-              <td className="p-3">{appointment.customerName}</td>
-              <td className="p-3">{appointment.vehicleId}</td>
-              <td className="p-3">{new Date(appointment.date).toLocaleDateString()}</td>
-              <td className="p-3">{appointment.time}</td>
-              <td className="p-3 text-blue-600">{appointment.status}</td>
+            <tr key={appointment._id} className="text-center border-b">
+              <td className="px-4 py-2">{appointment.customerName}</td>
+              <td className="px-4 py-2">{appointment.phone}</td>
+              <td className="px-4 py-2">{appointment.vehicleDetails}</td>
+              <td className="px-4 py-2">{new Date(appointment.date).toLocaleDateString()}</td>
+              <td className="px-4 py-2">{appointment.time}</td>
+              <td className="px-4 py-2">
+                <button
+                  onClick={() => deleteAppointment(appointment._id)}
+                  className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+                {/* Update button can go here if you want to edit */}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {appointments.length === 0 && (
+        <div className="text-center mt-4 text-gray-600">No appointments found.</div>
+      )}
     </div>
   );
 };
 
-export default AppointmentTable;
+export default AppointmentDashboard;
