@@ -21,21 +21,11 @@ export async function getAppointments(req, res) {
   }
 }
 
-// Update appointment (for status update)
+// Update appointment status (Approve or Reject)
 export async function updateAppointment(req, res) {
   try {
-    const appointment = await Appointment.findById(req.params.id);
-
-    if (!appointment) {
-      return res.status(404).json({ error: "Appointment not found." });
-    }
-
-    if (req.body.status) {
-      appointment.status = req.body.status;
-    }
-
-    await appointment.save();
-    res.json(appointment);
+    const appointment = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.status(200).json(appointment);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -45,7 +35,7 @@ export async function updateAppointment(req, res) {
 export async function deleteAppointment(req, res) {
   try {
     await Appointment.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Appointment deleted' });
+    res.status(200).json({ message: 'Appointment deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
