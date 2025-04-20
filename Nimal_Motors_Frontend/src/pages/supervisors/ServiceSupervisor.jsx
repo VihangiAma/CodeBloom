@@ -17,11 +17,11 @@ export default function ServiceSupervisorProfile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    fullName: "Chaminda Jayawardena",
-    mobile: "0781122334",
-    email: "chaminda.jayawardena@gmail.com",
-    username: "chaminda.jayawardena",
-    location: "Colombo, Sri Lanka",
+    fullName: "Dilani Rajapaksha",
+    mobile: "0726655443",
+    email: "dilani.rajapaksha@gmail.com",
+    username: "dilani.rajapaksha",
+    location: "Homagama, Sri Lanka",
   });
 
   const [systemSettings] = useState({

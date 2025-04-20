@@ -17,11 +17,11 @@ export default function MechanicalSupervisorProfile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    fullName: "Nuwan Silva",
-    mobile: "0771234567",
-    email: "nuwan.silva@example.com",
-    username: "nuwansilva",
-    location: "Galle, Sri Lanka",
+    fullName: "Chamath Gunasekara",
+    mobile: "0745566778",
+    email: "chamath.gunasekara@gmail.com",
+    username: "chamath.gunasekara",
+    location: "Aluthgama, Sri Lanka",
   });
 
   const [systemSettings] = useState({

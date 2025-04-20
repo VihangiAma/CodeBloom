@@ -17,10 +17,10 @@ export default function PremiumCustomerProfile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    fullName: "Dinesh Perera",
-    mobile: "0771122334",
-    email: "dinesh.perera@gmail.com",
-    username: "dinesh.perera",
+    fullName: "Ishara Wickramasinghe",
+    mobile: "0753344556",
+    email: "ishara.wickramasinghe@gmail.com",
+    username: "ishara.wickramasinghe",
     location: "Kandy, Sri Lanka",
   });
 

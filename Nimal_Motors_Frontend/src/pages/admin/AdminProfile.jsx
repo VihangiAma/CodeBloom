@@ -17,11 +17,11 @@ export default function AdminProfile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    fullName: "Sahan Samarasinghe",
-    mobile: "0779988776",
-    email: "sahan.samarasinghe@gmail.com",
-    username: "sahan.samarasinghe",
-    location: "Colombo, Sri Lanka",
+    fullName: "Lakshan Jayawardena",
+    mobile: "0719876543",
+    email: "lakshan.jayawardena@gmail.com",
+    username: "lakshan.jayawardena",
+    location: "Galle, Sri Lanka",
   });
 
   const handleChange = (e) => {
