@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 const AppointmentDashboard = () => {
   const [appointments, setAppointments] = useState([]);
@@ -18,25 +19,67 @@ const AppointmentDashboard = () => {
     }
   };
 
+  // const approveAppointment = async (id) => {
+  //   try {
+  //     await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Approved" });
+  //     fetchAppointments();
+  //   } catch (error) {
+  //     console.error(error);
+  //     setErrorMessage("Failed to approve appointment.");
+  //   }
+  // };
+
+  // const rejectAppointment = async (id) => {
+  //   try {
+  //     await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Rejected" });
+  //     fetchAppointments();
+  //   } catch (error) {
+  //     console.error(error);
+  //     setErrorMessage("Failed to reject appointment.");
+  //   }
+  // };
   const approveAppointment = async (id) => {
     try {
       await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Approved" });
       fetchAppointments();
+      Swal.fire({
+        icon: 'success',
+        title: 'Appointment Approved!',
+        showConfirmButton: false,
+        timer: 1500
+      });
     } catch (error) {
       console.error(error);
       setErrorMessage("Failed to approve appointment.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Approval Failed!',
+        text: 'Something went wrong.',
+      });
     }
   };
-
+  
   const rejectAppointment = async (id) => {
     try {
       await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Rejected" });
       fetchAppointments();
+      Swal.fire({
+        icon: 'success',
+        title: 'Appointment Rejected!',
+        showConfirmButton: false,
+        timer: 1500
+      });
     } catch (error) {
       console.error(error);
       setErrorMessage("Failed to reject appointment.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Rejection Failed!',
+        text: 'Something went wrong.',
+      });
     }
   };
+  
 
   useEffect(() => {
     fetchAppointments();
