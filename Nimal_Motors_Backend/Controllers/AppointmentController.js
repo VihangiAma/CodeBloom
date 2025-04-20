@@ -3,6 +3,15 @@ import Appointment from "../Models/Appointment.js";
 // Create appointment
 export async function createAppointment(req, res) {
   try {
+    const { date, time } = req.body;
+
+    // Check if there's already a booking at the same date and time
+    const existingAppointment = await Appointment.findOne({ date, time });
+    if (existingAppointment) {
+      return res.status(400).json({ error: "This time slot is already booked. Please choose another." });
+    }
+
+    // If no existing appointment, proceed to save
     const appointment = new Appointment(req.body);
     await appointment.save();
     res.status(201).json(appointment);
