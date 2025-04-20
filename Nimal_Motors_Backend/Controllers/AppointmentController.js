@@ -12,10 +12,10 @@ export function createAppointment (req, res) {
 }
 
 // Get all appointments
-export function getAppointments (req, res) {
+export async function getAppointments (req, res) {
   try {
-    const appointments = ppointment.find();
-    res.json(appointments);
+    const appointments = await Appointment.find();
+    res.status(200).json(appointments);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

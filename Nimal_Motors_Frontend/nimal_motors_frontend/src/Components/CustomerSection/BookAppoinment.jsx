@@ -6,13 +6,16 @@ const BookAppointment = () => {
     customerName: "",
     address: "",
     phone: "",
-    vehicleDetails: "",
+    vehicleID: "",
+    vehicleType: "",
     date: "",
     time: ""
   });
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const timeSlots = ["8.00 am-10.00 am", "10.00 am-12.00 pm", "1.00 pm-3.00 pm", "3.00 pm-5.00 pm"];
 
   const handleChange = (e) => {
     setFormData({
@@ -21,18 +24,62 @@ const BookAppointment = () => {
     });
   };
 
+  const validateForm = () => {
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    const vehicleIdRegex = /^[A-Z]{2,3}-\d{3,4}$/i;
+
+    if (!nameRegex.test(formData.customerName.trim())) {
+      setErrorMessage("Invalid Customer Name. Only letters and spaces allowed.");
+      return false;
+    }
+    if (formData.address.trim().length < 5) {
+      setErrorMessage("Address must be at least 5 characters.");
+      return false;
+    }
+    if (!phoneRegex.test(formData.phone.trim())) {
+      setErrorMessage("Phone must be a valid 10-digit number.");
+      return false;
+    }
+    if (!vehicleIdRegex.test(formData.vehicleID.trim())) {
+      setErrorMessage("Vehicle ID must be like ABC-1234.");
+      return false;
+    }
+    if (formData.vehicleType.trim().length < 2) {
+      setErrorMessage("Vehicle Type must be specified.");
+      return false;
+    }
+    if (!formData.date) {
+      setErrorMessage("Date is required.");
+      return false;
+    }
+    if (!formData.time) {
+      setErrorMessage("Time slot must be selected.");
+      return false;
+    }
+
+    // If all pass
+    setErrorMessage("");
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) {
+      return; // Don't submit if validation fails
+    }
+
     try {
-      await axios.post("http://localhost:5001/api/appointments", formData); // adjust URL if needed
+      await axios.post("http://localhost:5001/api/appointments", formData);
       setSuccessMessage("Appointment booked successfully!");
       setErrorMessage("");
       setFormData({
         customerName: "",
         address: "",
         phone: "",
-        vehicleDetails: "",
+        vehicleID: "",
+        vehicleType: "",
         date: "",
         time: ""
       });
@@ -72,7 +119,7 @@ const BookAppointment = () => {
         <input
           type="text"
           name="phone"
-          placeholder="Phone"
+          placeholder="Phone (10 digits)"
           value={formData.phone}
           onChange={handleChange}
           required
@@ -80,9 +127,18 @@ const BookAppointment = () => {
         />
         <input
           type="text"
-          name="vehicleDetails"
-          placeholder="Vehicle Details"
-          value={formData.vehicleDetails}
+          name="vehicleID"
+          placeholder="Vehicle ID (ABC-1234)"
+          value={formData.vehicleID}
+          onChange={handleChange}
+          required
+          className="w-full border p-2 rounded"
+        />
+        <input
+          type="text"
+          name="vehicleType"
+          placeholder="Vehicle Type (e.g., Sedan, SUV)"
+          value={formData.vehicleType}
           onChange={handleChange}
           required
           className="w-full border p-2 rounded"
@@ -95,14 +151,22 @@ const BookAppointment = () => {
           required
           className="w-full border p-2 rounded"
         />
-        <input
-          type="time"
+
+        {/* Time Slot Dropdown */}
+        <select
           name="time"
           value={formData.time}
           onChange={handleChange}
           required
           className="w-full border p-2 rounded"
-        />
+        >
+          <option value="" disabled>Select Time Slot</option>
+          {timeSlots.map((slot) => (
+            <option key={slot} value={slot}>
+              {slot}
+            </option>
+          ))}
+        </select>
 
         <button
           type="submit"
