@@ -1,4 +1,5 @@
 import ServiceSection from "../Models/ServiceSection.js";
+import mongoose from "mongoose";
 
 // Create Service
 export async function createService(req, res) {
@@ -11,19 +12,29 @@ export async function createService(req, res) {
   }
 }
 
-// Get All Services
+// Get All Services (with optional month filtering)
 export async function getAllServices(req, res) {
   try {
-    const services = await ServiceSection.find();
+    const { month } = req.query;  // Get 'month' from query parameters
+    let services;
+    
+    if (month) {
+      const start = new Date(month + "-01"); // Get the start of the month
+      const end = new Date(month + "-31");   // Get the end of the month
+      services = await ServiceSection.find({
+        serviceDate: { $gte: start, $lt: end }  // Find services in that month
+      });
+    } else {
+      services = await ServiceSection.find();  // Get all services if no month filter
+    }
+
     res.status(200).json(services);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
 
-import mongoose from "mongoose";
-
-// Get Service by ID or Custom serviceId
+// Get Service by ID or Custom serviceID
 export async function getServiceById(req, res) {
   try {
     const { id } = req.params;
@@ -33,7 +44,7 @@ export async function getServiceById(req, res) {
       // If it's a valid ObjectId, search by _id
       service = await ServiceSection.findById(id);
     } else {
-      // If it's not an ObjectId, search by serviceId field
+      // If it's not an ObjectId, search by serviceID field
       service = await ServiceSection.findOne({ serviceID: id });
     }
 
@@ -47,30 +58,14 @@ export async function getServiceById(req, res) {
   }
 }
 
-
 // Update Service Status
-// export async function updateService(req, res) {
-//   try {
-//     const { id } = req.params;
-//     const updatedService = await ServiceSection.findByIdAndUpdate(id, req.body, { new: true });
-
-//     if (!updatedService) {
-//       return res.status(404).json({ error: "Service not found" });
-//     }
-
-//     res.status(200).json({ message: "Service Updated", data: updatedService });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// }
-
 export async function updateService(req, res) {
   try {
-    const { serviceId } = req.params; // Change 'id' to 'serviceId'
+    const { serviceID } = req.params; // Change 'id' to 'serviceID'
 
-    // Find and update the service using serviceId
+    // Find and update the service using serviceID
     const updatedService = await ServiceSection.findOneAndUpdate(
-      { serviceId: serviceId },  // Find by serviceId instead of _id
+      { serviceID: serviceID },  // Find by serviceID instead of _id
       req.body, 
       { new: true } // Return the updated document
     );
@@ -85,14 +80,13 @@ export async function updateService(req, res) {
   }
 }
 
-
 // Delete Service
 export async function deleteService(req, res) {
   try {
-    const { serviceId } = req.params; // Change 'id' to 'serviceId'
+    const { serviceID } = req.params; // Change 'id' to 'serviceID'
 
-    // Find and delete the service using serviceId
-    const deletedService = await ServiceSection.findOneAndDelete({ serviceId: serviceId });
+    // Find and delete the service using serviceID
+    const deletedService = await ServiceSection.findOneAndDelete({ serviceID: serviceID });
 
     if (!deletedService) {
       return res.status(404).json({ error: "Service not found" });
@@ -103,4 +97,3 @@ export async function deleteService(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
-
