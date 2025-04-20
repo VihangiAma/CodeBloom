@@ -1,4 +1,6 @@
 // Create Booking
+
+
 export function createBooking(req, res) {
     try {
       const newBooking = new WashingSection(req.body);

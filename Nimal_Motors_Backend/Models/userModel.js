@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const userSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -7,12 +8,15 @@ const userSchema = new mongoose.Schema({
     },
     fullName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true
     },
     phoneNumber: {
         type: String,
@@ -21,18 +25,19 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
     },
     password: {
         type: String,
         required: true
     },
-    type:{
+    type: {
         type: String,
         required: true,
-        default:"Customer"
+        enum: ["premiumCustomer", "admin", "bosyshopsupervisor","electricalsupervisor","mechanicalsupervisor","servicesupervisor","accountant"] // optional: limit to roles
     }
-    
-});
-const Users = mongoose.model('User', userSchema);
-export default Users;
+}, { timestamps: true }); // adds createdAt and updatedAt
+
+const User = mongoose.model("User", userSchema);
+export default User;

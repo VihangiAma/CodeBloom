@@ -1,119 +1,43 @@
-import bodyParser from "body-parser"
-import express from "express"
-import { mongoose } from "mongoose";
-import dotenv from 'dotenv'
+import bodyParser from "body-parser";
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
+import userRoutes from "./Routers/userRoutes.js";  // ✅ Correct import
 
-import UserRouter from "./Routers/UseRouter.js";
-import jwt from 'jsonwebtoken';
-import userRRouter from "./Routers/userreport.js";
-import StockRoter from "./Routers/Stock.js";
-import SalesRouter from "./Routers/SalesReport.js";
+dotenv.config();
 
-dotenv.config()
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-const app = express()
-app.use(bodyParser.json())
+// CORS configuration
 
+const corsOptions = {
+  origin: 'http://localhost:5173', // 👈 Make sure this matches EXACTLY
+  credentials: true,               // 👈 If you're using cookies or tokens
+};
 
-//Database coonection String
-const connectionString =process.env.MONGO_URL
-
-//Database Connection
-mongoose.connect(connectionString).then(
-    ()=>{
-        console.log("Database is conect")
-    }
-).catch(
-    ()=>{
-        console.log("database is connection failde")
-    }
-)
+app.use(cors(corsOptions));
 
 
+// Middleware
+app.use(bodyParser.json());
 
-app.use("/api/user",UserRouter)
-//create a api request eka hadanne methanin(get/ post/delete)
-/*app.use("/api/",)*/
+// Database Connection
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log("Database connected successfully"))
+    .catch(err => console.error("Database connection failed:", err));
 
+// Routes
+app.use("/api/user", userRoutes);  // ✅ Fixed: use userRoutes
 
-
-//create a api request eka hadanne methanin(get/ post/delete)
-app.use("/api/Report",userRRouter);
-app.use("/api/StockReter",StockRoter);
-app.use("/api/SalesReports",SalesRouter)
-
-
-
-/*app.use((req,res,next)=>{
-    const token = req.header("Authorization")?.replace
-    
-    ("Bearer", "")
-  if(token != null){
-  jwt.verify(token, "secret", (err, decoded) => {
-    if (decoded != null){
-    req.user= decoded
-    console.log(decoded)
-    next()
-}
-    }
-    }
-  })*/
-
-//MIDDLEWEAR
-
-app.use((req, res, next) => {
-    const token = req.header("Authorization")?.replace("Bearer ", ""); // Corrected replace syntax
-
-    if (token) {
-        jwt.verify(token, "secret", (err, decoded) => {
-            if (err) {
-                return res.status(401).json({ message: "Invalid or expired token" }); // Handle token error
-            }
-            
-            if (decoded) {
-                req.user = decoded; // Attach decoded user info to request
-                console.log(decoded); // Log decoded user information (optional)
-                next(); // Proceed to the next middleware
-            }
-        });
-    } else {
-        return res.status(403).json({ message: "Authorization token required" }); // Token is missing
-    }
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something went wrong!" });
 });
-    
 
-
-app.listen(5000,(req,res)=>{
-    console.log("sever is running port 5000")
-})
-
-
-/*mongoose.connect(connectionString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("Database is connected");
-}).catch(() => {
-    console.log("Database connection failed");
-});*/
-
-
-app.use("/api/service" , serviceRouter);
-app.use("/api/repair" , repairRouter);
-app.use("/api/appointments" ,appointmentRouter);
-
-
-//create a api request eka hadanne methanin(get/ post/delete)
-/*app.use("/api/",)*/
-
-
-// Stock Routes
-app.use("/api/stock", stockRoutes);
-//supplier routes
-app.use("/api/supplier",supplierRoutes);
-
+// Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-
