@@ -7,7 +7,12 @@ const appointmentSchema = new mongoose.Schema({
   vehicleID: { type: String, required: true },
   vehicleType: { type: String, required: true },
   date: { type: Date, required: true },
-  time: { type: String, required: true }
+  time: { type: String, required: true },
+  status: {
+    type: String,
+    enum: ['Pending', 'Approved', 'Rejected'],
+    default: 'Pending'
+  }
 }, { timestamps: true });
 
 export default mongoose.model('Appointment', appointmentSchema);

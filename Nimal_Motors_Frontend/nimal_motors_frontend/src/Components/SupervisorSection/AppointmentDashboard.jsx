@@ -18,15 +18,23 @@ const AppointmentDashboard = () => {
     }
   };
 
-  const deleteAppointment = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this appointment?")) return;
-
+  const approveAppointment = async (id) => {
     try {
-      await axios.delete("http://localhost:5001/api/appointments/${id}");
-      setAppointments(appointments.filter((app) => app._id !== id));
+      await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Approved" });
+      fetchAppointments();
     } catch (error) {
       console.error(error);
-      setErrorMessage("Failed to delete appointment.");
+      setErrorMessage("Failed to approve appointment.");
+    }
+  };
+
+  const rejectAppointment = async (id) => {
+    try {
+      await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Rejected" });
+      fetchAppointments();
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to reject appointment.");
     }
   };
 
@@ -36,6 +44,10 @@ const AppointmentDashboard = () => {
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
 
+  const pendingAppointments = appointments.filter(app => app.status === "Pending");
+  const approvedAppointments = appointments.filter(app => app.status === "Approved");
+  const rejectedAppointments = appointments.filter(app => app.status === "Rejected");
+
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
       <h2 className="text-3xl font-bold mb-6 text-center">Appointments Dashboard</h2>
@@ -44,7 +56,20 @@ const AppointmentDashboard = () => {
         <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{errorMessage}</div>
       )}
 
-      <table className="min-w-full table-auto border">
+      <Section title="Pending Appointments" appointments={pendingAppointments} onApprove={approveAppointment} onReject={rejectAppointment} />
+      <Section title="Approved Appointments" appointments={approvedAppointments} />
+      <Section title="Rejected Appointments" appointments={rejectedAppointments} />
+    </div>
+  );
+};
+
+const Section = ({ title, appointments, onApprove, onReject }) => (
+  <div className="mb-10">
+    <h3 className="text-2xl font-semibold mb-4">{title}</h3>
+    {appointments.length === 0 ? (
+      <div className="text-center text-gray-600">No appointments found.</div>
+    ) : (
+      <table className="min-w-full table-auto border mb-6">
         <thead>
           <tr className="bg-gray-200">
             <th className="px-4 py-2 border">Customer</th>
@@ -53,7 +78,7 @@ const AppointmentDashboard = () => {
             <th className="px-4 py-2 border">Vehicle Type</th>
             <th className="px-4 py-2 border">Date</th>
             <th className="px-4 py-2 border">Time Slot</th>
-            <th className="px-4 py-2 border">Actions</th>
+            {onApprove && onReject ? <th className="px-4 py-2 border">Actions</th> : <th className="px-4 py-2 border">Status</th>}
           </tr>
         </thead>
         <tbody>
@@ -65,24 +90,30 @@ const AppointmentDashboard = () => {
               <td className="px-4 py-2 border">{appointment.vehicleType}</td>
               <td className="px-4 py-2 border">{new Date(appointment.date).toLocaleDateString()}</td>
               <td className="px-4 py-2 border">{appointment.time}</td>
-              <td className="px-4 py-2 border">
-                <button
-                  onClick={() => deleteAppointment(appointment._id)}
-                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                >
-                  Delete
-                </button>
-              </td>
+              {onApprove && onReject ? (
+                <td className="px-4 py-2 border">
+                  <button
+                    onClick={() => onApprove(appointment._id)}
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => onReject(appointment._id)}
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  >
+                    Reject
+                  </button>
+                </td>
+              ) : (
+                <td className="px-4 py-2 border">{appointment.status}</td>
+              )}
             </tr>
           ))}
         </tbody>
       </table>
-
-      {appointments.length === 0 && (
-        <div className="text-center mt-6 text-gray-600">No appointments found.</div>
-      )}
-    </div>
-  );
-};
+    )}
+  </div>
+);
 
 export default AppointmentDashboard;

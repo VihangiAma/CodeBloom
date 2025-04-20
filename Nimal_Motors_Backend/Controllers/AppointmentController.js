@@ -1,7 +1,7 @@
 import Appointment from "../Models/Appointment.js";
 
 // Create appointment
-export function createAppointment (req, res) {
+export async function createAppointment (req, res) {
   try {
     const appointment = new Appointment(req.body);
     appointment.save();
@@ -22,7 +22,7 @@ export async function getAppointments (req, res) {
 }
 
 // Update appointment
-export function updateAppointment (req, res) {
+export async function updateAppointment (req, res) {
   try {
     const appointment = Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(appointment);
@@ -32,7 +32,7 @@ export function updateAppointment (req, res) {
 }
 
 // Delete appointment
-export function deleteAppointment (req, res){
+export async function deleteAppointment (req, res){
   try {
     Appointment.findByIdAndDelete(req.params.id);
     res.json({ message: 'Appointment deleted' });
