@@ -1,10 +1,10 @@
 import Appointment from "../Models/Appointment.js";
 
 // Create appointment
-export async function createAppointment (req, res) {
+export async function createAppointment(req, res) {
   try {
     const appointment = new Appointment(req.body);
-    appointment.save();
+    await appointment.save();
     res.status(201).json(appointment);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -12,7 +12,7 @@ export async function createAppointment (req, res) {
 }
 
 // Get all appointments
-export async function getAppointments (req, res) {
+export async function getAppointments(req, res) {
   try {
     const appointments = await Appointment.find();
     res.status(200).json(appointments);
@@ -21,10 +21,20 @@ export async function getAppointments (req, res) {
   }
 }
 
-// Update appointment
-export async function updateAppointment (req, res) {
+// Update appointment (for status update)
+export async function updateAppointment(req, res) {
   try {
-    const appointment = Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found." });
+    }
+
+    if (req.body.status) {
+      appointment.status = req.body.status;
+    }
+
+    await appointment.save();
     res.json(appointment);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -32,9 +42,9 @@ export async function updateAppointment (req, res) {
 }
 
 // Delete appointment
-export async function deleteAppointment (req, res){
+export async function deleteAppointment(req, res) {
   try {
-    Appointment.findByIdAndDelete(req.params.id);
+    await Appointment.findByIdAndDelete(req.params.id);
     res.json({ message: 'Appointment deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
