@@ -1,17 +1,15 @@
-
+import React, { useState } from "react";
 import SupervisorLayout from "./SupervisorLayout";
-
-
+import ServiceSupervisorDashboard from "../ServiceSupervisorDashboard";
 
 const ServiceDashboard = () => {
+  const [activePage, setActivePage] = useState("dashboard");
+
   return (
-    <SupervisorLayout section="Service">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">Welcome, Service Supervisor!</h2>
-      {/* Add mechanical-specific dashboard content here */}
+    <SupervisorLayout section="Service" activePage={activePage} setActivePage={setActivePage}>
+      <ServiceSupervisorDashboard setActivePage={setActivePage} />
     </SupervisorLayout>
   );
 };
-
-
 
 export default ServiceDashboard;

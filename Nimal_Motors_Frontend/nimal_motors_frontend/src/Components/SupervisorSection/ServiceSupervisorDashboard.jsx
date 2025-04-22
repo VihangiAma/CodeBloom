@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import SupervisorLayout from "./Supervisors/SupervisorLayout";
 import AppointmentDetails from "./Supervisors/AppointmentDetails";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
@@ -15,20 +14,24 @@ const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   );
 };
 
-const ServiceSupervisorDashboard = () => {
-  const [activePage, setActivePage] = useState("dashboard"); // Default to dashboard view
+const ServiceSupervisorDashboard = ({ setActivePage }) => {
+  const [localActivePage, setLocalActivePage] = useState("dashboard"); // Local control
 
   const renderContent = () => {
-    switch (activePage) {
+    switch (localActivePage) {
       case "appointments":
         return <AppointmentDetails />;
       case "progress":
         return (
-          <div className="text-gray-600 p-8 text-center text-xl">Progress page coming soon...</div>
+          <div className="text-gray-600 p-8 text-center text-xl">
+            Progress page coming soon...
+          </div>
         );
       case "report":
         return (
-          <div className="text-gray-600 p-8 text-center text-xl">Report page coming soon...</div>
+          <div className="text-gray-600 p-8 text-center text-xl">
+            Report page coming soon...
+          </div>
         );
       default:
         return (
@@ -38,32 +41,28 @@ const ServiceSupervisorDashboard = () => {
               description="Track service progress of vehicles."
               color="bg-blue-500"
               emoji="🔄"
-              onClick={() => setActivePage("progress")}
+              onClick={() => setLocalActivePage("progress")}
             />
             <DashboardCard
               title="Manage Appointments"
               description="View and manage customer bookings."
               color="bg-green-500"
               emoji="📅"
-              onClick={() => setActivePage("appointments")}
+              onClick={() => setLocalActivePage("appointments")}
             />
             <DashboardCard
               title="View Reports"
               description="Generate and review service reports."
               color="bg-purple-500"
               emoji="📋"
-              onClick={() => setActivePage("report")}
+              onClick={() => setLocalActivePage("report")}
             />
           </div>
         );
     }
   };
 
-  return (
-    <SupervisorLayout section="Service" activePage={activePage} setActivePage={setActivePage}>
-      {renderContent()}
-    </SupervisorLayout>
-  );
+  return renderContent();
 };
 
 export default ServiceSupervisorDashboard;

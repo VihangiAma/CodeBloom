@@ -7,7 +7,6 @@ import SupervisorProfile from "./Components/SupervisorSection/SupervisorProfile"
 
 
 import BookAppointment from "./Components/CustomerSection/BookAppoinment";
-import AppointmentDashboard from "./Components/SupervisorSection/Supervisors/AppointmentDetails"; // Importing the AppointmentDashboard component
 import ProgressPage from "./Components/SupervisorSection/ProgressPage";
 import ReportPage from "./Components/SupervisorSection/ReportPage";
 
@@ -19,7 +18,12 @@ import BodyShopDashboard from "./Components/SupervisorSection/Supervisors/BodySh
 import ServiceDashboard from "./Components/SupervisorSection/Supervisors/ServiceDashboard";
 
 import ServiceSupervisorDashboard from "./Components/SupervisorSection/ServiceSupervisorDashboard";
+import MechanicalSupervisorSection from "./Components/SupervisorSection/MechanicalSupervisorDashboard";
+import ElectricalSupervisorSection from "./Components/SupervisorSection/ElectriaclSupervisorDashboard";
+import BodyShopSupervisorSection from "./Components/SupervisorSection/BodyShopSupervisorDashboard";
+
 import AppointmentDetails from "./Components/SupervisorSection/Supervisors/AppointmentDetails";
+import AddServiceForm from "./Components/SupervisorSection/AddServiceForm";
 
 
 function App() {
@@ -42,6 +46,7 @@ function App() {
         <Route path="/appointments" element={<AppointmentDetails />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/report" element={<ReportPage />} />
+        <Route path="/add-service" element={<AddServiceForm />} />
 
         {/* Section Specific Dashboards */}
         <Route path="/supervisor/mechanical" element={<MechanicalDashboard />} />
@@ -50,6 +55,11 @@ function App() {
         <Route path="/supervisor/service" element={<ServiceDashboard />} />
 
         <Route path="/service-dashboard" element={<ServiceSupervisorDashboard />} />
+        <Route path="/mechanical-supervisor" element={<MechanicalSupervisorSection />} />
+        <Route path="/electrical-supervisor" element={<ElectricalSupervisorSection />} />
+        <Route path="/body-shop-supervisor" element={<BodyShopSupervisorSection />} />
+
+        {/* Fallback Route */}
 
       </Routes>
     </Router>

@@ -15,17 +15,17 @@ export async function createService(req, res) {
 // Get All Services (with optional month filtering)
 export async function getAllServices(req, res) {
   try {
-    const { month } = req.query;  // Get 'month' from query parameters
+    const { month } = req.query;
     let services;
     
     if (month) {
-      const start = new Date(month + "-01"); // Get the start of the month
-      const end = new Date(month + "-31");   // Get the end of the month
+      const start = new Date(month + "-01");
+      const end = new Date(month + "-31");
       services = await ServiceSection.find({
-        serviceDate: { $gte: start, $lt: end }  // Find services in that month
+        serviceDate: { $gte: start, $lt: end }
       });
     } else {
-      services = await ServiceSection.find();  // Get all services if no month filter
+      services = await ServiceSection.find();
     }
 
     res.status(200).json(services);
@@ -34,17 +34,15 @@ export async function getAllServices(req, res) {
   }
 }
 
-// Get Service by ID or Custom serviceID
+// Get Service by ID or serviceID
 export async function getServiceById(req, res) {
   try {
     const { id } = req.params;
     let service;
 
     if (mongoose.Types.ObjectId.isValid(id)) {
-      // If it's a valid ObjectId, search by _id
       service = await ServiceSection.findById(id);
     } else {
-      // If it's not an ObjectId, search by serviceID field
       service = await ServiceSection.findOne({ serviceID: id });
     }
 
@@ -58,16 +56,15 @@ export async function getServiceById(req, res) {
   }
 }
 
-// Update Service Status
+// Update Service
 export async function updateService(req, res) {
   try {
-    const { serviceID } = req.params; // Change 'id' to 'serviceID'
+    const { serviceID } = req.params;
 
-    // Find and update the service using serviceID
     const updatedService = await ServiceSection.findOneAndUpdate(
-      { serviceID: serviceID },  // Find by serviceID instead of _id
-      req.body, 
-      { new: true } // Return the updated document
+      { serviceID: serviceID },
+      req.body,
+      { new: true, runValidators: true }  // Important: runValidators will check 'maxlength'
     );
 
     if (!updatedService) {
@@ -83,9 +80,8 @@ export async function updateService(req, res) {
 // Delete Service
 export async function deleteService(req, res) {
   try {
-    const { serviceID } = req.params; // Change 'id' to 'serviceID'
+    const { serviceID } = req.params;
 
-    // Find and delete the service using serviceID
     const deletedService = await ServiceSection.findOneAndDelete({ serviceID: serviceID });
 
     if (!deletedService) {
