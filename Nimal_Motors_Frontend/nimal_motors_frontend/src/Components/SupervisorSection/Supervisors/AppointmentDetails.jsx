@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2"; // SweetAlert2 for confirmation popups
+import Swal from "sweetalert2";
 
-const AppointmentDashboard = () => {
+const AppointmentDetails= () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Fetch appointments from the server
   const fetchAppointments = async () => {
     try {
       const res = await axios.get("http://localhost:5001/api/appointments");
+      //console.log(res.data);  
       setAppointments(res.data);
       setLoading(false);
     } catch (error) {
@@ -20,7 +20,6 @@ const AppointmentDashboard = () => {
     }
   };
 
-  // Approve an appointment
   const approveAppointment = async (id) => {
     try {
       await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Approved" });
@@ -31,7 +30,6 @@ const AppointmentDashboard = () => {
     }
   };
 
-  // Reject an appointment
   const rejectAppointment = async (id) => {
     try {
       await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Rejected" });
@@ -42,7 +40,6 @@ const AppointmentDashboard = () => {
     }
   };
 
-  // Delete an appointment after confirmation
   const deleteAppointment = async (id) => {
     const confirmResult = await Swal.fire({
       title: 'Are you sure?',
@@ -57,19 +54,11 @@ const AppointmentDashboard = () => {
     if (confirmResult.isConfirmed) {
       try {
         await axios.delete(`http://localhost:5001/api/appointments/${id}`);
-        fetchAppointments(); // Refresh the list after deletion
-        Swal.fire(
-          'Deleted!',
-          'Appointment has been deleted.',
-          'success'
-        );
+        fetchAppointments();
+        Swal.fire('Deleted!', 'Appointment has been deleted.', 'success');
       } catch (error) {
         console.error(error);
-        Swal.fire(
-          'Failed!',
-          'Could not delete the appointment.',
-          'error'
-        );
+        Swal.fire('Failed!', 'Could not delete the appointment.', 'error');
       }
     }
   };
@@ -86,34 +75,19 @@ const AppointmentDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      <h2 className="text-3xl font-bold mb-6 text-center">Appointments Dashboard</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">Service Booking Details</h2>
 
       {errorMessage && (
         <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{errorMessage}</div>
       )}
 
-      <Section 
-        title="Pending Appointments" 
-        appointments={pendingAppointments} 
-        onApprove={approveAppointment} 
-        onReject={rejectAppointment} 
-        onDelete={deleteAppointment} 
-      />
-      <Section 
-        title="Approved Appointments" 
-        appointments={approvedAppointments} 
-        onDelete={deleteAppointment} 
-      />
-      <Section 
-        title="Rejected Appointments" 
-        appointments={rejectedAppointments} 
-        onDelete={deleteAppointment} 
-      />
+      <Section title="Pending Appointments" appointments={pendingAppointments} onApprove={approveAppointment} onReject={rejectAppointment} onDelete={deleteAppointment} />
+      <Section title="Approved Appointments" appointments={approvedAppointments} onDelete={deleteAppointment} />
+      <Section title="Rejected Appointments" appointments={rejectedAppointments} onDelete={deleteAppointment} />
     </div>
   );
 };
 
-// Section component to display appointment details
 const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
   <div className="mb-10">
     <h3 className="text-2xl font-semibold mb-4">{title}</h3>
@@ -144,26 +118,11 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
               <td className="px-4 py-2 border">
                 {onApprove && onReject && appointment.status === "Pending" ? (
                   <>
-                    <button
-                      onClick={() => onApprove(appointment._id)}
-                      className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => onReject(appointment._id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                    >
-                      Reject
-                    </button>
+                    <button onClick={() => onApprove(appointment._id)} className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2">Approve</button>
+                    <button onClick={() => onReject(appointment._id)} className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Reject</button>
                   </>
                 ) : (
-                  <button
-                    onClick={() => onDelete(appointment._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
+                  <button onClick={() => onDelete(appointment._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
                 )}
               </td>
             </tr>
@@ -174,4 +133,4 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
   </div>
 );
 
-export default AppointmentDashboard;
+export default AppointmentDetails;
