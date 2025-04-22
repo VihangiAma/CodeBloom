@@ -7,7 +7,7 @@ const ServiceDashboard = () => {
 
   return (
     <SupervisorLayout section="Service" activePage={activePage} setActivePage={setActivePage}>
-      <ServiceSupervisorDashboard setActivePage={setActivePage} />
+      <ServiceSupervisorDashboard activePage={activePage} setActivePage={setActivePage} />
     </SupervisorLayout>
   );
 };

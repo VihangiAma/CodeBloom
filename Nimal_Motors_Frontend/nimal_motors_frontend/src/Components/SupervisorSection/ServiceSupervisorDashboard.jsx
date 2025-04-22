@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+//import SupervisorLayout from "./Supervisors/SupervisorLayout";
 import AppointmentDetails from "./Supervisors/AppointmentDetails";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
@@ -14,11 +15,11 @@ const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   );
 };
 
-const ServiceSupervisorDashboard = ({ setActivePage }) => {
-  const [localActivePage, setLocalActivePage] = useState("dashboard"); // Local control
+const ServiceSupervisorDashboard = () => {
+  const [activePage, setActivePage] = useState("dashboard"); // Default to dashboard view
 
   const renderContent = () => {
-    switch (localActivePage) {
+    switch (activePage) {
       case "appointments":
         return <AppointmentDetails />;
       case "progress":
@@ -41,28 +42,33 @@ const ServiceSupervisorDashboard = ({ setActivePage }) => {
               description="Track service progress of vehicles."
               color="bg-blue-500"
               emoji="🔄"
-              onClick={() => setLocalActivePage("progress")}
+              onClick={() => setActivePage("progress")}
             />
             <DashboardCard
               title="Manage Appointments"
               description="View and manage customer bookings."
               color="bg-green-500"
               emoji="📅"
-              onClick={() => setLocalActivePage("appointments")}
+              onClick={() => setActivePage("appointments")}
             />
             <DashboardCard
               title="View Reports"
               description="Generate and review service reports."
               color="bg-purple-500"
               emoji="📋"
-              onClick={() => setLocalActivePage("report")}
+              onClick={() => setActivePage("report")}
             />
           </div>
         );
     }
   };
 
-  return renderContent();
+  return (
+    // PM: Wrap dashboard inside SupervisorLayout
+    <SupervisorLayout section="Service" activePage={activePage} setActivePage={setActivePage}>
+      {renderContent()}
+    </SupervisorLayout>
+  );
 };
 
 export default ServiceSupervisorDashboard;
