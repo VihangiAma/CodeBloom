@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
-import AddServiceForm from "./AddServiceForm"; // ➡️ Separate form for adding service
-import ScheduleDetails from "./ScheduleDetails"; // ➡️ Separate component for viewing/updating appointments
+import AddServiceForm from "./AddServiceForm"; 
+import ScheduleDetails from "./ScheduleDetails"; 
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -87,9 +87,28 @@ const MechanicalSupervisorSection = () => {
             </motion.div>
           </div>
         );
+      case "progress":
+        return (
+          <div className="text-gray-600 p-8 text-center text-xl">
+            Progress page coming soon...
+          </div>
+        );
+      case "report":
+        return (
+          <div className="text-gray-600 p-8 text-center text-xl">
+            Report page coming soon...
+          </div>
+        );
       default:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
+            <DashboardCard
+              title="Add Service"
+              description="Add a new mechanical service."
+              color="bg-blue-500"
+              emoji="➕"
+              onClick={() => setActivePage("addservice")}
+            />
             <DashboardCard
               title="Manage Appointments"
               description="View and manage customer bookings."
@@ -98,11 +117,18 @@ const MechanicalSupervisorSection = () => {
               onClick={() => setActivePage("schedules")}
             />
             <DashboardCard
-              title="Add Service"
-              description="Add a new mechanical service."
-              color="bg-blue-500"
-              emoji="➕"
-              onClick={() => setActivePage("addservice")}
+              title="View Progress"
+              description="Track service progress of vehicles."
+              color="bg-yellow-500"
+              emoji="🔄"
+              onClick={() => setActivePage("progress")}
+            />
+            <DashboardCard
+              title="View Reports"
+              description="Generate and review service reports."
+              color="bg-purple-500"
+              emoji="📋"
+              onClick={() => setActivePage("report")}
             />
           </div>
         );

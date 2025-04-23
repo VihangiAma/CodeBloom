@@ -1,54 +1,145 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import SupervisorLayout from "./Supervisors/SupervisorLayout";
-import AddServiceForm from "./AddServiceForm"; // ⬅️ Import your separate form
+import Swal from "sweetalert2";
+import AddServiceForm from "./AddServiceForm";
+import ScheduleDetails from "./ScheduleDetails"; // If you have it
+
+const DashboardCard = ({ title, description, emoji, color, onClick }) => {
+  return (
+    <div
+      onClick={onClick}
+      className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
+    >
+      <div className="text-5xl mb-4">{emoji}</div>
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      <p className="opacity-90">{description}</p>
+    </div>
+  );
+};
 
 const BodyShopSupervisorSection = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [activePage, setActivePage] = useState("dashboard");
 
   const handleFormSubmit = async (formData) => {
-    try {
-      + await axios.post("http://localhost:5001/api/bodyshop", formData);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to add this service?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, add it!",
+      cancelButtonText: "Cancel",
+    });
 
-      alert("Service Added Successfully!");
-      setShowForm(false);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add service");
+    if (result.isConfirmed) {
+      try {
+        await axios.post("http://localhost:5001/api/bodyshop", formData);
+        Swal.fire({
+          icon: "success",
+          title: "Service Added!",
+          text: "The new service has been successfully added.",
+          confirmButtonColor: "#3085d6",
+        });
+        setActivePage("dashboard");
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          icon: "error",
+          title: "Failed!",
+          text: "Could not add service. Please try again.",
+          confirmButtonColor: "#d33",
+        });
+      }
+    }
+  };
+
+  const renderContent = () => {
+    switch (activePage) {
+      case "schedules":
+        return (
+          <div className="p-6">
+            <button
+              onClick={() => setActivePage("dashboard")}
+              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
+            >
+              Back to Dashboard
+            </button>
+            <ScheduleDetails section="bodyshop" />
+          </div>
+        );
+      case "addservice":
+        return (
+          <div className="p-6">
+            <button
+              onClick={() => setActivePage("dashboard")}
+              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
+            >
+              Back to Dashboard
+            </button>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white p-8 rounded-2xl shadow-2xl"
+            >
+              <AddServiceForm onSubmit={handleFormSubmit} />
+            </motion.div>
+          </div>
+        );
+      case "progress":
+        return (
+          <div className="text-gray-600 p-8 text-center text-xl">
+            Progress page coming soon...
+          </div>
+        );
+      case "report":
+        return (
+          <div className="text-gray-600 p-8 text-center text-xl">
+            Report page coming soon...
+          </div>
+        );
+      default:
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
+            <DashboardCard
+              title="Add Service"
+              description="Add a new body-shop service."
+              color="bg-blue-500"
+              emoji="➕"
+              onClick={() => setActivePage("addservice")}
+            />
+            <DashboardCard
+              title="Manage Appointments"
+              description="View and manage customer bookings."
+              color="bg-green-500"
+              emoji="📅"
+              onClick={() => setActivePage("schedules")}
+            />
+            <DashboardCard
+              title="View Progress"
+              description="Track service progress of vehicles."
+              color="bg-yellow-500"
+              emoji="🔄"
+              onClick={() => setActivePage("progress")}
+            />
+            <DashboardCard
+              title="View Reports"
+              description="Generate and review service reports."
+              color="bg-purple-500"
+              emoji="📋"
+              onClick={() => setActivePage("report")}
+            />
+          </div>
+        );
     }
   };
 
   return (
-   // <SupervisorLayout section="Body-Shop">
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">Body-Shop Service Section</h2>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-          >
-            {showForm ? "Close Form" : "Add Service"}
-          </button>
-        </div>
-
-        {showForm && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-8 rounded-2xl shadow-2xl"
-          >
-            <AddServiceForm onSubmit={handleFormSubmit} /> {/* ⬅️ Use the separate form */}
-          </motion.div>
-        )}
-
-        {!showForm && (
-          <div className="text-gray-500 text-lg mt-8">
-            Click <b>"Add Service"</b> to create a new Body-Shop service record.
-          </div>
-        )}
-      </div>
-    //</SupervisorLayout>
+    <div className="p-6">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">Body-Shop Service Section</h2>
+      {renderContent()}
+    </div>
   );
 };
 
