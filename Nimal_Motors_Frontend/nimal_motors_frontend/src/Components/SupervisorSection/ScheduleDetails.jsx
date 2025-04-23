@@ -9,6 +9,8 @@ const ScheduleDetails = ({ section }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [updatingStatusId, setUpdatingStatusId] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     fetchAppointments();
@@ -23,12 +25,20 @@ const ScheduleDetails = ({ section }) => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowConfirmModal(true);
+  };
+
+  const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5001/api/${section}/${id}`);
+      await axios.delete(`http://localhost:5001/api/${section}/${deleteId}`);
       fetchAppointments();
     } catch (error) {
       console.error("Error deleting appointment", error);
+    } finally {
+      setShowConfirmModal(false);
+      setDeleteId(null);
     }
   };
 
@@ -157,7 +167,7 @@ const ScheduleDetails = ({ section }) => {
                       <FaEdit className="text-xl" />
                     </button>
                     <button
-                      onClick={() => handleDelete(appointment._id)}
+                      onClick={() => confirmDelete(appointment._id)}
                       className="text-red-500 hover:text-red-700 p-2 rounded-md transition"
                     >
                       <FaTrashAlt className="text-xl" />
@@ -167,6 +177,30 @@ const ScheduleDetails = ({ section }) => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
+            <p className="mb-6">Are you sure you want to delete this appointment?</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
