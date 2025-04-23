@@ -6,15 +6,23 @@ import UpdateBookingForm from "./UpdateBookingForm";
 
 const ScheduleDetails = ({ section }) => {
   const [appointments, setAppointments] = useState([]);
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [updatingStatusId, setUpdatingStatusId] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [monthFilter, setMonthFilter] = useState("All");
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     fetchAppointments();
   }, [section]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [appointments, statusFilter, monthFilter]);
 
   const fetchAppointments = async () => {
     try {
@@ -23,6 +31,21 @@ const ScheduleDetails = ({ section }) => {
     } catch (error) {
       console.error("Error fetching appointments", error);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...appointments];
+    
+    if (statusFilter !== "All") {
+      filtered = filtered.filter(appointment => appointment.status === statusFilter);
+    }
+
+    if (monthFilter !== "All") {
+      const month = new Date(`${monthFilter}-01`).getMonth(); // Format for comparison
+      filtered = filtered.filter(appointment => new Date(appointment.serviceDate).getMonth() === month);
+    }
+
+    setFilteredAppointments(filtered);
   };
 
   const confirmDelete = (id) => {
@@ -99,11 +122,44 @@ const ScheduleDetails = ({ section }) => {
     }
   };
 
+  // Dynamically generate an array of months
+  const months = Array.from({ length: 12 }, (_, index) => {
+    const date = new Date(currentYear, index, 1);
+    return date.toLocaleString("default", { month: "long" });
+  });
+
   return (
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">
         {section.charAt(0).toUpperCase() + section.slice(1)} Appointment Schedule
       </h2>
+
+      {/* Filters */}
+      <div className="mb-4 flex space-x-4">
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="All">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+
+        <select
+          value={monthFilter}
+          onChange={(e) => setMonthFilter(e.target.value)}
+          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="All">All Months</option>
+          {months.map((month, index) => (
+            <option key={index} value={`${currentYear}-${index + 1}`}>
+              {month}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {isEditing ? (
         <div>
@@ -131,7 +187,7 @@ const ScheduleDetails = ({ section }) => {
               </tr>
             </thead>
             <tbody className="text-sm text-gray-700">
-              {appointments.map((appointment) => (
+              {filteredAppointments.map((appointment) => (
                 <tr key={appointment._id} className="hover:bg-gray-100">
                   <td className="border px-4 py-2">{appointment.serviceID}</td>
                   <td className="border px-4 py-2">{appointment.customerName}</td>

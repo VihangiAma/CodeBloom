@@ -15,12 +15,15 @@ const DashboardCard = ({ title, description, emoji, color, onClick }) => {
 };
 
 const ServiceSupervisorDashboard = () => {
-  const [activePage, setActivePage] = useState("dashboard"); // Default to dashboard view
+  const [activePage, setActivePage] = useState("dashboard");
 
   const renderContent = () => {
     switch (activePage) {
       case "appointments":
-        return <AppointmentDetails />;
+        return <AppointmentDetails view="all" goBack={() => setActivePage("dashboard")} />;
+      case "approved":
+        return <AppointmentDetails view="approved" goBack={() => setActivePage("dashboard")} />;
+     
       case "progress":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
@@ -57,14 +60,19 @@ const ServiceSupervisorDashboard = () => {
               emoji="📋"
               onClick={() => setActivePage("report")}
             />
+            <DashboardCard
+              title="Approved Appointments"
+              description="View and track approved customer appointments."
+              color="bg-yellow-500"
+              emoji="✅"
+              onClick={() => setActivePage("approved")}
+            />
           </div>
         );
     }
   };
 
   return renderContent();
-    
-
 };
 
 export default ServiceSupervisorDashboard;

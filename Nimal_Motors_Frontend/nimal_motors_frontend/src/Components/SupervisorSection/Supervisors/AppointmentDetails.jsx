@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const AppointmentDetails= () => {
+const AppointmentDetails = ({ goBack }) => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -10,7 +10,6 @@ const AppointmentDetails= () => {
   const fetchAppointments = async () => {
     try {
       const res = await axios.get("http://localhost:5001/api/appointments");
-      //console.log(res.data);  
       setAppointments(res.data);
       setLoading(false);
     } catch (error) {
@@ -75,6 +74,14 @@ const AppointmentDetails= () => {
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
+      {/* Back Button */}
+      <button
+        onClick={goBack}
+        className="mb-6 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center"
+      >
+        ← Back to Dashboard
+      </button>
+
       <h2 className="text-3xl font-bold mb-6 text-center">Service Booking Details</h2>
 
       {errorMessage && (
