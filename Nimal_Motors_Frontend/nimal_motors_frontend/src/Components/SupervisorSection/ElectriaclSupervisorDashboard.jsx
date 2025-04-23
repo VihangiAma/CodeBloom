@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import AddServiceForm from "./AddServiceForm"; 
 import ScheduleDetails from "./ScheduleDetails"; 
+import Progress from "./ProgressPage";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -88,11 +89,23 @@ const ElectricalSupervisorSection = () => {
           </div>
         );
       case "progress":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            Progress page coming soon...
-          </div>
-        );
+      return (
+        <div className="p-6">
+          <button
+            onClick={() => setActivePage("dashboard")}
+            className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
+          >
+            Back to Dashboard
+          </button>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white p-8 rounded-2xl shadow-2xl"
+          >
+            <Progress section="electrical" />
+          </motion.div>
+        </div>
+      );
       case "report":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">

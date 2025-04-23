@@ -9,7 +9,7 @@ const AppointmentDetails = ({ goBack }) => {
 
   const fetchAppointments = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/api/appointments");
+      const res = await axios.get("http://localhost:5001/api/appointments/");
       setAppointments(res.data);
       setLoading(false);
     } catch (error) {

@@ -23,7 +23,15 @@ const ServiceSupervisorDashboard = () => {
         return <AppointmentDetails view="all" goBack={() => setActivePage("dashboard")} />;
       case "approved":
         return <AppointmentDetails view="approved" goBack={() => setActivePage("dashboard")} />;
-     
+        const approveAppointment = async (id) => {
+          try {
+            await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Approved" });
+            fetchAppointments();
+          } catch (error) {
+            console.error(error);
+            setErrorMessage("Failed to approve appointment.");
+          }
+        };
       case "progress":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
