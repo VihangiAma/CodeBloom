@@ -1,14 +1,27 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import Swal from "sweetalert2"; // ⬅️ Import Swal
-import AddServiceForm from "./AddServiceForm";
+import Swal from "sweetalert2";
+import AddServiceForm from "./AddServiceForm"; // ➡️ Separate form for adding service
+import ScheduleDetails from "./ScheduleDetails"; // ➡️ Separate component for viewing/updating appointments
+
+const DashboardCard = ({ title, description, emoji, color, onClick }) => {
+  return (
+    <div
+      onClick={onClick}
+      className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
+    >
+      <div className="text-5xl mb-4">{emoji}</div>
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      <p className="opacity-90">{description}</p>
+    </div>
+  );
+};
 
 const MechanicalSupervisorSection = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [activePage, setActivePage] = useState("dashboard");
 
   const handleFormSubmit = async (formData) => {
-    // Show confirmation popup first
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: "Do you want to add this service?",
@@ -29,7 +42,7 @@ const MechanicalSupervisorSection = () => {
           text: "The new service has been successfully added.",
           confirmButtonColor: "#3085d6",
         });
-        setShowForm(false);
+        setActivePage("dashboard");
       } catch (error) {
         console.error(error);
         Swal.fire({
@@ -42,33 +55,64 @@ const MechanicalSupervisorSection = () => {
     }
   };
 
+  const renderContent = () => {
+    switch (activePage) {
+      case "schedules":
+        return (
+          <div className="p-6">
+            <button
+              onClick={() => setActivePage("dashboard")}
+              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
+            >
+              Back to Dashboard
+            </button>
+            <ScheduleDetails section="mechanical" />
+          </div>
+        );
+      case "addservice":
+        return (
+          <div className="p-6">
+            <button
+              onClick={() => setActivePage("dashboard")}
+              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
+            >
+              Back to Dashboard
+            </button>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white p-8 rounded-2xl shadow-2xl"
+            >
+              <AddServiceForm onSubmit={handleFormSubmit} />
+            </motion.div>
+          </div>
+        );
+      default:
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+            <DashboardCard
+              title="Manage Appointments"
+              description="View and manage customer bookings."
+              color="bg-green-500"
+              emoji="📅"
+              onClick={() => setActivePage("schedules")}
+            />
+            <DashboardCard
+              title="Add Service"
+              description="Add a new mechanical service."
+              color="bg-blue-500"
+              emoji="➕"
+              onClick={() => setActivePage("addservice")}
+            />
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">Mechanical Service Section</h2>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-        >
-          {showForm ? "Close Form" : "Add Service"}
-        </button>
-      </div>
-
-      {showForm && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white p-8 rounded-2xl shadow-2xl"
-        >
-          <AddServiceForm onSubmit={handleFormSubmit} />
-        </motion.div>
-      )}
-
-      {!showForm && (
-        <div className="text-gray-500 text-lg mt-8">
-          Click <b>"Add Service"</b> to create a new mechanical service record.
-        </div>
-      )}
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">Mechanical Service Section</h2>
+      {renderContent()}
     </div>
   );
 };
