@@ -1,18 +1,18 @@
 import express from "express";
 import {
-  createService,
-  getAllServices,
-  getServiceById,
-  updateService,
-  deleteService
+  createMechanicalService,
+  getAllMechanicalServices,
+  getMechanicalServiceById,
+  updateMechanicalService,
+  deleteMechanicalService
 } from "../Controllers/MechanicalController.js";
 
-const MechanicalRouter = express.Router();
+const router = express.Router();
 
-MechanicalRouter.post("/", createService);      // Create new service
-MechanicalRouter.get("/", getAllServices);      // Get all services
-MechanicalRouter.get("/:id", getServiceById);    // Get service by ID
-MechanicalRouter.put("/:id", updateService);     // Update service
-MechanicalRouter.delete("/:id", deleteService);  // Delete service
+router.post("/", createMechanicalService);
+router.get("/", getAllMechanicalServices);
+router.get("/:id", getMechanicalServiceById);
+router.put("/:id", updateMechanicalService);
+router.delete("/:id", deleteMechanicalService);
 
-export default MechanicalRouter;
+export default router;

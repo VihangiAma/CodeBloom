@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const sections = ["service", "repair", "wash"]; // Add your sections here
 
-const ProgressPage = () => {
+const ProgressPage = ({section}) => {
   const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
-    const fetchAllAppointments = async () => {
-      try {
-        const allData = [];
-        for (const section of sections) {
-          const response = await axios.get(`http://localhost:5001/api/${section}`);
-          allData.push(...response.data);
-        }
-        setAppointments(allData);
-      } catch (error) {
-        console.error("Error fetching appointments:", error);
-      }
-    };
+    fetchAppointments();
+  }, [section]);
 
-    fetchAllAppointments();
-  }, []);
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5001/api/${section}`);
+      setAppointments(response.data);
+    } catch (error) {
+      console.error("Error fetching appointments", error);
+    }
+  };
 
   const totalAppointments = appointments.length;
   const completedAppointments = appointments.filter(app => app.status === "Completed").length;

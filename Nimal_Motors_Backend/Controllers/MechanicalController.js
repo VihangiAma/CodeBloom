@@ -1,95 +1,59 @@
 import MechanicalSection from "../Models/MechanicalSection.js";
-import mongoose from "mongoose";
 
-// Create Service
-export async function createService(req, res) {
+// Create a new mechanical service
+export const createMechanicalService = async (req, res) => {
   try {
     const newService = new MechanicalSection(req.body);
     await newService.save();
-    res.status(201).json({ message: "Service Created", data: newService });
+    res.status(201).json(newService);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
-}
+};
 
-// Get All Services (with optional month filtering)
-export async function getAllServices(req, res) {
+// Get all mechanical services
+export const getAllMechanicalServices = async (req, res) => {
   try {
-    const { month } = req.query;
-    let services;
-    
-    if (month) {
-      const start = new Date(month + "-01");
-      const end = new Date(month + "-31");
-      services = await MechanicalSection.find({
-        serviceDate: { $gte: start, $lt: end }
-      });
-    } else {
-      services = await MechanicalSection.find();
-    }
-
-    res.status(200).json(services);
+    const services = await MechanicalSection.find();
+    res.json(services);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-// Get Service by ID or serviceID
-export async function getServiceById(req, res) {
+// Get a single mechanical service by ID
+export const getMechanicalServiceById = async (req, res) => {
   try {
-    const { id } = req.params;
-    let service;
-
-    if (mongoose.Types.ObjectId.isValid(id)) {
-      service = await MechanicalSection.findById(id);
-    } else {
-      service = await MechanicalSection.findOne({ serviceID: id });
-    }
-
-    if (!service) {
-      return res.status(404).json({ error: "Service not found" });
-    }
-
-    res.status(200).json(service);
+    const service = await MechanicalSection.findById(req.params.id);
+    if (!service) return res.status(404).json({ message: "Service not found" });
+    res.json(service);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-// Update Service
-export async function updateService(req, res) {
+// Update a mechanical service by ID
+export const updateMechanicalService = async (req, res) => {
   try {
-    const { serviceID } = req.params;
-
-    const updatedService = await MechanicalSection.findOneAndUpdate(
-      { serviceID: serviceID },
+    const updatedService = await MechanicalSection.findByIdAndUpdate(
+      req.params.id,
       req.body,
-      { new: true, runValidators: true }  // Important: runValidators will check 'maxlength'
+      { new: true }
     );
-
-    if (!updatedService) {
-      return res.status(404).json({ error: "Service not found" });
-    }
-
-    res.status(200).json({ message: "Service Updated", data: updatedService });
+    if (!updatedService) return res.status(404).json({ message: "Service not found" });
+    res.json(updatedService);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
-}
+};
 
-// Delete Service
-export async function deleteService(req, res) {
+// Delete a mechanical service by ID
+export const deleteMechanicalService = async (req, res) => {
   try {
-    const { serviceID } = req.params;
-
-    const deletedService = await MechanicalSection.findOneAndDelete({ serviceID: serviceID });
-
-    if (!deletedService) {
-      return res.status(404).json({ error: "Service not found" });
-    }
-
-    res.status(200).json({ message: "Service Deleted" });
+    const deletedService = await MechanicalSection.findByIdAndDelete(req.params.id);
+    if (!deletedService) return res.status(404).json({ message: "Service not found" });
+    res.json({ message: "Service deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
-}
+};
