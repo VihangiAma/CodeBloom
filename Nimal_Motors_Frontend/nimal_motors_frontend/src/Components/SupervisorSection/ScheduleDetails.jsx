@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";  // Import icons
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im"; // Spinner icon
 import UpdateBookingForm from "./UpdateBookingForm";
 
 const ScheduleDetails = ({ section }) => {
   const [appointments, setAppointments] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState(null);
 
   useEffect(() => {
     fetchAppointments();
@@ -23,33 +24,11 @@ const ScheduleDetails = ({ section }) => {
   };
 
   const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to delete this appointment?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(`http://localhost:5001/api/${section}/${id}`);
-        Swal.fire({
-          icon: "success",
-          title: "Deleted!",
-          text: "Appointment has been deleted.",
-        });
-        fetchAppointments();
-      } catch (error) {
-        console.error("Error deleting appointment", error);
-        Swal.fire({
-          icon: "error",
-          title: "Failed!",
-          text: "Could not delete appointment. Please try again.",
-        });
-      }
+    try {
+      await axios.delete(`http://localhost:5001/api/${section}/${id}`);
+      fetchAppointments();
+    } catch (error) {
+      console.error("Error deleting appointment", error);
     }
   };
 
@@ -78,20 +57,35 @@ const ScheduleDetails = ({ section }) => {
   const handleFormSubmit = async (updatedData) => {
     try {
       await axios.put(`http://localhost:5001/api/${section}/${selectedAppointment._id}`, updatedData);
-      Swal.fire({
-        icon: "success",
-        title: "Updated!",
-        text: "Appointment updated successfully.",
-      });
       setIsEditing(false);
       fetchAppointments();
     } catch (error) {
       console.error("Error updating appointment", error);
-      Swal.fire({
-        icon: "error",
-        title: "Failed!",
-        text: "Could not update appointment. Please try again.",
-      });
+    }
+  };
+
+  const handleStatusChange = async (appointmentId, newStatus) => {
+    setUpdatingStatusId(appointmentId);
+    try {
+      await axios.put(`http://localhost:5001/api/${section}/${appointmentId}`, { status: newStatus });
+      fetchAppointments();
+    } catch (error) {
+      console.error("Error updating status", error);
+    } finally {
+      setUpdatingStatusId(null);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completed":
+        return "text-green-600 font-semibold";
+      case "Pending":
+        return "text-yellow-500 font-semibold";
+      case "In Progress":
+        return "text-blue-600 font-semibold";
+      default:
+        return "";
     }
   };
 
@@ -132,10 +126,28 @@ const ScheduleDetails = ({ section }) => {
                   <td className="border px-4 py-2">{appointment.serviceID}</td>
                   <td className="border px-4 py-2">{appointment.customerName}</td>
                   <td className="border px-4 py-2">{appointment.vehicleID}</td>
-                  <td className="border px-4 py-2">{new Date(appointment.serviceDate).toLocaleDateString()}</td>
+                  <td className="border px-4 py-2">
+                    {new Date(appointment.serviceDate).toLocaleDateString()}
+                  </td>
                   <td className="border px-4 py-2">{appointment.serviceTime}</td>
                   <td className="border px-4 py-2">{appointment.contact?.phone || "N/A"}</td>
-                  <td className="border px-4 py-2">{appointment.status}</td>
+                  <td className="border px-4 py-2">
+                    {updatingStatusId === appointment._id ? (
+                      <div className="flex justify-center">
+                        <ImSpinner2 className="animate-spin text-blue-500 text-2xl" />
+                      </div>
+                    ) : (
+                      <select
+                        value={appointment.status}
+                        onChange={(e) => handleStatusChange(appointment._id, e.target.value)}
+                        className={`border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${getStatusColor(appointment.status)}`}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                    )}
+                  </td>
                   <td className="border px-4 py-2">{appointment.description}</td>
                   <td className="border px-4 py-2 flex justify-center space-x-2">
                     <button
