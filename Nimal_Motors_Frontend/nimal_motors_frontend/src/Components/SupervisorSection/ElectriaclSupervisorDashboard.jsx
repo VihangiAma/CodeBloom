@@ -9,7 +9,7 @@ const ElectricalSupervisorSection = () => {
 
   const handleFormSubmit = async (formData) => {
     try {
-      await axios.post("http://localhost:5000/service", formData);
+      await axios.post("http://localhost:5001/api/electrical", formData);
       alert("Service Added Successfully!");
       setShowForm(false);
     } catch (error) {

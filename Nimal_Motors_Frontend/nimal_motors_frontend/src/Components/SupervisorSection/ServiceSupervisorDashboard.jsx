@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-//import SupervisorLayout from "./Supervisors/SupervisorLayout";
 import AppointmentDetails from "./Supervisors/AppointmentDetails";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
@@ -63,12 +62,9 @@ const ServiceSupervisorDashboard = () => {
     }
   };
 
-  return (
-    // PM: Wrap dashboard inside SupervisorLayout
-    <SupervisorLayout section="Service" activePage={activePage} setActivePage={setActivePage}>
-      {renderContent()}
-    </SupervisorLayout>
-  );
+  return renderContent();
+    
+
 };
 
 export default ServiceSupervisorDashboard;

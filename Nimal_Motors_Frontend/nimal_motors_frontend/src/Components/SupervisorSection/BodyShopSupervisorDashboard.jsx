@@ -9,7 +9,8 @@ const BodyShopSupervisorSection = () => {
 
   const handleFormSubmit = async (formData) => {
     try {
-      await axios.post("http://localhost:5000/service", formData);
+      + await axios.post("http://localhost:5000/api/bodyshop", formData);
+
       alert("Service Added Successfully!");
       setShowForm(false);
     } catch (error) {

@@ -5,9 +5,11 @@ import cors from "cors";
 import connectDB from "./Models/db.js";
 
 //Import Routes
-import serviceRouter from "./Routers/ServiceRouter.js";
-import repairRouter from "./Routers/RepairRouter.js";
+import MechanicalRouter from "./Routers/MechanicalRouter.js";
+import ElectricalRouter from "./Routers/ElectricalRouter.js";
+import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import appointmentRouter from "./Routers/AppointmentRoutes.js";
+
 
 dotenv.config();
 connectDB(); // Connect to MongoDB
@@ -18,14 +20,10 @@ const PORT = process.env.PORT || 5001;
 app.use(express.json()); // Middleware to parse JSON body
 app.use(cors()); // Enable CORS
 
-// Test API Route
-/*app.get("/", (req, res) => {
-    console.log("Hello world");
-    res.json({ message: "hi" });
-});*/
 
-app.use("/api/service" , serviceRouter);
-app.use("/api/repair" , repairRouter);
+app.use("/api/mechanical", MechanicalRouter);
+app.use("/api/electrical", ElectricalRouter);
+app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/appointments" ,appointmentRouter);
 
 app.listen(PORT, () => {

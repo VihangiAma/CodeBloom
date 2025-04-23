@@ -1,10 +1,10 @@
-import ServiceSection from "../Models/ServiceSection.js";
+import MechanicalSection from "../Models/MechanicalSection.js";
 import mongoose from "mongoose";
 
 // Create Service
 export async function createService(req, res) {
   try {
-    const newService = new ServiceSection(req.body);
+    const newService = new MechanicalSection(req.body);
     await newService.save();
     res.status(201).json({ message: "Service Created", data: newService });
   } catch (error) {
@@ -21,11 +21,11 @@ export async function getAllServices(req, res) {
     if (month) {
       const start = new Date(month + "-01");
       const end = new Date(month + "-31");
-      services = await ServiceSection.find({
+      services = await MechanicalSection.find({
         serviceDate: { $gte: start, $lt: end }
       });
     } else {
-      services = await ServiceSection.find();
+      services = await MechanicalSection.find();
     }
 
     res.status(200).json(services);
@@ -41,9 +41,9 @@ export async function getServiceById(req, res) {
     let service;
 
     if (mongoose.Types.ObjectId.isValid(id)) {
-      service = await ServiceSection.findById(id);
+      service = await MechanicalSection.findById(id);
     } else {
-      service = await ServiceSection.findOne({ serviceID: id });
+      service = await MechanicalSection.findOne({ serviceID: id });
     }
 
     if (!service) {
@@ -61,7 +61,7 @@ export async function updateService(req, res) {
   try {
     const { serviceID } = req.params;
 
-    const updatedService = await ServiceSection.findOneAndUpdate(
+    const updatedService = await MechanicalSection.findOneAndUpdate(
       { serviceID: serviceID },
       req.body,
       { new: true, runValidators: true }  // Important: runValidators will check 'maxlength'
@@ -82,7 +82,7 @@ export async function deleteService(req, res) {
   try {
     const { serviceID } = req.params;
 
-    const deletedService = await ServiceSection.findOneAndDelete({ serviceID: serviceID });
+    const deletedService = await MechanicalSection.findOneAndDelete({ serviceID: serviceID });
 
     if (!deletedService) {
       return res.status(404).json({ error: "Service not found" });

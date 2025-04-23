@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const serviceSchema = new mongoose.Schema({
+const mechanicalSchema = new mongoose.Schema({
   serviceID: { type: String, required: true, unique: true }, 
   customerName: { type: String, required: true },
   vehicleID: { type: String, required: true },
@@ -18,5 +18,7 @@ const serviceSchema = new mongoose.Schema({
   }
 });
 
-export default mongoose.model("ServiceSection", serviceSchema);
+export default mongoose.model("MechanicalSection", mechanicalSchema, "MechanicalSection");
+
+
 
