@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import SalesReport from "./SalesReport";
 import SalesReportAdd from "./SalesReportAdd";
 import SalesReportUpdate from "./SalesReportUpdate";
@@ -16,16 +17,25 @@ export default function HomePage() {
     console.log("✅ Sales report added:", newReport);
   };
 
+  const location = useLocation();
+  const [tab, setTab] = useState("");
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tabFromUrl = urlParams.get("tab");
+    if (tabFromUrl) {
+      setTab(tabFromUrl);
+    }
+  }, [location.search]);
+
   return (
     <div>
       <AdminDashboard />
-      <SalesReport />
-      {/* ✅ Ensure `onAdd` is passed */}
-      <SalesReportAdd onAdd={handleAddReport} />
-      <SalesReportUpdate />
-      <SalesReportDelete />
-      <ProfilePage/>
-      <SalesReportView/>
+      {tab === "salesreport" && <SalesReport />}
+      {tab === "addreport" && <SalesReportAdd onAdd={handleAddReport} />}
+      {tab === "updatereport" && <SalesReportUpdate />}
+      {tab === "deletereport" && <SalesReportDelete />}
+      {tab === "profile" && <ProfilePage />}
+      {tab === "viewreport" && <SalesReportView />}
     </div>
   );
 }

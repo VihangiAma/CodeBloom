@@ -23,7 +23,7 @@ function App() {
 
         <Route path="/update-sales-report" element={<SalesReportUpdate />} />
         <Route path="/delete-sales-report" element={<SalesReportDelete />} />
-        <Route path ="/view-sales-report" element={<SalesReportView/>}/>
+        <Route path="/view-sales-report" element={<SalesReportView />} />
       </Routes>
     </Router>
   );
