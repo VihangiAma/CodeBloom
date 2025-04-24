@@ -22,7 +22,11 @@ function Sidebar({ isCollapsed, toggleSidebar, activePage, setActivePage }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <img src={logo} alt="Logo" className="w-16 h-16 rounded-full shadow-md" />
+        <img
+          src={logo}
+          alt="Logo"
+          className="w-16 h-16 rounded-full shadow-md"
+        />
         {!isCollapsed && (
           <>
             <h1 className="text-2xl font-bold mt-2">Nimal Motors</h1>
@@ -32,6 +36,14 @@ function Sidebar({ isCollapsed, toggleSidebar, activePage, setActivePage }) {
       </motion.div>
 
       <nav className="flex flex-col space-y-4 w-full">
+        <NavItem
+          to="dashboard"
+          icon="🏠"
+          label="Dashboard"
+          isCollapsed={isCollapsed}
+          activePage={activePage}
+          setActivePage={setActivePage}
+        />
         <NavItem
           to="progress"
           icon="🔄"
@@ -72,9 +84,7 @@ function NavItem({ to, icon, label, isCollapsed, activePage, setActivePage }) {
       }`}
     >
       <span className="text-2xl">{icon}</span>
-      {!isCollapsed && (
-        <span className="text-lg font-medium">{label}</span>
-      )}
+      {!isCollapsed && <span className="text-lg font-medium">{label}</span>}
     </button>
   );
 }
@@ -92,7 +102,9 @@ function Header({ section }) {
     <header className="flex justify-between items-center p-6 bg-white shadow-lg rounded-bl-3xl">
       <h1 className="text-2xl font-bold text-gray-800">{section} Supervisor</h1>
       <div className="flex items-center gap-4">
-        <button className="p-2 hover:bg-gray-100 rounded-full text-xl">🔔</button>
+        <button className="p-2 hover:bg-gray-100 rounded-full text-xl">
+          🔔
+        </button>
         <button
           className="p-2 hover:bg-gray-100 rounded-full text-xl"
           onClick={() => navigate("/profile")}

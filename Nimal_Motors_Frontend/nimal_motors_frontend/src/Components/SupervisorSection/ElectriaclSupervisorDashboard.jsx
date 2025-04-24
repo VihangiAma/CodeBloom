@@ -6,6 +6,7 @@ import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails"; 
 import Progress from "./ProgressPage";
 
+
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
     <div
