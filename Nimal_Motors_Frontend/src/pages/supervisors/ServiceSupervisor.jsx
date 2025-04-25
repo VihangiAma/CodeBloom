@@ -1,9 +1,6 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
-  FaTools,
-  FaClipboardCheck,
-  FaUsersCog,
-  FaCogs,
   FaUserCircle,
   FaSignOutAlt,
   FaFacebook,
@@ -12,85 +9,87 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function ServiceSupervisorProfile() {
+export default function ServiceSupervisor() {
   const navigate = useNavigate();
+
+  /* ────────── state ────────── */
+  const [profile, setProfile] = useState({
+    userId: "",
+    fullName: "",
+    email: "",
+    username: "",
+    phoneNumber: "",
+    type: "servicesupervisor",
+  });
   const [isEditing, setIsEditing] = useState(false);
 
-  const [profile, setProfile] = useState({
-    fullName: "Dilani Rajapaksha",
-    mobile: "0726655443",
-    email: "dilani.rajapaksha@gmail.com",
-    username: "dilani.rajapaksha",
-    location: "Homagama, Sri Lanka",
-  });
+  /* ────────── data fetch ────────── */
+  const fetchProfile = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user?.token) return;
+    try {
+      const res = await axios.get("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setProfile(res.data.user);
+    } catch (err) {
+      console.error("Error fetching profile data", err);
+    }
+  };
 
-  const [systemSettings] = useState({
-    serviceArea: "General Service & Maintenance",
-    shiftSchedule: "8 AM - 5 PM",
-    performanceMode: "Efficiency Focused",
-  });
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
-  const handleChange = (e) => {
+  /* ────────── handlers ────────── */
+  const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const saveProfile = () => {
-    // TODO: Add API integration
+  const saveProfile = async () => {
     setIsEditing(false);
+    try {
+      await axios.post("http://localhost:5000/api/user", profile);
+    } catch (err) {
+      console.error("Error updating user data", err);
+    }
   };
 
-  const handleSignOut = () => {
-    navigate("/login");
-  };
+  const handleSignOut = () => navigate("/login");
 
+  /* ────────── render ────────── */
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
-      {/* Sidebar */}
+      {/* ───── sidebar ───── */}
       <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <div>
-          <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🛠 NIMAL MOTORS</h1>
-          <nav className="space-y-2">
-            {[{ name: "Dashboard", icon: FaTools, href: "/supervisor/dashboard" },
-              { name: "Service Reports", icon: FaClipboardCheck, href: "/supervisor/reports" },
-              { name: "Staff Management", icon: FaUsersCog, href: "/supervisor/staff" },
-              { name: "Settings", icon: FaCogs, href: "/supervisor/settings" },
-            ].map(({ name, icon: Icon, href }, idx) => (
-              <a
-                key={idx}
-                href={href}
-                className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition duration-150"
-              >
-                <Icon className="text-lg" />
-                <span>{name}</span>
-              </a>
-            ))}
-          </nav>
-        </div>
+        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+          🚗 NIMAL MOTORS
+        </h1>
 
-        <div className="pt-6 border-t border-gray-600">
-          <nav className="space-y-2">
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-blue-400 hover:bg-gray-700 transition duration-150 font-semibold"
-            >
-              <FaUserCircle className="text-lg" />
-              Profile
-            </a>
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-red-400 hover:bg-gray-700 transition duration-150 w-full text-left"
-            >
-              <FaSignOutAlt className="text-lg" />
-              Sign Out
-            </button>
-          </nav>
+        <nav className="flex-1" />
+
+        <div className="space-y-2 border-t border-gray-600 pt-6">
+          <button
+            onClick={fetchProfile}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+          >
+            <FaUserCircle className="text-lg" />
+            Profile
+          </button>
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
+          >
+            <FaSignOutAlt className="text-lg" />
+            Sign Out
+          </button>
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* ───── main content ───── */}
       <main className="flex-1 p-6 overflow-auto">
-        {/* Header */}
+        {/* cover image + name */}
         <div
           className="rounded-xl h-48 bg-cover bg-center relative"
           style={{ backgroundImage: `url("/bgimage.jpg")` }}
@@ -103,29 +102,55 @@ export default function ServiceSupervisorProfile() {
             />
             <div className="text-white drop-shadow-lg">
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
-              <p className="text-sm">Service Supervisor - Nimal Motors</p>
+              <p className="text-sm">
+              Service Supervisor – Nimal Motors
+                {profile.fullName && ` – ${profile.fullName}`}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* System Settings */}
-          <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">System Settings</h3>
-            <div className="text-sm space-y-3">
-              <p><strong>Service Area:</strong> {systemSettings.serviceArea}</p>
-              <p><strong>Shift Schedule:</strong> {systemSettings.shiftSchedule}</p>
-              <p><strong>Performance Mode:</strong> {systemSettings.performanceMode}</p>
-            </div>
-          </div>
+        {/* about‑me & details */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* left: about me */}
+          <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">About Me</h3>
+            <p className="text-sm leading-relaxed">
+  Hi, I’m {profile.fullName || "—"}. As the Service Supervisor at Nimal Motors
+  I coordinate every stage of the customer‑service journey—from the moment a
+  vehicle is checked in to the final quality inspection and hand‑over. Drawing
+  on more than ten years in automotive after‑sales, I schedule repair bays,
+  allocate technicians, and keep customers fully informed with clear status
+  updates and transparent estimates. My focus is delivering first‑time‑fix
+  accuracy, minimizing turnaround time, and ensuring each driver leaves with
+  total confidence in our workmanship. When I’m not monitoring workflow KPIs,
+  you’ll catch me coaching service advisors, refining our digital booking
+  system, or exploring new ways to elevate the customer experience at every
+  touchpoint.
+</p>
 
-          {/* Profile Info */}
-          <div className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Supervisor Profile</h3>
-              {isEditing ? (
-                <div className="space-x-2">
+          </section>
+
+          {/* right: detail card */}
+          <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">
+             Service Supervisor Profile
+            </h3>
+
+            {isEditing ? (
+              <div className="space-y-3 text-sm">
+                {["fullName", "email", "username", "phoneNumber"].map((f) => (
+                  <div key={f} className="flex flex-col">
+                    <label className="font-medium capitalize">{f}:</label>
+                    <input
+                      name={f}
+                      value={profile[f]}
+                      onChange={handleProfileChange}
+                      className="bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    />
+                  </div>
+                ))}
+                <div className="space-x-2 mt-2">
                   <button
                     onClick={saveProfile}
                     className="text-green-400 text-sm hover:underline"
@@ -139,56 +164,39 @@ export default function ServiceSupervisorProfile() {
                     Cancel
                   </button>
                 </div>
-              ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="text-blue-400 text-sm hover:underline"
-                >
-                  Edit
-                </button>
-              )}
-            </div>
-            {isEditing ? (
-              <div className="text-sm space-y-2">
-                {[["Full Name", "fullName"], ["Mobile", "mobile"], ["Email", "email"], ["Username", "username"], ["Location", "location"]].map(([label, name]) => (
-                  <div key={name} className="flex flex-col">
-                    <label className="font-medium">{label}:</label>
-                    <input
-                      type="text"
-                      name={name}
-                      value={profile[name]}
-                      onChange={handleChange}
-                      className="border border-gray-500 bg-gray-800 rounded p-1 text-white"
-                    />
-                  </div>
-                ))}
               </div>
             ) : (
-              <>
-                <p className="text-sm text-gray-400 mb-4">
-                  Hello, I'm {profile.fullName}. I ensure the quality and timely delivery of services at Nimal Motors.
+              <div className="text-sm space-y-2">
+                <p>
+                  <strong>Full Name:</strong> {profile.fullName || "—"}
                 </p>
-                <div className="text-sm space-y-2">
-                  <p><strong>Full Name:</strong> {profile.fullName}</p>
-                  <p><strong>Mobile:</strong> {profile.mobile}</p>
-                  <p><strong>Email:</strong> {profile.email}</p>
-                  <p><strong>Username:</strong> {profile.username}</p>
-                  <p><strong>Location:</strong> {profile.location}</p>
-                  <div className="flex items-center space-x-3 mt-2">
-                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                      <FaFacebook className="text-blue-600" />
-                    </a>
-                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                      <FaTwitter className="text-sky-500" />
-                    </a>
-                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                      <FaInstagram className="text-pink-500" />
-                    </a>
-                  </div>
+                <p>
+                  <strong>Mobile:</strong> {profile.phoneNumber || "—"}
+                </p>
+                <p>
+                  <strong>Email:</strong> {profile.email || "—"}
+                </p>
+                <p>
+                  <strong>Username:</strong> {profile.username || "—"}
+                </p>
+
+                <div className="flex items-center space-x-3 mt-2">
+                  <FaFacebook className="text-blue-600" />
+                  <FaTwitter className="text-sky-500" />
+                  <FaInstagram className="text-pink-500" />
                 </div>
-              </>
+              </div>
             )}
-          </div>
+
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
+              >
+                Edit
+              </button>
+            )}
+          </section>
         </div>
       </main>
     </div>

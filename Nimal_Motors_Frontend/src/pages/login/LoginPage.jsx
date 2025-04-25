@@ -35,41 +35,34 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/user/login',
+        "http://localhost:5000/api/user/login",
         { email, password }
       );
 
       const { token, user } = response.data;
 
-      localStorage.setItem("token", token); // Save token in local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       setMessage("Login successful!");
 
-      // Redirect based on user role
-      switch (user.type) {
-        case "admin":
-          navigate("/admin-profile");
-          break;
-        case "accountant":
-          navigate("/accountant");
-          break;
-        case "premiumCustomer":
-          navigate("/premium-customer");
-          break;
-        case "electricalsupervisor":
-          navigate("/electrical-supervisor");
-          break;
-        case "servicesupervisor":
-          navigate("/service-supervisor");
-          break;
-        case "mechanicalsupervisor":
-          navigate("/mechanical-supervisor");
-          break;
-        case "bodyshopsupervisor":
-          navigate("/bodyshop-supervisor");
-          break;
-        default:
-          navigate("/notfound");
+      // Navigation based on role
+      if (user.type === "admin") {
+        navigate("/admin-profile");
+      } else if (user.type === "accountant") {
+        navigate("/accountant");
+      } else if (user.type === "electricalsupervisor") {
+        navigate("/electrical-supervisor");
+      } else if (user.type === "servicesupervisor") {
+        navigate("/service-supervisor");
+      } else if (user.type === "mechanicalsupervisor") {
+        navigate("/mechanical-supervisor");
+      } else if (user.type === "bodyshopsupervisor") {
+        navigate("/bodyshop-supervisor");
+      } else if (user.type === "premiumCustomer") {
+        navigate("/premium-customer");
+      } else {
+        navigate("/not-found");
       }
     } catch (error) {
       console.error("Login failed:", error.response?.data?.message || error.message);
