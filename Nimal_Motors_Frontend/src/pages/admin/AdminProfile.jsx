@@ -62,7 +62,7 @@ export default function AdminProfile() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5000/api/user", profile);
+      await axios.post("http://localhost:5000/api/user/admin", profile);
     } catch (err) {
       console.error("Error updating user data", err);
     }

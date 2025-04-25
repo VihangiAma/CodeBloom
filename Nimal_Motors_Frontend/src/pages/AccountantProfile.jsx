@@ -103,7 +103,7 @@ export default function AccountantProfile() {
             <div className="text-white drop-shadow-lg">
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
               <p className="text-sm">
-              Accountant – Nimal Motors
+                Accountant – Nimal Motors
                 {profile.fullName && ` – ${profile.fullName}`}
               </p>
             </div>
@@ -116,26 +116,24 @@ export default function AccountantProfile() {
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
-  Hi, I’m {profile.fullName || "—"}. As the Accountant at Nimal Motors I keep
-  our financial engine running smoothly—overseeing everything from daily
-  transaction reconciliations and payroll to quarterly forecasting and tax
-  compliance. With more than ten years of automotive‑industry accounting
-  experience, I translate raw numbers into clear insights that guide strategic
-  decisions and maintain the company’s fiscal health. My passion is building
-  robust financial controls while supporting each department with timely,
-  accurate reporting. When I’m not immersed in ledgers and spreadsheets you’ll
-  find me refining cost‑management processes, mentoring junior finance staff,
-  or researching the latest regulatory changes to ensure we stay ahead of the
-  curve.
-</p>
-
+              Hi, I’m {profile.fullName || "—"}. As the Accountant at Nimal
+              Motors, I keep our financial engine running smoothly—overseeing
+              everything from daily transaction reconciliations and payroll to
+              quarterly forecasting and tax compliance. With more than ten years
+              of automotive‑industry accounting experience, I translate raw numbers
+              into clear insights that guide strategic decisions and maintain the
+              company’s fiscal health. My passion is building robust financial
+              controls while supporting each department with timely, accurate
+              reporting. When I’m not immersed in ledgers and spreadsheets you’ll
+              find me refining cost‑management processes, mentoring junior finance
+              staff, or researching the latest regulatory changes to ensure we stay
+              ahead of the curve.
+            </p>
           </section>
 
           {/* right: detail card */}
           <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">
-             Accountant Profile
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Accountant Profile</h3>
 
             {isEditing ? (
               <div className="space-y-3 text-sm">

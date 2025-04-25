@@ -364,7 +364,7 @@ export const getAccountantProfile = async (req, res) => {
 
         // Check if the user is an admin
         if (user.type !== 'bodyshopsupervisor') {
-            return res.status(403).json({ success: false, message: "Access denied. User is not an admin" });
+            return res.status(403).json({ success: false, message: "Access denied. User is not an bodyshopsupervisor" });
         }
 
         // If the user is an admin, return the admin profile

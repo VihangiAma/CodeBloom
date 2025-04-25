@@ -25,11 +25,11 @@ export default function ServiceSupervisor() {
 
   /* ────────── data fetch ────────── */
   const fetchProfile = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?.token) return;
+    const token = localStorage.getItem("token");
+    if (!token) return;
     try {
       const res = await axios.get("http://localhost:5000/api/user/profile", {
-        headers: { Authorization: `Bearer ${user.token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setProfile(res.data.user);
     } catch (err) {
@@ -67,7 +67,7 @@ export default function ServiceSupervisor() {
           🚗 NIMAL MOTORS
         </h1>
 
-        <nav className="flex-1" />
+        <nav className="flex-1" /> {/* empty spacer */}
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
@@ -103,7 +103,7 @@ export default function ServiceSupervisor() {
             <div className="text-white drop-shadow-lg">
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
               <p className="text-sm">
-              Service Supervisor – Nimal Motors
+                Service Supervisor – Nimal Motors
                 {profile.fullName && ` – ${profile.fullName}`}
               </p>
             </div>
@@ -116,25 +116,14 @@ export default function ServiceSupervisor() {
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
-  Hi, I’m {profile.fullName || "—"}. As the Service Supervisor at Nimal Motors
-  I coordinate every stage of the customer‑service journey—from the moment a
-  vehicle is checked in to the final quality inspection and hand‑over. Drawing
-  on more than ten years in automotive after‑sales, I schedule repair bays,
-  allocate technicians, and keep customers fully informed with clear status
-  updates and transparent estimates. My focus is delivering first‑time‑fix
-  accuracy, minimizing turnaround time, and ensuring each driver leaves with
-  total confidence in our workmanship. When I’m not monitoring workflow KPIs,
-  you’ll catch me coaching service advisors, refining our digital booking
-  system, or exploring new ways to elevate the customer experience at every
-  touchpoint.
-</p>
-
+              Hi, I’m {profile.fullName || "—"}. As the Service Supervisor at Nimal Motors, I coordinate every stage of the customer‑service journey—from the moment a vehicle is checked in to the final quality inspection and hand‑over. Drawing on more than ten years in automotive after‑sales, I schedule repair bays, allocate technicians, and keep customers fully informed with clear status updates and transparent estimates. My focus is delivering first‑time‑fix accuracy, minimizing turnaround time, and ensuring each driver leaves with total confidence in our workmanship. When I’m not monitoring workflow KPIs, you’ll catch me coaching service advisors, refining our digital booking system, or exploring new ways to elevate the customer experience at every touchpoint.
+            </p>
           </section>
 
           {/* right: detail card */}
           <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">
-             Service Supervisor Profile
+              Service Supervisor Profile
             </h3>
 
             {isEditing ? (

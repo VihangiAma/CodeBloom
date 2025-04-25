@@ -9,10 +9,10 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function MechanicalSupervisor() {
+export default function MechanicalSupervisorProfile() {
   const navigate = useNavigate();
 
-  /* ────────── state ────────── */
+  /* ──────────────────── state ──────────────────── */
   const [profile, setProfile] = useState({
     userId: "",
     fullName: "",
@@ -23,14 +23,19 @@ export default function MechanicalSupervisor() {
   });
   const [isEditing, setIsEditing] = useState(false);
 
-  /* ────────── data fetch ────────── */
+  /* ──────────────────── data fetch ──────────────────── */
   const fetchProfile = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?.token) return;
     try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
       const res = await axios.get("http://localhost:5000/api/user/profile", {
-        headers: { Authorization: `Bearer ${user.token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
+      console.log(res.data.user); // Optional: for debugging
       setProfile(res.data.user);
     } catch (err) {
       console.error("Error fetching profile data", err);
@@ -41,7 +46,7 @@ export default function MechanicalSupervisor() {
     fetchProfile();
   }, []);
 
-  /* ────────── handlers ────────── */
+  /* ──────────────────── handlers ──────────────────── */
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -58,7 +63,7 @@ export default function MechanicalSupervisor() {
 
   const handleSignOut = () => navigate("/login");
 
-  /* ────────── render ────────── */
+  /* ──────────────────── render ──────────────────── */
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
       {/* ───── sidebar ───── */}
@@ -67,7 +72,7 @@ export default function MechanicalSupervisor() {
           🚗 NIMAL MOTORS
         </h1>
 
-        <nav className="flex-1" />
+        <nav className="flex-1" /> {/* empty spacer */}
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
@@ -103,7 +108,7 @@ export default function MechanicalSupervisor() {
             <div className="text-white drop-shadow-lg">
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
               <p className="text-sm">
-              Mechanical Supervisor – Nimal Motors
+                Mechanical Supervisor – Nimal Motors
                 {profile.fullName && ` – ${profile.fullName}`}
               </p>
             </div>
@@ -114,27 +119,26 @@ export default function MechanicalSupervisor() {
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* left: about me */}
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">About Me</h3>
+            <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
-  Hi, I’m {profile.fullName || "—"}. As the Mechanical Supervisor at
-  Nimal Motors I lead a team of technicians who handle everything from routine
-  maintenance to full engine and drivetrain rebuilds. With more than a decade
-  of hands‑on experience in automotive mechanics, I manage the mechanical
-  workshop workflow, perform advanced diagnostics, and verify that every repair
-  meets OEM specifications and our own quality benchmarks. My passion lies in
-  combining precision workmanship with clear communication so customers
-  understand exactly how we’re bringing their vehicles back to peak
-  performance. When I’m not under the hood fine‑tuning torque specs, you’ll
-  find me mentoring junior techs, implementing lean‑shop practices, or studying
-  the latest power‑train technologies to keep our services at the cutting edge.
-</p>
-
+              Hi, I’m {profile.fullName || "—"}. As the Mechanical Supervisor at
+              Nimal Motors, I lead a team of technicians who handle everything from routine
+              maintenance to full engine and drivetrain rebuilds. With more than a decade
+              of hands‑on experience in automotive mechanics, I manage the mechanical
+              workshop workflow, perform advanced diagnostics, and verify that every repair
+              meets OEM specifications and our own quality benchmarks. My passion lies in
+              combining precision workmanship with clear communication so customers
+              understand exactly how we’re bringing their vehicles back to peak
+              performance. When I’m not under the hood fine‑tuning torque specs, you’ll
+              find me mentoring junior techs, implementing lean‑shop practices, or studying
+              the latest power‑train technologies to keep our services at the cutting edge.
+            </p>
           </section>
 
           {/* right: detail card */}
           <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">
-             Mechanical Supervisor Profile
+              Mechanical Supervisor Profile
             </h3>
 
             {isEditing ? (
