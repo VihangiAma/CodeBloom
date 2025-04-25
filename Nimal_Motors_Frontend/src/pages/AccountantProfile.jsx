@@ -25,11 +25,11 @@ export default function AccountantProfile() {
 
   /* ────────── data fetch ────────── */
   const fetchProfile = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?.token) return;
+    const token = localStorage.getItem("token");
+    if (!token) return;
     try {
       const res = await axios.get("http://localhost:5000/api/user/profile", {
-        headers: { Authorization: `Bearer ${user.token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setProfile(res.data.user);
     } catch (err) {
@@ -40,7 +40,6 @@ export default function AccountantProfile() {
   useEffect(() => {
     fetchProfile();
   }, []);
-
   /* ────────── handlers ────────── */
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
