@@ -21,7 +21,7 @@ export default function AdminProfile() {
     email: "",
     username: "",
     phoneNumber: "",
-    type: "Admin",
+    type: "admin",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [showAddUserForm, setShowAddUserForm] = useState(false);
@@ -40,7 +40,7 @@ export default function AdminProfile() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user?.token) return;
     try {
-      const res = await axios.get("http://localhost:5000/api/user/profile", {
+      const res = await axios.get("http://localhost:5000/api/user/admin/profile", {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setProfile(res.data.user);

@@ -8,7 +8,13 @@ import {
   LogInUser,
   isAdminValid,
   isCustomerValid,
-  getUserProfile, // 👈 using this controller function
+  getUserProfile,
+  getAdminProfile,
+  getAccountantProfile,
+  getBodyshopSupProfile,
+  getElectricalSupProfile,
+  getMechanicalSupProfile,
+  getServiceSupProfile,
 } from "../Controllers/userController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
 
@@ -20,14 +26,19 @@ userRoutes.post("/login", LogInUser);
 
 // 🔐 PROTECTED ROUTES
 userRoutes.use(authenticateToken);
+userRoutes.get("/profile", getUserProfile);
+userRoutes.get("/admin/profile", getAdminProfile);
+userRoutes.get("/accountant/profile", getAccountantProfile);
+userRoutes.get("/bodyshop/profile", getBodyshopSupProfile);
+userRoutes.get("/electrical/profile", getElectricalSupProfile);
+userRoutes.get("/service/profile", getServiceSupProfile);
+userRoutes.get("/mechanical/profile", getMechanicalSupProfile);
 
 userRoutes.get("/", getAllUsers);
 userRoutes.get("/:userId", getUserById);
 userRoutes.delete("/:userId", deleteUserById);
 userRoutes.put("/:userId", putUserById);
 
-// ✅ SINGLE /profile route (Clean one!)
-userRoutes.get("/profile", getUserProfile);
 
 // ✅ ROLE CHECKS
 userRoutes.get("/admin/check", (req, res) => {

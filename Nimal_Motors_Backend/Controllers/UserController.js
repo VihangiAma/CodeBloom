@@ -236,6 +236,8 @@ export async function updatePassword(req, res) {
 
 export const getUserProfile = async (req, res) => {
     try {
+        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
+
         const { email } = req.user;
 
         if (!email) {
@@ -264,8 +266,248 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
-  
-  
+export const getAdminProfile = async (req, res) => {
+    try {
+        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
+
+        const { email } = req.user;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email missing in token" });
+        }
+
+        // Fetch user by email
+        const user = await Users.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Check if the user is an admin
+        if (user.type !== 'admin') {
+            return res.status(403).json({ success: false, message: "Access denied. User is not an admin" });
+        }
+
+        // If the user is an admin, return the admin profile
+        res.json({
+            success: true,
+            user: {
+                userId: user.userId,
+                fullName: user.fullName,
+                email: user.email,
+                username: user.username,
+                phoneNumber: user.phoneNumber,
+                type: user.type
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+export const getAccountantProfile = async (req, res) => {
+    try {
+        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
+
+        const { email } = req.user;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email missing in token" });
+        }
+
+        // Fetch user by email
+        const user = await Users.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Check if the user is an admin
+        if (user.type !== 'accountant') {
+            return res.status(403).json({ success: false, message: "Access denied. User is not an admin" });
+        }
+
+        // If the user is an admin, return the admin profile
+        res.json({
+            success: true,
+            user: {
+                userId: user.userId,
+                fullName: user.fullName,
+                email: user.email,
+                username: user.username,
+                phoneNumber: user.phoneNumber,
+                type: user.type
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+  export const getBodyshopSupProfile = async (req, res) => {
+    try {
+        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
+
+        const { email } = req.user;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email missing in token" });
+        }
+
+        // Fetch user by email
+        const user = await Users.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Check if the user is an admin
+        if (user.type !== 'bodyshopsupervisor') {
+            return res.status(403).json({ success: false, message: "Access denied. User is not an admin" });
+        }
+
+        // If the user is an admin, return the admin profile
+        res.json({
+            success: true,
+            user: {
+                userId: user.userId,
+                fullName: user.fullName,
+                email: user.email,
+                username: user.username,
+                phoneNumber: user.phoneNumber,
+                type: user.type
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+
+export const getMechanicalSupProfile = async (req, res) => {
+    try {
+        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
+
+        const { email } = req.user;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email missing in token" });
+        }
+
+        // Fetch user by email
+        const user = await Users.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Check if the user is an admin
+        if (user.type !== 'mechanicalsupervisor') {
+            return res.status(403).json({ success: false, message: "Access denied. User is not an admin" });
+        }
+
+        // If the user is an admin, return the admin profile
+        res.json({
+            success: true,
+            user: {
+                userId: user.userId,
+                fullName: user.fullName,
+                email: user.email,
+                username: user.username,
+                phoneNumber: user.phoneNumber,
+                type: user.type
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+
+export const getElectricalSupProfile = async (req, res) => {
+    try {
+        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
+
+        const { email } = req.user;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email missing in token" });
+        }
+
+        // Fetch user by email
+        const user = await Users.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Check if the user is an admin
+        if (user.type !== 'electricalsupervisor') {
+            return res.status(403).json({ success: false, message: "Access denied. User is not an admin" });
+        }
+
+        // If the user is an admin, return the admin profile
+        res.json({
+            success: true,
+            user: {
+                userId: user.userId,
+                fullName: user.fullName,
+                email: user.email,
+                username: user.username,
+                phoneNumber: user.phoneNumber,
+                type: user.type
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+export const getServiceSupProfile = async (req, res) => {
+    try {
+        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
+
+        const { email } = req.user;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email missing in token" });
+        }
+
+        // Fetch user by email
+        const user = await Users.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Check if the user is an admin
+        if (user.type !== 'servicesupervisor') {
+            return res.status(403).json({ success: false, message: "Access denied. User is not an admin" });
+        }
+
+        // If the user is an admin, return the admin profile
+        res.json({
+            success: true,
+            user: {
+                userId: user.userId,
+                fullName: user.fullName,
+                email: user.email,
+                username: user.username,
+                phoneNumber: user.phoneNumber,
+                type: user.type
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+
 
 
 export function isAdminValid(req) {
