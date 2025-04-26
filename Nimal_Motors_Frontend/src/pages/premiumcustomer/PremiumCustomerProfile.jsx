@@ -29,7 +29,7 @@ export default function PremiumCustomerProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
   
-      const res = await axios.get("http://localhost:5000/api/user/profile", {
+      const res = await axios.get("http://localhost:5001/api/user/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,7 +56,7 @@ export default function PremiumCustomerProfile() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5000/api/user", profile);
+      await axios.post("http://localhost:5001/api/user", profile);
     } catch (err) {
       console.error("Error updating user data", err);
     }

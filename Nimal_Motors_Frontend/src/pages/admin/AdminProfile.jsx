@@ -71,7 +71,7 @@ export default function AdminProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      await axios.post("http://localhost:5000/api/user", profile, {
+      await axios.post("http://localhost:5001/api/user", profile, {
         headers: { Authorization: `Bearer ${token}` },
       });
     } catch (err) {
@@ -84,7 +84,7 @@ export default function AdminProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("http://localhost:5000/api/user/admin/profile", {
+      const res = await axios.get("http://localhost:5001/api/user/admin/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

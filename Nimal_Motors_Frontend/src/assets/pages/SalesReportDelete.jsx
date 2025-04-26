@@ -23,7 +23,7 @@ const SalesReportDelete = ({ onDelete }) => {
 
     try {
       // Send DELETE request to the backend
-      const response = await axios.delete(`http://localhost:5000/api/SalesReports/${itemId}`);
+      const response = await axios.delete(`http://localhost:5001/api/SalesReports/${itemId}`);
 
       console.log("✅ Success:", response.data);
       setSuccessMessage("Sales report deleted successfully!");

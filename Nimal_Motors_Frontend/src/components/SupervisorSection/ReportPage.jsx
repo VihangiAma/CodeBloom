@@ -6,7 +6,7 @@ const ReportPage = () => {
 
   useEffect(() => {
     // Fetch all appointments
-    axios.get('http://localhost:5000/api/appointments')
+    axios.get('http://localhost:5001/api/appointments')
       .then(response => {
         setAppointments(response.data);
       })

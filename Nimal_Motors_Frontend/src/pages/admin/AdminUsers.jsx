@@ -17,7 +17,7 @@ export default function AdminUsers() {
         return;
       }
 
-      const res = await axios.get("http://localhost:5000/api/user/", {
+      const res = await axios.get("http://localhost:5001/api/user/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,7 +34,7 @@ export default function AdminUsers() {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/user/${userId}`, {
+      await axios.delete(`http://localhost:5001/api/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,7 +61,7 @@ export default function AdminUsers() {
   const saveUpdatedUser = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/user/${editUser.userId}`, editUser, {
+      await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
