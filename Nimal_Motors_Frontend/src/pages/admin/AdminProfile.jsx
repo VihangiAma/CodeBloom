@@ -11,20 +11,22 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-// Utility function to decode JWT
+// ------------------ JWT Decoding ------------------
 const decodeJWT = (token) => {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-
+  const jsonPayload = decodeURIComponent(
+    atob(base64).split('').map((c) =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join('')
+  );
   return JSON.parse(jsonPayload);
 };
 
 export default function AdminProfile() {
   const navigate = useNavigate();
 
+  // ------------------ States ------------------
   const [profile, setProfile] = useState({
     userId: "",
     fullName: "",
@@ -45,48 +47,22 @@ export default function AdminProfile() {
     type: "",
   });
 
-  const fetchProfile = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      const res = await axios.get("http://localhost:5000/api/user/admin/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setProfile(res.data.user);
-    } catch (err) {
-      console.error("Error fetching profile data", err);
-      navigate("/unauthorized"); // Optional fallback
-    }
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      // Decode token to check if the user is an admin
-      const decodedToken = decodeJWT(token);
-      if (decodedToken.type !== "admin") {
-        navigate("/unauthorized");
-      } else {
-        fetchProfile(); // Fetch profile if the user is an admin
-      }
-    } catch (err) {
-      console.error("Token error", err);
-      navigate("/login");
-    }
-  }, []);
-
+  // ------------------ Handlers ------------------
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNewUserChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const toggleAddUserForm = () => setShowAddUserForm((prev) => !prev);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   const saveProfile = async () => {
@@ -96,56 +72,125 @@ export default function AdminProfile() {
       if (!token) return;
 
       await axios.post("http://localhost:5000/api/user", profile, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
     } catch (err) {
       console.error("Error updating user data", err);
     }
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.get("http://localhost:5000/api/user/admin/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setProfile(res.data.user);
+    } catch (err) {
+      console.error("Error fetching profile data", err);
+      navigate("/unauthorized");
+    }
   };
 
-  const toggleAddUserForm = () => setShowAddUserForm((prev) => !prev);
+  // ------------------ Effects ------------------
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
-  const handleNewUserChange = (e) => {
-    const { name, value } = e.target;
-    setNewUser((prev) => ({ ...prev, [name]: value }));
-  };
+    try {
+      const decoded = decodeJWT(token);
+      if (decoded.type !== "admin") {
+        navigate("/unauthorized");
+      } else {
+        fetchProfile();
+      }
+    } catch (err) {
+      console.error("Token error", err);
+      navigate("/login");
+    }
+  }, []);
 
+  // ------------------ UI Components ------------------
+  const ProfileField = ({ label, value, name, onChange }) => (
+    <div className="flex flex-col">
+      <label className="font-medium capitalize">{label}:</label>
+      <input
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="bg-gray-800 border border-gray-500 p-2 rounded text-white"
+      />
+    </div>
+  );
+
+  const ReadOnlyField = ({ label, value }) => (
+    <p>
+      <strong>{label}:</strong> {value || "—"}
+    </p>
+  );
+
+  const AddUserForm = () => (
+    <div className="mt-4 p-4 bg-gray-800 rounded space-y-2 border border-gray-600">
+      <h4 className="font-semibold text-white mb-2">Add New User</h4>
+      {["userId", "fullName", "email", "phoneNumber", "username"].map((field) => (
+        <input
+          key={field}
+          name={field}
+          value={newUser[field]}
+          onChange={handleNewUserChange}
+          placeholder={field}
+          className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 placeholder-gray-400"
+        />
+      ))}
+      <select
+        name="type"
+        value={newUser.type}
+        onChange={handleNewUserChange}
+        className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+      >
+        <option value="">Select user type</option>
+        <option value="Bodyshop Supervisor">Bodyshop Supervisor</option>
+        <option value="Mechanical Supervisor">Mechanical Supervisor</option>
+        <option value="Electrical Supervisor">Electrical Supervisor</option>
+        <option value="Service Supervisor">Service Supervisor</option>
+        <option value="Accountant">Accountant</option>
+        <option value="Admin">Admin</option>
+      </select>
+    </div>
+  );
+
+  // ------------------ Main Render ------------------
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
-          🚗 NIMAL MOTORS
-        </h1>
+        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🚗 NIMAL MOTORS</h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
             onClick={fetchProfile}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 font-semibold transition"
           >
-            <FaUserCircle className="text-lg" />
-            Profile
+            <FaUserCircle className="text-lg" /> Profile
           </button>
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
           >
-            <FaSignOutAlt className="text-lg" />
-            Sign Out
+            <FaSignOutAlt className="text-lg" /> Sign Out
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-6 overflow-auto">
-        {/* Cover Image */}
+        {/* Cover */}
         <div
           className="rounded-xl h-48 bg-cover bg-center relative"
           style={{ backgroundImage: `url("/bgimage.jpg")` }}
@@ -156,18 +201,16 @@ export default function AdminProfile() {
               alt="profile"
               className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
             />
-            <div className="text-white drop-shadow-lg">
-              <h2 className="text-2xl font-bold">{profile.fullName}</h2>
-              <p className="text-sm">
-                Admin – Nimal Motors{profile.fullName && ` – ${profile.fullName}`}
-              </p>
+            <div>
+              <h2 className="text-2xl font-bold text-white">{profile.fullName}</h2>
+              <p className="text-sm text-white">Admin – Nimal Motors</p>
             </div>
           </div>
         </div>
 
-        {/* About Me & Details */}
+        {/* Content Sections */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* About Me Section */}
+          {/* About Me */}
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
@@ -181,52 +224,31 @@ export default function AdminProfile() {
             </p>
           </section>
 
-          {/* Profile Info + Tools */}
+          {/* Profile Details */}
           <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">Admin Profile</h3>
-
             {isEditing ? (
               <div className="space-y-3 text-sm">
                 {["fullName", "email", "username", "phoneNumber"].map((f) => (
-                  <div key={f} className="flex flex-col">
-                    <label className="font-medium capitalize">{f}:</label>
-                    <input
-                      name={f}
-                      value={profile[f]}
-                      onChange={handleProfileChange}
-                      className="bg-gray-800 border border-gray-500 p-2 rounded text-white"
-                    />
-                  </div>
+                  <ProfileField
+                    key={f}
+                    label={f}
+                    name={f}
+                    value={profile[f]}
+                    onChange={handleProfileChange}
+                  />
                 ))}
                 <div className="space-x-2 mt-2">
-                  <button
-                    onClick={saveProfile}
-                    className="text-green-400 text-sm hover:underline"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="text-red-400 text-sm hover:underline"
-                  >
-                    Cancel
-                  </button>
+                  <button onClick={saveProfile} className="text-green-400 text-sm hover:underline">Save</button>
+                  <button onClick={() => setIsEditing(false)} className="text-red-400 text-sm hover:underline">Cancel</button>
                 </div>
               </div>
             ) : (
               <div className="text-sm space-y-2">
-                <p>
-                  <strong>Full Name:</strong> {profile.fullName || "—"}
-                </p>
-                <p>
-                  <strong>Mobile:</strong> {profile.phoneNumber || "—"}
-                </p>
-                <p>
-                  <strong>Email:</strong> {profile.email || "—"}
-                </p>
-                <p>
-                  <strong>Username:</strong> {profile.username || "—"}
-                </p>
+                <ReadOnlyField label="Full Name" value={profile.fullName} />
+                <ReadOnlyField label="Mobile" value={profile.phoneNumber} />
+                <ReadOnlyField label="Email" value={profile.email} />
+                <ReadOnlyField label="Username" value={profile.username} />
                 <div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
@@ -262,38 +284,7 @@ export default function AdminProfile() {
               </button>
             </div>
 
-            {showAddUserForm && (
-              <div className="mt-4 p-4 bg-gray-800 rounded space-y-2 border border-gray-600">
-                <h4 className="font-semibold text-white mb-2">Add New User</h4>
-                {["userId", "fullName", "email", "phoneNumber", "username"].map(
-                  (field) => (
-                    <input
-                      key={field}
-                      name={field}
-                      value={newUser[field]}
-                      onChange={handleNewUserChange}
-                      placeholder={field}
-                      className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 placeholder-gray-400"
-                    />
-                  )
-                )}
-                <select
-                  name="type"
-                  value={newUser.type}
-                  onChange={handleNewUserChange}
-                  className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-                >
-                  <option value="">Select user type</option>
-                  <option value="Bodyshop Supervisor">Bodyshop Supervisor</option>
-                  <option value="Mechanical Supervisor">Mechanical Supervisor</option>
-                  <option value="Electrical Supervisor">Electrical Supervisor</option>
-                  <option value="Service Supervisor">Service Supervisor</option>
-                  <option value="Accountant">Accountant</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Premium Customer">Premium Customer</option>
-                </select>
-              </div>
-            )}
+            {showAddUserForm && <AddUserForm />}
           </section>
         </div>
       </main>
