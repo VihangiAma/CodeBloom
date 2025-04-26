@@ -165,9 +165,9 @@ export default function AdminUsers() {
                 <td className="p-3 border border-gray-700 flex flex-wrap gap-2">
                   <button
                     onClick={() => openEditModal(user)}
-                    className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white transition-all"
+                    className="flex items-center gap-1 bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white transition-all"
                   >
-                    <FaEdit /> Edit
+                    <FaEdit /> Update
                   </button>
                   <button
                     onClick={() => openDeleteModal(user)}
@@ -269,3 +269,4 @@ export default function AdminUsers() {
     </div>
   );
 }
+
