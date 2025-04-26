@@ -1,10 +1,19 @@
 import Appointment from "../Models/Appointment.js";
 
 // Create appointment
-export function createAppointment (req, res) {
+export async function createAppointment(req, res) {
   try {
+    const { date, time } = req.body;
+
+    // Check if there's already a booking at the same date and time
+    const existingAppointment = await Appointment.findOne({ date, time });
+    if (existingAppointment) {
+      return res.status(400).json({ error: "This time slot is already booked. Please choose another." });
+    }
+
+    // If no existing appointment, proceed to save
     const appointment = new Appointment(req.body);
-    appointment.save();
+    await appointment.save();
     res.status(201).json(appointment);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -12,30 +21,30 @@ export function createAppointment (req, res) {
 }
 
 // Get all appointments
-export function getAppointments (req, res) {
+export async function getAppointments(req, res) {
   try {
-    const appointments = ppointment.find();
-    res.json(appointments);
+    const appointments = await Appointment.find();
+    res.status(200).json(appointments);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
 
-// Update appointment
-export function updateAppointment (req, res) {
+// Update appointment status (Approve or Reject)
+export async function updateAppointment(req, res) {
   try {
-    const appointment = Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(appointment);
+    const appointment = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.status(200).json(appointment);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 }
 
 // Delete appointment
-export function deleteAppointment (req, res){
+export async function deleteAppointment(req, res) {
   try {
-    Appointment.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Appointment deleted' });
+    await Appointment.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Appointment deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

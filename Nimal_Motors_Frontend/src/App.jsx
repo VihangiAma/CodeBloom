@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login/LoginPage';
@@ -10,15 +12,19 @@ import ServiceSupervisor from './pages/supervisors/ServiceSupervisor';
 import ElectricalSupervisor from './pages/supervisors/ElectricalSupervisor';
 import AccountantProfile from './pages/AccountantProfile';
 import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
+
 import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
+
+
+import InventoryDashboard from "./components/InventoryDashboard";
 
 
 // Protected Route Component
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/login" />;
-};
+
 
 function App() {
   return (
@@ -113,6 +119,6 @@ function App() {
       </div>
     </Router>
   );
-}
+}}
 
 export default App;
