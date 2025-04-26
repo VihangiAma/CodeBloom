@@ -11,10 +11,20 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+// Utility function to decode JWT
+const decodeJWT = (token) => {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+};
+
 export default function AdminProfile() {
   const navigate = useNavigate();
 
-  /* ────────── state ────────── */
   const [profile, setProfile] = useState({
     userId: "",
     fullName: "",
@@ -23,37 +33,57 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "admin",
   });
+
   const [isEditing, setIsEditing] = useState(false);
   const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [newUser, setNewUser] = useState({
     userId: "",
     fullName: "",
     email: "",
-    phoneNumber: "",
     username: "",
+    phoneNumber: "",
     type: "",
   });
-  const [message, setMessage] = useState("");
 
-  /* ────────── data fetch ────────── */
   const fetchProfile = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?.token) return;
     try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
       const res = await axios.get("http://localhost:5000/api/user/admin/profile", {
-        headers: { Authorization: `Bearer ${user.token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       setProfile(res.data.user);
     } catch (err) {
       console.error("Error fetching profile data", err);
+      navigate("/unauthorized"); // Optional fallback
     }
   };
 
   useEffect(() => {
-    fetchProfile();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      // Decode token to check if the user is an admin
+      const decodedToken = decodeJWT(token);
+      if (decodedToken.type !== "admin") {
+        navigate("/unauthorized");
+      } else {
+        fetchProfile(); // Fetch profile if the user is an admin
+      }
+    } catch (err) {
+      console.error("Token error", err);
+      navigate("/login");
+    }
   }, []);
 
-  /* ────────── handlers ────────── */
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -62,15 +92,24 @@ export default function AdminProfile() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5000/api/user/admin", profile);
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      await axios.post("http://localhost:5000/api/user", profile, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (err) {
       console.error("Error updating user data", err);
     }
   };
 
-  const handleSignOut = () => navigate("/login");
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
-  /* add‑user helpers */
   const toggleAddUserForm = () => setShowAddUserForm((prev) => !prev);
 
   const handleNewUserChange = (e) => {
@@ -78,38 +117,14 @@ export default function AdminProfile() {
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const submitNewUser = async () => {
-    try {
-      await axios.post("/api/admin/add-user", newUser, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
-      });
-      setMessage("User added successfully!");
-    } catch (err) {
-      console.error("Error adding user:", err);
-      setMessage("Error: Could not add user.");
-    }
-    setShowAddUserForm(false);
-    setNewUser({
-      userId: "",
-      fullName: "",
-      email: "",
-      phoneNumber: "",
-      username: "",
-      type: "",
-    });
-  };
-
-  /* ────────── render ────────── */
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
-      {/* ───── sidebar ───── */}
+      {/* Sidebar */}
       <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
         <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
           🚗 NIMAL MOTORS
         </h1>
-
         <nav className="flex-1" />
-
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
             onClick={fetchProfile}
@@ -128,9 +143,9 @@ export default function AdminProfile() {
         </div>
       </aside>
 
-      {/* ───── main content ───── */}
+      {/* Main Content */}
       <main className="flex-1 p-6 overflow-auto">
-        {/* cover image + name */}
+        {/* Cover Image */}
         <div
           className="rounded-xl h-48 bg-cover bg-center relative"
           style={{ backgroundImage: `url("/bgimage.jpg")` }}
@@ -144,16 +159,15 @@ export default function AdminProfile() {
             <div className="text-white drop-shadow-lg">
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
               <p className="text-sm">
-                Admin – Nimal Motors
-                {profile.fullName && ` – ${profile.fullName}`}
+                Admin – Nimal Motors{profile.fullName && ` – ${profile.fullName}`}
               </p>
             </div>
           </div>
         </div>
 
-        {/* about‑me & details + quick tools */}
+        {/* About Me & Details */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* left: about me */}
+          {/* About Me Section */}
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
@@ -163,14 +177,11 @@ export default function AdminProfile() {
               optimisation. With a decade of experience in automotive operations
               and administration, I bridge the gap between technical teams and
               management, ensuring every department gets the resources and data
-              they need to perform at their best. When I’m not streamlining
-              workflows or crunching metrics, you’ll find me mentoring staff on
-              best‑practice protocols or researching new digital tools that keep
-              Nimal Motors ahead of the curve.
+              they need to perform at their best.
             </p>
           </section>
 
-          {/* right: detail card & tools */}
+          {/* Profile Info + Tools */}
           <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">Admin Profile</h3>
 
@@ -216,7 +227,6 @@ export default function AdminProfile() {
                 <p>
                   <strong>Username:</strong> {profile.username || "—"}
                 </p>
-
                 <div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
@@ -234,7 +244,7 @@ export default function AdminProfile() {
               </button>
             )}
 
-            {/* ─── quick tools ─── */}
+            {/* Quick Tools */}
             <hr className="my-6 border-gray-600" />
             <h4 className="text-base font-semibold mb-3">Quick Tools</h4>
             <div className="space-y-2">
@@ -252,7 +262,6 @@ export default function AdminProfile() {
               </button>
             </div>
 
-            {/* add‑user form */}
             {showAddUserForm && (
               <div className="mt-4 p-4 bg-gray-800 rounded space-y-2 border border-gray-600">
                 <h4 className="font-semibold text-white mb-2">Add New User</h4>
@@ -268,7 +277,6 @@ export default function AdminProfile() {
                     />
                   )
                 )}
-
                 <select
                   name="type"
                   value={newUser.type}
@@ -277,34 +285,13 @@ export default function AdminProfile() {
                 >
                   <option value="">Select user type</option>
                   <option value="Bodyshop Supervisor">Bodyshop Supervisor</option>
-                  <option value="Mechanical Supervisor">
-                    Mechanical Supervisor
-                  </option>
-                  <option value="Electrical Supervisor">
-                    Electrical Supervisor
-                  </option>
-                  <option value="Premium Customer">Premium Customer</option>
+                  <option value="Mechanical Supervisor">Mechanical Supervisor</option>
+                  <option value="Electrical Supervisor">Electrical Supervisor</option>
+                  <option value="Service Supervisor">Service Supervisor</option>
                   <option value="Accountant">Accountant</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Premium Customer">Premium Customer</option>
                 </select>
-
-                <button
-                  onClick={submitNewUser}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                >
-                  Submit
-                </button>
-
-                {message && (
-                  <div
-                    className={`mt-4 text-center p-2 rounded ${
-                      message.includes("successfully")
-                        ? "bg-green-500"
-                        : "bg-red-500"
-                    }`}
-                  >
-                    {message}
-                  </div>
-                )}
               </div>
             )}
           </section>
