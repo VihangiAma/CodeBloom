@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
+
 import connectDB from "./Models/db.js";
 
 //Import Routes
@@ -36,8 +37,8 @@ app.use("/api/appointments" ,appointmentRouter);
 // CORS configuration
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // 👈 Make sure this matches EXACTLY
-  credentials: true,               // 👈 If you're using cookies or tokens
+  origin: 'http://localhost:5173', 
+  credentials: true,               
 };
 
 app.use(cors(corsOptions));
@@ -52,7 +53,7 @@ mongoose.connect(process.env.MONGO_URL)
     .catch(err => console.error("Database connection failed:", err));
 
 // Routes
-app.use("/api/user", userRoutes);  // ✅ Fixed: use userRoutes
+app.use("/api/user", userRoutes);  
 
 // Error handling middleware
 app.use((err, req, res, next) => {

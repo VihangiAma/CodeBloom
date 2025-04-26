@@ -4,8 +4,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login/LoginPage';
 import RegisterPage from './pages/register/RegisterPage';
-import ProfilePage from './pages/ProfilePage';
-import AdminDashboard from './pages/admin/AdminDashboard';
+//import ProfilePage from './pages/ProfilePage';
 import AdminProfile from './pages/admin/AdminProfile';
 import MechanicalSupervisor from './pages/supervisors/MechanicalSupervisor';
 import BodyshopSupervisor from './pages/supervisors/BodyshopSupervisor';
@@ -13,7 +12,13 @@ import ServiceSupervisor from './pages/supervisors/ServiceSupervisor';
 import ElectricalSupervisor from './pages/supervisors/ElectricalSupervisor';
 import AccountantProfile from './pages/AccountantProfile';
 import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
+
+import UserManagement from './pages/admin/UserManagement';
+import AdminUsers from './pages/admin/AdminUsers';
+
+
 import InventoryDashboard from "./components/InventoryDashboard";
+
 
 // Protected Route Component
 const PrivateRoute = ({ children }) => {
@@ -28,9 +33,11 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
 
-          {/* Protected Routes */}
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+
+          {/* Protected Routes
           <Route
             path="/profile"
             element={
@@ -38,15 +45,17 @@ function App() {
                 <ProfilePage />
               </PrivateRoute>
             }
-          />
-          <Route
-            path="/admin-dashboard"
+          /> */}
+
+{/* <Route
+            path="/admin/users"
             element={
               <PrivateRoute>
-                <AdminDashboard />
+                <UserManagement />
               </PrivateRoute>
             }
-          />
+          /> */}
+
           <Route
             path="/admin-profile"
             element={
