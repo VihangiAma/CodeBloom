@@ -1,272 +1,123 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaUser, FaTrash, FaArrowLeft, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [editedUser, setEditedUser] = useState({});
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const token = localStorage.getItem("authToken");
-
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
       if (!token) {
-        setMessage("Not authorized. Please log in.");
-        setLoading(false);
+        navigate("/login");
         return;
       }
 
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.type !== "admin") {
-          setMessage("Access denied. Admins only.");
-          setLoading(false);
-          return;
-        }
+      const res = await axios.get("http://localhost:5000/api/user/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        const response = await axios.get("/api/admin/user", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      // Ensure res.data.users is an array before setting it to the state
+      setUsers(Array.isArray(res.data.data) ? res.data.data : []);
+    } catch (err) {
+      console.error("Error fetching users", err);
+    }
+  };
 
-        const fetchedUsers = Array.isArray(response.data)
-          ? response.data
-          : response.data.users;
+  const deleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
 
-        setUsers(fetchedUsers);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        setMessage("Error loading users.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5000/api/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      setUsers(users.filter((user) => user.userId !== userId));
+    } catch (err) {
+      console.error("Error deleting user", err);
+    }
+  };
+
+  const updateUser = (userId) => {
+    // Navigate to the user update page (you may want to create a separate page for updating user details)
+    navigate(`/update-user/${userId}`);
+  };
+
+  useEffect(() => {
     fetchUsers();
   }, []);
 
-  const openDeleteModal = (user) => {
-    setSelectedUser(user);
-    setShowDeleteModal(true);
-  };
-
-  const openEditModal = (user) => {
-    setSelectedUser(user);
-    setEditedUser({ ...user });
-    setShowEditModal(true);
-  };
-
-  const handleDeleteConfirmed = async () => {
-    try {
-      await axios.delete(`/api/admin/delete-user/${selectedUser.userId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-      setUsers((prev) => prev.filter((u) => u.userId !== selectedUser.userId));
-      setMessage("User deleted successfully.");
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      setMessage("Error: Could not delete user.");
-    } finally {
-      setShowDeleteModal(false);
-    }
-  };
-
-  const handleEditSubmit = async () => {
-    try {
-      await axios.put(
-        `/api/admin/edit-user/${editedUser.userId}`,
-        editedUser,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.userId === editedUser.userId ? { ...u, ...editedUser } : u
-        )
-      );
-      setMessage("User updated successfully.");
-    } catch (error) {
-      console.error("Error updating user:", error);
-      setMessage("Error: Could not update user.");
-    } finally {
-      setShowEditModal(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gray-900 text-white">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">All Users</h1>
-
-      {message && (
-        <div
-          className={`mb-4 p-3 rounded text-center ${
-            message.includes("successfully")
-              ? "bg-green-600 text-white"
-              : "bg-red-600 text-white"
-          }`}
+      <div className="flex items-center justify-between mb-6">
+      <h2 className="text-2xl font-bold text-white flex items-center">
+  👥 All Registered Users
+</h2>
+        <button
+          onClick={() => navigate("/admin-profile")}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm"
         >
-          {message}
-        </div>
-      )}
+          <FaArrowLeft /> Back to Profile
+        </button>
+      </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-gray-700 text-sm">
+      <div className="overflow-auto rounded-lg shadow border border-gray-700">
+        <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-800">
             <tr>
-              {[
-                "User ID",
-                "Full Name",
-                "Type",
-                "Username",
-                "Phone",
-                "Email",
-                "Actions",
-              ].map((header, idx) => (
-                <th
-                  key={idx}
-                  className="p-3 border border-gray-700 text-left font-semibold"
-                >
-                  {header}
-                </th>
-              ))}
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">User ID</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Full Name</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Phone</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Username</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.userId} className="hover:bg-gray-700">
-                <td className="p-3 border border-gray-700">{user.userId}</td>
-                <td className="p-3 border border-gray-700">{user.fullName}</td>
-                <td className="p-3 border border-gray-700 capitalize">
-                  {user.type}
-                </td>
-                <td className="p-3 border border-gray-700">{user.username}</td>
-                <td className="p-3 border border-gray-700">{user.phoneNumber}</td>
-                <td className="p-3 border border-gray-700">{user.email}</td>
-                <td className="p-3 border border-gray-700 flex flex-wrap gap-2">
+          <tbody className="divide-y divide-gray-700 bg-gray-900">
+            {users.length > 0 ? (
+              users.map((user) => (
+                <tr key={user.userId} className="hover:bg-gray-800">
+                  <td className="px-6 py-4 text-sm">{user.userId}</td>
+                  <td className="px-6 py-4 text-sm">{user.fullName}</td>
+                  <td className="px-6 py-4 text-sm">{user.email}</td>
+                  <td className="px-6 py-4 text-sm">{user.phoneNumber}</td>
+                  <td className="px-6 py-4 text-sm">{user.username}</td>
+                  <td className="px-6 py-4 text-sm capitalize">{user.type}</td>
+                  <td className="px-6 py-4 flex gap-3">
                   <button
-                    onClick={() => openEditModal(user)}
-                    className="flex items-center gap-1 bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white transition-all"
-                  >
-                    <FaEdit /> Update
-                  </button>
-                  <button
-                    onClick={() => openDeleteModal(user)}
-                    className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white transition-all"
-                  >
-                    <FaTrash /> Delete
-                  </button>
+  className="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+  onClick={() => updateUser(user.userId)}
+>
+  <FaEdit /> Update
+</button>
+<button
+  className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+  onClick={() => deleteUser(user.userId)}
+>
+  <FaTrash /> Delete
+</button>
+
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center text-sm py-6 text-gray-400">
+                  No users found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
-
-      {/* Delete Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white text-black rounded-lg p-6 w-full max-w-md shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
-            <p className="mb-4">
-              Are you sure you want to delete{" "}
-              <span className="font-semibold">{selectedUser?.fullName}</span>?
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                className="bg-gray-400 hover:bg-gray-500 px-4 py-2 rounded"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 text-white rounded"
-                onClick={handleDeleteConfirmed}
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Modal */}
-      {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white text-black rounded-lg p-6 w-full max-w-md shadow-lg">
-            <h2 className="text-xl font-bold mb-6">Edit User</h2>
-            <div className="flex flex-col gap-4">
-              <label className="flex flex-col">
-                Full Name
-                <input
-                  className="p-2 border border-gray-300 rounded mt-1"
-                  value={editedUser.fullName}
-                  onChange={(e) =>
-                    setEditedUser({ ...editedUser, fullName: e.target.value })
-                  }
-                />
-              </label>
-              <label className="flex flex-col">
-                Phone Number
-                <input
-                  className="p-2 border border-gray-300 rounded mt-1"
-                  value={editedUser.phoneNumber}
-                  onChange={(e) =>
-                    setEditedUser({
-                      ...editedUser,
-                      phoneNumber: e.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label className="flex flex-col">
-                Email
-                <input
-                  className="p-2 border border-gray-300 rounded mt-1"
-                  value={editedUser.email}
-                  onChange={(e) =>
-                    setEditedUser({ ...editedUser, email: e.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                className="bg-gray-400 hover:bg-gray-500 px-4 py-2 rounded"
-                onClick={() => setShowEditModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white rounded"
-                onClick={handleEditSubmit}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
-
