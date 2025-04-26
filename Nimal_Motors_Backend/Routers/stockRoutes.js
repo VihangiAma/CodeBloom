@@ -1,5 +1,5 @@
 import express from "express";
-import { getStockItems, addStockItem, updateStockItem, deleteStockItem } from "../Controllers/stockControllers.js";
+import { getStockItems, addStockItem, updateStockItem, deleteStockItem,checkLowStock } from "../Controllers/stockControllers.js";
 
 const router = express.Router();
 
@@ -10,25 +10,12 @@ router.get("/", (req, res) => {
 });
 
 // Stock CRUD Routes
-router.get("/items", async (req, res) => {
-    try {
-        const { itemName } = req.query;
 
-        if (!itemName) {
-            return res.status(400).json({ error: "Item name is required" });
-        }
 
-        const results = await Stock.find({ itemName: { $regex: itemName, $options: "i" } });
-
-        res.json(results);
-    } catch (error) {
-        console.error("Search Error:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
-
+router.get("/items",getStockItems);
 router.post("/add", addStockItem);
 router.put("/update/:id", updateStockItem);
-router.delete("/delete/:id", deleteStockItem);
+router.delete("/delete/:itemId", deleteStockItem);
+router.get("/low-stock", checkLowStock)
 
 export default router;
