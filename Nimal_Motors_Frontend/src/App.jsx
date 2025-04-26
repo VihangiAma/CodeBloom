@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
 import RegisterPage from './pages/register/RegisterPage';
+
 import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
@@ -39,10 +40,26 @@ import BodyShopSupervisorSection from './Components/SupervisorSection/BodyShopSu
 import BookAppointment from './Components/CustomerSection/BookAppoinment';
 
 // Protected Route Components
+import UserManagement from './pages/admin/UserManagement';
+import AdminUsers from './pages/admin/AdminUsers';
+
+
+import InventoryDashboard from "./components/InventoryDashboard";
+
+import HomePage from "./assets/pages/HomePage";
+import AdminDashboard from "./assets/pages/AdminDashBord";
+import SalesReport from "./assets/pages/SalesReport";
+import SalesReportAdd from "./assets/pages/SalesReportAdd";
+import SalesReportUpdate from "./assets/pages/SalesReportUpdate";
+import SalesReportDelete from "./assets/pages/SalesReportDelete";
+import SalesReportView from "./assets/pages/SalesReportView";
+
+
+// Protected Route Component
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/login" />;
-};
+
 
 const SupervisorPrivateRoute = ({ children }) => {
   const authToken = localStorage.getItem('authToken');
@@ -52,6 +69,7 @@ const SupervisorPrivateRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
@@ -250,11 +268,108 @@ function App() {
         {/* Customer Public Routes */}
         <Route path="/book-appointment" element={<BookAppointment />} />
 
+      <div className="App">
+        <Routes>
+    <Route path="/" element={<HomePage />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
+        <Route path="/sales-report" element={<SalesReport />} />
+        <Route
+          path="/add-sales-report"
+          element={<SalesReportAdd onAdd={() => {}} />}
+        />
+
+        <Route path="/update-sales-report" element={<SalesReportUpdate />} />
+        <Route path="/delete-sales-report" element={<SalesReportDelete />} />
+        <Route path="/view-sales-report" element={<SalesReportView />} />
+          {/* Public Routes */}
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+
+          {/* Protected Routes
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <ProfilePage />
+              </PrivateRoute>
+            }
+          /> */}
+
+{/* <Route
+            path="/admin/users"
+            element={
+              <PrivateRoute>
+                <UserManagement />
+              </PrivateRoute>
+            }
+          /> */}
+
+          <Route
+            path="/admin-profile"
+            element={
+              <PrivateRoute>
+                <AdminProfile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/mechanical-supervisor"
+            element={
+              <PrivateRoute>
+                <MechanicalSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/bodyshop-supervisor"
+            element={
+              <PrivateRoute>
+                <BodyshopSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/service-supervisor"
+            element={
+              <PrivateRoute>
+                <ServiceSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/electrical-supervisor"
+            element={
+              <PrivateRoute>
+                <ElectricalSupervisor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/accountant"
+            element={
+              <PrivateRoute>
+                <AccountantProfile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/premium-customer"
+            element={
+              <PrivateRoute>
+                <PremiumCustomerProfile />
+              </PrivateRoute>
+            }
+          />
+
+
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );
-}
+}}
 
 export default App;

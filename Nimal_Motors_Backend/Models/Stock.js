@@ -9,8 +9,8 @@ const stockSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    supplierId: {
-        type: mongoose.Schema.Types.ObjectId,
+    companyName: {
+        type: String,
         ref: "Supplier", // Reference to the Supplier entity
         required: true,
     },
@@ -30,7 +30,8 @@ const stockSchema = new mongoose.Schema({
     lastUpdated: {
         type: Date,
         default: Date.now,
-    }
+    },
+    threshold: { type: Number, default: 10 },
 });
 
 const Stock = mongoose.model("Stock", stockSchema);
