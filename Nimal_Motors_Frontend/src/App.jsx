@@ -1,8 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+// Public Pages
 import LoginPage from './pages/login/LoginPage';
 import RegisterPage from './pages/register/RegisterPage';
-//import ProfilePage from './pages/ProfilePage';
+
+import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+
+// Protected Pages (User)
+import ProfilePage from './pages/ProfilePage';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProfile from './pages/admin/AdminProfile';
 import MechanicalSupervisor from './pages/supervisors/MechanicalSupervisor';
 import BodyshopSupervisor from './pages/supervisors/BodyshopSupervisor';
@@ -11,6 +18,28 @@ import ElectricalSupervisor from './pages/supervisors/ElectricalSupervisor';
 import AccountantProfile from './pages/AccountantProfile';
 import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
 
+// Supervisor Protected Pages
+import SupervisorDashboard from './Components/SupervisorSection/SupervisorDashboard';
+import SupervisorProfile from './Components/SupervisorSection/SupervisorProfile';
+import ProgressPage from './Components/SupervisorSection/ProgressPage';
+import ReportPage from './Components/SupervisorSection/ReportPage';
+import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
+import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+
+// Section-specific Dashboards
+import MechanicalDashboard from './Components/SupervisorSection/Supervisors/MechanicalDashboard';
+import ElectricalDashboard from './Components/SupervisorSection/Supervisors/ElectricalDashboard';
+import BodyShopDashboard from './Components/SupervisorSection/Supervisors/BodyShopDashboard';
+import ServiceDashboard from './Components/SupervisorSection/Supervisors/ServiceDashboard';
+import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
+import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
+import ElectricalSupervisorSection from './Components/SupervisorSection/ElectriaclSupervisorDashboard';
+import BodyShopSupervisorSection from './Components/SupervisorSection/BodyShopSupervisorDashboard';
+
+// Customer Pages
+import BookAppointment from './Components/CustomerSection/BookAppoinment';
+
+// Protected Route Components
 import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
@@ -32,9 +61,213 @@ const PrivateRoute = ({ children }) => {
   return token ? children : <Navigate to="/login" />;
 
 
+const SupervisorPrivateRoute = ({ children }) => {
+  const authToken = localStorage.getItem('authToken');
+  return authToken ? children : <Navigate to="/login" />;
+};
+
 function App() {
   return (
     <Router>
+
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
+
+        {/* Protected User Routes */}
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin-profile"
+          element={
+            <PrivateRoute>
+              <AdminProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/mechanical-supervisor"
+          element={
+            <PrivateRoute>
+              <MechanicalSupervisor />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/bodyshop-supervisor"
+          element={
+            <PrivateRoute>
+              <BodyshopSupervisor />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/service-supervisor"
+          element={
+            <PrivateRoute>
+              <ServiceSupervisor />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/electrical-supervisor"
+          element={
+            <PrivateRoute>
+              <ElectricalSupervisor />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/accountant"
+          element={
+            <PrivateRoute>
+              <AccountantProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/premium-customer"
+          element={
+            <PrivateRoute>
+              <PremiumCustomerProfile />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Supervisor Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <SupervisorPrivateRoute>
+              <SupervisorDashboard />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/supervisor-profile"
+          element={
+            <SupervisorPrivateRoute>
+              <SupervisorProfile />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/appointments"
+          element={
+            <SupervisorPrivateRoute>
+              <AppointmentDetails />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            <SupervisorPrivateRoute>
+              <ProgressPage />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/report"
+          element={
+            <SupervisorPrivateRoute>
+              <ReportPage />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/add-service"
+          element={
+            <SupervisorPrivateRoute>
+              <AddServiceForm />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/supervisor/mechanical"
+          element={
+            <SupervisorPrivateRoute>
+              <MechanicalDashboard />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/supervisor/electrical"
+          element={
+            <SupervisorPrivateRoute>
+              <ElectricalDashboard />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/supervisor/body-shop"
+          element={
+            <SupervisorPrivateRoute>
+              <BodyShopDashboard />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/supervisor/service"
+          element={
+            <SupervisorPrivateRoute>
+              <ServiceDashboard />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/service-dashboard"
+          element={
+            <SupervisorPrivateRoute>
+              <ServiceSupervisorDashboard />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/mechanical-supervisor-dashboard"
+          element={
+            <SupervisorPrivateRoute>
+              <MechanicalSupervisorSection />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/electrical-supervisor-dashboard"
+          element={
+            <SupervisorPrivateRoute>
+              <ElectricalSupervisorSection />
+            </SupervisorPrivateRoute>
+          }
+        />
+        <Route
+          path="/body-shop-supervisor-dashboard"
+          element={
+            <SupervisorPrivateRoute>
+              <BodyShopSupervisorSection />
+            </SupervisorPrivateRoute>
+          }
+        />
+
+        {/* Customer Public Routes */}
+        <Route path="/book-appointment" element={<BookAppointment />} />
+
       <div className="App">
         <Routes>
     <Route path="/" element={<HomePage />} />
@@ -131,10 +364,10 @@ function App() {
             }
           />
 
-          {/* Redirect root to login */}
-          <Route path="/" element={<Navigate to="/login" />} />
-        </Routes>
-      </div>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     </Router>
   );
 }}
