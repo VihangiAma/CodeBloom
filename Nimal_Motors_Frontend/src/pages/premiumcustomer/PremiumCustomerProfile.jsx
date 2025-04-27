@@ -77,12 +77,12 @@ export default function PremiumCustomerProfile() {
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
-            onClick={fetchProfile}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
-          >
-            <FaUserCircle className="text-lg" />
-            Profile
-          </button>
+                      onClick={() => navigate("/premium-customer-dashboard")}
+                      className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+                    >
+                      <FaUserCircle className="text-lg" />
+                      Dashboard
+                    </button>
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
