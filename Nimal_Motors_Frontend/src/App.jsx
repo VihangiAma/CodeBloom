@@ -8,7 +8,7 @@ import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginF
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
-import AdminDashboard from './pages/admin/AdminProfile';
+import AdminDashboard from './assets/pages/AdminDashBord';
 import AdminProfile from './pages/admin/AdminProfile';
 import MechanicalSupervisor from './pages/supervisors/MechanicalSupervisor';
 import BodyshopSupervisor from './pages/supervisors/BodyshopSupervisor';
