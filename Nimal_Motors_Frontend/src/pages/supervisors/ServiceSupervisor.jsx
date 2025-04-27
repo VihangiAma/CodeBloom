@@ -66,17 +66,17 @@ export default function ServiceSupervisor() {
         <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
           🚗 NIMAL MOTORS
         </h1>
-
         <nav className="flex-1" /> {/* empty spacer */}
-
         <div className="space-y-2 border-t border-gray-600 pt-6">
+          
           <button
-            onClick={fetchProfile}
+            onClick={() => navigate("/supervisor/service")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />
-            Profile
+            Dashboard
           </button>
+
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -116,7 +116,18 @@ export default function ServiceSupervisor() {
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
-              Hi, I’m {profile.fullName || "—"}. As the Service Supervisor at Nimal Motors, I coordinate every stage of the customer‑service journey—from the moment a vehicle is checked in to the final quality inspection and hand‑over. Drawing on more than ten years in automotive after‑sales, I schedule repair bays, allocate technicians, and keep customers fully informed with clear status updates and transparent estimates. My focus is delivering first‑time‑fix accuracy, minimizing turnaround time, and ensuring each driver leaves with total confidence in our workmanship. When I’m not monitoring workflow KPIs, you’ll catch me coaching service advisors, refining our digital booking system, or exploring new ways to elevate the customer experience at every touchpoint.
+              Hi, I’m {profile.fullName || "—"}. As the Service Supervisor at
+              Nimal Motors, I coordinate every stage of the customer‑service
+              journey—from the moment a vehicle is checked in to the final
+              quality inspection and hand‑over. Drawing on more than ten years
+              in automotive after‑sales, I schedule repair bays, allocate
+              technicians, and keep customers fully informed with clear status
+              updates and transparent estimates. My focus is delivering
+              first‑time‑fix accuracy, minimizing turnaround time, and ensuring
+              each driver leaves with total confidence in our workmanship. When
+              I’m not monitoring workflow KPIs, you’ll catch me coaching service
+              advisors, refining our digital booking system, or exploring new
+              ways to elevate the customer experience at every touchpoint.
             </p>
           </section>
 

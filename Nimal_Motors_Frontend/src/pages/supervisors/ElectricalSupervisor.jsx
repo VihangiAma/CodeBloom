@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -74,13 +73,15 @@ export default function ElectricalSupervisor() {
         </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
+          
           <button
-            onClick={fetchProfile}
+            onClick={() => navigate("/supervisor/electrical")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />
-            Profile
+            Dashboard
           </button>
+
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -121,11 +122,10 @@ export default function ElectricalSupervisor() {
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
               Hi, I’m {profile.fullName || "—"}. With deep knowledge of vehicle
-              electrical systems, I ensure diagnostics and repairs meet
-              industry standards. From complex wiring to onboard electronics, my
-              focus is safety, innovation, and efficiency. Outside work, I
-              explore new automotive tech and guide trainees in electrical best
-              practices.
+              electrical systems, I ensure diagnostics and repairs meet industry
+              standards. From complex wiring to onboard electronics, my focus is
+              safety, innovation, and efficiency. Outside work, I explore new
+              automotive tech and guide trainees in electrical best practices.
             </p>
           </section>
 
