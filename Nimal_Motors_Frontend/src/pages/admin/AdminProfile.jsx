@@ -95,6 +95,34 @@ export default function AdminProfile() {
     }
   };
 
+  const handleAddUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      // Remove the password from the newUser object
+      const { password, ...userData } = newUser;
+
+      await axios.post("http://localhost:5000/api/user/admin/add-user", userData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      alert("User added successfully!");
+      setNewUser({
+        userId: "",
+        fullName: "",
+        email: "",
+        username: "",
+        phoneNumber: "",
+        type: "",
+      });
+      setShowAddUserForm(false);
+    } catch (err) {
+      console.error("Error adding new user", err);
+      alert("Failed to add user");
+    }
+  };
+
   // ------------------ Effects ------------------
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -139,14 +167,16 @@ export default function AdminProfile() {
     <div className="mt-4 p-4 bg-gray-800 rounded space-y-2 border border-gray-600">
       <h4 className="font-semibold text-white mb-2">Add New User</h4>
       {["userId", "fullName", "email", "phoneNumber", "username"].map((field) => (
-        <input
-          key={field}
-          name={field}
-          value={newUser[field]}
-          onChange={handleNewUserChange}
-          placeholder={field}
-          className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 placeholder-gray-400"
-        />
+        <div key={field} className="flex flex-col">
+          <label className="font-medium capitalize">{field.replace(/([A-Z])/g, ' $1')}:</label>
+          <input
+            name={field}
+            value={newUser[field]}
+            onChange={handleNewUserChange}
+            placeholder={field}
+            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 placeholder-gray-400"
+          />
+        </div>
       ))}
       <select
         name="type"
@@ -155,13 +185,20 @@ export default function AdminProfile() {
         className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
       >
         <option value="">Select user type</option>
-        <option value="Bodyshop Supervisor">Bodyshop Supervisor</option>
-        <option value="Mechanical Supervisor">Mechanical Supervisor</option>
-        <option value="Electrical Supervisor">Electrical Supervisor</option>
-        <option value="Service Supervisor">Service Supervisor</option>
-        <option value="Accountant">Accountant</option>
-        <option value="Admin">Admin</option>
+        <option value="premiumCustomer">Premium Customer</option>
+        <option value="admin">Admin</option>
+        <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
+        <option value="mechanicalsupervisor">Mechanical Supervisor</option>
+        <option value="electricalsupervisor">Electrical Supervisor</option>
+        <option value="servicesupervisor">Service Supervisor</option>
+        <option value="accountant">Accountant</option>
       </select>
+      <button
+        onClick={handleAddUser}
+        className="w-full bg-green-600 hover:bg-green-500 mt-2 p-2 rounded text-white font-semibold"
+      >
+        Add User
+      </button>
     </div>
   );
 
@@ -283,10 +320,10 @@ export default function AdminProfile() {
                 <FaUsers /> View All Users
               </button>
             </div>
-
-            {showAddUserForm && <AddUserForm />}
           </section>
         </div>
+
+        {showAddUserForm && <AddUserForm />}
       </main>
     </div>
   );

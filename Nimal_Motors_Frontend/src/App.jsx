@@ -10,7 +10,6 @@ import ServiceSupervisor from './pages/supervisors/ServiceSupervisor';
 import ElectricalSupervisor from './pages/supervisors/ElectricalSupervisor';
 import AccountantProfile from './pages/AccountantProfile';
 import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
-import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
 
@@ -41,14 +40,8 @@ function App() {
             }
           /> */}
 
-{/* <Route
-            path="/admin/users"
-            element={
-              <PrivateRoute>
-                <UserManagement />
-              </PrivateRoute>
-            }
-          /> */}
+
+         
 
           <Route
             path="/admin-profile"

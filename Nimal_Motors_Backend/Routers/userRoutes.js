@@ -15,6 +15,7 @@ import {
   getElectricalSupProfile,
   getMechanicalSupProfile,
   getServiceSupProfile,
+  addUserByAdmin,
 } from "../Controllers/userController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
 
@@ -23,6 +24,8 @@ const userRoutes = express.Router();
 // ✅ PUBLIC ROUTES
 userRoutes.post("/register", postUser);
 userRoutes.post("/login", LogInUser);
+userRoutes.post("/admin/add-user", addUserByAdmin);
+
 
 // 🔐 PROTECTED ROUTES
 userRoutes.use(authenticateToken);

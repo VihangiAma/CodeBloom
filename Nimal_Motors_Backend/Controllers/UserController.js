@@ -507,8 +507,52 @@ export const getServiceSupProfile = async (req, res) => {
 };
 
 
+export const addUserByAdmin = async (req, res) => {
+    try {
+        const { userId, fullName, email, phoneNumber, username, type } = req.body;
 
+        if (!userId || !fullName || !email || !username || !type) {
+            return res.status(400).json({ message: "Required fields are missing." });
+        }
 
+        const existingUser = await Users.findOne({ $or: [{ email }, { username }] });
+        if (existingUser) {
+            return res.status(409).json({ message: "Email or username already exists." });
+        }
+
+        const tempPassword = "changeme123"; // Temporary password
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+        const newUser = new Users({
+            userId,
+            fullName,
+            email: email.toLowerCase(),
+            phoneNumber,
+            username,
+            type,
+            password: hashedPassword, // Password is hashed in the backend
+        });
+
+        await newUser.save();
+
+        res.status(201).json({
+            message: "User added successfully with a temporary password.",
+            user: {
+                userId: newUser.userId,
+                fullName: newUser.fullName,
+                email: newUser.email,
+                phoneNumber: newUser.phoneNumber,
+                username: newUser.username,
+                type: newUser.type,
+            }
+        });
+    } catch (error) {
+        console.error("Error in addUserByAdmin:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+  
 
 export function isAdminValid(req) {
     return req.user && req.user.type === "admin";
