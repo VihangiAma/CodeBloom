@@ -42,6 +42,7 @@ import BookAppointment from './Components/CustomerSection/BookAppoinment';
 
 // Inventory and Sales Pages
 import InventoryDashboard from './components/InventoryDashboard';
+import AccountantDashboard  from './components/AccountantDashboard';    
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
 import SalesReportAdd from './assets/pages/SalesReportAdd';
@@ -106,6 +107,7 @@ function App() {
 
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
+        <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
         <Route path="/add-sales-report" element={<SalesReportAdd onAdd={() => {}} />} />
