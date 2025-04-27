@@ -36,6 +36,7 @@ import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSu
 import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
 import ElectricalSupervisorSection from './Components/SupervisorSection/ElectriaclSupervisorDashboard';
 import BodyShopSupervisorSection from './Components/SupervisorSection/BodyShopSupervisorDashboard';
+import PremiumCustomerDashboard from './pages/premiumcustomer/PremiumCustomerDashboard'; 
 
 // Customer Pages
 import BookAppointment from './Components/CustomerSection/BookAppoinment';
@@ -86,6 +87,8 @@ function App() {
         <Route path="/electrical-supervisor" element={<PrivateRoute><ElectricalSupervisor /></PrivateRoute>} />
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
+        <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+
 
         {/* Supervisor Protected Routes */}
         <Route path="/dashboard" element={<SupervisorPrivateRoute><SupervisorDashboard /></SupervisorPrivateRoute>} />
@@ -104,6 +107,8 @@ function App() {
         <Route path="/mechanical-supervisor-dashboard" element={<SupervisorPrivateRoute><MechanicalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/body-shop-supervisor-dashboard" element={<SupervisorPrivateRoute><BodyShopSupervisorSection /></SupervisorPrivateRoute>} />
+
+
 
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
