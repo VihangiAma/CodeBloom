@@ -8,6 +8,8 @@ import dotenv from "dotenv";
 import userRoutes from "./Routers/userRoutes.js";
 import StockRoter from "./Routers/Stock.js";
 import SalesRouter from "./Routers/SalesReport.js";
+import UserReportRouter from "./Routers/UserReportRouter.js";
+import InventoryReportRouters  from "./Routers/InventoryReportRoutes.js";
 import repairRouter from "./Routers/RepairRouter.js";
 import appointmentRouter from "./Routers/AppointmentRoutes.js";
 import stockRoutes from "./Routers/stockRoutes.js";
@@ -46,6 +48,8 @@ connectDB();
 app.use("/api/user", userRoutes);
 app.use("/api/StockReport", StockRoter);
 app.use("/api/SalesReports", SalesRouter);
+app.use("/api/UserReport",UserReportRouter);
+app.use("/api/InventoryReports",InventoryReportRouters )
 app.use("/api/repair", repairRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/stock", stockRoutes);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SalesReport from "./SalesReport";
+import InventoryReport from "./InventoryReport";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
