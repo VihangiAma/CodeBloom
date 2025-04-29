@@ -35,6 +35,17 @@ export async function getSalesReport(req,res){
                 error: error.message
             });
         }
+// Retrieves all user reports
+export async function getSalesReport(req, res) {
+  try {
+    const reports = await SalesReport.find();
+    res.status(200).json(reports);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to retrieve reports",
+      error: error.message,
+    });
+  }
 }
 
  export async function deleteSalesReport(req, res){
@@ -85,4 +96,3 @@ export async function getSalesReport(req,res){
              error: error.message
          });
      }
- }

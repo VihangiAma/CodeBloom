@@ -57,33 +57,6 @@ export async function deleteUserReport(req, res) {
   }
 }
 
-export async function updateUserReport(req, res) {
-  try {
-      const { id } = req.params; // User ID from the URL parameters
-      const updatedData = req.body; // Data to update
-
-      const updatedReport = await UserReport.findOneAndUpdate(
-          { Report_id: id }, // Search for the report with this User ID
-          updatedData, // New data to update
-          { new: true } // Return the updated document
-      );
-
-      if (!updatedReport) {
-          return res.status(404).json({
-              message: "Report not found"
-          });
-      }
-      res.status(200).json({
-        message: "Report updated successfully",
-        report: updatedReport
-    });
-} catch (error) {
-    res.status(500).json({
-        message: "Failed to update report",
-        error: error.message
-    });
-}
-}
 
  
 

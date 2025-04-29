@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaUser, FaTrash, FaArrowLeft, FaEdit } from "react-icons/fa";
+import { FaUser, FaTrash, FaArrowLeft, FaEdit, FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
-  const [editUser, setEditUser] = useState(null); // for editing
-  const [successMessage, setSuccessMessage] = useState(""); // for success alert
+  const [editUser, setEditUser] = useState(null);
+  const [addUser, setAddUser] = useState(false);
+  const [newUser, setNewUser] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    username: "",
+    type: "",
+    password: "",
+  });
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const fetchUsers = async () => {
@@ -21,6 +30,8 @@ export default function AdminUsers() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      const res = await axios.get("http://localhost:5001/api/user/", {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       setUsers(Array.isArray(res.data.data) ? res.data.data : []);
@@ -38,6 +49,8 @@ export default function AdminUsers() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      await axios.delete(`http://localhost:5001/api/user/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       setUsers(users.filter((user) => user.userId !== userId));
@@ -47,7 +60,7 @@ export default function AdminUsers() {
   };
 
   const openUpdateModal = (user) => {
-    setEditUser({ ...user }); // open form with current user data
+    setEditUser({ ...user });
   };
 
   const handleEditChange = (e) => {
@@ -65,19 +78,53 @@ export default function AdminUsers() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Update user list locally
       setUsers((prevUsers) =>
         prevUsers.map((u) => (u.userId === editUser.userId ? editUser : u))
       );
 
       setSuccessMessage("Information Saved!");
-      setTimeout(() => setSuccessMessage(""), 3000); // Clear message after 3 sec
+      setTimeout(() => setSuccessMessage(""), 3000);
 
-      setEditUser(null); // Close modal
+      setEditUser(null);
     } catch (err) {
       console.error("Error updating user", err);
+    }
+  };
+
+  const handleNewUserChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const saveNewUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`http://localhost:5001/api/user/`, newUser, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      fetchUsers(); // Refresh user list
+      setSuccessMessage("New User Added!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+
+      setNewUser({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        username: "",
+        type: "",
+        password: "",
+      });
+      setAddUser(false);
+    } catch (err) {
+      console.error("Error adding user", err);
     }
   };
 
@@ -91,12 +138,20 @@ export default function AdminUsers() {
         <h2 className="text-2xl font-bold text-white flex items-center">
           👥 All Registered Users
         </h2>
-        <button
-          onClick={() => navigate("/admin-profile")}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm"
-        >
-          <FaArrowLeft /> Back to Profile
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setAddUser(true)}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-sm"
+          >
+            <FaUserPlus /> Add User
+          </button>
+          <button
+            onClick={() => navigate("/admin-profile")}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm"
+          >
+            <FaArrowLeft /> Back to Profile
+          </button>
+        </div>
       </div>
 
       {successMessage && (
@@ -155,7 +210,7 @@ export default function AdminUsers() {
         </table>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit User Modal */}
       {editUser && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
           <div className="bg-gray-800 p-8 rounded-lg w-96">
@@ -215,6 +270,80 @@ export default function AdminUsers() {
                 className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add User Modal */}
+      {addUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-gray-800 p-8 rounded-lg w-96">
+            <h3 className="text-lg font-bold mb-4">Add New User</h3>
+            <div className="flex flex-col gap-4">
+              <input
+                type="text"
+                name="fullName"
+                value={newUser.fullName}
+                onChange={handleNewUserChange}
+                placeholder="Full Name"
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
+              <input
+                type="email"
+                name="email"
+                value={newUser.email}
+                onChange={handleNewUserChange}
+                placeholder="Email"
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
+              <input
+                type="text"
+                name="phoneNumber"
+                value={newUser.phoneNumber}
+                onChange={handleNewUserChange}
+                placeholder="Phone Number"
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
+              <input
+                type="text"
+                name="username"
+                value={newUser.username}
+                onChange={handleNewUserChange}
+                placeholder="Username"
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
+              <input
+                type="text"
+                name="type"
+                value={newUser.type}
+                onChange={handleNewUserChange}
+                placeholder="Role"
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
+              <input
+                type="password"
+                name="password"
+                value={newUser.password}
+                onChange={handleNewUserChange}
+                placeholder="Password"
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setAddUser(false)}
+                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveNewUser}
+                className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
+              >
+                Add
               </button>
             </div>
           </div>
