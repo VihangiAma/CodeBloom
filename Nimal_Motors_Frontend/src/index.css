@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
+
 :root {
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  ---Main-white:#ffffff;
 
 @import "tailwindcss";
 
@@ -68,7 +71,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: var(---Main-white);
   }
   a:hover {
     color: #747bff;

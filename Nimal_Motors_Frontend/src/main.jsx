@@ -50,8 +50,12 @@ import "./index.css"; // Ensure CSS is imported
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />
+
   </React.StrictMode>
 );
 
 
 
+//User names and password
+// user name- chamath.gunasekara@gmail.com
+// password- mechanical123

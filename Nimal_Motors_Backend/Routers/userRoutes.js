@@ -1,44 +1,58 @@
 import express from "express";
 import {
-    postUser,
-    getAllUsers,
-    getUserById,
-    deleteUserById,
-    putUserById,
-    LogInUser,
-    isAdminValid,
-    isCustomerValid
+  postUser,
+  getAllUsers,
+  getUserById,
+  deleteUserById,
+  putUserById,
+  LogInUser,
+  isAdminValid,
+  isCustomerValid,
+  getUserProfile,
+  getAdminProfile,
+  getAccountantProfile,
+  getBodyshopSupProfile,
+  getElectricalSupProfile,
+  getMechanicalSupProfile,
+  getServiceSupProfile,
 } from "../Controllers/userController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
 
-// Create the router instance
 const userRoutes = express.Router();
 
-// ✅ Public Routes (No Authentication Required)
-userRoutes.post("/", postUser);           // Register new user
-userRoutes.post("/login", LogInUser);     // User login
+// ✅ PUBLIC ROUTES
+userRoutes.post("/register", postUser);
+userRoutes.post("/login", LogInUser);
 
-// ✅ Protected Routes (Require token)
+// 🔐 PROTECTED ROUTES
 userRoutes.use(authenticateToken);
+userRoutes.get("/profile", getUserProfile);
+userRoutes.get("/admin/profile", getAdminProfile);
+userRoutes.get("/accountant/profile", getAccountantProfile);
+userRoutes.get("/bodyshop/profile", getBodyshopSupProfile);
+userRoutes.get("/electrical/profile", getElectricalSupProfile);
+userRoutes.get("/service/profile", getServiceSupProfile);
+userRoutes.get("/mechanical/profile", getMechanicalSupProfile);
 
-userRoutes.get("/", getAllUsers);                     // Get all users
-userRoutes.get("/:userId", getUserById);              // Get single user by ID
-userRoutes.delete("/:userId", deleteUserById);        // Delete user
-userRoutes.put("/:userId", putUserById);              // Update user
+userRoutes.get("/", getAllUsers);
+userRoutes.get("/:userId", getUserById);
+userRoutes.delete("/:userId", deleteUserById);
+userRoutes.put("/:userId", putUserById);
 
-// ✅ Role-Based Routes
+
+// ✅ ROLE CHECKS
 userRoutes.get("/admin/check", (req, res) => {
-    if (!isAdminValid(req)) {
-        return res.status(403).json({ message: "Admin access required" });
-    }
-    res.json({ message: "Welcome Admin!" });
+  if (!isAdminValid(req)) {
+    return res.status(403).json({ message: "Admin access required" });
+  }
+  res.json({ message: "Welcome Admin!" });
 });
 
 userRoutes.get("/customer/check", (req, res) => {
-    if (!isCustomerValid(req)) {
-        return res.status(403).json({ message: "Customer access required" });
-    }
-    res.json({ message: "Welcome Customer!" });
+  if (!isCustomerValid(req)) {
+    return res.status(403).json({ message: "Customer access required" });
+  }
+  res.json({ message: "Welcome Customer!" });
 });
 
 export default userRoutes;
