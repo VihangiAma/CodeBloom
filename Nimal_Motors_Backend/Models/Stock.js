@@ -32,6 +32,9 @@ const stockSchema = new mongoose.Schema({
         default: Date.now,
     },
     threshold: { type: Number, default: 10 },
+    barcode:{type:String,
+        required: true
+    },
 });
 
 const Stock = mongoose.model("Stock", stockSchema);

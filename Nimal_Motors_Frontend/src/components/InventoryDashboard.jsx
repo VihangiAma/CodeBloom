@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaBoxes, FaChartPie, FaCog, FaUser, FaExclamationTriangle, FaTruck, FaHistory, FaEdit, FaTrash } from "react-icons/fa";
+import { FaBoxes, FaChartPie, FaCog, FaUser, FaExclamationTriangle, FaTruck, FaHistory, FaEdit, FaTrash,FaBarcode } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,6 +20,8 @@ const InventoryDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [categories, setCategories] = useState([]);
+  const[barcodeModalOpen,setBarcodeModalOpen] = useState(false);
+  const[barcodeInput,setBarcodeInput] = useState("");
   //const [lowStockItems, setLowStockItems] = useState([]);
 
   /*const history = useHistory();
@@ -154,6 +156,32 @@ history.push('/some-route');
     history.push("/accountant"); // Navigating to the accountant's profile page
   };*/
 
+  //handle barcode inputs
+  const handleBarcodeSubmit = async () => {
+    if (!barcodeInput.trim()) return; // Empty input protection
+  
+    try {
+      const response = await axios.get(`http://localhost:5001/api/stock/items`);
+      const allItems = response.data;
+  
+      const matchedItem = allItems.find(item => item.itemId === barcodeInput.trim());
+  
+      if (matchedItem) {
+        // Show details
+        alert(`Item Found!\n\nItem Name: ${matchedItem.itemName}\nCategory: ${matchedItem.category}\nQuantity: ${matchedItem.stockQuantity}\nPrice: Rs. ${matchedItem.pricePerUnit}`);
+      } else {
+        // Item not found
+        alert("No item found for this barcode.");
+      }
+  
+      setBarcodeModalOpen(false);  // Close the modal
+      setBarcodeInput("");         // Clear input
+    } catch (error) {
+      console.error("Error checking barcode:", error);
+      alert("Failed to check barcode. Please try again.");
+    }
+  };
+  
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -172,6 +200,9 @@ history.push('/some-route');
             </li>
             <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("settings")}>
               <FaCog /> Settings
+            </li>
+            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer" onClick={() => setBarcodeModalOpen(true)}>
+              <FaBarcode /> Add via Barcode
             </li>
           </ul>
         </nav>
@@ -270,6 +301,20 @@ history.push('/some-route');
             </tbody>
           </table>
         </div>
+
+        {barcodeModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="bg-white p-6 rounded shadow-md w-1/3">
+              <h2 className="text-xl font-bold mb-4">Add New Item via Barcode</h2>
+              <input type="text" placeholder="Enter Barcode..." value={barcodeInput} onChange={(e) => setBarcodeInput(e.target.value)} className="p-2 border w-full mb-4" />
+              <div className="flex justify-end">
+              <button onClick={handleBarcodeSubmit} className="bg-blue-500 text-black p-2 rounded">OK</button>
+
+                <button onClick={() => setBarcodeModalOpen(false)} className="p-2 border rounded">Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {editItem && (  // Check if an item is being edited
   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
