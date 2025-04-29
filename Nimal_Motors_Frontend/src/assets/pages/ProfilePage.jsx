@@ -9,7 +9,7 @@ const SalesReportView = () => {
   useEffect(() => {
     // Fetch sales reports from the backend
     axios
-      .get("http://localhost:5000/api/SalesReports")
+      .get("http://localhost:5001/api/SalesReports")
       .then((response) => {
         setSalesReports(response.data);
         setLoading(false);

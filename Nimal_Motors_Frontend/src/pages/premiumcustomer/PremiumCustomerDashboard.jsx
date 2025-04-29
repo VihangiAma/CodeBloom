@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SalesReport from "./SalesReport";
-import InventoryReport from "./InventoryReport";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -37,17 +35,16 @@ const ReportSection = ({ reportType, goBack }) => {
   );
 };
 
-const AdminDashboard = () => {
+const PremiumCustomerDashboard = () => {
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState("dashboard");
 
-
   const renderContent = () => {
     switch (activePage) {
-      case "booking":
+      case "specialOffers":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
-            Booking Management page coming soon...
+            Special Offers for Premium Customers coming soon...
             <div className="mt-4">
               <button
                 onClick={() => setActivePage("dashboard")}
@@ -58,10 +55,10 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-      case "sectionManagement":
+      case "prioritySupport":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
-            Section Management page coming soon...
+            Priority Support page coming soon...
             <div className="mt-4">
               <button
                 onClick={() => setActivePage("dashboard")}
@@ -72,22 +69,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-      case "userManagement":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            User Management page coming soon...
-            <div className="mt-4">
-              <button
-                onClick={() => setActivePage("dashboard")}
-                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
-              >
-                Go Back
-              </button>
-            </div>
-          </div>
-
-        );
-
       case "salesReport":
         return (
           <ReportSection
@@ -95,17 +76,17 @@ const AdminDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-      case "inventoryReport":
+      case "premiumOffers":
         return (
           <ReportSection
-            reportType="Inventory Report"
+            reportType="Exclusive Premium Offers"
             goBack={() => setActivePage("dashboard")}
           />
         );
-      case "userReport":
+      case "premiumSupport":
         return (
           <ReportSection
-            reportType="User Report"
+            reportType="Premium Support"
             goBack={() => setActivePage("dashboard")}
           />
         );
@@ -113,46 +94,39 @@ const AdminDashboard = () => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
             <DashboardCard
-              title="Booking"
-              description="Manage customer bookings."
+              title="Special Offers"
+              description="Exclusive offers just for Premium customers."
               color="bg-blue-500"
-              emoji="🛒"
-              onClick={() => setActivePage("booking")}
+              emoji="🎁"
+              onClick={() => setActivePage("specialOffers")}
             />
             <DashboardCard
-              title="Section Management"
-              description="Manage service sections."
+              title="Priority Support"
+              description="Get priority assistance from our support team."
               color="bg-indigo-500"
-              emoji="📦"
-              onClick={() => setActivePage("sectionManagement")}
-            />
-            <DashboardCard
-              title="User Management"
-              description="Manage system users."
-              color="bg-green-500"
-              emoji="👥"
-              onClick={() => setActivePage("userManagement")}
+              emoji="🚑"
+              onClick={() => setActivePage("prioritySupport")}
             />
             <DashboardCard
               title="Sales Report"
-              description="View and analyze sales data."
+              description="View and analyze sales data for Premium customers."
               color="bg-purple-500"
               emoji="📈"
               onClick={() => setActivePage("salesReport")}
             />
             <DashboardCard
-              title="Inventory Report"
-              description="Track inventory status."
-              color="bg-yellow-500"
-              emoji="📦"
-              onClick={() => setActivePage("inventoryReport")}
+              title="Exclusive Premium Offers"
+              description="View exclusive offers for Premium members."
+              color="bg-green-500"
+              emoji="💎"
+              onClick={() => setActivePage("premiumOffers")}
             />
             <DashboardCard
-              title="User Report"
-              description="Analyze user activity."
-              color="bg-pink-500"
-              emoji="👤"
-              onClick={() => setActivePage("userReport")}
+              title="Premium Support"
+              description="Access dedicated support channels."
+              color="bg-yellow-500"
+              emoji="👩‍💻"
+              onClick={() => setActivePage("premiumSupport")}
             />
           </div>
         );
@@ -162,4 +136,4 @@ const AdminDashboard = () => {
   return renderContent();
 };
 
-export default AdminDashboard;
+export default PremiumCustomerDashboard;
