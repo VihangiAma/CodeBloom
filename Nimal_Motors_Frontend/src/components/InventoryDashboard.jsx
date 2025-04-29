@@ -22,6 +22,8 @@ const InventoryDashboard = () => {
   const [categories, setCategories] = useState([]);
   const[barcodeModalOpen,setBarcodeModalOpen] = useState(false);
   const[barcodeInput,setBarcodeInput] = useState("");
+  const [barcode, setBarcode] = useState("");
+
   //const [lowStockItems, setLowStockItems] = useState([]);
 
   /*const history = useHistory();
@@ -156,15 +158,16 @@ history.push('/some-route');
     history.push("/accountant"); // Navigating to the accountant's profile page
   };*/
 
+
   //handle barcode inputs
   const handleBarcodeSubmit = async () => {
     if (!barcodeInput.trim()) return; // Empty input protection
   
     try {
-      const response = await axios.get(`http://localhost:5001/api/stock/items`);
+      const response = await axios.get(`http://localhost:5001/api/stock/barcode/${barcode.trim()}`);
       const allItems = response.data;
   
-      const matchedItem = allItems.find(item => item.itemId === barcodeInput.trim());
+      const matchedItem = allItems.find(item => item.barcode === barcodeInput.trim());
   
       if (matchedItem) {
         // Show details
@@ -201,9 +204,14 @@ history.push('/some-route');
             <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("settings")}>
               <FaCog /> Settings
             </li>
-            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded cursor-pointer" onClick={() => setBarcodeModalOpen(true)}>
-              <FaBarcode /> Add via Barcode
-            </li>
+            <div className="mt-10">
+          <button
+            onClick={() => setBarcodeModalOpen(true)}
+            className="bg-white text-blue-700 px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-200"
+          >
+            <FaBarcode /> Add via Barcode
+          </button>
+        </div>
           </ul>
         </nav>
       </aside>
@@ -302,19 +310,30 @@ history.push('/some-route');
           </table>
         </div>
 
-        {barcodeModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-white p-6 rounded shadow-md w-1/3">
-              <h2 className="text-xl font-bold mb-4">Add New Item via Barcode</h2>
-              <input type="text" placeholder="Enter Barcode..." value={barcodeInput} onChange={(e) => setBarcodeInput(e.target.value)} className="p-2 border w-full mb-4" />
-              <div className="flex justify-end">
-              <button onClick={handleBarcodeSubmit} className="bg-blue-500 text-black p-2 rounded">OK</button>
+        {/* Barcode Modal */}
+      {barcodeModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h2 className="text-2xl font-bold mb-4">Enter Barcode</h2>
+            <input
+  type="text"
+  placeholder="Enter Barcode"
+  value={barcode}
+  onChange={(e) => setBarcode(e.target.value)}
+  className="p-2 border w-full mb-2"
+/>
 
-                <button onClick={() => setBarcodeModalOpen(false)} className="p-2 border rounded">Cancel</button>
-              </div>
+            <div className="flex justify-end gap-4">
+              <button onClick={handleBarcodeSubmit} className="bg-blue-600 text-balck px-4 py-2 rounded">
+                OK
+              </button>
+              <button onClick={() => setBarcodeModalOpen(false)} className="bg-gray-400 text-black px-4 py-2 rounded">
+                Cancel
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
         {editItem && (  // Check if an item is being edited
   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">

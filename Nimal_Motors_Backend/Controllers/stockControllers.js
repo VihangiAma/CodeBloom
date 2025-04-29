@@ -128,3 +128,17 @@ export const checkLowStock = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+  // Controller function
+export const getItemByBarcode = async (req, res) => {
+    try {
+      const { barcode } = req.params;
+      const item = await Stock.findOne({ barcode }); // ← should match 'barcode'
+      if (!item) {
+        return res.status(404).json({ message: "No item found" });
+      }
+      res.status(200).json(item);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
