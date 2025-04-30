@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -6,6 +7,7 @@ import {
   FaFacebook,
   FaTwitter,
   FaInstagram,
+  FaShieldAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +24,13 @@ export default function MechanicalSupervisorProfile() {
     type: "mechanicalsupervisor",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // Add this state
+  const [changePassword, setChangePassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordError, setPasswordError] = useState("");
 
   /* ──────────────────── data fetch ──────────────────── */
   const fetchProfile = async () => {
@@ -63,6 +72,36 @@ export default function MechanicalSupervisorProfile() {
 
   const handleSignOut = () => navigate("/login");
 
+  const handleChangePassword = async () => {
+    if (changePassword.newPassword !== changePassword.confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.post(
+        "http://localhost:5001/api/user/change-password",
+        {
+          userId: profile.userId,
+          oldPassword: changePassword.oldPassword,
+          newPassword: changePassword.newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      alert("Password changed successfully!");
+      setShowChangePasswordForm(false); // Close the form on success
+    } catch (err) {
+      console.error("Error changing password", err);
+      setPasswordError("Failed to change password.");
+    }
+  };
+
   /* ──────────────────── render ──────────────────── */
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
@@ -74,6 +113,14 @@ export default function MechanicalSupervisorProfile() {
         <nav className="flex-1" /> {/* empty spacer */}
         <div className="space-y-2 border-t border-gray-600 pt-6">
           
+
+        <button
+            onClick={() => setShowChangePasswordForm(true)}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-yellow-400 hover:bg-gray-700 transition font-semibold"
+          >
+            <FaShieldAlt className="text-lg" /> Change Password
+          </button>
+
           <button
             onClick={() => navigate("/supervisor/mechanical")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
@@ -204,6 +251,59 @@ export default function MechanicalSupervisorProfile() {
             )}
           </section>
         </div>
+      {/* Change Password Form */}
+      {showChangePasswordForm && (
+          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+            <div className="space-y-3">
+              <input
+                type="password"
+                placeholder="Old Password"
+                value={changePassword.oldPassword}
+                onChange={(e) =>
+                  setChangePassword({
+                    ...changePassword,
+                    oldPassword: e.target.value,
+                  })
+                }
+                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+              />
+              <input
+                type="password"
+                placeholder="New Password"
+                value={changePassword.newPassword}
+                onChange={(e) =>
+                  setChangePassword({
+                    ...changePassword,
+                    newPassword: e.target.value,
+                  })
+                }
+                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+              />
+              <input
+                type="password"
+                placeholder="Confirm New Password"
+                value={changePassword.confirmPassword}
+                onChange={(e) =>
+                  setChangePassword({
+                    ...changePassword,
+                    confirmPassword: e.target.value,
+                  })
+                }
+                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+              />
+              <button
+                onClick={handleChangePassword}
+                className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+              >
+                Change Password
+              </button>
+              {passwordError && (
+                <p className="text-red-500 text-sm mt-2">{passwordError}</p>
+              )}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
