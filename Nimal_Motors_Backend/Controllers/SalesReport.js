@@ -23,19 +23,7 @@ export async function CreateSalesReport(req, res) {
     });
   }
 }
-// Retrieves all user reports
 
-export async function getSalesReport(req,res){
-    try {
-            const reports = await SalesReport.find(); // Retrieves all user reports
-            res.status(200).json(reports);
-        } catch (error) {
-            res.status(500).json({
-                message: "Failed to retrieve reports",
-                error: error.message
-            });
-        }
-// Retrieves all user reports
 export async function getSalesReport(req, res) {
   try {
     const reports = await SalesReport.find();

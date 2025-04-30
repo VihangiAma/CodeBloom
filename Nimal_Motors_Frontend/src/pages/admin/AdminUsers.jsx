@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
-  const [addUser, setAddUser] = useState(false);
   const [newUser, setNewUser] = useState({
     fullName: "",
     email: "",
@@ -15,6 +14,7 @@ export default function AdminUsers() {
     type: "",
     password: "",
   });
+  const [addUser, setAddUser] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
@@ -27,9 +27,7 @@ export default function AdminUsers() {
       }
 
       const res = await axios.get("http://localhost:5001/api/user/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       setUsers(Array.isArray(res.data.data) ? res.data.data : []);
@@ -43,10 +41,7 @@ export default function AdminUsers() {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/user/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
       await axios.delete(`http://localhost:5001/api/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -72,12 +67,10 @@ export default function AdminUsers() {
   const saveUpdatedUser = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/user/${editUser.userId}`, editUser, {
+      await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
-        headers: { Authorization: `Bearer ${token}` },
       });
 
       setUsers((prevUsers) =>
@@ -108,7 +101,7 @@ export default function AdminUsers() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      fetchUsers(); // Refresh user list
+      fetchUsers();
       setSuccessMessage("New User Added!");
       setTimeout(() => setSuccessMessage(""), 3000);
 
