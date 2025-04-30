@@ -77,21 +77,9 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-      case "userManagement":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            User Management page coming soon...
-            <div className="mt-4">
-              <button
-                onClick={() => setActivePage("dashboard")}
-                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
-              >
-                Go Back
-              </button>
-            </div>
-          </div>
-
-        );
+        case "userManagement":
+          navigate("/admin/users"); 
+          return null; 
 
       case "salesReport":
         return (
@@ -125,13 +113,12 @@ const AdminDashboard = () => {
               emoji="📦"
               onClick={() => setActivePage("sectionManagement")}
             />
-            <DashboardCard
+             <DashboardCard
               title="User Management"
               description="Manage system users."
               color="bg-green-500"
               emoji="👥"
-              onClick={() => setActivePage("userManagement")}
-            />
+ onClick={() => navigate("/admin/users")}             />
             <DashboardCard
               title="Financial Report"
               description="View and analyze sales data."
