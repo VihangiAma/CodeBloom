@@ -67,10 +67,9 @@ export default function AdminUsers() {
   const saveUpdatedUser = async () => {
     try {
       const token = localStorage.getItem("token");
+
       await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}`},
       });
 
       setUsers((prevUsers) =>
@@ -83,6 +82,39 @@ export default function AdminUsers() {
       setEditUser(null);
     } catch (err) {
       console.error("Error updating user", err);
+    }
+  };
+
+  const handleNewUserChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const saveNewUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`http://localhost:5001/api/user/`, newUser, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      fetchUsers(); // Refresh user list
+      setSuccessMessage("New User Added!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+
+      setNewUser({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        username: "",
+        type: "",
+        password: "",
+      });
+      setAddUser(false);
+    } catch (err) {
+      console.error("Error adding user", err);
     }
   };
 

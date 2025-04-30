@@ -23,7 +23,7 @@ export async function CreateSalesReport(req, res) {
     });
   }
 }
-
+// Retrieves all user reports
 export async function getSalesReport(req, res) {
   try {
     const reports = await SalesReport.find();
