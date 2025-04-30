@@ -6,6 +6,7 @@ import {
   FaFacebook,
   FaTwitter,
   FaInstagram,
+  FaShieldAlt,
   FaUserPlus,
   FaUsers,
 } from "react-icons/fa";
@@ -47,6 +48,15 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "",
   });
+
+  // Password change form state
+  const [changePassword, setChangePassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   // ------------------ Handlers ------------------
   const handleProfileChange = (e) => {
@@ -99,31 +109,33 @@ export default function AdminProfile() {
     }
   };
 
-  const handleAddUser = async () => {
+  const handleChangePassword = async () => {
+    if (changePassword.newPassword !== changePassword.confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      // Remove the password from the newUser object
-      const { password, ...userData } = newUser;
+      const res = await axios.post(
+        "http://localhost:5001/api/user/change-password",
+        {
+          userId: profile.userId,
+          oldPassword: changePassword.oldPassword,
+          newPassword: changePassword.newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      await axios.post("http://localhost:5000/api/user/admin/add-user", userData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      alert("User added successfully!");
-      setNewUser({
-        userId: "",
-        fullName: "",
-        email: "",
-        username: "",
-        phoneNumber: "",
-        type: "",
-      });
-      setShowAddUserForm(false);
+      alert("Password changed successfully!");
+      setShowChangePasswordForm(false); // Close the form on success
     } catch (err) {
-      console.error("Error adding new user", err);
-      alert("Failed to add user");
+      console.error("Error changing password", err);
+      setPasswordError("Failed to change password.");
     }
   };
 
@@ -189,20 +201,13 @@ export default function AdminProfile() {
         className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
       >
         <option value="">Select user type</option>
-        <option value="premiumCustomer">Premium Customer</option>
-        <option value="admin">Admin</option>
-        <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
-        <option value="mechanicalsupervisor">Mechanical Supervisor</option>
-        <option value="electricalsupervisor">Electrical Supervisor</option>
-        <option value="servicesupervisor">Service Supervisor</option>
-        <option value="accountant">Accountant</option>
+        <option value="Bodyshop Supervisor">Bodyshop Supervisor</option>
+        <option value="Mechanical Supervisor">Mechanical Supervisor</option>
+        <option value="Electrical Supervisor">Electrical Supervisor</option>
+        <option value="Service Supervisor">Service Supervisor</option>
+        <option value="Accountant">Accountant</option>
+        <option value="Admin">Admin</option>
       </select>
-      <button
-        onClick={handleAddUser}
-        className="w-full bg-green-600 hover:bg-green-500 mt-2 p-2 rounded text-white font-semibold"
-      >
-        Add User
-      </button>
     </div>
   );
 
@@ -216,7 +221,12 @@ export default function AdminProfile() {
         </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
-        
+          <button
+            onClick={() => setShowChangePasswordForm(true)}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-yellow-400 hover:bg-gray-700 transition font-semibold"
+          >
+            <FaShieldAlt className="text-lg" /> Change Password
+          </button>
           <button
             onClick={() => navigate("/admin-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
@@ -224,7 +234,6 @@ export default function AdminProfile() {
             <FaUserCircle className="text-lg" />
             Dashboard
           </button>
-
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -286,67 +295,82 @@ export default function AdminProfile() {
                     onChange={handleProfileChange}
                   />
                 ))}
-                <div className="space-x-2 mt-2">
+                <div className="space-x-2 mt-4">
                   <button
                     onClick={saveProfile}
-                    className="text-green-400 text-sm hover:underline"
+                    className="px-4 py-2 bg-yellow-500 text-black rounded"
                   >
-                    Save
+                    Save Changes
                   </button>
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="text-red-400 text-sm hover:underline"
+                    className="px-4 py-2 bg-gray-500 text-white rounded"
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="text-sm space-y-2">
+              <div>
                 <ReadOnlyField label="Full Name" value={profile.fullName} />
-                <ReadOnlyField label="Mobile" value={profile.phoneNumber} />
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
-                <div className="flex items-center space-x-3 mt-2">
-                  <FaFacebook className="text-blue-600" />
-                  <FaTwitter className="text-sky-500" />
-                  <FaInstagram className="text-pink-500" />
-                </div>
+                <ReadOnlyField label="Phone" value={profile.phoneNumber} />
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
+                >
+                  Edit Profile
+                </button>
               </div>
             )}
-
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
-              >
-                Edit
-              </button>
-            )}
-
-            {/* Quick Tools */}
-            {/* <hr className="my-6 border-gray-600" />
-            <h4 className="text-base font-semibold mb-3">Quick Tools</h4>
-            <div className="space-y-2">
-              <button
-                onClick={toggleAddUserForm}
-                className="flex items-center gap-2 text-green-400 hover:text-white"
-              >
-                <FaUserPlus /> Add User
-              </button>
-              <button
-                onClick={() => navigate("/admin/users")}
-                className="flex items-center gap-2 text-blue-400 hover:text-white"
-              >
-                <FaUsers /> View All Users
-              </button>
-            </div>
-
-            {showAddUserForm && <AddUserForm />} */}
           </section>
         </div>
 
-        {showAddUserForm && <AddUserForm />}
+        {/* Change Password Form */}
+        {showChangePasswordForm && (
+          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+            <div className="space-y-3">
+              <input
+                type="password"
+                placeholder="Old Password"
+                value={changePassword.oldPassword}
+                onChange={(e) =>
+                  setChangePassword({ ...changePassword, oldPassword: e.target.value })
+                }
+                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+              />
+              <input
+                type="password"
+                placeholder="New Password"
+                value={changePassword.newPassword}
+                onChange={(e) =>
+                  setChangePassword({ ...changePassword, newPassword: e.target.value })
+                }
+                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+              />
+              <input
+                type="password"
+                placeholder="Confirm New Password"
+                value={changePassword.confirmPassword}
+                onChange={(e) =>
+                  setChangePassword({ ...changePassword, confirmPassword: e.target.value })
+                }
+                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+              />
+              <button
+                onClick={handleChangePassword}
+                className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+              >
+                Change Password
+              </button>
+              {passwordError && (
+                <p className="text-red-500 text-sm mt-2">{passwordError}</p>
+              )}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
