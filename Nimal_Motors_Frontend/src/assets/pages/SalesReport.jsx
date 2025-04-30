@@ -76,8 +76,8 @@ const SalesReport = () => {
 
   return (
     <div className="p-1 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">Sales Report</h2>
+      
+        
         <div className="flex space-x-6 items-center">
           <div className="relative">
             <label className="text-sm font-semibold text-gray-600">
@@ -103,7 +103,7 @@ const SalesReport = () => {
             />
           </div>
         </div>
-      </div>
+    
 
       
 
