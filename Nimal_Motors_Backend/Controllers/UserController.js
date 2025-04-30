@@ -579,6 +579,37 @@ export const addUserByAdmin = async (req, res) => {
 };
 
 
+
+export const changePassword = async (req, res) => {
+    const { userId, oldPassword, newPassword } = req.body;
+
+    try {
+        // Find the user by userId
+        const user = await Users.findOne({ userId });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        // Check if the old password matches
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Old password is incorrect." });
+        }
+
+        // Hash the new password and update the user's password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        // Respond with success message
+        res.status(200).json({ message: "Password updated successfully." });
+    } catch (err) {
+        // Handle any errors that occur
+        res.status(500).json({ message: "Server error.", error: err.message });
+    }
+};
+
 export function isAdminValid(req) {
     return req.user && req.user.type === "admin";
 }
