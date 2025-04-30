@@ -43,16 +43,11 @@ export default function AdminUsers() {
 
     try {
       const token = localStorage.getItem("token");
-
       await axios.delete(`http://localhost:5001/api/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
-      await axios.delete(`http://localhost:5001/api/user/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
-      setUsers(users.filter((user) => user.userId !== userId));
+      setUsers((prevUsers) => prevUsers.filter((user) => user.userId !== userId));
     } catch (err) {
       console.error("Error deleting user", err);
     }
@@ -76,10 +71,6 @@ export default function AdminUsers() {
 
       await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
         headers: { Authorization: `Bearer ${token}` },
-      await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       setUsers((prevUsers) =>
