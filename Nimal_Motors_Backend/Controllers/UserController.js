@@ -4,10 +4,10 @@ import bcrypt from 'bcrypt';
 
 export async function postUser(req, res) {
     try {
-      const { userId, fullName, email, phoneNumber, username, password, type } = req.body;
+      const { fullName, email, phoneNumber, username, password, type } = req.body;
   
       // Check for missing fields
-      if (!userId || !fullName || !email || !username || !password || !type) {
+      if (!fullName || !email || !username || !password || !type) {
         return res.status(400).json({ message: "Missing required fields" });
       }
   
@@ -21,7 +21,7 @@ export async function postUser(req, res) {
       const passwordHash = bcrypt.hashSync(password, saltRounds);
   
       const newUser = new Users({
-        userId,
+        
         fullName,
         email,
         phoneNumber,
