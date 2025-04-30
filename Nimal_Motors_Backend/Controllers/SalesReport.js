@@ -1,29 +1,29 @@
 
 import SalesReport from "../Models/SalesReport.js"
 
-export async function CreateSalesReport(req,res) {
-    try {
-            const Sreport = req.body;
-            const newReport = new SalesReport(Sreport);
-    
-            await newReport.save();
-    
-            res.status(201).json({
-                message: " Stock Report created successfully",
-                Sreport: newReport
-    
-            });
-            
-        } catch (error) {
-            res.status(500).json({
-                message: "Report creation failed",
-                error: error.message
-               
-            });
-        }
+export async function CreateSalesReport(req, res) {
+  try {
+    console.log("Received request data:", req.body); // ✅ Log request data
 
+    const Sreport = req.body;
+    const newReport = new SalesReport(Sreport);
+
+    await newReport.save();
+
+    res.status(201).json({
+      message: "Stock Report created successfully",
+      Sreport: newReport,
+    });
+  } catch (error) {
+    console.error("❌ Error creating sales report:", error); // ✅ Log error details
+
+    res.status(500).json({
+      message: "Report creation failed",
+      error: error.message,
+    });
+  }
 }
-
+// Retrieves all user reports
 
 export async function getSalesReport(req,res){
     try {

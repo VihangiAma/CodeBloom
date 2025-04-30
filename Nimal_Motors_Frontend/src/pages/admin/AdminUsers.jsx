@@ -26,12 +26,10 @@ export default function AdminUsers() {
         return;
       }
 
-      const res = await axios.get("http://localhost:5000/api/user/", {
+      const res = await axios.get("http://localhost:5001/api/user/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      const res = await axios.get("http://localhost:5001/api/user/", {
-        headers: { Authorization: `Bearer ${token}` },
       });
 
       setUsers(Array.isArray(res.data.data) ? res.data.data : []);
