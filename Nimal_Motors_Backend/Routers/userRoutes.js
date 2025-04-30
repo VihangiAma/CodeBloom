@@ -1,3 +1,4 @@
+
 import express from "express";
 import {
   postUser,
@@ -16,6 +17,7 @@ import {
   getMechanicalSupProfile,
   getServiceSupProfile,
   addUserByAdmin,
+  changePassword,
 
 } from "../Controllers/userController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
@@ -37,6 +39,9 @@ userRoutes.get("/bodyshop/profile", getBodyshopSupProfile);
 userRoutes.get("/electrical/profile", getElectricalSupProfile);
 userRoutes.get("/service/profile", getServiceSupProfile);
 userRoutes.get("/mechanical/profile", getMechanicalSupProfile);
+
+userRoutes.post("/change-password", changePassword);
+
 
 userRoutes.get("/", getAllUsers);
 userRoutes.get("/:userId", getUserById);
@@ -60,3 +65,4 @@ userRoutes.get("/customer/check", (req, res) => {
 });
 
 export default userRoutes;
+
