@@ -6,7 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 //import { useHistory } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import logoImage from "../assets/logo.jpg"
-import SuppliersSection from "../components/supplierSection";
+import SuppliersSection from "./SupplierDetails";
+
+
 
 
 
@@ -233,7 +235,7 @@ history.push('/some-route');
               <FaBoxes /> Inventory
             </li>
             <li
-        className={`flex items-center gap-3 p-2 rounded cursor-pointer ${activeSection === "suppliers" && <SuppliersSection />? "bg-white text-blue-700" : "hover:bg-blue-600"}`}
+        className={`flex items-center gap-3 p-2 rounded cursor-pointer ${activeSection === "suppliers"? "bg-white text-blue-700" : "hover:bg-blue-600"}`}
         onClick={() => setActiveSection("suppliers") }
       >
         <FaTruck /> Suppliers
@@ -346,6 +348,11 @@ history.push('/some-route');
             </tbody>
           </table>
         </div>
+        {activeSection === "suppliers" && (
+  <div className="mt-6">
+    <SuppliersSection />
+  </div>
+)}
 
         {/* Barcode Modal */}
       {barcodeModalOpen && (
