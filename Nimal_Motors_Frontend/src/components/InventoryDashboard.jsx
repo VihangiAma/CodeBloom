@@ -6,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 //import { useHistory } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import logoImage from "../assets/logo.jpg"
+import SuppliersSection from "../components/supplierSection";
+
 
 
 const InventoryDashboard = () => {
@@ -25,6 +27,8 @@ const InventoryDashboard = () => {
   //const [barcode, setBarcode] = useState("");
   const [foundItem, setFoundItem] = useState(null);
   const [quantityToAdd, setQuantityToAdd] = useState("");
+  const [activeSection, setActiveSection] = useState("inventory");
+
 
   //const [lowStockItems, setLowStockItems] = useState([]);
 
@@ -228,6 +232,12 @@ history.push('/some-route');
             <li className="flex items-center gap-3 p-2 bg-white text-blue-700 rounded" onClick={() => setActiveSection("inventory")} >
               <FaBoxes /> Inventory
             </li>
+            <li
+        className={`flex items-center gap-3 p-2 rounded cursor-pointer ${activeSection === "suppliers" && <SuppliersSection />? "bg-white text-blue-700" : "hover:bg-blue-600"}`}
+        onClick={() => setActiveSection("suppliers") }
+      >
+        <FaTruck /> Suppliers
+      </li>
             <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("settings")}>
               <FaCog /> Settings
             </li>
