@@ -6,16 +6,17 @@ import { useNavigate } from "react-router-dom";
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
-  const [addUser, setAddUser] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [newUser, setNewUser] = useState({
     fullName: "",
     email: "",
-    phoneNumber: "",
     username: "",
+    phoneNumber: "",
     type: "",
     password: "",
   });
-  const [successMessage, setSuccessMessage] = useState("");
+  
   const navigate = useNavigate();
 
   const fetchUsers = async () => {
@@ -44,10 +45,12 @@ export default function AdminUsers() {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:5001/api/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      setUsers((prevUsers) => prevUsers.filter((user) => user.userId !== userId));
+      setUsers(users.filter((user) => user.userId !== userId));
     } catch (err) {
       console.error("Error deleting user", err);
     }
@@ -68,9 +71,10 @@ export default function AdminUsers() {
   const saveUpdatedUser = async () => {
     try {
       const token = localStorage.getItem("token");
-
       await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setUsers((prevUsers) =>
@@ -79,11 +83,14 @@ export default function AdminUsers() {
 
       setSuccessMessage("Information Saved!");
       setTimeout(() => setSuccessMessage(""), 3000);
-
       setEditUser(null);
     } catch (err) {
       console.error("Error updating user", err);
     }
+  };
+
+  const toggleAddUserForm = () => {
+    setShowAddUserForm(!showAddUserForm);
   };
 
   const handleNewUserChange = (e) => {
@@ -94,31 +101,38 @@ export default function AdminUsers() {
     }));
   };
 
-  const saveNewUser = async () => {
+  const handleAddUser = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`http://localhost:5001/api/user/`, newUser, {
+      if (!token) return;
+  
+      const { password, ...userData } = newUser;
+  
+      const res = await axios.post("http://localhost:5001/api/user/admin/add-user", userData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      fetchUsers(); // Refresh user list
-      setSuccessMessage("New User Added!");
-      setTimeout(() => setSuccessMessage(""), 3000);
-
-      setNewUser({
-        fullName: "",
-        email: "",
-        phoneNumber: "",
-        username: "",
-        type: "",
-        password: "",
-      });
-      setAddUser(false);
+  
+      if (res.status === 200 || res.status === 201) {
+        alert(`User added successfully! Temporary Password: ${res.data.tempPassword}`);
+        setNewUser({
+          fullName: "",
+          email: "",
+          username: "",
+          phoneNumber: "",
+          type: "",
+          password: "",
+        });
+        setShowAddUserForm(false);
+        fetchUsers(); // Refresh the user list
+      } else {
+        alert("Failed to add user");
+      }
     } catch (err) {
-      console.error("Error adding user", err);
+      console.error("Error adding new user", err.response ? err.response.data : err.message);
+      alert("Failed to add user");
     }
   };
-
+  
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -129,10 +143,10 @@ export default function AdminUsers() {
         <h2 className="text-2xl font-bold text-white flex items-center">
           👥 All Registered Users
         </h2>
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           <button
-            onClick={() => setAddUser(true)}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-sm"
+            onClick={toggleAddUserForm}
+            className="flex items-center gap-2 text-green-400 hover:text-white"
           >
             <FaUserPlus /> Add User
           </button>
@@ -151,6 +165,87 @@ export default function AdminUsers() {
         </div>
       )}
 
+      {/* Add User Form */}
+      {showAddUserForm && (
+  <div className="bg-gray-800 p-6 rounded-lg mb-6">
+    <h3 className="text-lg font-bold mb-4">Add New User</h3>
+    <div className="flex flex-col gap-4">
+      <input
+        type="text"
+        name="userId"
+        value={newUser.userId}
+        onChange={handleNewUserChange}
+        placeholder="User ID"
+        className="px-3 py-2 rounded bg-gray-700 text-white"
+      />
+      <input
+        type="text"
+        name="fullName"
+        value={newUser.fullName}
+        onChange={handleNewUserChange}
+        placeholder="Full Name"
+        className="px-3 py-2 rounded bg-gray-700 text-white"
+      />
+      <input
+        type="email"
+        name="email"
+        value={newUser.email}
+        onChange={handleNewUserChange}
+        placeholder="Email"
+        className="px-3 py-2 rounded bg-gray-700 text-white"
+      />
+      <input
+        type="text"
+        name="username"
+        value={newUser.username}
+        onChange={handleNewUserChange}
+        placeholder="Username"
+        className="px-3 py-2 rounded bg-gray-700 text-white"
+      />
+      <input
+        type="text"
+        name="phoneNumber"
+        value={newUser.phoneNumber}
+        onChange={handleNewUserChange}
+        placeholder="Phone Number"
+        className="px-3 py-2 rounded bg-gray-700 text-white"
+      />
+      <select
+  name="type"
+  value={newUser.type}
+  onChange={handleNewUserChange}
+  className="px-3 py-2 rounded bg-gray-700 text-white"
+>
+  <option value="">Select Role</option>
+  <option value="admin">Admin</option>
+  <option value="mechanicalsupervisor">Mechanical Supervisor</option>
+  <option value="electricalsupervisor">Electrical Supervisor </option>
+  <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
+  <option value="servicesupervisor">Service Supervisor</option>
+  <option value="accountant">Accountant</option>
+  <option value="premiumCustomer">Premium Customer</option>
+</select>
+
+    </div>
+
+    <div className="flex justify-end gap-3 mt-6">
+      <button
+        onClick={toggleAddUserForm}
+        className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={handleAddUser}
+        className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
+      >
+        Add User
+      </button>
+    </div>
+  </div>
+)}
+
+      {/* Users Table */}
       <div className="overflow-auto rounded-lg shadow border border-gray-700">
         <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-800">
@@ -201,7 +296,7 @@ export default function AdminUsers() {
         </table>
       </div>
 
-      {/* Edit User Modal */}
+      {/* Edit Modal */}
       {editUser && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
           <div className="bg-gray-800 p-8 rounded-lg w-96">
@@ -266,80 +361,7 @@ export default function AdminUsers() {
           </div>
         </div>
       )}
-
-      {/* Add User Modal */}
-      {addUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-          <div className="bg-gray-800 p-8 rounded-lg w-96">
-            <h3 className="text-lg font-bold mb-4">Add New User</h3>
-            <div className="flex flex-col gap-4">
-              <input
-                type="text"
-                name="fullName"
-                value={newUser.fullName}
-                onChange={handleNewUserChange}
-                placeholder="Full Name"
-                className="px-3 py-2 rounded bg-gray-700 text-white"
-              />
-              <input
-                type="email"
-                name="email"
-                value={newUser.email}
-                onChange={handleNewUserChange}
-                placeholder="Email"
-                className="px-3 py-2 rounded bg-gray-700 text-white"
-              />
-              <input
-                type="text"
-                name="phoneNumber"
-                value={newUser.phoneNumber}
-                onChange={handleNewUserChange}
-                placeholder="Phone Number"
-                className="px-3 py-2 rounded bg-gray-700 text-white"
-              />
-              <input
-                type="text"
-                name="username"
-                value={newUser.username}
-                onChange={handleNewUserChange}
-                placeholder="Username"
-                className="px-3 py-2 rounded bg-gray-700 text-white"
-              />
-              <input
-                type="text"
-                name="type"
-                value={newUser.type}
-                onChange={handleNewUserChange}
-                placeholder="Role"
-                className="px-3 py-2 rounded bg-gray-700 text-white"
-              />
-              <input
-                type="password"
-                name="password"
-                value={newUser.password}
-                onChange={handleNewUserChange}
-                placeholder="Password"
-                className="px-3 py-2 rounded bg-gray-700 text-white"
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setAddUser(false)}
-                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={saveNewUser}
-                className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
+
