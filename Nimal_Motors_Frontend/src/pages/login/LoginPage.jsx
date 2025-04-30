@@ -80,7 +80,7 @@ export default function Login() {
 
       {/* Centered Form */}
       <div className="relative z-10 flex items-center justify-center h-full px-4">
-        <div className="bg-white/30 backdrop-blur-sm p-8 rounded-lg shadow-2xl w-full max-w-md border border-white/20 text-white">
+        <div className="bg-white/30 backdrop-blur-sm p-8 rounded-lg shadow-2xl w-full max-w-md border border-white/20 text-red">
           <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
 
           {message && (
@@ -124,7 +124,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-red py-2 rounded font-semibold"
             >
               Login
             </button>

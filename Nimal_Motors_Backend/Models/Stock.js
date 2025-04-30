@@ -32,6 +32,7 @@ const stockSchema = new mongoose.Schema({
         default: Date.now,
     },
     threshold: { type: Number, default: 10 },
+    
     barcode: {
         type: String,
         unique: true,  // ✅ Barcode must be unique ideally

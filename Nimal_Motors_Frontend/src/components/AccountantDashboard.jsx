@@ -77,7 +77,11 @@ const AccountantDashboard = () => {
     }
   };
 
-  return renderContent();
+  return (
+    <div className="min-h-screen w-full overflow-x-hidden">
+      {renderContent()}
+    </div>
+  );
 };
 
 export default AccountantDashboard;

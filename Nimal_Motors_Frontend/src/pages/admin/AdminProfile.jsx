@@ -283,7 +283,7 @@ export default function AdminProfile() {
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
+                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded text-red-400"
               >
                 Edit
               </button>
