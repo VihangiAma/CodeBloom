@@ -16,7 +16,7 @@ import SalesRouter from "./Routers/SalesReport.js";
 import UserReportRouter from "./Routers/UserReportRouter.js";
 import InventoryReportRouters  from "./Routers/InventoryReportRoutes.js";
 import repairRouter from "./Routers/RepairRouter.js";
-import appointmentRouter from "./Routers/AppointmentRoutes.js";
+//import appointmentRouter from "./Routers/AppointmentRoutes.js";
 import stockRoutes from "./Routers/stockRoutes.js";
 import supplierRoutes from "./Routers/supplierRoutes.js";
 import MechanicalRouter from "./Routers/MechanicalRouter.js";
@@ -24,7 +24,7 @@ import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import appointmentRouter from "./Routers/AppointmentRoutes.js";
 
-import userRoutes from "./Routers/userRoutes.js";  
+//import userRoutes from "./Routers/userRoutes.js";  
 
 dotenv.config();
 connectDB(); // Connect to MongoDB
