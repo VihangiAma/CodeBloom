@@ -228,9 +228,7 @@ history.push('/some-route');
         <nav>
           <ul className="space-y-2">
             
-            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("dashboard")}>
-              <FaChartPie /> Dashboard
-            </li>
+            
             <li className="flex items-center gap-3 p-2 bg-white text-blue-700 rounded" onClick={() => setActiveSection("inventory")} >
               <FaBoxes /> Inventory
             </li>
@@ -240,9 +238,7 @@ history.push('/some-route');
       >
         <FaTruck /> Suppliers
       </li>
-            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("settings")}>
-              <FaCog /> Settings
-            </li>
+            
             <div className="mt-10">
           <button
             onClick={() => setBarcodeModalOpen(true)}
@@ -256,7 +252,9 @@ history.push('/some-route');
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-100 p-6">
+      <main className="flex-1 bg-gray-250 p-6">
+      {activeSection === "inventory" && (
+    <>
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold">Inventory Management</h1>
           <div className="flex items-center gap-4">
@@ -348,11 +346,12 @@ history.push('/some-route');
             </tbody>
           </table>
         </div>
-        {activeSection === "suppliers" && (
-  <div className="mt-6">
+        </>
+  )}
+   {activeSection === "suppliers" && (
     <SuppliersSection />
-  </div>
-)}
+  )}
+       
 
         {/* Barcode Modal */}
       {barcodeModalOpen && (
@@ -413,13 +412,18 @@ history.push('/some-route');
   placeholder="Stock" 
   className="p-2 border w-full mb-2" 
 />
-<input 
-  type="String" 
-  value={formData.companyName} 
-  onChange={e => setFormData({ ...formData, companyName: e.target.value })} 
-  placeholder="Company Name" 
-  className="p-2 border w-full mb-2" 
-/>
+<select
+  value={formData.companyName}
+  onChange={e => setFormData({ ...formData, companyName: e.target.value })}
+  className="p-2 border w-full mb-2"
+>
+  <option value="">Select Company</option>
+  <option value="Auto Lanka Distributors">Auto Lanka Distributors</option>
+  <option value="Rathnayake Motor Suppliers">Rathnayake Motor Suppliers</option>
+  <option value="Lanka Auto Parts Pvt Ltd">Lanka Auto Parts Pvt Ltd</option>
+  <option value="SuperDrive Imports">SuperDrive Imports</option>
+  <option value="MegaMotors Suppliers">MegaMotors Suppliers</option>
+</select>
 <input 
   type="text" 
   value={formData.id} 

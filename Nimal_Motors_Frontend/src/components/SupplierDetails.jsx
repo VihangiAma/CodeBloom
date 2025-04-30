@@ -1,32 +1,71 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaBuilding } from "react-icons/fa";
+import {
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaEdit,
+  FaUserTie,
+  FaIdCard,
+  FaIndustry,
+} from "react-icons/fa";
 
 const SuppliersSection = () => {
   const [suppliers, setSuppliers] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/suppliers")
-      .then(res => setSuppliers(res.data))
-      .catch(err => console.error("Failed to fetch suppliers:", err));
+    axios
+      .get("http://localhost:5001/api/supplier/list")
+      .then((res) => setSuppliers(res.data))
+      .catch((err) => console.error("Failed to fetch suppliers:", err));
   }, []);
+
+  const handleEditClick = (supplierId) => {
+    alert(`Edit supplier functionality not yet implemented.\nSupplier ID: ${supplierId}`);
+    // You can open a modal here for editing later
+  };
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">All Suppliers</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {suppliers.map((supplier, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-md p-4 hover:shadow-xl transition-all">
-            <h3 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
-              <FaBuilding /> {supplier.companyName}
-            </h3>
-            <p className="text-sm text-gray-600 mt-2">Supplier ID: <strong>{supplier.supplierId}</strong></p>
-            <p className="flex items-center gap-2 text-sm mt-2"><FaPhone className="text-green-600" /> {supplier.phoneNumber}</p>
-            <p className="flex items-center gap-2 text-sm mt-1"><FaEnvelope className="text-yellow-600" /> {supplier.email}</p>
-            <p className="flex items-center gap-2 text-sm mt-1"><FaMapMarkerAlt className="text-red-600" /> {supplier.address}</p>
-            <p className="text-sm mt-2"><strong>Contact Person:</strong> {supplier.contactPerson}</p>
-          </div>
-        ))}
+      <h2 className="text-3xl font-bold mb-6 text-blue-700">Suppliers Directory</h2>
+      <div className="overflow-x-auto rounded shadow-md bg-white">
+        <table className="min-w-full text-sm text-left">
+          <thead className="bg-blue-600 text-white">
+            <tr>
+              <th className="px-4 py-3"><FaIdCard /> ID</th>
+              <th className="px-4 py-3"><FaIndustry /> Company</th>
+              <th className="px-4 py-3"><FaUserTie /> Contact Person</th>
+              <th className="px-4 py-3"><FaPhone /> Phone</th>
+              <th className="px-4 py-3"><FaEnvelope /> Email</th>
+              <th className="px-4 py-3"><FaMapMarkerAlt /> Address</th>
+              <th className="px-4 py-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {suppliers.map((supplier, index) => (
+              <tr key={index} className="border-b hover:bg-gray-100">
+                <td className="px-4 py-2">{supplier.supplierId}</td>
+                <td className="px-4 py-2 font-semibold text-blue-800">{supplier.companyName}</td>
+                <td className="px-4 py-2">{supplier.contactPerson}</td>
+                <td className="px-4 py-2">{supplier.phoneNumber}</td>
+                <td className="px-4 py-2">{supplier.email}</td>
+                <td className="px-4 py-2">{supplier.address}</td>
+                <td className="px-4 py-2 text-center">
+                  <button
+                    onClick={() => handleEditClick(supplier.supplierId)}
+                    className="text-yellow-600 hover:text-yellow-800"
+                  >
+                    <FaEdit /> Edit
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {suppliers.length === 0 && (
+          <div className="text-center p-4 text-gray-500">No suppliers found.</div>
+        )}
       </div>
     </div>
   );
