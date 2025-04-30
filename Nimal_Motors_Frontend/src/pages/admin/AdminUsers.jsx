@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
+  const [addUser, setAddUser] = useState(false);
   const [newUser, setNewUser] = useState({
     fullName: "",
     email: "",
@@ -14,7 +15,6 @@ export default function AdminUsers() {
     type: "",
     password: "",
   });
-  const [addUser, setAddUser] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ export default function AdminUsers() {
       const token = localStorage.getItem("token");
 
       await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
-        headers: { Authorization: `Bearer ${token}`},
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       setUsers((prevUsers) =>
@@ -101,39 +101,6 @@ export default function AdminUsers() {
       });
 
       fetchUsers(); // Refresh user list
-      setSuccessMessage("New User Added!");
-      setTimeout(() => setSuccessMessage(""), 3000);
-
-      setNewUser({
-        fullName: "",
-        email: "",
-        phoneNumber: "",
-        username: "",
-        type: "",
-        password: "",
-      });
-      setAddUser(false);
-    } catch (err) {
-      console.error("Error adding user", err);
-    }
-  };
-
-  const handleNewUserChange = (e) => {
-    const { name, value } = e.target;
-    setNewUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const saveNewUser = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.post(`http://localhost:5001/api/user/`, newUser, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      fetchUsers();
       setSuccessMessage("New User Added!");
       setTimeout(() => setSuccessMessage(""), 3000);
 
