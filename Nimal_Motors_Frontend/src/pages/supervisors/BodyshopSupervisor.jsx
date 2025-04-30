@@ -247,51 +247,83 @@ export default function BodyshopSupervisor() {
         </div>
       {/* Change Password Form */}
       {showChangePasswordForm && (
-          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-            <div className="space-y-3">
-              <input
-                type="password"
-                placeholder="Old Password"
-                value={changePassword.oldPassword}
-                onChange={(e) =>
-                  setChangePassword({ ...changePassword, oldPassword: e.target.value })
-                }
-                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-              />
-              <input
-                type="password"
-                placeholder="New Password"
-                value={changePassword.newPassword}
-                onChange={(e) =>
-                  setChangePassword({ ...changePassword, newPassword: e.target.value })
-                }
-                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-              />
-              <input
-                type="password"
-                placeholder="Confirm New Password"
-                value={changePassword.confirmPassword}
-                onChange={(e) =>
-                  setChangePassword({ ...changePassword, confirmPassword: e.target.value })
-                }
-                className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-              />
-              <button
-                onClick={handleChangePassword}
-                className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
-              >
-                Change Password
-              </button>
-              {passwordError && (
-                <p className="text-red-500 text-sm mt-2">{passwordError}</p>
-              )}
-            </div>
-          </section>
-        )}
+  <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+    <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+    <div className="space-y-3 relative">
+      {["oldPassword", "newPassword", "confirmPassword"].map((field, index) => (
+        <div key={field} className="relative">
+          <input
+            type={changePassword[`show${field}`] ? "text" : "password"}
+            placeholder={
+              field === "oldPassword"
+                ? "Old Password"
+                : field === "newPassword"
+                ? "New Password"
+                : "Confirm New Password"
+            }
+            value={changePassword[field]}
+            onChange={(e) =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [field]: e.target.value,
+              }))
+            }
+            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [`show${field}`]: !prev[`show${field}`],
+              }))
+            }
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-yellow-400"
+          >
+            {changePassword[`show${field}`] ? "Hide" : "Show"}
+          </button>
+        </div>
+      ))}
+
+      {changePassword.newPassword.length > 0 &&
+        changePassword.newPassword.length < 6 && (
+          <p className="text-red-400 text-sm">
+            New password must be at least 6 characters.
+          </p>
+      )}
+
+      {passwordError && (
+        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+      )}
+
+      <div className="flex space-x-4 mt-2">
+        <button
+          onClick={handleChangePassword}
+          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+        >
+          Change Password
+        </button>
+        <button
+          onClick={() => {
+            setShowChangePasswordForm(false);
+            setChangePassword({
+              oldPassword: "",
+              newPassword: "",
+              confirmPassword: "",
+            });
+            setPasswordError("");
+          }}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </section>
+)}
+
+        
       </main>
     </div>
   );
 }
-
-
