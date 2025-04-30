@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SalesReport from "./SalesReport";
-import AdminUsers from "../../pages/admin/AdminUsers";
-import InventoryReport from "./InventoryReport";
+
+import UsersReport from "./UserReport";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -23,7 +23,11 @@ const ReportSection = ({ reportType, goBack }) => {
       <h2 className="text-2xl font-bold mb-6">{reportType}</h2>
       {reportType === "Sales Report" ? (
         <SalesReport />
-      ) : (
+      
+      ):reportType === "User Report"?(
+        <UsersReport/>
+      ):
+      (
         <p>Displaying {reportType} data...</p>
       )}
       <div className="mt-6">
@@ -48,7 +52,7 @@ const AdminDashboard = () => {
       case "booking":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
-            Booking Management page coming soon...
+            Booking Management page coming 
             <div className="mt-4">
               <button
                 onClick={() => setActivePage("dashboard")}
@@ -73,9 +77,21 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-        case "userManagement":
-          navigate("/admin/users"); 
-        return null;
+      case "userManagement":
+        return (
+          <div className="text-gray-600 p-8 text-center text-xl">
+            User Management page coming soon...
+            <div className="mt-4">
+              <button
+                onClick={() => setActivePage("dashboard")}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+
+        );
 
       case "salesReport":
         return (
@@ -84,13 +100,7 @@ const AdminDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-      case "inventoryReport":
-        return (
-          <ReportSection
-            reportType="Inventory Report"
-            goBack={() => setActivePage("dashboard")}
-          />
-        );
+      
       case "userReport":
         return (
           <ReportSection
@@ -120,21 +130,16 @@ const AdminDashboard = () => {
               description="Manage system users."
               color="bg-green-500"
               emoji="👥"
-              onClick={() => navigate("/admin/users")}            />
+              onClick={() => setActivePage("userManagement")}
+            />
             <DashboardCard
-              title="Sales Report"
+              title="Financial Report"
               description="View and analyze sales data."
               color="bg-purple-500"
               emoji="📈"
               onClick={() => setActivePage("salesReport")}
             />
-            <DashboardCard
-              title="Inventory Report"
-              description="Track inventory status."
-              color="bg-yellow-500"
-              emoji="📦"
-              onClick={() => setActivePage("inventoryReport")}
-            />
+            
             <DashboardCard
               title="User Report"
               description="Analyze user activity."

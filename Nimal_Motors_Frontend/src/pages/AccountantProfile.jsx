@@ -28,7 +28,7 @@ export default function AccountantProfile() {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const res = await axios.get("http://localhost:5000/api/user/profile", {
+      const res = await axios.get("http://localhost:5001/api/user/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProfile(res.data.user);
@@ -49,7 +49,7 @@ export default function AccountantProfile() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5000/api/user", profile);
+      await axios.post("http://localhost:5001/api/user", profile);
     } catch (err) {
       console.error("Error updating user data", err);
     }
@@ -69,13 +69,21 @@ export default function AccountantProfile() {
         <nav className="flex-1" />
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
-          <button
+          {/* <button
             onClick={fetchProfile}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />
             Profile
+          </button> */}
+          <button
+            onClick={() => navigate("/accountant-dashboard")}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+          >
+            <FaUserCircle className="text-lg" />
+            Dashboard
           </button>
+
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -119,14 +127,14 @@ export default function AccountantProfile() {
               Motors, I keep our financial engine running smoothly—overseeing
               everything from daily transaction reconciliations and payroll to
               quarterly forecasting and tax compliance. With more than ten years
-              of automotive‑industry accounting experience, I translate raw numbers
-              into clear insights that guide strategic decisions and maintain the
-              company’s fiscal health. My passion is building robust financial
-              controls while supporting each department with timely, accurate
-              reporting. When I’m not immersed in ledgers and spreadsheets you’ll
-              find me refining cost‑management processes, mentoring junior finance
-              staff, or researching the latest regulatory changes to ensure we stay
-              ahead of the curve.
+              of automotive‑industry accounting experience, I translate raw
+              numbers into clear insights that guide strategic decisions and
+              maintain the company’s fiscal health. My passion is building
+              robust financial controls while supporting each department with
+              timely, accurate reporting. When I’m not immersed in ledgers and
+              spreadsheets you’ll find me refining cost‑management processes,
+              mentoring junior finance staff, or researching the latest
+              regulatory changes to ensure we stay ahead of the curve.
             </p>
           </section>
 

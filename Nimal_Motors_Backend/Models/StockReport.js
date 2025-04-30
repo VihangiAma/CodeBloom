@@ -23,5 +23,5 @@ const StockreportSchema = mongoose.Schema({
     }
 })
 
-const StockReport = mongoose.model('StockReter',StockreportSchema)
+const StockReport = mongoose.model('StockReport',StockreportSchema)
 export default StockReport;

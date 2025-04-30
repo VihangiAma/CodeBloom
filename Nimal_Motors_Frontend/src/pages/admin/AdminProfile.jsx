@@ -13,12 +13,13 @@ import { useNavigate } from "react-router-dom";
 
 // ------------------ JWT Decoding ------------------
 const decodeJWT = (token) => {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const jsonPayload = decodeURIComponent(
-    atob(base64).split('').map((c) =>
-      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-    ).join('')
+    atob(base64)
+      .split("")
+      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .join("")
   );
   return JSON.parse(jsonPayload);
 };
@@ -71,7 +72,7 @@ export default function AdminProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      await axios.post("http://localhost:5000/api/user", profile, {
+      await axios.post("http://localhost:5001/api/user", profile, {
         headers: { Authorization: `Bearer ${token}` },
       });
     } catch (err) {
@@ -84,9 +85,12 @@ export default function AdminProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("http://localhost:5000/api/user/admin/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        "http://localhost:5001/api/user/admin/profile",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setProfile(res.data.user);
     } catch (err) {
@@ -166,18 +170,18 @@ export default function AdminProfile() {
   const AddUserForm = () => (
     <div className="mt-4 p-4 bg-gray-800 rounded space-y-2 border border-gray-600">
       <h4 className="font-semibold text-white mb-2">Add New User</h4>
-      {["userId", "fullName", "email", "phoneNumber", "username"].map((field) => (
-        <div key={field} className="flex flex-col">
-          <label className="font-medium capitalize">{field.replace(/([A-Z])/g, ' $1')}:</label>
+      {["userId", "fullName", "email", "phoneNumber", "username"].map(
+        (field) => (
           <input
+            key={field}
             name={field}
             value={newUser[field]}
             onChange={handleNewUserChange}
             placeholder={field}
             className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 placeholder-gray-400"
           />
-        </div>
-      ))}
+        )
+      )}
       <select
         name="type"
         value={newUser.type}
@@ -207,15 +211,20 @@ export default function AdminProfile() {
     <div className="flex h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🚗 NIMAL MOTORS</h1>
+        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+          🚗 NIMAL MOTORS
+        </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
+        
           <button
-            onClick={fetchProfile}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 font-semibold transition"
+            onClick={() => navigate("/admin-dashboard")}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
-            <FaUserCircle className="text-lg" /> Profile
+            <FaUserCircle className="text-lg" />
+            Dashboard
           </button>
+
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -239,7 +248,9 @@ export default function AdminProfile() {
               className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
             />
             <div>
-              <h2 className="text-2xl font-bold text-white">{profile.fullName}</h2>
+              <h2 className="text-2xl font-bold text-white">
+                {profile.fullName}
+              </h2>
               <p className="text-sm text-white">Admin – Nimal Motors</p>
             </div>
           </div>
@@ -276,8 +287,18 @@ export default function AdminProfile() {
                   />
                 ))}
                 <div className="space-x-2 mt-2">
-                  <button onClick={saveProfile} className="text-green-400 text-sm hover:underline">Save</button>
-                  <button onClick={() => setIsEditing(false)} className="text-red-400 text-sm hover:underline">Cancel</button>
+                  <button
+                    onClick={saveProfile}
+                    className="text-green-400 text-sm hover:underline"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="text-red-400 text-sm hover:underline"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             ) : (
@@ -304,7 +325,7 @@ export default function AdminProfile() {
             )}
 
             {/* Quick Tools */}
-            <hr className="my-6 border-gray-600" />
+            {/* <hr className="my-6 border-gray-600" />
             <h4 className="text-base font-semibold mb-3">Quick Tools</h4>
             <div className="space-y-2">
               <button
@@ -320,6 +341,8 @@ export default function AdminProfile() {
                 <FaUsers /> View All Users
               </button>
             </div>
+
+            {showAddUserForm && <AddUserForm />} */}
           </section>
         </div>
 

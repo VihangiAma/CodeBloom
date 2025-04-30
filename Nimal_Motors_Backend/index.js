@@ -1,13 +1,8 @@
-import bodyParser from "body-parser";
 import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import cors from "cors";
-
-
-import connectDB from "./Models/db.js";
-
-//Import Routes
 
 // Import Routes
 import userRoutes from "./Routers/userRoutes.js";
@@ -16,29 +11,35 @@ import SalesRouter from "./Routers/SalesReport.js";
 import UserReportRouter from "./Routers/UserReportRouter.js";
 import InventoryReportRouters  from "./Routers/InventoryReportRoutes.js";
 import repairRouter from "./Routers/RepairRouter.js";
-//import appointmentRouter from "./Routers/AppointmentRoutes.js";
+import appointmentRouter from "./Routers/AppointmentRoutes.js";
 import stockRoutes from "./Routers/stockRoutes.js";
 import supplierRoutes from "./Routers/supplierRoutes.js";
 import MechanicalRouter from "./Routers/MechanicalRouter.js";
 import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
-import appointmentRouter from "./Routers/AppointmentRoutes.js";
 
-//import userRoutes from "./Routers/userRoutes.js";  
+// Connect to DB
+import connectDB from "./Models/db.js";
 
+// Initialize dotenv
 dotenv.config();
-connectDB(); // Connect to MongoDB
 
-
-
-
+// Create app
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-app.use(express.json()); // Middleware to parse JSON body
-app.use(cors()); // Enable CORS
+// ✅ Correct CORS settings
+const corsOptions = {
+  origin: "http://localhost:5173", // Allow frontend
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"], // <-- Important: allow Authorization header
+};
 
-
+// ✅ Middlewares (order matters)
+app.use(cors(corsOptions));     // Apply CORS first
+app.use(bodyParser.json());     // Then parse body
+app.use(express.json());        // Also parse JSON body (redundant with bodyParser but okay)
 
 // ✅ Connect to MongoDB
 connectDB();
@@ -56,37 +57,14 @@ app.use("/api/supplier", supplierRoutes);
 app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
-app.use("/api/appointments" ,appointmentRouter);
 
-
-// CORS configuration
-
-const corsOptions = {
-  origin: 'http://localhost:5173', 
-  credentials: true,               
-};
-
-app.use(cors(corsOptions));
-
-
-// Middleware
-app.use(bodyParser.json());
-
-// Database Connection
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log("Database connected successfully"))
-    .catch(err => console.error("Database connection failed:", err));
-
-// Routes
-app.use("/api/user", userRoutes);  
-
-// Error handling middleware
+// ✅ Error Handling Middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ message: "Something went wrong!" });
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
 });
 
-// Start server
+// ✅ Start server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

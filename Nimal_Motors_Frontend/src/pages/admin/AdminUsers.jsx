@@ -27,7 +27,9 @@ export default function AdminUsers() {
       }
 
       const res = await axios.get("http://localhost:5001/api/user/", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setUsers(Array.isArray(res.data.data) ? res.data.data : []);
@@ -44,6 +46,10 @@ export default function AdminUsers() {
 
       await axios.delete(`http://localhost:5001/api/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
+      await axios.delete(`http://localhost:5001/api/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setUsers(users.filter((user) => user.userId !== userId));
@@ -70,6 +76,10 @@ export default function AdminUsers() {
 
       await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
         headers: { Authorization: `Bearer ${token}` },
+      await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setUsers((prevUsers) =>
