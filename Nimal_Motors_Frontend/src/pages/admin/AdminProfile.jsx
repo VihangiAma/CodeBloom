@@ -316,6 +316,13 @@ export default function AdminProfile() {
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
                 <ReadOnlyField label="Phone" value={profile.phoneNumber} />
+
+<div className="flex items-center space-x-3 mt-2">
+                  <FaFacebook className="text-blue-600" />
+                  <FaTwitter className="text-sky-500" />
+                  <FaInstagram className="text-pink-500" />
+                </div>
+
                 <button
                   onClick={() => setIsEditing(true)}
                   className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
