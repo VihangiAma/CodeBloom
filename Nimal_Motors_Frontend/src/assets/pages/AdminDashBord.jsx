@@ -56,7 +56,7 @@ const AdminDashboard = () => {
             <div className="mt-4">
               <button
                 onClick={() => setActivePage("dashboard")}
-                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
+                className="px-4 py-2 bg-blue-600 hover:bg-gray-400 rounded"
               >
                 Go Back
               </button>
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
             <div className="mt-4">
               <button
                 onClick={() => setActivePage("dashboard")}
-                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
+                className="px-4 py-2 bg-blue-600 hover:bg-gray-800 rounded"
               >
                 Go Back
               </button>

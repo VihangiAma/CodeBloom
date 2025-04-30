@@ -34,7 +34,7 @@ const SalesReportView = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
               <thead>
-                <tr className="bg-gray-200 text-gray-700">
+                <tr className="bg-blue-600 text-gray-700">
                   <th className="border border-gray-300 p-3">Item ID</th>
                   <th className="border border-gray-300 p-3">Item Name</th>
                   <th className="border border-gray-300 p-3">Price</th>
