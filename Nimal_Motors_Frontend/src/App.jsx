@@ -22,7 +22,6 @@ import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
 import SupervisorDashboard from './Components/SupervisorSection/SupervisorDashboard';
-import SupervisorProfile from './Components/SupervisorSection/SupervisorProfile';
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
@@ -95,7 +94,6 @@ function App() {
 
         {/* Supervisor Protected Routes */}
         <Route path="/dashboard" element={<SupervisorPrivateRoute><SupervisorDashboard /></SupervisorPrivateRoute>} />
-        <Route path="/supervisor-profile" element={<SupervisorPrivateRoute><SupervisorProfile /></SupervisorPrivateRoute>} />
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
         <Route path="/progress" element={<SupervisorPrivateRoute><ProgressPage /></SupervisorPrivateRoute>} />
         <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />
