@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaMoneyBill, FaCalendarAlt, FaBuilding } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ExpensesPage = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -12,21 +15,21 @@ const ExpensesPage = () => {
     supplier: "",
     description: "",
   });
+  const navigate = useNavigate();
 
-  // Fetch suppliers
+  const fetchExpenses = () => {
+    axios
+      .get("http://localhost:5001/api/expenses")
+      .then((res) => setExpenses(res.data))
+      .catch((err) => console.error("Error loading expenses:", err));
+  };
+
   useEffect(() => {
+    fetchExpenses();
     axios
       .get("http://localhost:5001/api/supplier/list")
       .then((res) => setSuppliers(res.data))
       .catch((err) => console.error("Error loading suppliers", err));
-  }, []);
-
-  // Fetch expenses
-  useEffect(() => {
-    axios
-      .get("http://localhost:5001/api/expenses")
-      .then((res) => setExpenses(res.data))
-      .catch((err) => console.error("Error loading expenses", err));
   }, []);
 
   const handleChange = (e) => {
@@ -35,41 +38,54 @@ const ExpensesPage = () => {
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
+    const { category, amount, date, supplier } = formData;
 
-    // Validations
-    if (!formData.category || !formData.amount || !formData.date || !formData.supplier) {
-      alert("All fields are required");
+    if (!category || !amount || !date) {
+      toast.error("Category, amount, and date are required.");
       return;
     }
 
-    if (isNaN(formData.amount) || Number(formData.amount) <= 0) {
-      alert("Amount must be a valid positive number");
+    if (category === "Spare Parts" && !supplier) {
+      toast.error("Supplier is required for Spare Parts expenses.");
       return;
     }
 
-    const today = new Date().toISOString().slice(0, 10);
-    if (formData.date > today) {
-      alert("Date cannot be in the future");
+    if (isNaN(amount) || Number(amount) <= 0) {
+      toast.error("Amount must be a valid positive number.");
       return;
     }
 
     try {
-      const res = await axios.post("http://localhost:5001/api/expenses", formData);
-      setExpenses([...expenses, res.data]);
-      alert("Expense added successfully");
-      setFormData({ category: "", amount: "", date: today, supplier: "", description: "" });
+      await axios.post("http://localhost:5001/api/expenses", formData);
+      toast.success("Expense added successfully!");
+      setFormData({
+        category: "",
+        amount: "",
+        date: new Date().toISOString().split("T")[0],
+        supplier: "",
+        description: "",
+      });
+      fetchExpenses();
     } catch (err) {
-      console.error("Error adding expense", err);
-      alert("Failed to add expense");
+      console.error("Failed to add expense:", err);
+      toast.error("Failed to add expense.");
     }
   };
 
+  const isSpareParts = formData.category === "Spare Parts";
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-blue-800 mb-6">Manage Expenses / Purchases</h1>
+    <div className="p-6 bg-gray-100 min-h-screen w-350">
+      <h1 className="text-3xl font-bold text-red-500 mb-6">Manage Expenses / Purchases</h1>
+      <button
+        onClick={() => navigate("/accountant-dashboard")}
+        className="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-700"
+      >
+        ← Back to Dashboard
+      </button>
 
       {/* Add Expense Form */}
-      <form onSubmit={handleAddExpense} className="bg-white p-6 rounded shadow-md mb-8">
+      <form onSubmit={handleAddExpense} className="bg-gray-300 p-6 rounded shadow-md mb-8 w-200">
         <h2 className="text-xl font-semibold mb-4">Add New Expense</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -121,7 +137,8 @@ const ExpensesPage = () => {
               value={formData.supplier}
               onChange={handleChange}
               className="w-full border p-2 rounded"
-              required
+              disabled={!isSpareParts}
+              required={isSpareParts}
             >
               <option value="">Select Supplier</option>
               {suppliers.map((s) => (
@@ -147,7 +164,7 @@ const ExpensesPage = () => {
 
         <button
           type="submit"
-          className="mt-4 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded"
+          className="mt-4 bg-blue-800 hover:bg-blue-900 text-black px-4 py-2 rounded"
         >
           <FaPlus className="inline mr-1" /> Add Expense
         </button>
@@ -157,7 +174,7 @@ const ExpensesPage = () => {
       <div className="bg-white p-6 rounded shadow-md">
         <h2 className="text-xl font-semibold mb-4">Expense History</h2>
         <table className="w-full table-auto border">
-          <thead className="bg-blue-600 text-white">
+          <thead className="bg-red-600 text-white">
             <tr>
               <th className="p-2">Date</th>
               <th className="p-2">Category</th>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaMoneyBillWave,
@@ -13,9 +13,10 @@ import logoImage from "../assets/logo.jpg";
 
 const AccountantDashboard = () => {
   const navigate = useNavigate();
+  const [recentExpenses, setRecentExpenses] = useState([]); // ✅ Moved inside the component
 
   return (
-    <div className="flex h-screen ">
+    <div className="flex h-screen">
       {/* Sidebar */}
       <aside className="w-64 bg-red-500 text-black p-5 flex flex-col">
         <div className="mb-8 flex flex-col items-center">
@@ -24,7 +25,7 @@ const AccountantDashboard = () => {
         </div>
         <nav className="space-y-4">
           <button
-            className="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-600 bg-blue-700"
+            className="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-600 "
             onClick={() => navigate("/accountant-dashboard")}
           >
             <FaHome /> Dashboard
@@ -45,10 +46,8 @@ const AccountantDashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1  p-8 overflow-y-auto  w-300 h-300 bg-gray-200">
-        <h2 className="text-3xl font-bold mb-6 text-black">
-          Accountant Dashboard
-        </h2>
+      <main className="flex-1 p-8 overflow-y-auto bg-gray-200 w-300">
+        <h2 className="text-3xl font-bold mb-6 text-black">Accountant Dashboard</h2>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -82,17 +81,51 @@ const AccountantDashboard = () => {
           </div>
         </div>
 
-        {/* Recent Purchases */}
-        <div className="bg-white p-4 rounded shadow mb-6">
-          <h2 className="text-xl font-bold mb-2">Recent Purchase History</h2>
-          <p className="text-sm text-gray-500">Coming soon...</p>
+        {/* Recent Expenses */}
+        <div className="bg-white p-6 rounded shadow mt-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">Recent Expense History</h2>
+          {recentExpenses.length === 0 ? (
+            <p className="text-gray-500 text-sm">No recent expenses available.</p>
+          ) : (
+            <>
+              <table className="w-full text-sm border">
+                <thead className="bg-blue-600 text-white">
+                  <tr>
+                    <th className="p-2">Date</th>
+                    <th className="p-2">Category</th>
+                    <th className="p-2">Amount (Rs.)</th>
+                    <th className="p-2">Supplier</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentExpenses.map((exp, idx) => (
+                    <tr key={idx} className="text-center border-t hover:bg-gray-50">
+                      <td className="p-2">{new Date(exp.date).toLocaleDateString()}</td>
+                      <td className="p-2">{exp.category}</td>
+                      <td className="p-2 text-green-700 font-semibold">
+                        {exp.amount.toFixed(2)}
+                      </td>
+                      <td className="p-2">{exp.supplier}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="text-right mt-4">
+                <button
+                  onClick={() => navigate("/expenses")}
+                  className="text-blue-600 hover:underline text-sm font-medium"
+                >
+                  View All Expenses →
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Reports Section */}
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Financial Reports
-          </h2>
+        <div className="bg-white p-6 rounded shadow mt-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">Financial Reports</h2>
           <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
             <li>Monthly Purchase Summary</li>
             <li>Supplier Payment History</li>
@@ -100,8 +133,17 @@ const AccountantDashboard = () => {
             <li>Stock Value Report</li>
             <li>Export to PDF / Excel (Coming Soon)</li>
           </ul>
-          <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+          <button className="mt-4 bg-green-600 text-black px-4 py-2 rounded hover:bg-green-700">
             Download Report
+          </button>
+        </div>
+
+        <div className="mt-4 text-right">
+          <button
+            onClick={() => navigate("/accountant-profile")}
+            className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300"
+          >
+            ← Back to Profile
           </button>
         </div>
       </main>
