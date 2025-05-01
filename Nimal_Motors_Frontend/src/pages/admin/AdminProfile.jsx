@@ -334,6 +334,16 @@ export default function AdminProfile() {
           </section>
         </div>
 
+
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded text-red-400"
+              >
+                Edit
+              </button>
+            )}
+
         {showChangePasswordForm && (
   <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
     <h3 className="text-lg font-semibold mb-4">Change Password</h3>
@@ -372,6 +382,7 @@ export default function AdminProfile() {
           </button>
         </div>
       ))}
+
 
       {changePassword.newPassword.length > 0 &&
         changePassword.newPassword.length < 6 && (

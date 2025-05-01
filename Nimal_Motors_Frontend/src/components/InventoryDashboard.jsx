@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { FaBoxes, FaChartPie, FaCog, FaUser, FaExclamationTriangle, FaTruck, FaHistory, FaEdit, FaTrash } from "react-icons/fa";
+import { FaBoxes, FaChartPie, FaCog, FaUser, FaExclamationTriangle, FaTruck, FaHistory, FaEdit, FaTrash,FaBarcode } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //import { useHistory } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import logoImage from "../assets/logo.jpg"
+import SuppliersSection from "./SupplierDetails";
+
+
+
 
 
 const InventoryDashboard = () => {
@@ -20,6 +24,15 @@ const InventoryDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [categories, setCategories] = useState([]);
+  const[barcodeModalOpen,setBarcodeModalOpen] = useState(false);
+  const[barcodeInput,setBarcodeInput] = useState("");
+  //const [barcode, setBarcode] = useState("");
+  const [foundItem, setFoundItem] = useState(null);
+  const [quantityToAdd, setQuantityToAdd] = useState("");
+  const [activeSection, setActiveSection] = useState("inventory");
+  const [supplierList, setSupplierList] = useState([]);
+
+
   //const [lowStockItems, setLowStockItems] = useState([]);
 
   /*const history = useHistory();
@@ -70,6 +83,11 @@ history.push('/some-route');
     (categoryFilter === "" || item.category === categoryFilter)
   );
 
+  useEffect(() => {
+    axios.get("http://localhost:5001/api/supplier/list")
+      .then(res => setSupplierList(res.data))
+      .catch(err => console.error("Failed to fetch supplier list", err));
+  }, []);
   
  const handleEditClick = (item) => {
     setEditItem(item);
@@ -154,31 +172,102 @@ history.push('/some-route');
     history.push("/accountant"); // Navigating to the accountant's profile page
   };*/
 
+
+  //handle barcode inputs
+  const handleBarcodeSubmit = async () => {
+    if (!barcodeInput.trim())  {
+      toast.error("Please enter a barcode before submitting!");
+      return;
+    }
+  
+    try {
+      const response = await axios.get(`http://localhost:5001/api/stock/barcode/${barcodeInput.trim()}`);
+      const matchedItem = response.data;
+  
+      if (matchedItem) {
+        setFoundItem(matchedItem); // set for Add stock
+      } else {
+        alert("No item found for this barcode.");
+        setFoundItem(null);
+      }
+  
+    } catch (error) {
+      console.error("Error checking barcode:", error);
+      alert("Failed to check barcode. Please try again.");
+    }
+  };
+  
+  
+  const handleAddStockViaBarcode = async () => {
+    if (!foundItem || !quantityToAdd) return;
+  
+    try {
+      await axios.put(`http://localhost:5001/api/stock/barcode/${foundItem.barcodeInput}/add-stock`, {
+        quantityToAdd: parseInt(quantityToAdd)
+      });
+  
+      toast.success(`Successfully added ${quantityToAdd} units to ${foundItem.itemName}`);
+  
+      // Clear modal and input
+      setFoundItem(null);
+      setQuantityToAdd("");
+      setBarcodeInput("");
+      setBarcodeModalOpen(false);
+  
+      // Refresh the inventory
+      const updatedInventory = await axios.get("http://localhost:5001/api/stock/items");
+      setInventory(updatedInventory.data);
+  
+    } catch (err) {
+      console.error("Update error:", err);
+      toast.error("Failed to update stock.");
+    }
+  };
+  
+
+  
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-blue-700 text-white p-5 space-y-4">
+      <aside className="w-64 bg-red-500 text-white p-5 space-y-4 h-200">
       <img src={logoImage} alt="logo" className="w-25 h-20 mb-2" />
 
         <h2 className="text-2xl font-bold">Nimal Motors</h2>
 
         <nav>
-          <ul className="space-y-2">
-            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("dashboard")}>
-              <FaChartPie /> Dashboard
-            </li>
-            <li className="flex items-center gap-3 p-2 bg-white text-blue-700 rounded" onClick={() => setActiveSection("inventory")} >
+          <ul className="space-y-2">  
+      <li className="flex items-center gap-3 p-2 bg-red text-white rounded hover:bg-black" onClick={() => setActiveSection("inventory")} >
               <FaBoxes /> Inventory
             </li>
-            <li className="flex items-center gap-3 p-2 hover:bg-blue-600 rounded" onClick={() => setActiveSection("settings")}>
-              <FaCog /> Settings
-            </li>
+            <li
+        className={`flex items-center gap-3 p-2 rounded cursor-pointer ${activeSection === "suppliers"? "bg-gray-500 text-black" : "hover:bg-black"}`}
+        onClick={() => setActiveSection("suppliers") }
+      >
+        <FaTruck /> Suppliers
+      </li>
+            
+      
+         <button
+         onClick={() => setBarcodeModalOpen(true)}
+         className="bg-gray text-black px-4 py-2 rounded flex items-center gap-2 hover:bg-black"
+       >
+         <FaBarcode /> Add via Barcode
+       </button>
+
+      
+       
+     
+                
+         
+       
           </ul>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-100 p-6">
+      <main className="flex-1 bg-#7D0A0A p-6 w-300 h-300">
+      {activeSection === "inventory" && (
+    <>
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold">Inventory Management</h1>
           <div className="flex items-center gap-4">
@@ -194,7 +283,7 @@ history.push('/some-route');
                 <option key={index} value={category}>{category}</option>
               ))}
             </select>
-            <FaUser  onClick={() => navigate("/accountant")} className="text-2xl cursor-pointer" />
+            <FaUser  onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />
           </div>
         </header>
          {/* Stats Cards */}
@@ -237,7 +326,7 @@ history.push('/some-route');
         <div className="bg-white p-4 rounded shadow-md">
           <table className="w-full border-collapse border">
             <thead>
-              <tr className="bg-blue-600 text-white">
+              <tr className="bg-red-500 text-white">
 
                 <th className="p-3">Item ID</th>
                 <th className="p-3">Item Name</th>
@@ -256,7 +345,7 @@ history.push('/some-route');
                   <td className="p-3">{item.category}</td>
                   <td className="p-3">{item.stockQuantity}</td>
                    <td className="p-3">{item.pricePerUnit}</td>
-                  <td className="p-3">{item.companyName}</td>
+                   <td className="p-3">{item.companyName}</td>
                        <td className="p-3">
                     <button onClick={() => handleEditClick(item)} className="text-blue-600 p-1">
                       <FaEdit />
@@ -270,6 +359,52 @@ history.push('/some-route');
             </tbody>
           </table>
         </div>
+        </>
+  )}
+   {activeSection === "suppliers" && (
+    <SuppliersSection />
+  )}
+       
+
+        {/* Barcode Modal */}
+      {barcodeModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Enter Barcode</h2>
+            {!foundItem ? (
+              <>
+                <input
+                  type="text"
+                  placeholder="Scan or Enter Barcode"
+                  value={barcodeInput}
+                  onChange={(e) => setBarcodeInput(e.target.value)}
+                  className="p-2 border w-full mb-4"
+                />
+                <div className="flex justify-end gap-4">
+                  <button onClick={handleBarcodeSubmit} className="bg-blue-600 text-black px-4 py-2 rounded">OK</button>
+                  <button onClick={() => setBarcodeModalOpen(false)} className="bg-gray-400 text-black px-4 py-2 rounded">Cancel</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="mb-2">Item: <strong>{foundItem.itemName}</strong></p>
+                <p className="mb-2">Current Stock: {foundItem.stockQuantity}</p>
+                <input
+                  type="number"
+                  placeholder="Enter Quantity to Add"
+                  value={quantityToAdd}
+                  onChange={(e) => setQuantityToAdd(e.target.value)}
+                  className="p-2 border w-full mb-4"
+                />
+                <div className="flex justify-end gap-4">
+                  <button onClick={handleAddStockViaBarcode} className="bg-green-600 text-black px-4 py-2 rounded">Add</button>
+                  <button onClick={() => { setFoundItem(null); setBarcodeInput(""); }} className="bg-gray-400 text-black px-4 py-2 rounded">Back</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
         {editItem && (  // Check if an item is being edited
   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
@@ -290,13 +425,18 @@ history.push('/some-route');
   placeholder="Stock" 
   className="p-2 border w-full mb-2" 
 />
-<input 
-  type="String" 
-  value={formData.companyName} 
-  onChange={e => setFormData({ ...formData, companyName: e.target.value })} 
-  placeholder="Company Name" 
-  className="p-2 border w-full mb-2" 
-/>
+<select
+  value={formData.companyName}
+  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+>
+  <option value="">Select Company</option>
+  {supplierList.map((supplier) => (
+    <option key={supplier.supplierId} value={supplier.companyName}>
+      {supplier.companyName}
+    </option>
+  ))}
+</select>
+  
 <input 
   type="text" 
   value={formData.id} 
@@ -311,12 +451,20 @@ history.push('/some-route');
   className="p-2 border w-full mb-2" 
 />
 <input 
-  type="text" 
+  type="String" 
   value={formData.itemName} 
   onChange={e => setFormData({ ...formData, itemName: e.target.value })} 
   placeholder="Item Name" 
   className="p-2 border w-full mb-4" 
 />
+<input 
+  type="text" 
+  value={formData.barcode} 
+  onChange={e => setFormData({ ...formData, barcode: e.target.value })} 
+  placeholder="Barcode" 
+  className="p-2 border w-full mb-4" 
+/>
+
 <button onClick={() => {
   console.log("Update button clicked!");
   handleUpdate();

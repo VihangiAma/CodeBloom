@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 
 
+
+
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
 // import RegisterPage from './pages/register/RegisterPage';
@@ -48,7 +50,8 @@ import BookAppointment from './Components/CustomerSection/BookAppoinment';
 
 // Inventory and Sales Pages
 import InventoryDashboard from './components/InventoryDashboard';
-import AccountantDashboard  from './components/AccountantDashboard';    
+import AccountantDashboard  from './components/AccountantDashboard'; 
+import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
 import SalesReportAdd from './assets/pages/SalesReportAdd';
@@ -119,6 +122,8 @@ function App() {
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
+        
+        <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
         <Route path="/add-sales-report" element={<SalesReportAdd onAdd={() => {}} />} />
