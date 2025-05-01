@@ -77,6 +77,10 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
+        case "userManagement":
+          navigate("/admin/users"); 
+          return null; 
+
       case "userManagement":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
@@ -125,13 +129,12 @@ const AdminDashboard = () => {
               emoji="📦"
               onClick={() => setActivePage("sectionManagement")}
             />
-            <DashboardCard
+             <DashboardCard
               title="User Management"
               description="Manage system users."
               color="bg-green-500"
               emoji="👥"
-              onClick={() => setActivePage("userManagement")}
-            />
+ onClick={() => navigate("/admin/users")}             />
             <DashboardCard
               title="Financial Report"
               description="View and analyze sales data."

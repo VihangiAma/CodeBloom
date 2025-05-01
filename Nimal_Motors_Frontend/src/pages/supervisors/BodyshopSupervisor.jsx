@@ -6,11 +6,13 @@ import {
   FaFacebook,
   FaTwitter,
   FaInstagram,
+  FaShieldAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function BodyshopSupervisor() {
   const navigate = useNavigate();
+
 
   /* ────────── state ────────── */
   const [profile, setProfile] = useState({
@@ -22,6 +24,14 @@ export default function BodyshopSupervisor() {
     type: "bodyshopsupervisor",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // Add this state
+  const [changePassword, setChangePassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordError, setPasswordError] = useState("");
+  
 
   /* ────────── data fetch ────────── */
   const fetchProfile = async () => {
@@ -57,6 +67,35 @@ export default function BodyshopSupervisor() {
   };
 
   const handleSignOut = () => navigate("/login");
+  const handleChangePassword = async () => {
+    if (changePassword.newPassword !== changePassword.confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.post(
+        "http://localhost:5001/api/user/change-password",
+        {
+          userId: profile.userId,
+          oldPassword: changePassword.oldPassword,
+          newPassword: changePassword.newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      alert("Password changed successfully!");
+      setShowChangePasswordForm(false); // Close the form on success
+    } catch (err) {
+      console.error("Error changing password", err);
+      setPasswordError("Failed to change password.");
+    }
+  };
 
   /* ────────── render ────────── */
   return (
@@ -70,6 +109,15 @@ export default function BodyshopSupervisor() {
         <nav className="flex-1" />
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
+
+
+<button
+            onClick={() => setShowChangePasswordForm(true)}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-yellow-400 hover:bg-gray-700 transition font-semibold"
+          >
+            <FaShieldAlt className="text-lg" /> Change Password
+          </button>
+
           <button
             onClick={() => navigate("/supervisor/body-shop")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
@@ -197,6 +245,84 @@ export default function BodyshopSupervisor() {
             )}
           </section>
         </div>
+      {/* Change Password Form */}
+      {showChangePasswordForm && (
+  <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+    <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+    <div className="space-y-3 relative">
+      {["oldPassword", "newPassword", "confirmPassword"].map((field, index) => (
+        <div key={field} className="relative">
+          <input
+            type={changePassword[`show${field}`] ? "text" : "password"}
+            placeholder={
+              field === "oldPassword"
+                ? "Old Password"
+                : field === "newPassword"
+                ? "New Password"
+                : "Confirm New Password"
+            }
+            value={changePassword[field]}
+            onChange={(e) =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [field]: e.target.value,
+              }))
+            }
+            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [`show${field}`]: !prev[`show${field}`],
+              }))
+            }
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-yellow-400"
+          >
+            {changePassword[`show${field}`] ? "Hide" : "Show"}
+          </button>
+        </div>
+      ))}
+
+      {changePassword.newPassword.length > 0 &&
+        changePassword.newPassword.length < 6 && (
+          <p className="text-red-400 text-sm">
+            New password must be at least 6 characters.
+          </p>
+      )}
+
+      {passwordError && (
+        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+      )}
+
+      <div className="flex space-x-4 mt-2">
+        <button
+          onClick={handleChangePassword}
+          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+        >
+          Change Password
+        </button>
+        <button
+          onClick={() => {
+            setShowChangePasswordForm(false);
+            setChangePassword({
+              oldPassword: "",
+              newPassword: "",
+              confirmPassword: "",
+            });
+            setPasswordError("");
+          }}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </section>
+)}
+
+        
       </main>
     </div>
   );

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -71,6 +72,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
 
+
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
 
@@ -87,6 +89,7 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        
 
 
         {/* Supervisor Protected Routes */}
