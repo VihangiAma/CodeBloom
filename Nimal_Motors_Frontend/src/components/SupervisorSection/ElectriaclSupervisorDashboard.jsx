@@ -21,7 +21,7 @@ const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   );
 };
 
-const DashboardCard = ({ title, description, emoji, color, onClick }) => (
+/*const DashboardCard = ({ title, description, emoji, color, onClick }) => (
   <div
     onClick={onClick}
     className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
@@ -30,7 +30,7 @@ const DashboardCard = ({ title, description, emoji, color, onClick }) => (
     <h2 className="text-2xl font-bold mb-2">{title}</h2>
     <p className="opacity-90">{description}</p>
   </div>
-);
+);*/
 
 
 const ElectricalSupervisorSection = () => {

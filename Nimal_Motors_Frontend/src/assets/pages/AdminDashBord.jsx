@@ -158,11 +158,11 @@ const AdminDashboard = () => {
       >
         {/* Admin Profile */}
         <div className="p-4 flex items-center border-b border-blue-700">
-          <img
+         {/* <img
             src="/admin.png"
             alt="Admin"
             className="w-10 h-10 rounded-full"
-          />
+          />*/}
           {sidebarOpen && (
             <div className="ml-3">
               <p className="font-medium">Admin User</p>
