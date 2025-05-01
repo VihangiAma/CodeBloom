@@ -45,9 +45,9 @@ function Sidebar({ isCollapsed, toggleSidebar, activePage, setActivePage }) {
           setActivePage={setActivePage}
         />
         <NavItem
-          to="progress"
+          to="Invoices"
           icon="🔄"
-          label="Progress"
+          label="Invoices"
           isCollapsed={isCollapsed}
           activePage={activePage}
           setActivePage={setActivePage}
