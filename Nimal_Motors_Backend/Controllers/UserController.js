@@ -4,10 +4,10 @@ import bcrypt from 'bcrypt';
 
 export async function postUser(req, res) {
     try {
-      const { userId, fullName, email, phoneNumber, username, password, type } = req.body;
+      const { fullName, email, phoneNumber, username, password, type } = req.body;
   
       // Check for missing fields
-      if (!userId || !fullName || !email || !username || !password || !type) {
+      if (!fullName || !email || !username || !password || !type) {
         return res.status(400).json({ message: "Missing required fields" });
       }
   
@@ -21,7 +21,7 @@ export async function postUser(req, res) {
       const passwordHash = bcrypt.hashSync(password, saltRounds);
   
       const newUser = new Users({
-        userId,
+        
         fullName,
         email,
         phoneNumber,
@@ -509,6 +509,108 @@ export const getServiceSupProfile = async (req, res) => {
 
 
 
+export const addUserByAdmin = async (req, res) => {
+    try {
+      const { fullName, email, phoneNumber, username, type } = req.body;
+  
+      if (!fullName || !email || !phoneNumber || !username || !type) {
+        return res.status(400).json({ message: "Required fields are missing." });
+      }
+  
+      const existingUser = await Users.findOne({
+        $or: [{ email }, { username }]
+      });
+  
+      if (existingUser) {
+        return res
+          .status(409)
+          .json({ message: "Email or username already exists." });
+      }
+  
+      // ✨ Generate strong temporary password
+      const generateStrongTempPassword = (length = 10) => {
+        const lower = 'abcdefghijklmnopqrstuvwxyz';
+        const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const numbers = '0123456789';
+        const symbols = '!@#$%^&*()_+{}[]<>?';
+        const allChars = lower + upper + numbers + symbols;
+  
+        let password = '';
+        password += lower.charAt(Math.floor(Math.random() * lower.length));
+        password += upper.charAt(Math.floor(Math.random() * upper.length));
+        password += numbers.charAt(Math.floor(Math.random() * numbers.length));
+        password += symbols.charAt(Math.floor(Math.random() * symbols.length));
+  
+        for (let i = 4; i < length; i++) {
+          password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+        }
+  
+        return password.split('').sort(() => 0.5 - Math.random()).join('');
+      };
+  
+      const tempPassword = generateStrongTempPassword(); // 🔥
+      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+  
+      const newUser = new Users({
+        fullName,
+        email: email.toLowerCase(),
+        phoneNumber,
+        username,
+        type,
+        password: hashedPassword
+      });
+  
+      await newUser.save();
+  
+      res.status(201).json({
+        message: "User created successfully with a temporary password.",
+        tempPassword, // 👀 Show once
+        user: {
+          userId: newUser.userId,
+          fullName: newUser.fullName,
+          email: newUser.email,
+          phoneNumber: newUser.phoneNumber,
+          username: newUser.username,
+          type: newUser.type
+        }
+      });
+    } catch (error) {
+      console.error("Error in addUserByAdmin:", error);
+      res.status(500).json({ message: "Internal server error.", error: error.message });
+    }
+  };
+  
+
+
+export const changePassword = async (req, res) => {
+    const { userId, oldPassword, newPassword } = req.body;
+
+    try {
+        // Find the user by userId
+        const user = await Users.findOne({ userId });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        // Check if the old password matches
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Old password is incorrect." });
+        }
+
+        // Hash the new password and update the user's password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        // Respond with success message
+        res.status(200).json({ message: "Password updated successfully." });
+    } catch (err) {
+        // Handle any errors that occur
+        res.status(500).json({ message: "Server error.", error: err.message });
+    }
+};
 
 export function isAdminValid(req) {
     return req.user && req.user.type === "admin";

@@ -6,6 +6,7 @@ import {
   FaFacebook,
   FaTwitter,
   FaInstagram,
+  FaShieldAlt,
   FaUserPlus,
   FaUsers,
 } from "react-icons/fa";
@@ -47,6 +48,15 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "",
   });
+
+  // Password change form state
+  const [changePassword, setChangePassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   // ------------------ Handlers ------------------
   const handleProfileChange = (e) => {
@@ -96,6 +106,36 @@ export default function AdminProfile() {
     } catch (err) {
       console.error("Error fetching profile data", err);
       navigate("/unauthorized");
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (changePassword.newPassword !== changePassword.confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.post(
+        "http://localhost:5001/api/user/change-password",
+        {
+          userId: profile.userId,
+          oldPassword: changePassword.oldPassword,
+          newPassword: changePassword.newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      alert("Password changed successfully!");
+      setShowChangePasswordForm(false); // Close the form on success
+    } catch (err) {
+      console.error("Error changing password", err);
+      setPasswordError("Failed to change password.");
     }
   };
 
@@ -181,7 +221,12 @@ export default function AdminProfile() {
         </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
-        
+          <button
+            onClick={() => setShowChangePasswordForm(true)}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-yellow-400 hover:bg-gray-700 transition font-semibold"
+          >
+            <FaShieldAlt className="text-lg" /> Change Password
+          </button>
           <button
             onClick={() => navigate("/admin-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
@@ -189,7 +234,6 @@ export default function AdminProfile() {
             <FaUserCircle className="text-lg" />
             Dashboard
           </button>
-
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -251,65 +295,122 @@ export default function AdminProfile() {
                     onChange={handleProfileChange}
                   />
                 ))}
-                <div className="space-x-2 mt-2">
+                <div className="space-x-2 mt-4">
                   <button
                     onClick={saveProfile}
-                    className="text-green-400 text-sm hover:underline"
+                    className="px-4 py-2 bg-yellow-500 text-black rounded"
                   >
-                    Save
+                    Save Changes
                   </button>
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="text-red-400 text-sm hover:underline"
+                    className="px-4 py-2 bg-gray-500 text-white rounded"
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="text-sm space-y-2">
+              <div>
                 <ReadOnlyField label="Full Name" value={profile.fullName} />
-                <ReadOnlyField label="Mobile" value={profile.phoneNumber} />
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
-                <div className="flex items-center space-x-3 mt-2">
+                <ReadOnlyField label="Phone" value={profile.phoneNumber} />
+
+<div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
                   <FaInstagram className="text-pink-500" />
                 </div>
+
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
+                >
+                  Edit Profile
+                </button>
               </div>
             )}
-
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
-              >
-                Edit
-              </button>
-            )}
-
-            {/* Quick Tools */}
-            {/* <hr className="my-6 border-gray-600" />
-            <h4 className="text-base font-semibold mb-3">Quick Tools</h4>
-            <div className="space-y-2">
-              <button
-                onClick={toggleAddUserForm}
-                className="flex items-center gap-2 text-green-400 hover:text-white"
-              >
-                <FaUserPlus /> Add User
-              </button>
-              <button
-                onClick={() => navigate("/admin/users")}
-                className="flex items-center gap-2 text-blue-400 hover:text-white"
-              >
-                <FaUsers /> View All Users
-              </button>
-            </div>
-
-            {showAddUserForm && <AddUserForm />} */}
           </section>
         </div>
+
+        {showChangePasswordForm && (
+  <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+    <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+    <div className="space-y-3 relative">
+      {["oldPassword", "newPassword", "confirmPassword"].map((field, index) => (
+        <div key={field} className="relative">
+          <input
+            type={changePassword[`show${field}`] ? "text" : "password"}
+            placeholder={
+              field === "oldPassword"
+                ? "Old Password"
+                : field === "newPassword"
+                ? "New Password"
+                : "Confirm New Password"
+            }
+            value={changePassword[field]}
+            onChange={(e) =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [field]: e.target.value,
+              }))
+            }
+            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [`show${field}`]: !prev[`show${field}`],
+              }))
+            }
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-yellow-400"
+          >
+            {changePassword[`show${field}`] ? "Hide" : "Show"}
+          </button>
+        </div>
+      ))}
+
+      {changePassword.newPassword.length > 0 &&
+        changePassword.newPassword.length < 6 && (
+          <p className="text-red-400 text-sm">
+            New password must be at least 6 characters.
+          </p>
+      )}
+
+      {passwordError && (
+        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+      )}
+
+      <div className="flex space-x-4 mt-2">
+        <button
+          onClick={handleChangePassword}
+          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+        >
+          Change Password
+        </button>
+        <button
+          onClick={() => {
+            setShowChangePasswordForm(false);
+            setChangePassword({
+              oldPassword: "",
+              newPassword: "",
+              confirmPassword: "",
+            });
+            setPasswordError("");
+          }}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </section>
+)}
+
+        
       </main>
     </div>
   );

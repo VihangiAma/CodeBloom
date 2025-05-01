@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 export default function RegisterPage() {
-  const [userId, setUserId] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -29,7 +28,6 @@ export default function RegisterPage() {
     if (Object.keys(newErrors).length > 0) return;
 
     const userData = {
-      userId,
       fullName,
       email,
       phoneNumber,
@@ -48,7 +46,7 @@ export default function RegisterPage() {
       const result = await response.json();
 
       if (response.ok) {
-        setMessage("Registration successful!");
+        setMessage(`Registration successful! `);
         setTimeout(() => {
           window.location.href = "/login";
         }, 1500);
@@ -74,7 +72,6 @@ export default function RegisterPage() {
 
           <form onSubmit={handleRegister}>
             {[
-              { label: "User ID", value: userId, setter: setUserId },
               { label: "Full Name", value: fullName, setter: setFullName },
               { label: "Email", value: email, setter: setEmail, type: "email" },
               { label: "Phone Number", value: phoneNumber, setter: setPhoneNumber },
@@ -91,9 +88,9 @@ export default function RegisterPage() {
                   className="w-full px-3 py-2 rounded text-black border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-                {errors[label.toLowerCase().replace(" ", "")] && (
+                {errors[label.toLowerCase().replace(/\s/g, "")] && (
                   <p className="text-red-300 text-sm mt-1">
-                    {errors[label.toLowerCase().replace(" ", "")]}
+                    {errors[label.toLowerCase().replace(/\s/g, "")]}
                   </p>
                 )}
               </div>

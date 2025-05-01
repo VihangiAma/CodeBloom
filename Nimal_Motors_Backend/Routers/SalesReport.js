@@ -9,3 +9,4 @@ SalesRouter.delete("/:id",deleteSalesReport);
 SalesRouter.put("/:id",updateSalesReport);
 
 export default SalesRouter;
+
