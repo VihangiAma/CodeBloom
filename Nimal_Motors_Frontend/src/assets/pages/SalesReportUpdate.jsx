@@ -53,7 +53,7 @@ const SalesReportUpdate = ({ onUpdate, initialData }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/SalesReports/${formData.itemId}`,
+        `http://localhost:5001/api/SalesReports/${formData.itemId}`,
         formData
       );
 

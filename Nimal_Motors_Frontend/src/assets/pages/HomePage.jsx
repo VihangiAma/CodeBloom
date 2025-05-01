@@ -8,6 +8,8 @@ import AdminDashboard from "./AdminDashBord";
 import ProfilePage from "./ProfilePage";
 import SalesReportView from "./SalesReportView";
 
+import UsersReport from "./UserReport";
+
 export default function HomePage() {
   const [salesReports, setSalesReports] = useState([]);
 
@@ -31,6 +33,7 @@ export default function HomePage() {
     <div>
       <AdminDashboard />
       {tab === "salesreport" && <SalesReport />}
+      {tab==="User Report"&&<UsersReport/>}
       {tab === "addreport" && <SalesReportAdd onAdd={handleAddReport} />}
       {tab === "updatereport" && <SalesReportUpdate />}
       {tab === "deletereport" && <SalesReportDelete />}

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FaUserEdit, FaTrashAlt, FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 export default function UserManagement() {
   const navigate = useNavigate();

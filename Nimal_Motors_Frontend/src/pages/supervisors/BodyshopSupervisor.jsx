@@ -28,7 +28,7 @@ export default function BodyshopSupervisor() {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const res = await axios.get("http://localhost:5000/api/user/profile", {
+      const res = await axios.get("http://localhost:5001/api/user/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProfile(res.data.user);
@@ -50,7 +50,7 @@ export default function BodyshopSupervisor() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5000/api/user", profile);
+      await axios.post("http://localhost:5001/api/user", profile);
     } catch (err) {
       console.error("Error updating user data", err);
     }
@@ -71,12 +71,13 @@ export default function BodyshopSupervisor() {
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
-            onClick={fetchProfile}
+            onClick={() => navigate("/supervisor/body-shop")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />
-            Profile
+            Dashboard
           </button>
+
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -103,7 +104,7 @@ export default function BodyshopSupervisor() {
             <div className="text-white drop-shadow-lg">
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
               <p className="text-sm">
-              BodyShop Supervisor – Nimal Motors
+                BodyShop Supervisor – Nimal Motors
                 {profile.fullName && ` – ${profile.fullName}`}
               </p>
             </div>
@@ -123,16 +124,16 @@ export default function BodyshopSupervisor() {
               precision workmanship with exceptional customer care so that every
               vehicle leaves our facility looking factory‑fresh. When I’m not on
               the shop floor fine‑tuning repair workflows, you’ll find me
-              mentoring junior technicians or researching the latest eco‑friendly
-              paint technologies to keep our services both cutting‑edge and
-              sustainable.
+              mentoring junior technicians or researching the latest
+              eco‑friendly paint technologies to keep our services both
+              cutting‑edge and sustainable.
             </p>
           </section>
 
           {/* right: detail card */}
           <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">
-             BodyShop Supervisor Profile
+              BodyShop Supervisor Profile
             </h3>
 
             {isEditing ? (

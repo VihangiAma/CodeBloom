@@ -29,7 +29,7 @@ export default function MechanicalSupervisorProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("http://localhost:5000/api/user/profile", {
+      const res = await axios.get("http://localhost:5001/api/user/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,7 +55,7 @@ export default function MechanicalSupervisorProfile() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5000/api/user", profile);
+      await axios.post("http://localhost:5001/api/user", profile);
     } catch (err) {
       console.error("Error updating user data", err);
     }
@@ -71,17 +71,17 @@ export default function MechanicalSupervisorProfile() {
         <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
           🚗 NIMAL MOTORS
         </h1>
-
         <nav className="flex-1" /> {/* empty spacer */}
-
         <div className="space-y-2 border-t border-gray-600 pt-6">
+          
           <button
-            onClick={fetchProfile}
+            onClick={() => navigate("/supervisor/mechanical")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />
-            Profile
+            Dashboard
           </button>
+
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -122,16 +122,18 @@ export default function MechanicalSupervisorProfile() {
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
               Hi, I’m {profile.fullName || "—"}. As the Mechanical Supervisor at
-              Nimal Motors, I lead a team of technicians who handle everything from routine
-              maintenance to full engine and drivetrain rebuilds. With more than a decade
-              of hands‑on experience in automotive mechanics, I manage the mechanical
-              workshop workflow, perform advanced diagnostics, and verify that every repair
-              meets OEM specifications and our own quality benchmarks. My passion lies in
-              combining precision workmanship with clear communication so customers
-              understand exactly how we’re bringing their vehicles back to peak
-              performance. When I’m not under the hood fine‑tuning torque specs, you’ll
-              find me mentoring junior techs, implementing lean‑shop practices, or studying
-              the latest power‑train technologies to keep our services at the cutting edge.
+              Nimal Motors, I lead a team of technicians who handle everything
+              from routine maintenance to full engine and drivetrain rebuilds.
+              With more than a decade of hands‑on experience in automotive
+              mechanics, I manage the mechanical workshop workflow, perform
+              advanced diagnostics, and verify that every repair meets OEM
+              specifications and our own quality benchmarks. My passion lies in
+              combining precision workmanship with clear communication so
+              customers understand exactly how we’re bringing their vehicles
+              back to peak performance. When I’m not under the hood fine‑tuning
+              torque specs, you’ll find me mentoring junior techs, implementing
+              lean‑shop practices, or studying the latest power‑train
+              technologies to keep our services at the cutting edge.
             </p>
           </section>
 
