@@ -1,25 +1,30 @@
 import mongoose from "mongoose";
+import AutoIncrementFactory from "mongoose-sequence";
+
+const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const bodyShopSchema = new mongoose.Schema({
-  serviceID: { type: String, required: true, unique: true },
+  serviceID: { type: Number, unique: true }, // will be auto-incremented
   customerName: { type: String, required: true },
   contact: {
-    phone: { type: String, required: true }, // New: phone number (required)
-    email: { type: String }                   // New: optional email
+    phone: { type: String, required: true, unique: true },
+    email: { type: String }
   },
-  vehicleID: { type: String, required: true },
+  vehicleNumber: { type: String, required: true },
   serviceDate: { type: Date, required: true },
-  serviceTime: { type: String, required: true },
-  description: { 
-    type: String, 
+  presentMeter: {
+    type: Number,
     required: true,
-    maxlength: 100 
+    min: 0
   },
-  status: { 
-    type: String, 
-    enum: ["Pending", "In Progress", "Completed"], 
-    default: "Pending" 
+  status: {
+    type: String,
+    enum: ["Pending", "In Progress", "Completed"],
+    default: "Pending"
   }
 });
+
+// Apply the auto-increment plugin
+bodyShopSchema.plugin(AutoIncrement, { inc_field: "serviceID", id: "bodyshop_seq" });
 
 export default mongoose.model("BodyShopSection", bodyShopSchema, "BodyShopSection");

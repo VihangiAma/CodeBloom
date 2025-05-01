@@ -25,6 +25,6 @@ const mechanicalSchema = new mongoose.Schema({
 });
 
 // Apply the auto-increment plugin
-mechanicalSchema.plugin(AutoIncrement, { inc_field: "serviceID" });
+mechanicalSchema.plugin(AutoIncrement, { inc_field: "serviceID", id: "mechanical_seq" });
 
 export default mongoose.model("MechanicalSection", mechanicalSchema, "MechanicalSection");

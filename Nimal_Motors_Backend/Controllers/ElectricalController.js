@@ -1,58 +1,58 @@
 import ElectricalSection from "../Models/ElectricalSection.js";
 
 // Create a new electrical service appointment
-export const createElectricalService = async (req, res) => {
+export const createElectricalEntry = async (req, res) => {
   try {
-    const newService = new ElectricalSection(req.body);
-    await newService.save();
-    res.status(201).json(newService);
+    const newEntry = new ElectricalSection(req.body);
+    const savedEntry = await newEntry.save();
+    res.status(201).json(savedEntry);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Get all electrical service appointments
-export const getAllElectricalServices = async (req, res) => {
+// Get all electrical service entries
+export const getAllElectricalEntries = async (req, res) => {
   try {
-    const services = await ElectricalSection.find();
-    res.json(services);
+    const entries = await ElectricalSection.find().sort({ serviceDate: -1 });
+    res.status(200).json(entries);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get a single electrical service by ID
-export const getElectricalServiceById = async (req, res) => {
+// Get a single electrical entry by serviceID
+export const getElectricalEntryById = async (req, res) => {
   try {
-    const service = await ElectricalSection.findById(req.params.id);
-    if (!service) return res.status(404).json({ message: "Service not found" });
-    res.json(service);
+    const entry = await ElectricalSection.findOne({ serviceID: req.params.id });
+    if (!entry) return res.status(404).json({ message: "Entry not found" });
+    res.status(200).json(entry);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Update an electrical service by ID
-export const updateElectricalService = async (req, res) => {
+// Update an electrical entry by serviceID
+export const updateElectricalEntry = async (req, res) => {
   try {
-    const updatedService = await ElectricalSection.findByIdAndUpdate(
-      req.params.id,
+    const updatedEntry = await ElectricalSection.findOneAndUpdate(
+      { serviceID: req.params.id },
       req.body,
       { new: true }
     );
-    if (!updatedService) return res.status(404).json({ message: "Service not found" });
-    res.json(updatedService);
+    if (!updatedEntry) return res.status(404).json({ message: "Entry not found" });
+    res.status(200).json(updatedEntry);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Delete an electrical service by ID
-export const deleteElectricalService = async (req, res) => {
+// Delete an electrical entry by serviceID
+export const deleteElectricalEntry = async (req, res) => {
   try {
-    const deletedService = await ElectricalSection.findByIdAndDelete(req.params.id);
-    if (!deletedService) return res.status(404).json({ message: "Service not found" });
-    res.json({ message: "Service deleted successfully" });
+    const deletedEntry = await ElectricalSection.findOneAndDelete({ serviceID: req.params.id });
+    if (!deletedEntry) return res.status(404).json({ message: "Entry not found" });
+    res.status(200).json({ message: "Entry deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
