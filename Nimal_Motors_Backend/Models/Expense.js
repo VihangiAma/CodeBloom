@@ -16,7 +16,8 @@ const expenseSchema = new mongoose.Schema({
   },
   supplier: {
     type: String,
-    required: true,
+    required: false // ✅ Only conditionally required in controller logic
+  
   },
   description: {
     type: String,

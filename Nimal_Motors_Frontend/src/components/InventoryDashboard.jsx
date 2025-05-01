@@ -30,6 +30,7 @@ const InventoryDashboard = () => {
   const [foundItem, setFoundItem] = useState(null);
   const [quantityToAdd, setQuantityToAdd] = useState("");
   const [activeSection, setActiveSection] = useState("inventory");
+  const [supplierList, setSupplierList] = useState([]);
 
 
   //const [lowStockItems, setLowStockItems] = useState([]);
@@ -82,6 +83,11 @@ history.push('/some-route');
     (categoryFilter === "" || item.category === categoryFilter)
   );
 
+  useEffect(() => {
+    axios.get("http://localhost:5001/api/supplier/list")
+      .then(res => setSupplierList(res.data))
+      .catch(err => console.error("Failed to fetch supplier list", err));
+  }, []);
   
  const handleEditClick = (item) => {
     setEditItem(item);

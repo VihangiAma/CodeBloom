@@ -3,7 +3,7 @@ import { addExpense, getAllExpenses,getRecentExpenses } from "../Controllers/Exp
 
 const router = express.Router();
 
-router.post("/", addExpense);
+router.post("/add", addExpense);
 router.get("/", getAllExpenses);
 router.get("/recent", getRecentExpenses);
 

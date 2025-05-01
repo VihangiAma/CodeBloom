@@ -1,7 +1,7 @@
 import Expense from "../Models/Expense.js";
 
 // Create new expense
-exports.addExpense = async (req, res) => {
+export const addExpense = async (req, res) => {
     try {
       const { category, amount, date, supplier, description } = req.body;
   

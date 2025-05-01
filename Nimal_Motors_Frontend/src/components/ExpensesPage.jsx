@@ -56,7 +56,7 @@ const ExpensesPage = () => {
     }
 
     try {
-      await axios.post("http://localhost:5001/api/expenses", formData);
+      await axios.post("http://localhost:5001/api/expenses/add", formData);
       toast.success("Expense added successfully!");
       setFormData({
         category: "",
