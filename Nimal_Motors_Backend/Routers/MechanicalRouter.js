@@ -1,27 +1,19 @@
 import express from "express";
 import {
-  createMechanicalEntry,
-  getAllMechanicalEntries,
-  getMechanicalEntryById,
-  updateMechanicalEntry,
-  deleteMechanicalEntry
+  createService,
+  getAllServices,
+  getServiceById,
+  updateService,
+  deleteService
 } from "../Controllers/MechanicalController.js";
 
 const router = express.Router();
 
-// POST - create a new mechanical entry
-router.post("/", createMechanicalEntry);
-
-// GET - all entries
-router.get("/", getAllMechanicalEntries);
-
-// GET - one entry by serviceID
-router.get("/:id", getMechanicalEntryById);
-
-// PUT - update entry by serviceID
-router.put("/:id", updateMechanicalEntry);
-
-// DELETE - remove entry by serviceID
-router.delete("/:id", deleteMechanicalEntry);
+// Base path: /api/mechanical
+router.post("/", createService);
+router.get("/", getAllServices);
+router.get("/:id", getServiceById);
+router.put("/:id", updateService);
+router.delete("/:id", deleteService);
 
 export default router;
