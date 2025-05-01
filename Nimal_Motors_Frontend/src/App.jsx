@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
-import RegisterPage from './pages/register/RegisterPage';
+// import RegisterPage from './pages/register/RegisterPage';
+
 import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
@@ -69,7 +70,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        {/* <Route path="/register" element={<RegisterPage />} /> */}
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
 
 
