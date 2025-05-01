@@ -311,106 +311,87 @@ export default function AdminProfile() {
                 </div>
               </div>
             ) : (
-              <div>
-                <ReadOnlyField label="Full Name" value={profile.fullName} />
-                <ReadOnlyField label="Email" value={profile.email} />
-                <ReadOnlyField label="Username" value={profile.username} />
-                <ReadOnlyField label="Phone" value={profile.phoneNumber} />
+              <>
+                <div>
+                  <label className="font-semibold">Full Name:</label>
+                  <p className="ml-2 text-gray-300">{profile.fullName || "—"}</p>
+                </div>
+                <div>
+                  <label className="font-semibold">Email:</label>
+                  <p className="ml-2 text-gray-300">{profile.email || "—"}</p>
+                </div>
+                <div>
+                  <label className="font-semibold">Username:</label>
+                  <p className="ml-2 text-gray-300">{profile.username || "—"}</p>
+                </div>
+                <div>
+                  <label className="font-semibold">Phone:</label>
+                  <p className="ml-2 text-gray-300">{profile.phoneNumber || "—"}</p>
+                </div>
 
-<div className="flex items-center space-x-3 mt-2">
+                {/* Optional social media icons */}
+                <div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
                   <FaInstagram className="text-pink-500" />
                 </div>
 
+                {/* Edit button */}
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
+                  className="mt-4 px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
                 >
                   Edit Profile
                 </button>
-              </div>
+              </>
             )}
           </section>
         </div>
 
         {showChangePasswordForm && (
-  <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-    <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-    <div className="space-y-3 relative">
-      {["oldPassword", "newPassword", "confirmPassword"].map((field, index) => (
-        <div key={field} className="relative">
-          <input
-            type={changePassword[`show${field}`] ? "text" : "password"}
-            placeholder={
-              field === "oldPassword"
-                ? "Old Password"
-                : field === "newPassword"
-                ? "New Password"
-                : "Confirm New Password"
-            }
-            value={changePassword[field]}
-            onChange={(e) =>
-              setChangePassword((prev) => ({
-                ...prev,
-                [field]: e.target.value,
-              }))
-            }
-            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
-          />
-          <button
-            type="button"
-            onClick={() =>
-              setChangePassword((prev) => ({
-                ...prev,
-                [`show${field}`]: !prev[`show${field}`],
-              }))
-            }
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-yellow-400"
-          >
-            {changePassword[`show${field}`] ? "Hide" : "Show"}
-          </button>
-        </div>
-      ))}
-
-      {changePassword.newPassword.length > 0 &&
-        changePassword.newPassword.length < 6 && (
-          <p className="text-red-400 text-sm">
-            New password must be at least 6 characters.
-          </p>
-      )}
-
-      {passwordError && (
-        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-      )}
-
-      <div className="flex space-x-4 mt-2">
-        <button
-          onClick={handleChangePassword}
-          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
-        >
-          Change Password
-        </button>
-        <button
-          onClick={() => {
-            setShowChangePasswordForm(false);
-            setChangePassword({
-              oldPassword: "",
-              newPassword: "",
-              confirmPassword: "",
-            });
-            setPasswordError("");
-          }}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </section>
-)}
-
-        
+          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+            <div className="space-y-3 relative">
+              {["oldPassword", "newPassword", "confirmPassword"].map((field) => (
+                <div key={field} className="relative">
+                  <label className="font-medium capitalize">
+                    {field.replace(/([A-Z])/g, " $1")}
+                  </label>
+                  <input
+                    name={field}
+                    type="password"
+                    value={changePassword[field]}
+                    onChange={(e) =>
+                      setChangePassword({
+                        ...changePassword,
+                        [field]: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+                    placeholder={`Enter your ${field}`}
+                  />
+                </div>
+              ))}
+              {passwordError && (
+                <p className="text-red-400 text-sm mt-2">{passwordError}</p>
+              )}
+              <div className="space-x-2 mt-4">
+                <button
+                  onClick={handleChangePassword}
+                  className="px-4 py-2 bg-yellow-500 text-black rounded"
+                >
+                  Save Password
+                </button>
+                <button
+                  onClick={() => setShowChangePasswordForm(false)}
+                  className="px-4 py-2 bg-gray-500 text-white rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
