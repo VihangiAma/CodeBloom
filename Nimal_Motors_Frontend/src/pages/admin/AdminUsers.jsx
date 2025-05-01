@@ -151,10 +151,10 @@ export default function AdminUsers() {
             <FaUserPlus /> Add User
           </button>
           <button
-            onClick={() => navigate("/admin-profile")}
+            onClick={() => navigate("/admin-dashboard")}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm"
           >
-            <FaArrowLeft /> Back to Profile
+            <FaArrowLeft /> Back to Dashboard
           </button>
         </div>
       </div>
