@@ -383,7 +383,7 @@ const AddDetailsForm = ({ onSubmit, existingBooking, isEditMode, onDelete }) => 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-center">
-        {isEditMode ? "Update Body Shop Appointment" : "Book a Body Shop Appointment"}
+        {isEditMode ? "Update Body Shop Appointment" : "Add Customer Details"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
 
