@@ -47,7 +47,13 @@ const ServiceSupervisorDashboard = () => {
       default:
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
-          
+          <DashboardCard
+              title="Add Customer"
+              description="Add a new customer details."
+              color="bg-blue-500"
+              emoji="➕"
+              onClick={() => setActivePage("addservice")}
+            />
             <DashboardCard
               title="Manage Appointments"
               description="View and manage customer bookings."

@@ -116,8 +116,8 @@ const BodyShopSupervisorSection = () => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
             <DashboardCard
-              title="Add Service"
-              description="Add a new body-shop service."
+              title="Add Customer"
+              description="Add a new customer details."
               color="bg-blue-500"
               emoji="➕"
               onClick={() => setActivePage("addservice")}
