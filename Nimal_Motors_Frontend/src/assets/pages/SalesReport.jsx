@@ -105,35 +105,7 @@ const SalesReport = () => {
         <SalesReportView salesData={sales} />
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={() => openModal("add")}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-        >
-          Add New Item
-        </button>
-        {sales.length > 0 && (
-          <>
-            <button
-              onClick={() => openModal("update", sales[0])}
-              className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
-              disabled={!selectedItem}
-            >
-              Update Item
-            </button>
-            <button
-              onClick={() => openModal("delete", sales[0])}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
-              disabled={!selectedItem}
-            >
-              Delete Item
-            </button>
-          </>
-        )}
-      </div>
-
-      {/* Modal */}
+      {/* Modal - Keeping the modal in case it's used elsewhere */}
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}

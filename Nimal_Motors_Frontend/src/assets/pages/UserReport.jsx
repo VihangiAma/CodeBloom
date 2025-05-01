@@ -89,7 +89,7 @@ const UsersReport = () => {
       doc.text(`Generated on ${new Date().toLocaleString()}`, 105, 65, { align: "center" });
 
       const headers = [
-        ["Service ID", "Customer", "Phone", "Vehicle Number", "Service Date"]
+        ["Service ID", "Customer", "Phone", "Vehicle ID", "Service Date"]
       ];
 
       const rows = reports.map((report) => {
@@ -98,7 +98,7 @@ const UsersReport = () => {
             report.serviceID?.toString() || "N/A",
             report.customerName?.toString() || "N/A",
             formatPhone(report.contact),
-            report.vehicleNumber?.toString() || "N/A",
+            report.vehicleID?.toString() || "N/A", 
             report.serviceDate ? formatDate(report.serviceDate) : "N/A"
           ];
         } catch (rowError) {
@@ -131,7 +131,7 @@ const UsersReport = () => {
           0: { cellWidth: 20 },  // Service ID
           1: { cellWidth: 60 },  // Customer
           2: { cellWidth: 30 },  // Phone
-          3: { cellWidth: 25 },  // Vehicle Number
+          3: { cellWidth: 30 },  // Vehicle ID
           4: { cellWidth: 30 }   // Service Date
         },
         didDrawPage: (data) => {
@@ -187,12 +187,6 @@ const UsersReport = () => {
       <div className="p-6 bg-red-50 border-l-4 border-red-500 text-red-700">
         <p className="font-bold">Error Loading Data</p>
         <p>{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-red-100 hover:bg-red-200 rounded"
-        >
-          Retry
-        </button>
       </div>
     );
   }
@@ -228,7 +222,7 @@ const UsersReport = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-blue-600">
               <tr>
-                {["Service ID", "Customer", "Phone", "Vehicle Number", "Service Date"].map((header) => (
+                {["Service ID", "Customer", "Phone", "Vehicle ID", "Service Date"].map((header) => (
                   <th
                     key={header}
                     className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
@@ -251,7 +245,7 @@ const UsersReport = () => {
                     {formatPhone(report.contact)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    {report.vehicleNumber || "N/A"}
+                    {report.vehicleID || "N/A"}  
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {report.serviceDate ? formatDate(report.serviceDate) : "N/A"}

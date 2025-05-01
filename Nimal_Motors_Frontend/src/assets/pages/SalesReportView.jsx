@@ -86,16 +86,20 @@ const SalesReportView = () => {
         ["ID", "Name", "Price", "Net Price", "Quantity", "Amount"]
       ];
 
+      // Calculate total amount
+      let totalAmount = 0;
+      
       const rows = salesReports.map((report) => {
         try {
-          const profit = report.net_price_for_item * report.Sales_Quntity;
+          const amount = report.net_price_for_item * report.Sales_Quntity;
+          totalAmount += amount;
           return [
             report.itemId?.toString() || "N/A",
             report.itemName?.toString() || "N/A",
             `Rs ${report.price?.toFixed(2) || "0.00"}`,
             `Rs ${report.net_price_for_item?.toFixed(2) || "0.00"}`,
             report.Sales_Quntity?.toString() || "0",
-            `Rs ${profit.toFixed(2)}`
+            `Rs ${amount.toFixed(2)}`
           ];
         } catch (rowError) {
           console.error("Error processing row:", report, rowError);
@@ -103,10 +107,24 @@ const SalesReportView = () => {
         }
       });
 
+      // Add total row only to PDF
+      const footer = [
+        {
+          content: "Total Amount:",
+          colSpan: 5,
+          styles: { halign: 'right', fontStyle: 'bold' }
+        },
+        {
+          content: `Rs ${totalAmount.toFixed(2)}`,
+          styles: { fontStyle: 'bold' }
+        }
+      ];
+
       autoTable(doc, {
         startY: 70,
         head: headers,
         body: rows,
+        foot: [footer],
         margin: { top: 70 },
         styles: {
           fontSize: 9,
@@ -129,7 +147,7 @@ const SalesReportView = () => {
           2: { cellWidth: 25 },  // Price
           3: { cellWidth: 25 },  // Net Price
           4: { cellWidth: 20 },  // Quantity
-          5: { cellWidth: 25 }   // Amount
+          5: { cellWidth: 40 }   // Amount
         },
         didDrawPage: (data) => {
           doc.setFontSize(8);
@@ -188,7 +206,7 @@ const SalesReportView = () => {
   return (
     <div className="p-6 max-w-screen-2xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Financial Details</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Sales Reports</h2>
         <div className="flex items-center space-x-4">
           {pdfError && (
             <span className="text-red-500 text-sm">{pdfError}</span>
@@ -228,7 +246,7 @@ const SalesReportView = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {salesReports.map((report, index) => {
-                const profit = report.net_price_for_item * report.Sales_Quntity;
+                const amount = report.net_price_for_item * report.Sales_Quntity;
                 return (
                   <tr key={index} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
@@ -247,7 +265,7 @@ const SalesReportView = () => {
                       {report.Sales_Quntity || "0"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      Rs {profit.toFixed(2)}
+                      Rs {amount.toFixed(2)}
                     </td>
                   </tr>
                 );

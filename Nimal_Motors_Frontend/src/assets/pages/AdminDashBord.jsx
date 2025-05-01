@@ -21,21 +21,13 @@ const ReportSection = ({ reportType, goBack }) => {
     <div className="p-8 min-h-[calc(100vh-8rem)]">
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-2xl font-bold mb-6">{reportType}</h2>
-        {reportType === "Sales Report" ? (
+        {reportType === "Financial Report" ? (
           <SalesReport />
         ) : reportType === "User Report" ? (
           <UsersReport />
         ) : (
           <p>Displaying {reportType} data...</p>
         )}
-        <div className="mt-6">
-          <button
-            onClick={goBack}
-            className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded transition"
-          >
-            Go Back
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -99,7 +91,7 @@ const AdminDashboard = () => {
       case "salesReport":
         return (
           <ReportSection
-            reportType="Sales Report"
+            reportType="Financial Report"
             goBack={() => setActivePage("dashboard")}
           />
         );
@@ -164,14 +156,13 @@ const AdminDashboard = () => {
         {/* Admin Profile */}
         <div className="p-4 flex items-center border-b border-blue-700">
           <img
-            src="https://via.placeholder.com/40"
+            src="/admin.png"
             alt="Admin"
             className="w-10 h-10 rounded-full"
           />
           {sidebarOpen && (
             <div className="ml-3">
               <p className="font-medium">Admin User</p>
-              <p className="text-xs text-blue-200">admin@example.com</p>
             </div>
           )}
         </div>
@@ -262,7 +253,7 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
-        <div className="min-h-[calc(100vh-4rem)]">
+        <div className="p-6 bg-gray-100 min-h-screen">
           {renderContent()}
         </div>
       </div>
