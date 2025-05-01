@@ -1,5 +1,5 @@
 import express from "express";
-import { getStockItems, addStockItem, updateStockItem, deleteStockItem,checkLowStock,getStockItemByBarcode,updateStockByBarcode } from "../Controllers/stockControllers.js";
+import { getStockItems, addStockItem, updateStockItem, deleteStockItem,checkLowStock,getStockItemByBarcode,updateStockByBarcode,getItemsBySupplier } from "../Controllers/stockControllers.js";
 
 const router = express.Router();
 
@@ -19,6 +19,6 @@ router.delete("/delete/:itemId", deleteStockItem);
 router.get("/low-stock", checkLowStock);
 router.get("/barcode/:barcode", getStockItemByBarcode);
 router.put("/barcode/:barcode/add-stock", updateStockByBarcode);
-
+router.get("/by-supplier/:companyName", getItemsBySupplier);
 
 export default router;

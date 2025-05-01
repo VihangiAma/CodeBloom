@@ -332,7 +332,7 @@ history.push('/some-route');
                   <td className="p-3">{item.category}</td>
                   <td className="p-3">{item.stockQuantity}</td>
                    <td className="p-3">{item.pricePerUnit}</td>
-                  <td className="p-3">{item.companyName}</td>
+                   <td className="p-3">{item.companyName}</td>
                        <td className="p-3">
                     <button onClick={() => handleEditClick(item)} className="text-blue-600 p-1">
                       <FaEdit />
@@ -414,16 +414,16 @@ history.push('/some-route');
 />
 <select
   value={formData.companyName}
-  onChange={e => setFormData({ ...formData, companyName: e.target.value })}
-  className="p-2 border w-full mb-2"
+  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
 >
   <option value="">Select Company</option>
-  <option value="Auto Lanka Distributors">Auto Lanka Distributors</option>
-  <option value="Rathnayake Motor Suppliers">Rathnayake Motor Suppliers</option>
-  <option value="Lanka Auto Parts Pvt Ltd">Lanka Auto Parts Pvt Ltd</option>
-  <option value="SuperDrive Imports">SuperDrive Imports</option>
-  <option value="MegaMotors Suppliers">MegaMotors Suppliers</option>
+  {supplierList.map((supplier) => (
+    <option key={supplier.supplierId} value={supplier.companyName}>
+      {supplier.companyName}
+    </option>
+  ))}
 </select>
+  
 <input 
   type="text" 
   value={formData.id} 

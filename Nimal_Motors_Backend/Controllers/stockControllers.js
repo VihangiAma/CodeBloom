@@ -173,5 +173,15 @@ export const checkLowStock = async (req, res) => {
       res.status(500).json({ message: "Internal server error." });
     }
   };
+  export const getItemsBySupplier = async (req, res) => {
+    try {
+      const { companyName } = req.params;
+      const items = await Stock.find({ companyName });
+      res.status(200).json(items);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch items for this supplier" });
+    }
+  };
+  
   
   

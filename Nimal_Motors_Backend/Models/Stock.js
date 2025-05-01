@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+//stockSchema.index({ itemName: 1, companyName: 1 }, { unique: true });
 
 const stockSchema = new mongoose.Schema({
+    
     category: {
         type: String,
         required: true,
@@ -41,5 +43,6 @@ const stockSchema = new mongoose.Schema({
 });
 
 const Stock = mongoose.model("Stock", stockSchema);
+stockSchema.index({ itemName: 1, companyName: 1 }, { unique: true });
 
 export default Stock;
