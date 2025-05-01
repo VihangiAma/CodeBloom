@@ -1,27 +1,19 @@
 import express from "express";
 import {
-  createBodyShopEntry,
-  getAllBodyShopEntries,
-  getBodyShopEntryById,
-  updateBodyShopEntry,
-  deleteBodyShopEntry
+  createBodyShopService,
+  getAllBodyShopServices,
+  getBodyShopServiceById,
+  updateBodyShopService,
+  deleteBodyShopService
 } from "../Controllers/BodyShopController.js";
 
 const router = express.Router();
 
-// POST - Create new body shop entry
-router.post("/", createBodyShopEntry);
-
-// GET - All body shop entries
-router.get("/", getAllBodyShopEntries);
-
-// GET - Single entry by serviceID
-router.get("/:id", getBodyShopEntryById);
-
-// PUT - Update entry
-router.put("/:id", updateBodyShopEntry);
-
-// DELETE - Delete entry
-router.delete("/:id", deleteBodyShopEntry);
+// Base path: /api/bodyshop
+router.post("/", createBodyShopService);
+router.get("/", getAllBodyShopServices);
+router.get("/:id", getBodyShopServiceById);
+router.put("/:id", updateBodyShopService);
+router.delete("/:id", deleteBodyShopService);
 
 export default router;
