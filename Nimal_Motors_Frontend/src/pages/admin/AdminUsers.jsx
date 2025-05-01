@@ -172,14 +172,6 @@ export default function AdminUsers() {
     <div className="flex flex-col gap-4">
       <input
         type="text"
-        name="userId"
-        value={newUser.userId}
-        onChange={handleNewUserChange}
-        placeholder="User ID"
-        className="px-3 py-2 rounded bg-gray-700 text-white"
-      />
-      <input
-        type="text"
         name="fullName"
         value={newUser.fullName}
         onChange={handleNewUserChange}
@@ -211,21 +203,20 @@ export default function AdminUsers() {
         className="px-3 py-2 rounded bg-gray-700 text-white"
       />
       <select
-  name="type"
-  value={newUser.type}
-  onChange={handleNewUserChange}
-  className="px-3 py-2 rounded bg-gray-700 text-white"
->
-  <option value="">Select Role</option>
-  <option value="admin">Admin</option>
-  <option value="mechanicalsupervisor">Mechanical Supervisor</option>
-  <option value="electricalsupervisor">Electrical Supervisor </option>
-  <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
-  <option value="servicesupervisor">Service Supervisor</option>
-  <option value="accountant">Accountant</option>
-  <option value="premiumCustomer">Premium Customer</option>
-</select>
-
+        name="type"
+        value={newUser.type}
+        onChange={handleNewUserChange}
+        className="px-3 py-2 rounded bg-gray-700 text-white"
+      >
+        <option value="">Select Role</option>
+        <option value="admin">Admin</option>
+        <option value="mechanicalsupervisor">Mechanical Supervisor</option>
+        <option value="electricalsupervisor">Electrical Supervisor</option>
+        <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
+        <option value="servicesupervisor">Service Supervisor</option>
+        <option value="accountant">Accountant</option>
+        <option value="premiumCustomer">Premium Customer</option>
+      </select>
     </div>
 
     <div className="flex justify-end gap-3 mt-6">
