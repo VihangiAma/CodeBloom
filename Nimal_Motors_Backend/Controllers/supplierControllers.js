@@ -31,3 +31,26 @@ export const addSupplier = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// Update supplier contact details
+export const updateSupplierContact = async (req, res) => {
+  const { supplierId } = req.params;
+  const { contactPerson, phoneNumber, email, address } = req.body;
+
+  try {
+    const updatedSupplier = await Supplier.findOneAndUpdate(
+      { supplierId },
+      { contactPerson, phoneNumber, email, address },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedSupplier) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+
+    res.status(200).json(updatedSupplier);
+  } catch (error) {
+    console.error("Error updating supplier:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

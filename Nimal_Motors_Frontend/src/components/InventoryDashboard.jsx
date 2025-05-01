@@ -169,7 +169,10 @@ history.push('/some-route');
 
   //handle barcode inputs
   const handleBarcodeSubmit = async () => {
-    if (!barcodeInput.trim()) return;
+    if (!barcodeInput.trim())  {
+      toast.error("Please enter a barcode before submitting!");
+      return;
+    }
   
     try {
       const response = await axios.get(`http://localhost:5001/api/stock/barcode/${barcodeInput.trim()}`);
@@ -220,39 +223,43 @@ history.push('/some-route');
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-blue-700 text-white p-5 space-y-4">
+      <aside className="w-64 bg-red-500 text-white p-5 space-y-4 h-200">
       <img src={logoImage} alt="logo" className="w-25 h-20 mb-2" />
 
         <h2 className="text-2xl font-bold">Nimal Motors</h2>
 
         <nav>
-          <ul className="space-y-2">
-            
-            
-            <li className="flex items-center gap-3 p-2 bg-white text-blue-700 rounded" onClick={() => setActiveSection("inventory")} >
+          <ul className="space-y-2">  
+      <li className="flex items-center gap-3 p-2 bg-red text-white rounded hover:bg-black" onClick={() => setActiveSection("inventory")} >
               <FaBoxes /> Inventory
             </li>
             <li
-        className={`flex items-center gap-3 p-2 rounded cursor-pointer ${activeSection === "suppliers"? "bg-white text-blue-700" : "hover:bg-blue-600"}`}
+        className={`flex items-center gap-3 p-2 rounded cursor-pointer ${activeSection === "suppliers"? "bg-gray-500 text-black" : "hover:bg-black"}`}
         onClick={() => setActiveSection("suppliers") }
       >
         <FaTruck /> Suppliers
       </li>
             
-            <div className="mt-10">
-          <button
-            onClick={() => setBarcodeModalOpen(true)}
-            className="bg-white text-blue-700 px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-200"
-          >
-            <FaBarcode /> Add via Barcode
-          </button>
-        </div>
+      
+         <button
+         onClick={() => setBarcodeModalOpen(true)}
+         className="bg-gray text-black px-4 py-2 rounded flex items-center gap-2 hover:bg-black"
+       >
+         <FaBarcode /> Add via Barcode
+       </button>
+
+      
+       
+     
+                
+         
+       
           </ul>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-250 p-6">
+      <main className="flex-1 bg-#7D0A0A p-6 w-300 h-300">
       {activeSection === "inventory" && (
     <>
         <header className="flex justify-between items-center mb-6">
@@ -313,7 +320,7 @@ history.push('/some-route');
         <div className="bg-white p-4 rounded shadow-md">
           <table className="w-full border-collapse border">
             <thead>
-              <tr className="bg-blue-600 text-white">
+              <tr className="bg-red-500 text-white">
 
                 <th className="p-3">Item ID</th>
                 <th className="p-3">Item Name</th>

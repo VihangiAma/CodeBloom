@@ -8,13 +8,16 @@ import {
   FaUserTie,
   FaIdCard,
   FaIndustry,
+  FaUser,
 } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
 
 const SuppliersSection = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [supplierItems, setSupplierItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  //const [selectedSupplier, setSelectedSupplier] = useState(null);
 
   useEffect(() => {
     axios
@@ -22,10 +25,60 @@ const SuppliersSection = () => {
       .then((res) => setSuppliers(res.data))
       .catch((err) => console.error("Failed to fetch suppliers:", err));
   }, []);
+  const navigate = useNavigate();
 
-  const handleEditClick = (supplierId) => {
-    alert(`Edit supplier functionality not yet implemented.\nSupplier ID: ${supplierId}`);
-  };
+  const [editModalOpen, setEditModalOpen] = useState(false);
+const [selectedSupplier, setSelectedSupplier] = useState(null);
+
+
+const handleEditClick = (supplier) => {
+  setSelectedSupplier({ ...supplier });  // populate modal
+  setEditModalOpen(true);
+};
+
+const handleSaveUpdate = async () => {
+  const { contactPerson, phoneNumber, email, address, supplierId } = selectedSupplier;
+
+  // Basic validations
+  if (!contactPerson || !phoneNumber || !email || !address) {
+    toast.error("All fields are required.");
+    return;
+  }
+
+  // Phone number: must be 10 digits and numeric
+  if (!/^\d{10}$/.test(phoneNumber)) {
+    toast.error("Phone number must be exactly 10 digits.");
+    return;
+  }
+
+  // Email: basic format check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    toast.error("Invalid email format.");
+    return;
+  }
+
+  try {
+    await axios.put(`http://localhost:5001/api/supplier/update/${supplierId}`, {
+      contactPerson,
+      phoneNumber,
+      email,
+      address
+    });
+
+    toast.success("Supplier updated successfully!");
+    setEditModalOpen(false);
+
+    // Refresh supplier list
+    const updated = await axios.get("http://localhost:5001/api/supplier/list");
+    setSuppliers(updated.data);
+  } catch (error) {
+    toast.error("Update failed. Please check values.");
+    console.error(error);
+  }
+};
+
+
 
   const fetchSupplierItems = async (companyName) => {
     try {
@@ -40,10 +93,11 @@ const SuppliersSection = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-6 text-blue-700">Suppliers Directory</h2>
+      <h2 className="text-3xl font-bold mb-6 text-black-700">Suppliers Directory</h2>
+       <FaUser  onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />
       <div className="overflow-x-auto rounded shadow-md bg-white">
         <table className="min-w-full text-sm text-left">
-          <thead className="bg-blue-600 text-white">
+          <thead className="bg-red-500 text-black">
             <tr>
               <th className="px-4 py-3"><FaIdCard /> ID</th>
               <th className="px-4 py-3"><FaIndustry /> Company</th>
@@ -124,7 +178,7 @@ const SuppliersSection = () => {
             <div className="mt-4 text-right">
               <button
                 onClick={() => setShowModal(false)}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="bg-blue-600 text-black px-4 py-2 rounded hover:bg-blue-700"
               >
                 Close
               </button>
@@ -132,6 +186,46 @@ const SuppliersSection = () => {
           </div>
         </div>
       )}
+      {editModalOpen && selectedSupplier && (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded shadow-lg w-96">
+      <h2 className="text-xl font-bold mb-4">Edit Supplier</h2>
+      <input
+        type="text"
+        className="w-full mb-2 p-2 border"
+        value={selectedSupplier.contactPerson}
+        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, contactPerson: e.target.value })}
+        placeholder="Contact Person"
+      />
+      <input
+        type="text"
+        className="w-full mb-2 p-2 border"
+        value={selectedSupplier.phoneNumber}
+        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, phoneNumber: e.target.value })}
+        placeholder="Phone Number"
+      />
+      <input
+        type="email"
+        className="w-full mb-2 p-2 border"
+        value={selectedSupplier.email}
+        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, email: e.target.value })}
+        placeholder="Email"
+      />
+      <input
+        type="text"
+        className="w-full mb-4 p-2 border"
+        value={selectedSupplier.address}
+        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, address: e.target.value })}
+        placeholder="Address"
+      />
+      <div className="flex justify-end gap-2">
+        <button onClick={handleSaveUpdate} className="bg-green-600 text-black px-4 py-2 rounded">Save</button>
+        <button onClick={() => setEditModalOpen(false)} className="bg-gray-400 text-black px-4 py-2 rounded">Cancel</button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
