@@ -36,7 +36,7 @@ export const getElectricalEntryById = async (req, res) => {
 export const updateElectricalEntry = async (req, res) => {
   try {
     const updatedEntry = await ElectricalSection.findOneAndUpdate(
-      { serviceID: req.params.id },
+      req.params.id,
       req.body,
       { new: true }
     );
@@ -50,7 +50,7 @@ export const updateElectricalEntry = async (req, res) => {
 // Delete an electrical entry by serviceID
 export const deleteElectricalEntry = async (req, res) => {
   try {
-    const deletedEntry = await ElectricalSection.findOneAndDelete({ serviceID: req.params.id });
+    const deletedEntry = await ElectricalSection.findOneAndDelete(req.params.id);
     if (!deletedEntry) return res.status(404).json({ message: "Entry not found" });
     res.status(200).json({ message: "Entry deleted successfully" });
   } catch (error) {

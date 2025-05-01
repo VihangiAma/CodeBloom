@@ -14,7 +14,7 @@ const ScheduleDetails = ({ section }) => {
   const [deleteId, setDeleteId] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
   const [monthFilter, setMonthFilter] = useState("All");
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     fetchAppointments();
@@ -70,9 +70,8 @@ const ScheduleDetails = ({ section }) => {
     setSelectedAppointment({
       serviceID: appointment.serviceID,
       customerName: appointment.customerName,
-      vehicleID: appointment.vehicleID,
+      vehicleNumber: appointment.vehicleNumber,
       serviceDate: appointment.serviceDate,
-      serviceTime: appointment.serviceTime,
       description: appointment.description,
       status: appointment.status,
       contact: {
@@ -177,9 +176,8 @@ const ScheduleDetails = ({ section }) => {
               <tr>
                 <th className="border px-4 py-2">Service ID</th>
                 <th className="border px-4 py-2">Customer Name</th>
-                <th className="border px-4 py-2">Vehicle ID</th>
+                <th className="border px-4 py-2">Vehicle Number</th>
                 <th className="border px-4 py-2">Service Date</th>
-                <th className="border px-4 py-2">Service Time</th>
                 <th className="border px-4 py-2">Phone</th>
                 <th className="border px-4 py-2">Status</th>
                 <th className="border px-4 py-2">Description</th>
@@ -191,11 +189,10 @@ const ScheduleDetails = ({ section }) => {
                 <tr key={appointment._id} className="hover:bg-gray-100">
                   <td className="border px-4 py-2">{appointment.serviceID}</td>
                   <td className="border px-4 py-2">{appointment.customerName}</td>
-                  <td className="border px-4 py-2">{appointment.vehicleID}</td>
+                  <td className="border px-4 py-2">{appointment.vehicleNumber}</td>
                   <td className="border px-4 py-2">
                     {new Date(appointment.serviceDate).toLocaleDateString()}
                   </td>
-                  <td className="border px-4 py-2">{appointment.serviceTime}</td>
                   <td className="border px-4 py-2">{appointment.contact?.phone || "N/A"}</td>
                   <td className="border px-4 py-2">
                     {updatingStatusId === appointment._id ? (

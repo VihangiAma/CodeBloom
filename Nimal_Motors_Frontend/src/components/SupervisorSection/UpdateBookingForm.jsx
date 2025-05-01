@@ -6,7 +6,6 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
     customerName: "",
     vehicleID: "",
     serviceDate: "",
-    serviceTime: "",
     description: "",
     status: "Pending",
     contact: {
@@ -24,7 +23,6 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
         customerName: existingBooking.customerName || "",
         vehicleID: existingBooking.vehicleID || "",
         serviceDate: existingBooking.serviceDate ? existingBooking.serviceDate.slice(0, 10) : "",
-        serviceTime: existingBooking.serviceTime || "",
         description: existingBooking.description || "",
         status: existingBooking.status || "Pending",
         contact: {
@@ -44,7 +42,6 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
     if (!formData.serviceDate) newErrors.serviceDate = "Service date is required.";
     else if (new Date(formData.serviceDate) < new Date().setHours(0, 0, 0, 0))
       newErrors.serviceDate = "Service date cannot be in the past.";
-    if (!formData.serviceTime) newErrors.serviceTime = "Service time is required.";
     if (!formData.description.trim()) newErrors.description = "Description is required.";
     if (formData.description.length > 100)
       newErrors.description = "Description must be 100 characters or less.";
@@ -141,19 +138,6 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           {errors.serviceDate && <p className="text-red-500 text-sm mt-1">{errors.serviceDate}</p>}
-        </div>
-
-        {/* Service Time */}
-        <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Service Time</label>
-          <input
-            type="time"
-            name="serviceTime"
-            value={formData.serviceTime}
-            onChange={handleChange}
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-          {errors.serviceTime && <p className="text-red-500 text-sm mt-1">{errors.serviceTime}</p>}
         </div>
 
         {/* Phone Number */}

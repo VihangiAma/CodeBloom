@@ -35,8 +35,8 @@ export const getMechanicalEntryById = async (req, res) => {
 // Update an appointment
 export const updateMechanicalEntry = async (req, res) => {
   try {
-    const updatedEntry = await MechanicalSection.findOneAndUpdate(
-      { serviceID: req.params.id },
+    const updatedEntry = await MechanicalSection.findByIdAndUpdate(
+      req.params.id,
       req.body,
       { new: true }
     );
@@ -50,10 +50,11 @@ export const updateMechanicalEntry = async (req, res) => {
 // Delete an appointment
 export const deleteMechanicalEntry = async (req, res) => {
   try {
-    const deletedEntry = await MechanicalSection.findOneAndDelete({ serviceID: req.params.id });
+    const deletedEntry = await MechanicalSection.findByIdAndDelete(req.params.id);
     if (!deletedEntry) return res.status(404).json({ message: "Entry not found" });
     res.status(200).json({ message: "Entry deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+

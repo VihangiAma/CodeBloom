@@ -36,7 +36,7 @@ export const getBodyShopEntryById = async (req, res) => {
 export const updateBodyShopEntry = async (req, res) => {
   try {
     const updatedEntry = await BodyShopSection.findOneAndUpdate(
-      { serviceID: req.params.id },
+      req.params.id,
       req.body,
       { new: true }
     );
@@ -50,7 +50,7 @@ export const updateBodyShopEntry = async (req, res) => {
 // Delete a body shop entry by serviceID
 export const deleteBodyShopEntry = async (req, res) => {
   try {
-    const deletedEntry = await BodyShopSection.findOneAndDelete({ serviceID: req.params.id });
+    const deletedEntry = await BodyShopSection.findOneAndDelete(req.params.id);
     if (!deletedEntry) return res.status(404).json({ message: "Entry not found" });
     res.status(200).json({ message: "Entry deleted successfully" });
   } catch (error) {
