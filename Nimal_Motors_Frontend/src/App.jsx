@@ -1,10 +1,17 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
+
+
+
+
+
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
-import RegisterPage from './pages/register/RegisterPage';
+// import RegisterPage from './pages/register/RegisterPage';
+
 import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
@@ -22,7 +29,6 @@ import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
 import SupervisorDashboard from './Components/SupervisorSection/SupervisorDashboard';
-import SupervisorProfile from './Components/SupervisorSection/SupervisorProfile';
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
@@ -71,8 +77,9 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        {/* <Route path="/register" element={<RegisterPage />} /> */}
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
+
 
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
@@ -90,11 +97,11 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        
 
 
         {/* Supervisor Protected Routes */}
         <Route path="/dashboard" element={<SupervisorPrivateRoute><SupervisorDashboard /></SupervisorPrivateRoute>} />
-        <Route path="/supervisor-profile" element={<SupervisorPrivateRoute><SupervisorProfile /></SupervisorPrivateRoute>} />
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
         <Route path="/progress" element={<SupervisorPrivateRoute><ProgressPage /></SupervisorPrivateRoute>} />
         <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />

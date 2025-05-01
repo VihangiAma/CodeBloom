@@ -45,9 +45,9 @@ function Sidebar({ isCollapsed, toggleSidebar, activePage, setActivePage }) {
           setActivePage={setActivePage}
         />
         <NavItem
-          to="progress"
+          to="invoices"
           icon="🔄"
-          label="Progress"
+          label="Invoices"
           isCollapsed={isCollapsed}
           activePage={activePage}
           setActivePage={setActivePage}
@@ -105,12 +105,13 @@ function Header({ section }) {
         <button className="p-2 hover:bg-gray-100 rounded-full text-xl">
           🔔
         </button>
-        <button
+        {/* <button
           className="p-2 hover:bg-gray-100 rounded-full text-xl"
           onClick={() => navigate("/profile")}
+          //onClick={() => navigate(`/profile/${section}`)}
         >
           👤
-        </button>
+        </button> */}
         <button
           onClick={handleLogout}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
@@ -147,7 +148,7 @@ const SupervisorLayout = ({ section, children, activePage, setActivePage }) => {
       />
       <div className="flex-1 flex flex-col">
         <Header section={section} />
-        <main className="flex-1 overflow-y-auto p-4">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 w-300">{children}</main>
       </div>
     </div>
   );

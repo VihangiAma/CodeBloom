@@ -47,13 +47,7 @@ const ServiceSupervisorDashboard = () => {
       default:
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
-            <DashboardCard
-              title="View Progress"
-              description="Track service progress of vehicles."
-              color="bg-blue-500"
-              emoji="🔄"
-              onClick={() => setActivePage("progress")}
-            />
+          
             <DashboardCard
               title="Manage Appointments"
               description="View and manage customer bookings."
@@ -68,19 +62,31 @@ const ServiceSupervisorDashboard = () => {
               emoji="📋"
               onClick={() => setActivePage("report")}
             />
+             <DashboardCard
+              title="View Progress"
+              description="Track service progress of vehicles."
+              color="bg-yellow-500"
+              emoji="🔄"
+              onClick={() => setActivePage("progress")}
+            />
             <DashboardCard
               title="Approved Appointments"
               description="View and track approved customer appointments."
               color="bg-yellow-500"
               emoji="✅"
-              onClick={() => setActivePage("approved")}
+              //onClick={() => setActivePage("approved")}
             />
           </div>
         );
     }
   };
 
-  return renderContent();
+  return (
+    <div className="p-6">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">Service Section</h2>
+      {renderContent()}
+    </div>
+  );
 };
 
 export default ServiceSupervisorDashboard;
