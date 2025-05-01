@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link } from "react-router-dom";
 import SalesReportView from "./SalesReportView";
 import Modal from "./Modal";
 import AddItem from "./SalesReportAdd";
@@ -9,15 +8,14 @@ import UpdateItem from "./SalesReportUpdate";
 import DeleteItem from "./SalesReportDelete";
 
 const SalesReport = () => {
+  // State management
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const openModal = (type, item = null) => {
-    setModalType(type);
-    setSelectedItem(item);
-    setIsModalOpen(true);
-  };
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  
+  // Sample data - in a real app, this would come from an API
   const [sales, setSales] = useState([
     {
       id: "001",
@@ -44,37 +42,39 @@ const SalesReport = () => {
       profit: 500,
     },
   ]);
-  const [startDate, setStartDate] = useState(new Date()); // Store start date
-  const [endDate, setEndDate] = useState(new Date()); // Store end date
 
-  const handleAdd = () => {
-    const newItem = {
-      id: "",
-      name: "",
-      cost: 0,
-      netPrice: 0,
-      quantity: 0,
-      profit: 0,
-    };
+  // Modal handlers
+  const openModal = (type, item = null) => {
+    setModalType(type);
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+  };
+
+  // CRUD operations
+  const handleAdd = (newItem) => {
     setSales([...sales, newItem]);
+    closeModal();
   };
 
-  const handleDelete = (index) => {
-    setSales(sales.filter((_, i) => i !== index));
+  const handleUpdate = (updatedItem) => {
+    setSales(sales.map(item => 
+      item.id === updatedItem.id ? updatedItem : item
+    ));
+    closeModal();
   };
 
-  const handleUpdate = (index, field, value) => {
-    const updatedSales = sales.map((sale, i) =>
-      i === index ? { ...sale, [field]: value } : sale
-    );
-    setSales(updatedSales);
-  };
-
-  const handleView = (sale) => {
-    alert(`Viewing details for ${sale.name}`);
+  const handleDelete = (itemId) => {
+    setSales(sales.filter(item => item.id !== itemId));
+    closeModal();
   };
 
   return (
+<<<<<<< Updated upstream
     <div className="p-1 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800">Sales Report</h2>
@@ -104,9 +104,55 @@ const SalesReport = () => {
           </div>
         </div>
       </div>
+=======
+    <div className="container mx-auto px-4 py-8">
+     
+        {/* Date Range Selector */}
+       
+        <div className="flex items-center gap-2 text-sm">
+  <span className="font-medium text-gray-700 whitespace-nowrap">Filter by Date Range:</span>
+  <DatePicker selected={startDate} onChange={setStartDate} selectsStart startDate={startDate} endDate={endDate} placeholderText="Start" className="w-28 p-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"/>
+  <span>-</span>
+  <DatePicker selected={endDate} onChange={setEndDate} selectsEnd startDate={startDate} endDate={endDate} minDate={startDate} placeholderText="End" className="w-28 p-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"/>
+</div>
+        
+>>>>>>> Stashed changes
 
+        {/* Sales Report Table */}
+        <div className="mb-8">
+          <SalesReportView salesData={sales} />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => openModal("add")}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          >
+            Add New Item
+          </button>
+          {sales.length > 0 && (
+            <>
+              <button
+                onClick={() => openModal("update", sales[0])}
+                className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+                disabled={!selectedItem}
+              >
+                Update Item
+              </button>
+              <button
+                onClick={() => openModal("delete", sales[0])}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                disabled={!selectedItem}
+              >
+                Delete Item
+              </button>
+            </>
+          )}
+        </div>
       
 
+<<<<<<< Updated upstream
       <SalesReportView />
 
       <div className="mt-6 flex space-x-4">
@@ -133,41 +179,39 @@ const SalesReport = () => {
       </div>
 
       {/* Modal Logic */}
+=======
+      {/* Modal */}
+>>>>>>> Stashed changes
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
         title={
-          modalType === "add"
-            ? "Add New Item"
-            : modalType === "update"
-            ? "Update Item"
-            : "Delete Item"
+          modalType === "add" ? "Add New Item" :
+          modalType === "update" ? "Update Item" :
+          "Delete Item"
         }
       >
         {modalType === "add" && (
-          <AddItem onAdd={handleAdd} onClose={() => setIsModalOpen(false)} />
+          <AddItem 
+            onAdd={handleAdd} 
+            onClose={closeModal} 
+          />
         )}
         {modalType === "update" && (
           <UpdateItem
-            onUpdate={handleAdd}
-            onClose={() => setIsModalOpen(false)}
             item={selectedItem}
+            onUpdate={handleUpdate}
+            onClose={closeModal}
           />
         )}
         {modalType === "delete" && (
           <DeleteItem
-            onClose={() => setIsModalOpen(false)}
             item={selectedItem}
+            onDelete={handleDelete}
+            onClose={closeModal}
           />
         )}
       </Modal>
-
-      <div className="mt-6 text-sm text-gray-600">
-        {/* <p>
-          <span className="font-semibold">Selected Date Range:</span>{" "}
-          {startDate.toLocaleDateString()} to {endDate.toLocaleDateString()}
-        </p> */}
-      </div>
     </div>
   );
 };
