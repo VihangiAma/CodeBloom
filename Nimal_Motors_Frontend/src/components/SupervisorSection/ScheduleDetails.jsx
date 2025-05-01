@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { ImSpinner2 } from "react-icons/im"; // Spinner icon
+import { ImSpinner2 } from "react-icons/im";
 import UpdateBookingForm from "./UpdateBookingForm";
 
 const ScheduleDetails = ({ section }) => {
@@ -35,21 +35,20 @@ const ScheduleDetails = ({ section }) => {
 
   const applyFilters = () => {
     let filtered = [...appointments];
-    
     if (statusFilter !== "All") {
-      filtered = filtered.filter(appointment => appointment.status === statusFilter);
+      filtered = filtered.filter((a) => a.status === statusFilter);
     }
-
     if (monthFilter !== "All") {
-      const month = new Date(`${monthFilter}-01`).getMonth(); // Format for comparison
-      filtered = filtered.filter(appointment => new Date(appointment.serviceDate).getMonth() === month);
+      const month = new Date(`${monthFilter}-01`).getMonth();
+      filtered = filtered.filter(
+        (a) => new Date(a.serviceDate).getMonth() === month
+      );
     }
-
     setFilteredAppointments(filtered);
   };
 
-  const confirmDelete = (id) => {
-    setDeleteId(id);
+  const confirmDelete = (serviceID) => {
+    setDeleteId(serviceID);
     setShowConfirmModal(true);
   };
 
@@ -77,7 +76,6 @@ const ScheduleDetails = ({ section }) => {
       contact: {
         phone: appointment.contact?.phone || "",
       },
-      _id: appointment._id,
     });
   };
 
@@ -88,7 +86,10 @@ const ScheduleDetails = ({ section }) => {
 
   const handleFormSubmit = async (updatedData) => {
     try {
-      await axios.put(`http://localhost:5001/api/${section}/${selectedAppointment._id}`, updatedData);
+      await axios.put(
+        `http://localhost:5001/api/${section}/${selectedAppointment.serviceID}`,
+        updatedData
+      );
       setIsEditing(false);
       fetchAppointments();
     } catch (error) {
@@ -96,10 +97,12 @@ const ScheduleDetails = ({ section }) => {
     }
   };
 
-  const handleStatusChange = async (appointmentId, newStatus) => {
-    setUpdatingStatusId(appointmentId);
+  const handleStatusChange = async (serviceID, newStatus) => {
+    setUpdatingStatusId(serviceID);
     try {
-      await axios.put(`http://localhost:5001/api/${section}/${appointmentId}`, { status: newStatus });
+      await axios.put(`http://localhost:5001/api/${section}/${serviceID}`, {
+        status: newStatus,
+      });
       fetchAppointments();
     } catch (error) {
       console.error("Error updating status", error);
@@ -121,7 +124,6 @@ const ScheduleDetails = ({ section }) => {
     }
   };
 
-  // Dynamically generate an array of months
   const months = Array.from({ length: 12 }, (_, index) => {
     const date = new Date(currentYear, index, 1);
     return date.toLocaleString("default", { month: "long" });
@@ -129,8 +131,8 @@ const ScheduleDetails = ({ section }) => {
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">
-        {section.charAt(0).toUpperCase() + section.slice(1)} Appointment Schedule
+      <h2 className="text-2xl font-bold mb-4 capitalize">
+        {section} Appointment Schedule
       </h2>
 
       {/* Filters */}
@@ -161,14 +163,12 @@ const ScheduleDetails = ({ section }) => {
       </div>
 
       {isEditing ? (
-        <div>
-          <UpdateBookingForm
-            existingBooking={selectedAppointment}
-            isEditMode={true}
-            onSubmit={handleFormSubmit}
-            onCancel={handleCancelUpdate}
-          />
-        </div>
+        <UpdateBookingForm
+          existingBooking={selectedAppointment}
+          isEditMode={true}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancelUpdate}
+        />
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto border-separate border-spacing-0">
@@ -193,16 +193,20 @@ const ScheduleDetails = ({ section }) => {
                   <td className="border px-4 py-2">
                     {new Date(appointment.serviceDate).toLocaleDateString()}
                   </td>
-                  <td className="border px-4 py-2">{appointment.contact?.phone || "N/A"}</td>
                   <td className="border px-4 py-2">
-                    {updatingStatusId === appointment._id ? (
+                    {appointment.contact?.phone || "N/A"}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {updatingStatusId === appointment.serviceID ? (
                       <div className="flex justify-center">
                         <ImSpinner2 className="animate-spin text-blue-500 text-2xl" />
                       </div>
                     ) : (
                       <select
                         value={appointment.status}
-                        onChange={(e) => handleStatusChange(appointment._id, e.target.value)}
+                        onChange={(e) =>
+                          handleStatusChange(appointment.serviceID, e.target.value)
+                        }
                         className={`border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${getStatusColor(appointment.status)}`}
                       >
                         <option value="Pending">Pending</option>
@@ -220,7 +224,7 @@ const ScheduleDetails = ({ section }) => {
                       <FaEdit className="text-xl" />
                     </button>
                     <button
-                      onClick={() => confirmDelete(appointment._id)}
+                      onClick={() => confirmDelete(appointment.serviceID)}
                       className="text-red-500 hover:text-red-700 p-2 rounded-md transition"
                     >
                       <FaTrashAlt className="text-xl" />
