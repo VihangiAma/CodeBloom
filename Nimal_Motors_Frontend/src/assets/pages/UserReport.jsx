@@ -41,6 +41,12 @@ const UsersReport = () => {
     fetchReports();
   }, []);
 
+  const formatPhone = (contact) => {
+    if (!contact) return "N/A";
+    if (typeof contact === 'string') return contact;
+    return contact.phone || "N/A";
+  };
+
   const handleDownloadPDF = () => {
     try {
       setPdfError("");
@@ -83,17 +89,17 @@ const UsersReport = () => {
       doc.text(`Generated on ${new Date().toLocaleString()}`, 105, 65, { align: "center" });
 
       const headers = [
-        ["Customer", "Vehicle ID", "Service Date", "Time", "Description"]
+        ["Service ID", "Customer", "Phone", "Vehicle ID", "Service Date"]
       ];
 
       const rows = reports.map((report) => {
         try {
           return [
+            report.serviceID?.toString() || "N/A",
             report.customerName?.toString() || "N/A",
-            report.vehicleID?.toString() || "N/A",
-            report.serviceDate ? formatDate(report.serviceDate) : "N/A",
-            report.serviceTime?.toString() || "N/A",
-            report.description?.toString()?.substring(0, 50) + (report.description?.length > 50 ? "..." : "") || "N/A"
+            formatPhone(report.contact),
+            report.vehicleID?.toString() || "N/A", 
+            report.serviceDate ? formatDate(report.serviceDate) : "N/A"
           ];
         } catch (rowError) {
           console.error("Error processing row:", report, rowError);
@@ -122,11 +128,11 @@ const UsersReport = () => {
           fillColor: [245, 245, 245]
         },
         columnStyles: {
-          0: { cellWidth: 30 },
-          1: { cellWidth: 25 },
-          2: { cellWidth: 25 },
-          3: { cellWidth: 20 },
-          4: { cellWidth: "auto" }
+          0: { cellWidth: 20 },  // Service ID
+          1: { cellWidth: 60 },  // Customer
+          2: { cellWidth: 30 },  // Phone
+          3: { cellWidth: 30 },  // Vehicle ID
+          4: { cellWidth: 30 }   // Service Date
         },
         didDrawPage: (data) => {
           doc.setFontSize(8);
@@ -181,27 +187,12 @@ const UsersReport = () => {
       <div className="p-6 bg-red-50 border-l-4 border-red-500 text-red-700">
         <p className="font-bold">Error Loading Data</p>
         <p>{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-red-100 hover:bg-red-200 rounded"
-        >
-          Retry
-        </button>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* <div className="text-center mb-8">
-        <h1 className="text-xl font-bold mb-2">NIMAL MOTORS</h1>
-        <p className="text-sm mb-1">No:321/2A, Galle Road, Aluthgama</p>
-        <p className="text-sm mb-1">Tel: 055-2298868 / 077-8888888</p>
-        <p className="text-sm mb-1">Email: nimalmotors.nm@gmail.com</p>
-        <p className="text-sm mb-1">All Vehicle Repairs, Cut & Polish & Service Center</p>
-        <p className="text-sm">Reg No: 168507</p>
-      </div> */}
-
+    <div className="p-6 max-w-120xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">User Service Details</h2>
         <div className="flex items-center space-x-4">
@@ -214,7 +205,7 @@ const UsersReport = () => {
             className={`px-4 py-2 rounded-lg shadow transition-colors ${
               reports.length === 0
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-black"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
           >
             Download PDF
@@ -231,10 +222,10 @@ const UsersReport = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-blue-600">
               <tr>
-                {["Customer", "Vehicle ID", "Service Date", "Time", "Description"].map((header) => (
+                {["Service ID", "Customer", "Phone", "Vehicle ID", "Service Date"].map((header) => (
                   <th
                     key={header}
-                    className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                    className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
                   >
                     {header}
                   </th>
@@ -245,19 +236,19 @@ const UsersReport = () => {
               {reports.map((report, index) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {report.serviceID || "N/A"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {report.customerName || "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    {report.vehicleID || "N/A"}
+                    {formatPhone(report.contact)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {report.vehicleID || "N/A"}  
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {report.serviceDate ? formatDate(report.serviceDate) : "N/A"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    {report.serviceTime || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-700">
-                    {report.description || "N/A"}
                   </td>
                 </tr>
               ))}
