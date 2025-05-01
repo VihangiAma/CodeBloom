@@ -165,15 +165,13 @@ export default function PremiumCustomerProfile() {
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
-              Hi, I’m {profile.fullName || "—"}. With over a decade of hands‑on
-              experience in automotive refinishing, I oversee the entire bodyshop
-              operation at Nimal Motors—from initial damage assessment to the final
-              quality‑control checklist. My passion is blending precision workmanship
-              with exceptional customer care so that every vehicle leaves our facility
-              looking factory‑fresh. When I’m not on the shop floor fine‑tuning repair
-              workflows, you’ll find me mentoring junior technicians or researching the
-              latest eco‑friendly paint technologies to keep our services both cutting‑edge
-              and sustainable.
+            Hi, I’m {profile.fullName || "—"}. As a valued premium customer of Nimal Motors, I appreciate exceptional service, reliability, 
+            and attention to detail when it comes to maintaining my vehicle. With a keen eye for quality and a 
+            passion for automotive excellence, I rely on Nimal Motors for expert care—from routine servicing to advanced repairs. 
+            I value clear communication, timely updates, and sustainable practices that align with my expectations of a modern, 
+            customer-focused garage. Whether it's booking appointments or tracking service history, 
+            I enjoy the convenience and trust that come with being part of the premium customer community.
+
             </p>
           </section>
 

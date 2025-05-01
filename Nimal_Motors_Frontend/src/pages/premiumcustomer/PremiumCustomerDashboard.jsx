@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
+
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -85,6 +87,26 @@ const PremiumCustomerDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
+        case "addservice":
+          return (
+            <div className="p-8">
+              <div className="mb-4">
+                <button
+                  onClick={() => setActivePage("dashboard")}
+                  className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded mb-4"
+                >
+                  ⬅ Back to Dashboard
+                </button>
+              </div>
+              <AddServiceForm
+                onSubmit={(data) => {
+                  console.log("Submitted service:", data);
+                  setActivePage("dashboard"); // Go back to dashboard after submit
+                }}
+                isEditMode={false}
+              />
+            </div>
+          );
       default:
         return (
           <div className="p-8">
@@ -98,7 +120,7 @@ const PremiumCustomerDashboard = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <DashboardCard
                 title="My Profile"
                 description="Manage your personal and vehicle information."
@@ -114,11 +136,11 @@ const PremiumCustomerDashboard = () => {
                 onClick={() => setActivePage("serviceHistory")}
               />
               <DashboardCard
-                title="Booking Management"
-                description="Book and manage your service appointments."
-                color="bg-teal-600"
-                emoji="📅"
-                onClick={() => setActivePage("booking")}
+                title="Add Service"
+                description="Add a new body-shop service."
+                color="bg-blue-500"
+                emoji="➕"
+                onClick={() => setActivePage("addservice")}
               />
               <DashboardCard
                 title="Vehicle Status"
