@@ -1,58 +1,58 @@
 import MechanicalSection from "../Models/MechanicalSection.js";
 
-// Create a new mechanical service
-export const createMechanicalService = async (req, res) => {
+// Create a new appointment
+export const createMechanicalEntry = async (req, res) => {
   try {
-    const newService = new MechanicalSection(req.body);
-    await newService.save();
-    res.status(201).json(newService);
+    const newEntry = new MechanicalSection(req.body);
+    const savedEntry = await newEntry.save();
+    res.status(201).json(savedEntry);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Get all mechanical services
-export const getAllMechanicalServices = async (req, res) => {
+// Get all appointments
+export const getAllMechanicalEntries = async (req, res) => {
   try {
-    const services = await MechanicalSection.find();
-    res.json(services);
+    const entries = await MechanicalSection.find().sort({ serviceDate: -1 });
+    res.status(200).json(entries);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get a single mechanical service by ID
-export const getMechanicalServiceById = async (req, res) => {
+// Get a single appointment by serviceID
+export const getMechanicalEntryById = async (req, res) => {
   try {
-    const service = await MechanicalSection.findById(req.params.id);
-    if (!service) return res.status(404).json({ message: "Service not found" });
-    res.json(service);
+    const entry = await MechanicalSection.findOne({ serviceID: req.params.id });
+    if (!entry) return res.status(404).json({ message: "Entry not found" });
+    res.status(200).json(entry);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Update a mechanical service by ID
-export const updateMechanicalService = async (req, res) => {
+// Update an appointment
+export const updateMechanicalEntry = async (req, res) => {
   try {
-    const updatedService = await MechanicalSection.findByIdAndUpdate(
-      req.params.id,
+    const updatedEntry = await MechanicalSection.findOneAndUpdate(
+      { serviceID: req.params.id },
       req.body,
       { new: true }
     );
-    if (!updatedService) return res.status(404).json({ message: "Service not found" });
-    res.json(updatedService);
+    if (!updatedEntry) return res.status(404).json({ message: "Entry not found" });
+    res.status(200).json(updatedEntry);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Delete a mechanical service by ID
-export const deleteMechanicalService = async (req, res) => {
+// Delete an appointment
+export const deleteMechanicalEntry = async (req, res) => {
   try {
-    const deletedService = await MechanicalSection.findByIdAndDelete(req.params.id);
-    if (!deletedService) return res.status(404).json({ message: "Service not found" });
-    res.json({ message: "Service deleted successfully" });
+    const deletedEntry = await MechanicalSection.findOneAndDelete({ serviceID: req.params.id });
+    if (!deletedEntry) return res.status(404).json({ message: "Entry not found" });
+    res.status(200).json({ message: "Entry deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
