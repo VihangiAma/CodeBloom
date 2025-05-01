@@ -176,7 +176,7 @@ const MechanicalSupervisorSection = () => {
                 description="View and manage customer bookings."
                 color="bg-green-500"
                 emoji="📅"
-                onClick={() => setActivePage("appointments")}
+                onClick={() => setActivePage("schedules")}
               />
               <DashboardCard
                 title="View Invoices"
