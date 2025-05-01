@@ -76,8 +76,8 @@ const SalesReport = () => {
 
   return (
     <div className="p-1 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">Sales Report</h2>
+      
+        
         <div className="flex space-x-6 items-center">
           <div className="relative">
             <label className="text-sm font-semibold text-gray-600">
@@ -103,7 +103,7 @@ const SalesReport = () => {
             />
           </div>
         </div>
-      </div>
+    
 
       
 
@@ -112,21 +112,21 @@ const SalesReport = () => {
       <div className="mt-6 flex space-x-4">
         <button
           onClick={() => openModal("add")}
-          className="bg-blue-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-600"
+          className="bg-blue-500 text-black px-5 py-2 rounded-lg shadow-md hover:bg-blue-600"
         >
           Add Item
         </button>
 
         <button
           onClick={() => openModal("update", sales[0])}
-          className="bg-yellow-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-yellow-600"
+          className="bg-yellow-500 text-black px-5 py-2 rounded-lg shadow-md hover:bg-yellow-600"
         >
           Update Item
         </button>
 
         <button
           onClick={() => openModal("delete", sales[0])}
-          className="bg-red-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-red-600"
+          className="bg-red-500 text-black px-5 py-2 rounded-lg shadow-md hover:bg-red-600"
         >
           Delete Item
         </button>

@@ -29,7 +29,7 @@ export default function PremiumCustomerProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
   
-      const res = await axios.get("http://localhost:5000/api/user/profile", {
+      const res = await axios.get("http://localhost:5001/api/user/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,7 +56,7 @@ export default function PremiumCustomerProfile() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5000/api/user", profile);
+      await axios.post("http://localhost:5001/api/user", profile);
     } catch (err) {
       console.error("Error updating user data", err);
     }
@@ -77,12 +77,12 @@ export default function PremiumCustomerProfile() {
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
-            onClick={fetchProfile}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
-          >
-            <FaUserCircle className="text-lg" />
-            Profile
-          </button>
+                      onClick={() => navigate("/premium-customer-dashboard")}
+                      className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+                    >
+                      <FaUserCircle className="text-lg" />
+                      Dashboard
+                    </button>
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
