@@ -112,6 +112,7 @@ function App() {
         <Route path="/supervisor/electrical" element={<SupervisorPrivateRoute><ElectricalDashboard /></SupervisorPrivateRoute>} />
         <Route path="/supervisor/body-shop" element={<SupervisorPrivateRoute><BodyShopDashboard /></SupervisorPrivateRoute>} />
         <Route path="/supervisor/service" element={<SupervisorPrivateRoute><ServiceDashboard /></SupervisorPrivateRoute>} />
+        
         <Route path="/service-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
         <Route path="/mechanical-supervisor-dashboard" element={<SupervisorPrivateRoute><MechanicalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />

@@ -3,20 +3,16 @@ import AutoIncrementFactory from "mongoose-sequence";
 
 const AutoIncrement = AutoIncrementFactory(mongoose);
 
-// Define the schema for Electrical Section
 const electricalSchema = new mongoose.Schema({
-  serviceID: { 
-    type: String, 
-    unique: true, 
-    required: true 
-  }, // serviceID will now be a string (e.g., ES001, ES002)
+  serviceID: { type: Number, unique: true },
+  displayID: { type: String, unique: true }, // e.g., "ES001"
   customerName: { type: String, required: true },
+  vehicleType: { type: String, required: true },
   contact: {
-    phone: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
     email: { type: String }
   },
-  vehicleNumber: { type: String, required: true, unique: true },
-  vehicleType: { type: String, required: true }, // Added vehicleType field
+  vehicleNumber: { type: String, required: true },
   serviceDate: { type: Date, required: true },
   presentMeter: {
     type: Number,
@@ -30,21 +26,6 @@ const electricalSchema = new mongoose.Schema({
   }
 });
 
-// Apply the auto-increment plugin to generate a sequential number
-electricalSchema.plugin(AutoIncrement, { 
-  inc_field: "serviceID", 
-  id: "electrical_seq", 
-  start_seq: 1, 
-  unique: true 
-});
-
-// Pre-save hook to format serviceID with "ES" prefix
-electricalSchema.pre("save", function(next) {
-  if (this.isNew) {
-    // Add "ES" prefix and pad serviceID to 3 digits
-    this.serviceID = `ES${String(this.serviceID).padStart(3, "0")}`;
-  }
-  next();
-});
+electricalSchema.plugin(AutoIncrement, { inc_field: "serviceID", id: "electrical_seq" });
 
 export default mongoose.model("ElectricalSection", electricalSchema, "ElectricalSection");

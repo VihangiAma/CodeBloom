@@ -10,16 +10,10 @@ import {
 const router = express.Router();
 
 // Base path: /api/electrical
-
-// Create new service
 router.post("/", createService);
-
-// Get all services
 router.get("/", getAllServices);
-
-// Get, update, delete service by serviceID (e.g., ES001)
-router.get("/:serviceID", getServiceById);
-router.put("/:serviceID", updateService);
-router.delete("/:serviceID", deleteService);
+router.get("/:id", getServiceById);
+router.put("/:id", updateService);
+router.delete("/:id", deleteService);
 
 export default router;

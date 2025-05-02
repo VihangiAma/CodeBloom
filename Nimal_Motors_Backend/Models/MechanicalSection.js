@@ -3,20 +3,16 @@ import AutoIncrementFactory from "mongoose-sequence";
 
 const AutoIncrement = AutoIncrementFactory(mongoose);
 
-// Define your schema
 const mechanicalSchema = new mongoose.Schema({
-  serviceID: { 
-    type: String, 
-    unique: true, 
-    required: true 
-  }, // will store serviceID as "MS001", "MS002", etc.
+  serviceID: { type: Number, unique: true }, // auto-incremented
+  displayID: { type: String, unique: true }, // e.g., "MS001"
   customerName: { type: String, required: true },
   contact: {
     phone: { type: String, required: true, unique: true },
     email: { type: String }
   },
-  vehicleNumber: { type: String, required: true, unique: true  },
-  vehicleType: { type: String, required: true }, // Added vehicle type field
+  vehicleType: { type: String, required: true }, // NEW FIELD
+  vehicleNumber: { type: String, required: true },
   serviceDate: { type: Date, required: true },
   presentMeter: {
     type: Number,
@@ -30,21 +26,10 @@ const mechanicalSchema = new mongoose.Schema({
   }
 });
 
-// Apply the auto-increment plugin with a custom function for serviceID
-mechanicalSchema.plugin(AutoIncrement, { 
-  inc_field: "serviceID", 
-  id: "mechanical_seq", 
-  start_seq: 1, 
-  unique: true 
-});
-
-// Pre-save hook to modify the `serviceID` format
-mechanicalSchema.pre("save", function(next) {
-  if (this.isNew) {
-    // Add "MS" prefix and format the serviceID
-    this.serviceID = `MS${String(this.serviceID).padStart(3, "0")}`;
-  }
-  next();
+// Auto-increment serviceID
+mechanicalSchema.plugin(AutoIncrement, {
+  inc_field: "serviceID",
+  id: "mechanical_seq"
 });
 
 export default mongoose.model("MechanicalSection", mechanicalSchema, "MechanicalSection");

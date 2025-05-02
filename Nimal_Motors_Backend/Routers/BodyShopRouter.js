@@ -10,11 +10,10 @@ import {
 const router = express.Router();
 
 // Base path: /api/bodyshop
-
 router.post("/", createService);
 router.get("/", getAllServices);
-router.get("/:serviceID", getServiceById);
-router.put("/:serviceID", updateService);
-router.delete("/:serviceID", deleteService);
+router.get("/:id", getServiceById);
+router.put("/:id", updateService);
+router.delete("/:id", deleteService);
 
 export default router;

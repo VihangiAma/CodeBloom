@@ -1,17 +1,21 @@
 import BodyShopSection from "../Models/BodyShopSection.js";
 
-// Create a new Body Shop service entry
 export const createService = async (req, res) => {
   try {
     const newService = new BodyShopSection(req.body);
     const savedService = await newService.save();
+
+    // Format displayID like "BS001"
+    const formattedDisplayID = `BS${savedService.serviceID.toString().padStart(3, "0")}`;
+    savedService.displayID = formattedDisplayID;
+    await savedService.save();
+
     res.status(201).json(savedService);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Get all Body Shop services
 export const getAllServices = async (req, res) => {
   try {
     const services = await BodyShopSection.find();
@@ -21,10 +25,9 @@ export const getAllServices = async (req, res) => {
   }
 };
 
-// Get a single Body Shop service by serviceID (e.g., BS001)
 export const getServiceById = async (req, res) => {
   try {
-    const service = await BodyShopSection.findOne({ serviceID: req.params.serviceID });
+    const service = await BodyShopSection.findById(req.params.id);
     if (!service) return res.status(404).json({ message: "Service not found" });
     res.status(200).json(service);
   } catch (error) {
@@ -32,11 +35,10 @@ export const getServiceById = async (req, res) => {
   }
 };
 
-// Update a Body Shop service by serviceID
 export const updateService = async (req, res) => {
   try {
-    const updatedService = await BodyShopSection.findOneAndUpdate(
-      { serviceID: req.params.serviceID },
+    const updatedService = await BodyShopSection.findByIdAndUpdate(
+      req.params.id,
       req.body,
       { new: true }
     );
@@ -47,10 +49,9 @@ export const updateService = async (req, res) => {
   }
 };
 
-// Delete a Body Shop service by serviceID
 export const deleteService = async (req, res) => {
   try {
-    const deletedService = await BodyShopSection.findOneAndDelete({ serviceID: req.params.serviceID });
+    const deletedService = await BodyShopSection.findByIdAndDelete(req.params.id);
     if (!deletedService) return res.status(404).json({ message: "Service not found" });
     res.status(200).json({ message: "Service deleted" });
   } catch (error) {
