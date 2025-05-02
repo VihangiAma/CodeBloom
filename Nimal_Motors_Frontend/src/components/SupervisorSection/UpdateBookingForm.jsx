@@ -4,9 +4,8 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     serviceID: "",
     customerName: "",
-    vehicleID: "",
+    vehicleNumber: "",
     serviceDate: "",
-    serviceTime: "",
     description: "",
     status: "Pending",
     contact: {
@@ -22,9 +21,10 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
       setFormData({
         serviceID: existingBooking.serviceID || "",
         customerName: existingBooking.customerName || "",
-        vehicleID: existingBooking.vehicleID || "",
-        serviceDate: existingBooking.serviceDate ? existingBooking.serviceDate.slice(0, 10) : "",
-        serviceTime: existingBooking.serviceTime || "",
+        vehicleNumber: existingBooking.vehicleNumber || "", 
+        serviceDate: existingBooking.serviceDate
+          ? existingBooking.serviceDate.slice(0, 10)
+          : "",
         description: existingBooking.description || "",
         status: existingBooking.status || "Pending",
         contact: {
@@ -38,17 +38,24 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
   const validate = () => {
     const newErrors = {};
 
-    if (!formData.serviceID.trim()) newErrors.serviceID = "Service ID is required.";
-    if (!formData.customerName.trim()) newErrors.customerName = "Customer name is required.";
-    if (!formData.vehicleID.trim()) newErrors.vehicleID = "Vehicle ID is required.";
-    if (!formData.serviceDate) newErrors.serviceDate = "Service date is required.";
-    else if (new Date(formData.serviceDate) < new Date().setHours(0, 0, 0, 0))
+    if (!formData.serviceID.trim())
+      newErrors.serviceID = "Service ID is required.";
+    if (!formData.customerName.trim())
+      newErrors.customerName = "Customer name is required.";
+    if (!formData.vehicleNumber.trim())
+      newErrors.vehicleNumber = "Vehicle Number is required.";
+    if (!formData.serviceDate)
+      newErrors.serviceDate = "Service date is required.";
+    else if (
+      new Date(formData.serviceDate) < new Date().setHours(0, 0, 0, 0)
+    )
       newErrors.serviceDate = "Service date cannot be in the past.";
-    if (!formData.serviceTime) newErrors.serviceTime = "Service time is required.";
-    if (!formData.description.trim()) newErrors.description = "Description is required.";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required.";
     if (formData.description.length > 100)
       newErrors.description = "Description must be 100 characters or less.";
-    if (!formData.contact.phone.trim()) newErrors.contactPhone = "Phone number is required.";
+    if (!formData.contact.phone.trim())
+      newErrors.contactPhone = "Phone number is required.";
 
     return newErrors;
   };
@@ -77,9 +84,11 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
+      console.log("Validation errors:", validationErrors);
       setErrors(validationErrors);
     } else {
-      onSubmit(formData);
+      console.log("Submitting:", formData);
+      onSubmit(formData); 
       setErrors({});
       alert("Booking updated successfully! ✅");
     }
@@ -87,12 +96,16 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white rounded-lg shadow-xl">
-      <h2 className="text-3xl font-semibold text-center text-blue-600 mb-8">Update Booking</h2>
+      <h2 className="text-3xl font-semibold text-center text-blue-600 mb-8">
+        Update Booking
+      </h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
         {/* Service ID */}
         <div className="col-span-2">
-          <label className="block text-lg font-medium text-gray-700 mb-2">Service ID</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Service ID
+          </label>
           <input
             type="text"
             name="serviceID"
@@ -101,12 +114,16 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
             disabled
           />
-          {errors.serviceID && <p className="text-red-500 text-sm mt-1">{errors.serviceID}</p>}
+          {errors.serviceID && (
+            <p className="text-red-500 text-sm mt-1">{errors.serviceID}</p>
+          )}
         </div>
 
         {/* Customer Name */}
         <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Customer Name</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Customer Name
+          </label>
           <input
             type="text"
             name="customerName"
@@ -114,25 +131,37 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
             onChange={handleChange}
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {errors.customerName && <p className="text-red-500 text-sm mt-1">{errors.customerName}</p>}
+          {errors.customerName && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.customerName}
+            </p>
+          )}
         </div>
 
-        {/* Vehicle ID */}
+        {/* Vehicle Number */}
         <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Vehicle ID</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Vehicle Number
+          </label>
           <input
             type="text"
-            name="vehicleID"
-            value={formData.vehicleID}
+            name="vehicleNumber"
+            value={formData.vehicleNumber}
             onChange={handleChange}
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {errors.vehicleID && <p className="text-red-500 text-sm mt-1">{errors.vehicleID}</p>}
+          {errors.vehicleNumber && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.vehicleNumber}
+            </p>
+          )}
         </div>
 
         {/* Service Date */}
         <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Service Date</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Service Date
+          </label>
           <input
             type="date"
             name="serviceDate"
@@ -140,25 +169,18 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
             onChange={handleChange}
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {errors.serviceDate && <p className="text-red-500 text-sm mt-1">{errors.serviceDate}</p>}
-        </div>
-
-        {/* Service Time */}
-        <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Service Time</label>
-          <input
-            type="time"
-            name="serviceTime"
-            value={formData.serviceTime}
-            onChange={handleChange}
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-          {errors.serviceTime && <p className="text-red-500 text-sm mt-1">{errors.serviceTime}</p>}
+          {errors.serviceDate && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.serviceDate}
+            </p>
+          )}
         </div>
 
         {/* Phone Number */}
         <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Phone Number</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Phone Number
+          </label>
           <input
             type="text"
             name="contact.phone"
@@ -166,12 +188,18 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
             onChange={handleChange}
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {errors.contactPhone && <p className="text-red-500 text-sm mt-1">{errors.contactPhone}</p>}
+          {errors.contactPhone && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.contactPhone}
+            </p>
+          )}
         </div>
 
         {/* Email Address */}
         <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Email Address</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Email Address
+          </label>
           <input
             type="email"
             name="contact.email"
@@ -183,7 +211,9 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
 
         {/* Description */}
         <div className="col-span-2">
-          <label className="block text-lg font-medium text-gray-700 mb-2">Description (Max 100 characters)</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Description (Max 100 characters)
+          </label>
           <textarea
             name="description"
             value={formData.description}
@@ -191,13 +221,21 @@ const UpdateBookingForm = ({ existingBooking, onSubmit, onCancel }) => {
             maxLength="100"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          <div className="text-sm text-gray-500 mt-1">{formData.description.length} / 100 characters</div>
-          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+          <div className="text-sm text-gray-500 mt-1">
+            {formData.description.length} / 100 characters
+          </div>
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.description}
+            </p>
+          )}
         </div>
 
         {/* Status */}
         <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">Status</label>
+          <label className="block text-lg font-medium text-gray-700 mb-2">
+            Status
+          </label>
           <select
             name="status"
             value={formData.status}

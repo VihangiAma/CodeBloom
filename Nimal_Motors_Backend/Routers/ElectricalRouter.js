@@ -4,11 +4,12 @@ import {
   getAllElectricalServices,
   getElectricalServiceById,
   updateElectricalService,
-  deleteElectricalService,
+  deleteElectricalService
 } from "../Controllers/ElectricalController.js";
 
 const router = express.Router();
 
+// Base path: /api/electrical
 router.post("/", createElectricalService);
 router.get("/", getAllElectricalServices);
 router.get("/:id", getElectricalServiceById);
