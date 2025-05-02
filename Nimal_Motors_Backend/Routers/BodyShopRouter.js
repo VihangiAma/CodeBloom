@@ -1,19 +1,20 @@
 import express from "express";
 import {
-  createBodyShopService,
-  getAllBodyShopServices,
-  getBodyShopServiceById,
-  updateBodyShopService,
-  deleteBodyShopService
+  createService,
+  getAllServices,
+  getServiceById,
+  updateService,
+  deleteService
 } from "../Controllers/BodyShopController.js";
 
 const router = express.Router();
 
 // Base path: /api/bodyshop
-router.post("/", createBodyShopService);
-router.get("/", getAllBodyShopServices);
-router.get("/:id", getBodyShopServiceById);
-router.put("/:id", updateBodyShopService);
-router.delete("/:id", deleteBodyShopService);
+
+router.post("/", createService);
+router.get("/", getAllServices);
+router.get("/:serviceID", getServiceById);
+router.put("/:serviceID", updateService);
+router.delete("/:serviceID", deleteService);
 
 export default router;

@@ -15,7 +15,7 @@ const mechanicalSchema = new mongoose.Schema({
     phone: { type: String, required: true, unique: true },
     email: { type: String }
   },
-  vehicleNumber: { type: String, required: true },
+  vehicleNumber: { type: String, required: true, unique: true  },
   vehicleType: { type: String, required: true }, // Added vehicle type field
   serviceDate: { type: Date, required: true },
   presentMeter: {
