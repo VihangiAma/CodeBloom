@@ -24,10 +24,10 @@
     "mongoose": "^8.12.1",
 
     "nodemon": "^3.1.9",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
 
-    "mongoose-sequence": "^6.0.1",
-    "nodemon": "^3.1.9"
+    "mongoose-sequence": "^6.0.1"
+   
 
   }
 }
