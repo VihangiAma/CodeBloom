@@ -77,8 +77,8 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: hsl(0, 100%, 100%);
-    color: #09122C;
+    background-color: hsl(0, 38%, 5%);
+    color: #dde0ec;
   }
   
 }

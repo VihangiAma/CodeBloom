@@ -12,7 +12,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/login/LoginPage';
 // import RegisterPage from './pages/register/RegisterPage';
 
-import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+ import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
@@ -28,11 +28,11 @@ import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
-import SupervisorDashboard from './Components/SupervisorSection/SupervisorDashboard';
-import ProgressPage from './Components/SupervisorSection/ProgressPage';
+import SupervisorDashboard from './components/SupervisorSection/SupervisorDashboard';
+import ProgressPage from './components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
-import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
-import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+import AppointmentDetails from './components/SupervisorSection/Supervisors/AppointmentDetails';
+import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 
 // Section-specific Dashboards
 import MechanicalDashboard from './Components/SupervisorSection/Supervisors/MechanicalDashboard';
@@ -41,7 +41,7 @@ import BodyShopDashboard from './Components/SupervisorSection/Supervisors/BodySh
 import ServiceDashboard from './Components/SupervisorSection/Supervisors/ServiceDashboard';
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
 import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
-import ElectricalSupervisorSection from './Components/SupervisorSection/ElectriaclSupervisorDashboard';
+import ElectricalSupervisorSection from './components/SupervisorSection/ElectriaclSupervisorDashboard';
 import BodyShopSupervisorSection from './Components/SupervisorSection/BodyShopSupervisorDashboard';
 import PremiumCustomerDashboard from './pages/premiumcustomer/PremiumCustomerDashboard'; 
 
