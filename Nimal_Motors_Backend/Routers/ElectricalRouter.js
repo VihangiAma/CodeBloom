@@ -1,19 +1,25 @@
 import express from "express";
 import {
-  createElectricalService,
-  getAllElectricalServices,
-  getElectricalServiceById,
-  updateElectricalService,
-  deleteElectricalService
+  createService,
+  getAllServices,
+  getServiceById,
+  updateService,
+  deleteService
 } from "../Controllers/ElectricalController.js";
 
 const router = express.Router();
 
 // Base path: /api/electrical
-router.post("/", createElectricalService);
-router.get("/", getAllElectricalServices);
-router.get("/:id", getElectricalServiceById);
-router.put("/:id", updateElectricalService);
-router.delete("/:id", deleteElectricalService);
+
+// Create new service
+router.post("/", createService);
+
+// Get all services
+router.get("/", getAllServices);
+
+// Get, update, delete service by serviceID (e.g., ES001)
+router.get("/:serviceID", getServiceById);
+router.put("/:serviceID", updateService);
+router.delete("/:serviceID", deleteService);
 
 export default router;
