@@ -7,8 +7,7 @@ const SalesReportAdd = ({ onAdd }) => {
     itemName: "",
     price: "",
     net_price_for_item: "",
-    Sales_Quntity: "",
-    profite: "",
+    Sales_Quntity: ""
   });
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -25,8 +24,7 @@ const SalesReportAdd = ({ onAdd }) => {
       !formData.itemName ||
       !formData.price ||
       !formData.net_price_for_item ||
-      !formData.Sales_Quntity ||
-      !formData.profite
+      !formData.Sales_Quntity
     ) {
       setError("Please fill in all fields.");
       return;
@@ -35,10 +33,9 @@ const SalesReportAdd = ({ onAdd }) => {
     if (
       isNaN(formData.price) ||
       isNaN(formData.net_price_for_item) ||
-      isNaN(formData.Sales_Quntity) ||
-      isNaN(formData.profite)
+      isNaN(formData.Sales_Quntity)
     ) {
-      setError("Price, Net Price, Sales Quantity, and Profit must be numbers.");
+      setError("Price, Net Price, and Sales Quantity must be numbers.");
       return;
     }
 
@@ -46,21 +43,26 @@ const SalesReportAdd = ({ onAdd }) => {
     setSuccessMessage("");
 
     try {
+      // Calculate profit automatically before submitting
+      const reportData = {
+        ...formData,
+        profite: (formData.net_price_for_item * formData.Sales_Quntity).toFixed(2)
+      };
+
       const response = await axios.post(
         "http://localhost:5001/api/SalesReports",
-        formData
+        reportData
       );
 
       console.log("Success:", response.data);
-      onAdd(formData);
+      onAdd(reportData);
       setSuccessMessage("Sales report added successfully!");
       setFormData({
         itemId: "",
         itemName: "",
         price: "",
         net_price_for_item: "",
-        Sales_Quntity: "",
-        profite: "",
+        Sales_Quntity: ""
       });
     } catch (error) {
       console.error("Error adding sales report:", error);
@@ -121,15 +123,6 @@ const SalesReportAdd = ({ onAdd }) => {
             value={formData.Sales_Quntity}
             onChange={handleChange}
             placeholder="Sales Quantity"
-            className="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-400"
-            required
-          />
-          <input
-            type="number"
-            name="profite"
-            value={formData.profite}
-            onChange={handleChange}
-            placeholder="Profit"
             className="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-400"
             required
           />

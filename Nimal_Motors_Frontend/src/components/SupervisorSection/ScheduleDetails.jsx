@@ -216,7 +216,7 @@ const ScheduleDetails = ({ section }) => {
                     )}
                   </td>
                   <td className="border px-4 py-2">{appointment.description}</td>
-                  <td className="border px-4 py-2 flex justify-center space-x-2">
+                  <td className="border px-4 py-17 flex justify-center space-x-2">
                     <button
                       onClick={() => handleUpdate(appointment)}
                       className="text-blue-500 hover:text-blue-700 p-2 rounded-md transition"

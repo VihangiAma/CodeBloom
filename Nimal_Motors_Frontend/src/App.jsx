@@ -1,9 +1,17 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
+
+
+
+
+
+
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
-import RegisterPage from './pages/register/RegisterPage';
+// import RegisterPage from './pages/register/RegisterPage';
+
 import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
@@ -42,7 +50,8 @@ import BookAppointment from './Components/CustomerSection/BookAppoinment';
 
 // Inventory and Sales Pages
 import InventoryDashboard from './components/InventoryDashboard';
-import AccountantDashboard  from './components/AccountantDashboard';    
+import AccountantDashboard  from './components/AccountantDashboard'; 
+import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
 import SalesReportAdd from './assets/pages/SalesReportAdd';
@@ -68,8 +77,9 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        {/* <Route path="/register" element={<RegisterPage />} /> */}
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
+
 
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
@@ -87,6 +97,7 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        
 
 
         {/* Supervisor Protected Routes */}
@@ -111,6 +122,8 @@ function App() {
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
+        
+        <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
         <Route path="/add-sales-report" element={<SalesReportAdd onAdd={() => {}} />} />

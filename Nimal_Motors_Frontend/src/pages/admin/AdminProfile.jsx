@@ -6,6 +6,7 @@ import {
   FaFacebook,
   FaTwitter,
   FaInstagram,
+  FaShieldAlt,
   FaUserPlus,
   FaUsers,
 } from "react-icons/fa";
@@ -47,6 +48,15 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "",
   });
+
+  // Password change form state
+  const [changePassword, setChangePassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   // ------------------ Handlers ------------------
   const handleProfileChange = (e) => {
@@ -96,6 +106,36 @@ export default function AdminProfile() {
     } catch (err) {
       console.error("Error fetching profile data", err);
       navigate("/unauthorized");
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (changePassword.newPassword !== changePassword.confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.post(
+        "http://localhost:5001/api/user/change-password",
+        {
+          userId: profile.userId,
+          oldPassword: changePassword.oldPassword,
+          newPassword: changePassword.newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      alert("Password changed successfully!");
+      setShowChangePasswordForm(false); // Close the form on success
+    } catch (err) {
+      console.error("Error changing password", err);
+      setPasswordError("Failed to change password.");
     }
   };
 
@@ -181,7 +221,7 @@ export default function AdminProfile() {
         </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
-        
+          
           <button
             onClick={() => navigate("/admin-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
@@ -189,7 +229,6 @@ export default function AdminProfile() {
             <FaUserCircle className="text-lg" />
             Dashboard
           </button>
-
           <button
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
@@ -251,65 +290,60 @@ export default function AdminProfile() {
                     onChange={handleProfileChange}
                   />
                 ))}
-                <div className="space-x-2 mt-2">
+                <div className="space-x-2 mt-4">
                   <button
                     onClick={saveProfile}
-                    className="text-green-400 text-sm hover:underline"
+                    className="px-4 py-2 bg-yellow-500 text-black rounded"
                   >
-                    Save
+                    Save Changes
                   </button>
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="text-red-400 text-sm hover:underline"
+                    className="px-4 py-2 bg-gray-500 text-white rounded"
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="text-sm space-y-2">
+              <div>
                 <ReadOnlyField label="Full Name" value={profile.fullName} />
-                <ReadOnlyField label="Mobile" value={profile.phoneNumber} />
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
-                <div className="flex items-center space-x-3 mt-2">
+                <ReadOnlyField label="Phone" value={profile.phoneNumber} />
+
+<div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
                   <FaInstagram className="text-pink-500" />
                 </div>
+
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
+                >
+                  Edit Profile
+                </button>
               </div>
             )}
+          </section>
+        </div>
+
 
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
+                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded text-red-400"
               >
                 Edit
               </button>
             )}
 
-            {/* Quick Tools */}
-            {/* <hr className="my-6 border-gray-600" />
-            <h4 className="text-base font-semibold mb-3">Quick Tools</h4>
-            <div className="space-y-2">
-              <button
-                onClick={toggleAddUserForm}
-                className="flex items-center gap-2 text-green-400 hover:text-white"
-              >
-                <FaUserPlus /> Add User
-              </button>
-              <button
-                onClick={() => navigate("/admin/users")}
-                className="flex items-center gap-2 text-blue-400 hover:text-white"
-              >
-                <FaUsers /> View All Users
-              </button>
-            </div>
+       
+           
+  
 
-            {showAddUserForm && <AddUserForm />} */}
-          </section>
-        </div>
+        
       </main>
     </div>
   );

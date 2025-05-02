@@ -45,9 +45,9 @@ function Sidebar({ isCollapsed, toggleSidebar, activePage, setActivePage }) {
           setActivePage={setActivePage}
         />
         <NavItem
-          to="progress"
+          to="invoices"
           icon="🔄"
-          label="Progress"
+          label="Invoices"
           isCollapsed={isCollapsed}
           activePage={activePage}
           setActivePage={setActivePage}
@@ -148,7 +148,7 @@ const SupervisorLayout = ({ section, children, activePage, setActivePage }) => {
       />
       <div className="flex-1 flex flex-col">
         <Header section={section} />
-        <main className="flex-1 overflow-y-auto p-4">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 w-300">{children}</main>
       </div>
     </div>
   );
