@@ -141,6 +141,7 @@ const MechanicalSupervisorSection = () => {
         );
       default:
         return (
+
           <>
             {/* Top Summary Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
@@ -202,6 +203,38 @@ const MechanicalSupervisorSection = () => {
               />
             )}
           </>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
+            <DashboardCard
+              title="Add Customer"
+              description="Add a new customer details."
+              color="bg-blue-500"
+              emoji="➕"
+              onClick={() => setActivePage("addservice")}
+            />
+            <DashboardCard
+              title="Manage Appointments"
+              description="View and manage customer bookings."
+              color="bg-green-500"
+              emoji="📅"
+              onClick={() => setActivePage("schedules")}
+            />
+            <DashboardCard
+              title="View Progress"
+              description="Track service progress of vehicles."
+              color="bg-yellow-500"
+              emoji="🔄"
+              onClick={() => setActivePage("progress")}
+            />
+            <DashboardCard
+              title="View Reports"
+              description="Generate and review service reports."
+              color="bg-purple-500"
+              emoji="📋"
+              onClick={() => setActivePage("report")}
+            />
+          </div>
+
         );
     }
   };

@@ -4,11 +4,12 @@ import {
   getAllBodyShopServices,
   getBodyShopServiceById,
   updateBodyShopService,
-  deleteBodyShopService,
+  deleteBodyShopService
 } from "../Controllers/BodyShopController.js";
 
 const router = express.Router();
 
+// Base path: /api/bodyshop
 router.post("/", createBodyShopService);
 router.get("/", getAllBodyShopServices);
 router.get("/:id", getBodyShopServiceById);
