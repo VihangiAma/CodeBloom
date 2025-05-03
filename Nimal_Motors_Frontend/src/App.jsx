@@ -29,6 +29,7 @@ import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
 import CompletedServices from './components/SupervisorSection/CompletedServices';
 import NotificationBar from './components/SupervisorSection/Notification';
+import InvoicePage from './components/SupervisorSection/InvoicePage';
 
 
 // Section-specific Dashboards
@@ -100,7 +101,7 @@ function App() {
         <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />
          <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
-       
+       <Route path="/invoicePage" element={<SupervisorPrivateRoute><InvoicePage /></SupervisorPrivateRoute>} />
 
         {/* Section-specific Dashboards */}
       
