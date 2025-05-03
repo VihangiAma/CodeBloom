@@ -56,8 +56,8 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                   </td>
                   <td className="border px-3 py-2">
                     <button
-                      onClick={() => handleInvoiceClick(appointment._id)}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                      onClick={() => navigate(`/invoice/${appointment._id}`)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                     >
                       Invoice
                     </button>
