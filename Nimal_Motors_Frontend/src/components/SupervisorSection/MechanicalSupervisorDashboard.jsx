@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom"; // Add this import
+import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
@@ -96,23 +97,38 @@ const MechanicalSupervisorSection = () => {
       default:
         return (
           <>
-            {/* Summary Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
-              <div className="bg-blue-500 text-white p-4 rounded-xl text-center">
-                <p>Total Appointments</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+            {/* Progress Summary Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaListAlt className="text-blue-600 text-3xl" />
+                <div>
+                  <p className="text-sm">Total Appointments</p>
+                  <h2 className="text-xl font-semibold">{stats.total}</h2>
+                </div>
               </div>
-              <div className="bg-green-500 text-white p-4 rounded-xl text-center">
-                <p>Completed</p>
-                <p className="text-2xl font-bold">{stats.completed}</p>
+
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaCheckCircle className="text-green-600 text-3xl" />
+                <div>
+                  <p className="text-sm">Completed</p>
+                  <h2 className="text-xl font-semibold">{stats.completed}</h2>
+                </div>
               </div>
-              <div className="bg-yellow-400 text-white p-4 rounded-xl text-center">
-                <p>In Progress</p>
-                <p className="text-2xl font-bold">{stats.inProgress}</p>
+
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaSpinner className="text-yellow-500 text-3xl animate-spin-slow" />
+                <div>
+                  <p className="text-sm">In Progress</p>
+                  <h2 className="text-xl font-semibold">{stats.inProgress}</h2>
+                </div>
               </div>
-              <div className="bg-red-400 text-white p-4 rounded-xl text-center">
-                <p>Pending</p>
-                <p className="text-2xl font-bold">{stats.pending}</p>
+
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaClock className="text-red-500 text-3xl" />
+                <div>
+                  <p className="text-sm">Pending</p>
+                  <h2 className="text-xl font-semibold">{stats.pending}</h2>
+                </div>
               </div>
             </div>
 
