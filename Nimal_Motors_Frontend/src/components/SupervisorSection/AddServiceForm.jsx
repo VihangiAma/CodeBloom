@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const AddDetailsForm = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
+const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
   const [formData, setFormData] = useState({
     serviceID: "",
     customerName: "",
@@ -253,3 +253,5 @@ const AddDetailsForm = ({ onSubmit, existingBooking, isEditMode, onDelete }) => 
     </div>
   );
 };
+
+export default AddServiceForm;
