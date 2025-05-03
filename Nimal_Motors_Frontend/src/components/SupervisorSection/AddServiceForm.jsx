@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 
 const AddDetailsForm = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
@@ -254,7 +253,3 @@ const AddDetailsForm = ({ onSubmit, existingBooking, isEditMode, onDelete }) => 
     </div>
   );
 };
-
-export default AddDetailsForm;
-
-
