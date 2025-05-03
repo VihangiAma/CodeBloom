@@ -2,24 +2,14 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
 
-const DashboardCard = ({ title, description, emoji, color, onClick }) => {
-  return (
-    <div
-      onClick={onClick}
-      className={`cursor-pointer ${color} text-black rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
-    >
-      <div className="text-5xl mb-4">{emoji}</div>
-      <h2 className="text-2xl font-bold mb-2">{title}</h2>
-      <p className="opacity-90">{description}</p>
-    </div>
-  );
-};
-
 const ElectricalSupervisorSection = () => {
+  const navigate = useNavigate();
   const [activePage, setActivePage] = useState("dashboard");
   const [stats, setStats] = useState({
     total: 0,
@@ -79,24 +69,12 @@ const ElectricalSupervisorSection = () => {
       case "schedules":
         return (
           <div className="p-6">
-            <button
-              onClick={() => setActivePage("dashboard")}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
-            >
-              Back to Dashboard
-            </button>
             <ScheduleDetails section="electrical" />
           </div>
         );
       case "addservice":
         return (
           <div className="p-6">
-            <button
-              onClick={() => setActivePage("dashboard")}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
-            >
-              Back to Dashboard
-            </button>
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -106,95 +84,24 @@ const ElectricalSupervisorSection = () => {
             </motion.div>
           </div>
         );
-      case "progress":
-        return (
-          <div className="p-6">
-            <button
-              onClick={() => setActivePage("dashboard")}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
-            >
-              Back to Dashboard
-            </button>
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white p-8 rounded-2xl shadow-2xl"
-            >
-              <Progress section="electrical" />
-            </motion.div>
-          </div>
-        );
       case "report":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            Report page coming soon...
-          </div>
-        );
       case "invoices":
         return (
-          <div className="p-6">
-            <button
-              onClick={() => setActivePage("dashboard")}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
-            >
-              Back to Dashboard
-            </button>
-            <div className="text-gray-600 text-center text-xl mb-4">
-              Invoices page coming soon...
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <DashboardCard
-                title="Add Customer"
-                description="Add a new customer details."
-                color="bg-blue-500"
-                emoji="➕"
-                onClick={() => setActivePage("addservice")}
-              />
-              <DashboardCard
-                title="Manage Appointments"
-                description="View and manage customer bookings."
-                color="bg-green-500"
-                emoji="📅"
-                onClick={() => setActivePage("schedules")}
-              />
-              <DashboardCard
-                title="View Progress"
-                description="Track service progress of vehicles."
-                color="bg-yellow-500"
-                emoji="🔄"
-                onClick={() => setActivePage("progress")}
-              />
-              <DashboardCard
-                title="View Reports"
-                description="Generate and review service reports."
-                color="bg-purple-500"
-                emoji="📋"
-                onClick={() => setActivePage("report")}
-              />
-            </div>
+          <div className="text-gray-600 p-8 text-center text-xl">
+            {activePage === "report"
+              ? "Report page coming soon..."
+              : "Invoices page coming soon..."}
           </div>
         );
       default:
         return (
           <>
-            {/* Summary Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
-              <div className="bg-blue-500 text-white p-4 rounded-xl text-center">
-                <p>Total Appointments</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-              <div className="bg-green-500 text-white p-4 rounded-xl text-center">
-                <p>Completed</p>
-                <p className="text-2xl font-bold">{stats.completed}</p>
-              </div>
-              <div className="bg-yellow-400 text-white p-4 rounded-xl text-center">
-                <p>In Progress</p>
-                <p className="text-2xl font-bold">{stats.inProgress}</p>
-              </div>
-              <div className="bg-red-400 text-white p-4 rounded-xl text-center">
-                <p>Pending</p>
-                <p className="text-2xl font-bold">{stats.pending}</p>
-              </div>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
+              <StatCard icon={<FaListAlt />} label="Total Appointments" value={stats.total} color="text-blue-600" />
+              <StatCard icon={<FaCheckCircle />} label="Completed" value={stats.completed} color="text-green-600" />
+              <StatCard icon={<FaSpinner className="animate-spin-slow" />} label="In Progress" value={stats.inProgress} color="text-yellow-500" />
+              <StatCard icon={<FaClock />} label="Pending" value={stats.pending} color="text-red-500" />
             </div>
 
             {/* Dashboard Cards */}
@@ -214,8 +121,8 @@ const ElectricalSupervisorSection = () => {
                 onClick={() => setActivePage("schedules")}
               />
               <DashboardCard
-                title="View Invoices"
-                description="See generated invoices for services."
+                title="Invoices"
+                description="View invoices."
                 color="bg-yellow-500"
                 emoji="🧾"
                 onClick={() => setActivePage("invoices")}
@@ -229,7 +136,7 @@ const ElectricalSupervisorSection = () => {
               />
             </div>
 
-            {/* Hidden Progress Fetcher */}
+            {/* Stats Fetcher */}
             {showProgressFetcher && (
               <Progress section="electrical" onStatsUpdate={handleStatsUpdate} />
             )}
@@ -239,13 +146,98 @@ const ElectricalSupervisorSection = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">
-        Electrical Service Section
-      </h2>
-      {renderContent()}
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
+        <div className="flex items-center p-6 space-x-3">
+          <h1 className="text-xl font-bold">Nimal Motors</h1>
+        </div>
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
+          <ul className="space-y-3">
+            {["dashboard", "addservice", "schedules", "invoices", "report"].map((item) => (
+              <li key={item}>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${activePage === item && "bg-gray-700"}`}
+                  onClick={() => setActivePage(item)}
+                >
+                  {item === "dashboard"
+                    ? "Dashboard"
+                    : item === "addservice"
+                    ? "Add Service"
+                    : item === "schedules"
+                    ? "Manage Appointments"
+                    : item === "invoices"
+                    ? "Invoices"
+                    : "View Reports"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1">
+        <div className="bg-white shadow flex justify-between items-center px-6 py-4">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Electrical Service Section
+          </h2>
+          <div className="flex items-center space-x-4">
+            <button
+              className="hover:text-blue-600 text-gray-700 text-xl"
+              title="Notifications"
+              onClick={() => navigate("/notification")}
+            >
+              🔔
+            </button>
+            <button
+              className="hover:text-blue-600 text-gray-700 text-xl"
+              title="Profile"
+              onClick={() => navigate("/electrical-supervisor")}
+            >
+              👤
+            </button>
+            <button
+              className="hover:text-red-600 text-gray-700 text-xl"
+              title="Logout"
+              onClick={() => navigate("/login")}
+            >
+              LogOut
+            </button>
+          </div>
+        </div>
+
+        {/* Page Content */}
+        <div className="p-4">{renderContent()}</div>
+      </div>
     </div>
   );
 };
 
 export default ElectricalSupervisorSection;
+
+// Reusable Stat Card
+const StatCard = ({ icon, label, value, color }) => (
+  <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+    <div className={`${color} text-3xl`}>{icon}</div>
+    <div>
+      <p className="text-sm">{label}</p>
+      <h2 className="text-xl font-semibold">{value}</h2>
+    </div>
+  </div>
+);
+
+// Dashboard Card
+const DashboardCard = ({ title, description, emoji, color, onClick }) => {
+  return (
+    <div
+      onClick={onClick}
+      className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
+    >
+      <div className="text-5xl mb-4">{emoji}</div>
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      <p className="opacity-90">{description}</p>
+    </div>
+  );
+};
