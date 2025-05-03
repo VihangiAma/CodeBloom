@@ -38,12 +38,13 @@ export const getServiceById = async (req, res) => {
   }
 };
 
+
 // Update an electrical service
 export const updateService = async (req, res) => {
   try {
-    const updatedService = await ElectricalSection.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const updatedService = await ElectricalSection.findOneAndUpdate(
+      { serviceID: Number(req.params.id) }, // Correct use of custom field
+      { $set: req.body },
       { new: true }
     );
     if (!updatedService) return res.status(404).json({ message: "Service not found" });
@@ -56,7 +57,9 @@ export const updateService = async (req, res) => {
 // Delete an electrical service
 export const deleteService = async (req, res) => {
   try {
-    const deletedService = await ElectricalSection.findByIdAndDelete(req.params.id);
+    const deletedService = await ElectricalSection.findOneAndDelete({
+      serviceID: Number(req.params.id),
+    });
     if (!deletedService) return res.status(404).json({ message: "Service not found" });
     res.status(200).json({ message: "Service deleted successfully" });
   } catch (error) {
