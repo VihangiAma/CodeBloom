@@ -35,11 +35,12 @@ export const getServiceById = async (req, res) => {
   }
 };
 
+// Update a BodyShop service
 export const updateService = async (req, res) => {
   try {
-    const updatedService = await BodyShopSection.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const updatedService = await BodyShopSection.findOneAndUpdate(
+      { serviceID: Number(req.params.id) }, // Use serviceID to find the document
+      { $set: req.body },
       { new: true }
     );
     if (!updatedService) return res.status(404).json({ message: "Service not found" });
@@ -49,9 +50,12 @@ export const updateService = async (req, res) => {
   }
 };
 
+// Delete a BodyShop service
 export const deleteService = async (req, res) => {
   try {
-    const deletedService = await BodyShopSection.findByIdAndDelete(req.params.id);
+    const deletedService = await BodyShopSection.findOneAndDelete(
+      { serviceID: Number(req.params.id) } // Use serviceID to find the document
+    );
     if (!deletedService) return res.status(404).json({ message: "Service not found" });
     res.status(200).json({ message: "Service deleted" });
   } catch (error) {
