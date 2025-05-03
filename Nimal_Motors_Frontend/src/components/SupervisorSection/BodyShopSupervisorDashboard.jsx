@@ -7,6 +7,7 @@ import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
+import CompletedServices from './CompletedServices';
 
 const BodyShopSupervisorSection = () => {
   const navigate = useNavigate();
@@ -85,8 +86,13 @@ const BodyShopSupervisorSection = () => {
             </motion.div>
           </div>
         );
+        case "invoices":
+          return (
+            <div className="text-gray-600 p-8 text-center text-xl">
+              <CompletedServices section="bodyshop" sectionPrefix="BS" />
+            </div>
+          );
       case "report":
-      case "invoices":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
             {activePage.charAt(0).toUpperCase() + activePage.slice(1)} page
