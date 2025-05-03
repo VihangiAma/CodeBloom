@@ -101,8 +101,7 @@ function App() {
         <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />
          <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
-       <Route path="/invoicePage" element={<SupervisorPrivateRoute><InvoicePage /></SupervisorPrivateRoute>} />
-
+        <Route path="/invoice/:id" element={<InvoicePage />} />
         {/* Section-specific Dashboards */}
       
         <Route path="/service-supervisor-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
