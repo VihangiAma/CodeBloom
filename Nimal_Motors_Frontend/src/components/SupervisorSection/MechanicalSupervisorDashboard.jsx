@@ -175,11 +175,11 @@ const MechanicalSupervisorSection = () => {
                 onClick={() => setActivePage("schedules")}
               />
               <DashboardCard
-                title="View Progress"
-                description="Track service progress of vehicles."
+                title="Invoices"
+                description="Veiw invoices."
                 color="bg-yellow-500"
                 emoji="🔄"
-                onClick={() => setActivePage("progress")}
+                onClick={() => setActivePage("invoices")}
               />
               <DashboardCard
                 title="View Reports"

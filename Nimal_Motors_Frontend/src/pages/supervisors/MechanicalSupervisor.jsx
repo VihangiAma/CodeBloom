@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 import {
   FaUserCircle,
   FaSignOutAlt,
@@ -117,7 +118,7 @@ export default function MechanicalSupervisorProfile() {
         
 
           <button
-            onClick={() => navigate("/supervisor/mechanical")}
+            onClick={() => navigate("/mechanical-supervisor-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />
@@ -327,4 +328,5 @@ export default function MechanicalSupervisorProfile() {
       </main>
     </div>
   );
+  
 }
