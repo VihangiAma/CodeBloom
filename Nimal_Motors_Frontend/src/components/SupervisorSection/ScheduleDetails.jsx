@@ -1,3 +1,5 @@
+
+
 // ScheduleDetails.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -182,7 +184,6 @@ const ScheduleDetails = ({ section }) => {
                 <th className="border px-4 py-2">Service Date</th>
                 <th className="border px-4 py-2">Phone</th>
                 <th className="border px-4 py-2">Status</th>
-                {/* <th className="border px-4 py-2">Description</th> */}
                 <th className="border px-4 py-2">Actions</th>
               </tr>
             </thead>
@@ -217,7 +218,6 @@ const ScheduleDetails = ({ section }) => {
                       </select>
                     )}
                   </td>
-                  {/* <td className="border px-4 py-2">{appointment.description}</td> */}
                   <td className="border px-4 py-2 flex justify-center space-x-2">
                     <button
                       onClick={() => handleUpdate(appointment)}
@@ -267,3 +267,4 @@ const ScheduleDetails = ({ section }) => {
 };
 
 export default ScheduleDetails;
+
