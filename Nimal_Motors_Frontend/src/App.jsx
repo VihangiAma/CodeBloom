@@ -3,11 +3,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
-
-
-
-
-
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
 // import RegisterPage from './pages/register/RegisterPage';
@@ -32,7 +27,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
-import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+import CompletedServices from './components/SupervisorSection/CompletedServices';
 import NotificationBar from './components/SupervisorSection/Notification';
 
 // Section-specific Dashboards
@@ -102,7 +97,7 @@ function App() {
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
         <Route path="/progress" element={<SupervisorPrivateRoute><ProgressPage /></SupervisorPrivateRoute>} />
         <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />
-        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+         <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
 
         {/* Section-specific Dashboards */}
