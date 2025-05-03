@@ -180,6 +180,7 @@ const BodyShopSupervisorSection = () => {
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
+        <div>
         {/* Company Name and Logo */}
         <div className="flex items-center p-6 space-x-3">
           {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
@@ -242,7 +243,7 @@ const BodyShopSupervisorSection = () => {
           </ul>
         </div>
       </div>
-
+      </div>
       {/* Main Content */}
       <div className="flex-1">
         {/* Header */}

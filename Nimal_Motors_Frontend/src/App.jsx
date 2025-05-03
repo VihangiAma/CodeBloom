@@ -36,10 +36,6 @@ import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
 import NotificationBar from './components/SupervisorSection/Notification';
 
 // Section-specific Dashboards
-// import MechanicalDashboard from './Components/SupervisorSection/Supervisors/MechanicalDashboard';
-// import ElectricalDashboard from './Components/SupervisorSection/Supervisors/ElectricalDashboard';
-// import BodyShopDashboard from './Components/SupervisorSection/Supervisors/BodyShopDashboard';
-// import ServiceDashboard from './Components/SupervisorSection/Supervisors/ServiceDashboard';
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
 import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
 import ElectricalSupervisorSection from './Components/SupervisorSection/ElectriaclSupervisorDashboard';
@@ -110,12 +106,8 @@ function App() {
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
 
         {/* Section-specific Dashboards */}
-        {/* <Route path="/supervisor/mechanical" element={<SupervisorPrivateRoute><MechanicalDashboard /></SupervisorPrivateRoute>} /> */}
-        {/* <Route path="/supervisor/electrical" element={<SupervisorPrivateRoute><ElectricalDashboard /></SupervisorPrivateRoute>} /> */}
-        {/* <Route path="/supervisor/body-shop" element={<SupervisorPrivateRoute><BodyShopDashboard /></SupervisorPrivateRoute>} />
-        <Route path="/supervisor/service" element={<SupervisorPrivateRoute><ServiceDashboard /></SupervisorPrivateRoute>} /> */}
-        
-        <Route path="/service-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
+      
+        <Route path="/service-supervisor-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
         <Route path="/mechanical-supervisor-dashboard" element={<SupervisorPrivateRoute><MechanicalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/body-shop-supervisor-dashboard" element={<SupervisorPrivateRoute><BodyShopSupervisorSection /></SupervisorPrivateRoute>} />

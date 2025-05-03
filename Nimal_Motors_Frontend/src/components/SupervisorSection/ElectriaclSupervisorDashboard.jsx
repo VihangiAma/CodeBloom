@@ -149,7 +149,9 @@ const ElectricalSupervisorSection = () => {
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
+        <div>
         <div className="flex items-center p-6 space-x-3">
+          {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
           <h1 className="text-xl font-bold">Nimal Motors</h1>
         </div>
         <div className="p-6">
@@ -176,7 +178,7 @@ const ElectricalSupervisorSection = () => {
           </ul>
         </div>
       </div>
-
+      </div>
       {/* Main Content */}
       <div className="flex-1">
         <div className="bg-white shadow flex justify-between items-center px-6 py-4">

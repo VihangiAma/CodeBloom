@@ -180,7 +180,8 @@ const MechanicalSupervisorSection = () => {
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
-        {/* Company Name and Logo */}
+      <div>
+         {/* Company Name */}
         <div className="flex items-center p-6 space-x-3">
           {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
           <h1 className="text-xl font-bold">Nimal Motors</h1>
@@ -222,16 +223,6 @@ const MechanicalSupervisorSection = () => {
             <li>
               <button
                 className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "invoices" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("invoices")}
-              >
-                Invoices
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
                   activePage === "report" && "bg-gray-700"
                 }`}
                 onClick={() => setActivePage("report")}
@@ -239,8 +230,19 @@ const MechanicalSupervisorSection = () => {
                 View Reports
               </button>
             </li>
+            <li>
+              <button
+                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                  activePage === "invoices" && "bg-gray-700"
+                }`}
+                onClick={() => setActivePage("invoices")}
+              >
+                View Invoices
+              </button>
+            </li>
           </ul>
         </div>
+      </div>
       </div>
 
       {/* Main Content */}
