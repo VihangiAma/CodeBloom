@@ -38,16 +38,29 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                 <th className="border px-3 py-2">Customer Name</th>
                 <th className="border px-3 py-2">Vehicle No</th>
                 <th className="border px-3 py-2">Service Date</th>
+                <th className="border px-3 py-2">Actions</th> {/* New Column */}
               </tr>
             </thead>
             <tbody>
               {completedAppointments.map((appointment) => (
                 <tr key={appointment._id} className="hover:bg-gray-50">
                   <td className="border px-3 py-2">{appointment.displayID}</td>
-                  <td className="border px-3 py-2">{appointment.customerName}</td>
-                  <td className="border px-3 py-2">{appointment.vehicleNumber}</td>
+                  <td className="border px-3 py-2">
+                    {appointment.customerName}
+                  </td>
+                  <td className="border px-3 py-2">
+                    {appointment.vehicleNumber}
+                  </td>
                   <td className="border px-3 py-2">
                     {new Date(appointment.serviceDate).toLocaleDateString()}
+                  </td>
+                  <td className="border px-3 py-2">
+                    <button
+                      onClick={() => handleInvoiceClick(appointment._id)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                    >
+                      Invoice
+                    </button>
                   </td>
                 </tr>
               ))}
