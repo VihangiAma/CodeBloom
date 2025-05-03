@@ -33,9 +33,10 @@ import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
 import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+import NotificationBar from './components/SupervisorSection/Notification';
 
 // Section-specific Dashboards
-import MechanicalDashboard from './Components/SupervisorSection/Supervisors/MechanicalDashboard';
+// import MechanicalDashboard from './Components/SupervisorSection/Supervisors/MechanicalDashboard';
 import ElectricalDashboard from './Components/SupervisorSection/Supervisors/ElectricalDashboard';
 import BodyShopDashboard from './Components/SupervisorSection/Supervisors/BodyShopDashboard';
 import ServiceDashboard from './Components/SupervisorSection/Supervisors/ServiceDashboard';
@@ -106,9 +107,10 @@ function App() {
         <Route path="/progress" element={<SupervisorPrivateRoute><ProgressPage /></SupervisorPrivateRoute>} />
         <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />
         <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+        <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
 
         {/* Section-specific Dashboards */}
-        <Route path="/supervisor/mechanical" element={<SupervisorPrivateRoute><MechanicalDashboard /></SupervisorPrivateRoute>} />
+        {/* <Route path="/supervisor/mechanical" element={<SupervisorPrivateRoute><MechanicalDashboard /></SupervisorPrivateRoute>} /> */}
         <Route path="/supervisor/electrical" element={<SupervisorPrivateRoute><ElectricalDashboard /></SupervisorPrivateRoute>} />
         <Route path="/supervisor/body-shop" element={<SupervisorPrivateRoute><BodyShopDashboard /></SupervisorPrivateRoute>} />
         <Route path="/supervisor/service" element={<SupervisorPrivateRoute><ServiceDashboard /></SupervisorPrivateRoute>} />
