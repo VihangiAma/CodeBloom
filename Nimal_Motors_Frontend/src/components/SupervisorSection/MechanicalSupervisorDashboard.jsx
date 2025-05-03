@@ -73,7 +73,7 @@ const MechanicalSupervisorSection = () => {
             <ScheduleDetails section="mechanical" />
           </div>
         );
-      case "addservice":
+      case "addcustomer":
         return (
           <div className="p-6">
             <motion.div
@@ -135,11 +135,11 @@ const MechanicalSupervisorSection = () => {
             {/* Dashboard Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
               <DashboardCard
-                title="Add Service"
-                description="Add a new mechanical service."
+                title="Add Customer"
+                description="Add a new Customer Details."
                 color="bg-blue-500"
                 emoji="➕"
-                onClick={() => setActivePage("addservice")}
+                onClick={() => setActivePage("addcustomer")}
               />
               <DashboardCard
                 title="Manage Appointments"
@@ -203,11 +203,11 @@ const MechanicalSupervisorSection = () => {
             <li>
               <button
                 className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "addservice" && "bg-gray-700"
+                  activePage === "addcustomer" && "bg-gray-700"
                 }`}
-                onClick={() => setActivePage("addservice")}
+                onClick={() => setActivePage("addcustomer")}
               >
-                Add Service
+                Add Customer
               </button>
             </li>
             <li>
