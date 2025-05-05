@@ -4,6 +4,8 @@ import ServiceInvoice from "./ServiceInvoice";
 
 const Completedappoinments = () => {
   const [invoices, setInvoices] = useState([]);
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -19,17 +21,33 @@ const Completedappoinments = () => {
     fetchInvoices();
   }, []);
 
+  const handleViewInvoice = (invoice) => {
+    setSelectedInvoice(invoice);
+    setShowInvoice(true);
+  };
+
+  const handleCancelInvoice = () => {
+    setSelectedInvoice(null);
+    setShowInvoice(false);
+  };
+
+  const handleSubmitInvoice = (invoiceData) => {
+    console.log("Submitted invoice:", invoiceData);
+    setShowInvoice(false);
+  };
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Invoices</h2>
       <table className="min-w-full table-auto border">
         <thead>
           <tr className="bg-gray-200">
-          <th className="border px-3 py-2">Service ID</th>
-                <th className="border px-3 py-2">Customer Name</th>
-                <th className="border px-3 py-2">Vehicle No</th>
-                <th className="border px-3 py-2">Service Date</th>
-                <th className="border px-3 py-2">Actions</th> 
+            <th className="border px-3 py-2">Service ID</th>
+            <th className="border px-3 py-2">Customer Name</th>
+            <th className="border px-3 py-2">Vehicle No</th>
+            <th className="border px-3 py-2">Contact No</th>
+            <th className="border px-3 py-2">Service Date</th>
+            <th className="border px-3 py-2">Actions</th> 
           </tr>
         </thead>
         <tbody>
@@ -37,24 +55,31 @@ const Completedappoinments = () => {
             <tr key={invoice._id} className="text-center">
               <td className="px-4 py-2 border">{invoice.displayID}</td>
               <td className="px-4 py-2 border">{invoice.customerName}</td>
-                <td className="px-4 py-2 border">{invoice.vehicleNumber}</td>
+              <td className="px-4 py-2 border">{invoice.vehicleNumber}</td>
+              <td className="px-4 py-2 border">{invoice.contactPhone}</td>
               <td className="px-4 py-2 border">{new Date(invoice.date).toLocaleDateString()}</td>
-                <td className="px-4 py-2 border">
-                    <button
-                    onClick={() => {
-                      // Open the ServiceInvoice component with the selected invoice
-                      <ServiceInvoice invoice={invoice} />;
-                    }}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                    >
-                    View Invoice
-                    </button>
-                </td>
+              <td className="px-4 py-2 border">
+                <button
+                  onClick={() => handleViewInvoice(invoice)}
+                  className="bg-blue-500 text-white px-3 py-1 rounded"
+                >
+                  View Invoice
+                </button>
+              </td>
             </tr>
-              
           ))}
         </tbody>
       </table>
+
+      {showInvoice && selectedInvoice && (
+        <div className="mt-6 border p-4 bg-gray-50 rounded">
+          <ServiceInvoice
+            initialData={selectedInvoice}
+            onSubmit={handleSubmitInvoice}
+            onCancel={handleCancelInvoice}
+          />
+        </div>
+      )}
     </div>
   );
 };
