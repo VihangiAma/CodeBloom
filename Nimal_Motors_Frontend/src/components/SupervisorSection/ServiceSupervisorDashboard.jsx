@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppointmentDetails from "./Supervisors/AppointmentDetails";
 import ApprovedAppointments from "./Supervisors/ApprovedAppointments";
+import ServiceInvoice from "./Supervisors/ServiceInvoice";
 //import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => (
@@ -55,8 +56,16 @@ const ServiceSupervisorDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-      case "report":
+
       case "invoices":
+        return (
+          <ServiceInvoice
+            view="invoices"
+            goBack={() => setActivePage("dashboard")}
+          />
+        );
+        
+      case "report":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
             {activePage === "report"
