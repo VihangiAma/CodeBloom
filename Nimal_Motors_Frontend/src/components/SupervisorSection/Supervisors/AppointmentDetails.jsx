@@ -128,6 +128,7 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
               <td className="px-4 py-2 border">{appointment.vehicleType}</td>
               <td className="px-4 py-2 border">{new Date(appointment.date).toLocaleDateString()}</td>
               <td className="px-4 py-2 border">{appointment.time}</td>
+
 <td className="px-4 py-2 border">
   {onApprove && onReject && appointment.status === "Pending" ? (
     <>
@@ -153,6 +154,18 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
     </button>
   )}
 </td>
+
+
+              <td className="px-4 py-2 border">
+                {onApprove && onReject && appointment.status === "Pending" ? (
+                  <>
+                    <button onClick={() => onApprove(appointment._id)} className="bg-green text-white px-3 py-1 rounded hover:bg-green mr-2">Approve</button>
+                    <button onClick={() => onReject(appointment._id)} className="bg-red text-white px-3 py-1 rounded hover:bg-red">Reject</button>
+                  </>
+                ) : (
+                  <button onClick={() => onDelete(appointment._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+                )}
+              </td>
 
             </tr>
           ))}

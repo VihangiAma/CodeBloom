@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/login/LoginPage';
 // import RegisterPage from './pages/register/RegisterPage';
 
-import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+ import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
@@ -24,6 +24,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
 
+
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
@@ -35,11 +36,17 @@ import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceIn
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 
+import SupervisorDashboard from './components/SupervisorSection/SupervisorDashboard';
+import ProgressPage from './components/SupervisorSection/ProgressPage';
+import ReportPage from './Components/SupervisorSection/ReportPage';
+import AppointmentDetails from './components/SupervisorSection/Supervisors/AppointmentDetails';
+import AddServiceForm from './components/SupervisorSection/AddServiceForm';
+
 
 // Section-specific Dashboards
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
 import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
-import ElectricalSupervisorSection from './Components/SupervisorSection/ElectriaclSupervisorDashboard';
+import ElectricalSupervisorSection from './components/SupervisorSection/ElectriaclSupervisorDashboard';
 import BodyShopSupervisorSection from './Components/SupervisorSection/BodyShopSupervisorDashboard';
 import PremiumCustomerDashboard from './pages/premiumcustomer/PremiumCustomerDashboard'; 
 
