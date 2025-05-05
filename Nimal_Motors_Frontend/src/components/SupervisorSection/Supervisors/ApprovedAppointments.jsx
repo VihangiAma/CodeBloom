@@ -156,6 +156,7 @@ const ApprovedAppointments = () => {
             <th className="px-4 py-2 border">Service ID</th>
             <th className="px-4 py-2 border">Customer</th>
             <th className="px-4 py-2 border">Vehicle No</th>
+            <th className="px-4 py-2 border">Contact No</th>
             <th className="px-4 py-2 border">Date</th>
             <th className="px-4 py-2 border">Time</th>
             <th className="px-4 py-2 border">Status</th>
@@ -169,9 +170,11 @@ const ApprovedAppointments = () => {
               </td>
               <td className="px-4 py-2 border">{appointment.customerName}</td>
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
+              <td className="px-4 py-2 border">{appointment.phone}</td>
               <td className="px-4 py-2 border">
                 {new Date(appointment.date).toLocaleDateString()}
               </td>
+             
               <td className="px-4 py-2 border">{appointment.time}</td>
               <td className="px-4 py-2 border">
                 <select
