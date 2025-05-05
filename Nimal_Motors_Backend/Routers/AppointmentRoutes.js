@@ -1,24 +1,3 @@
-// import express from "express";
-
-// import{
-//     createAppointment,
-//     getAllAppointments,
-//     getAppointments,
-//     updateAppointment,
-//     deleteAppointment
-// } from "../Controllers/AppointmentController.js";
-
-// const appointmentRouter = express.Router();
-
-
-// appointmentRouter.post("/", createAppointment);
-// appointmentRouter.get("/", getAppointments);
-// appointmentRouter.get("/:id", getAllAppointments);
-// appointmentRouter.put("/:id", updateAppointment);
-// appointmentRouter.delete("/:id", deleteAppointment);
-
-// export default appointmentRouter;
-
 import express from 'express';
 import {
   createAppointment,
