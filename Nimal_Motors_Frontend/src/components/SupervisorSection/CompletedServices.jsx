@@ -1,3 +1,5 @@
+// show completed services for a all sections(without service)
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 

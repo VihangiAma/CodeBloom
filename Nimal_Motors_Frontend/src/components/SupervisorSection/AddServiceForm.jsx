@@ -1,3 +1,5 @@
+//Add Customer Details in mechanical, Electrical, and bodyshop
+
 import React, { useState, useEffect } from "react";
 
 const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
