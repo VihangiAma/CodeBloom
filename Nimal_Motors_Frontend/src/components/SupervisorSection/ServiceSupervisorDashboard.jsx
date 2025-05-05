@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppointmentDetails from "./Supervisors/AppointmentDetails";
+import ApprovedAppointments from "./Supervisors/ApprovedAppointments";
 //import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => (
@@ -49,7 +50,7 @@ const ServiceSupervisorDashboard = () => {
         );
       case "approved":
         return (
-          <AppointmentDetails
+          <ApprovedAppointments
             view="approved"
             goBack={() => setActivePage("dashboard")}
           />
