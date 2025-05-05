@@ -1,3 +1,6 @@
+
+
+// ScheduleDetails.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
@@ -68,6 +71,7 @@ const ScheduleDetails = ({ section }) => {
     setIsEditing(true);
     setSelectedAppointment({
       serviceID: appointment.serviceID,
+      displayID: appointment.displayID,
       customerName: appointment.customerName,
       vehicleNumber: appointment.vehicleNumber,
       serviceDate: appointment.serviceDate,
@@ -180,14 +184,13 @@ const ScheduleDetails = ({ section }) => {
                 <th className="border px-4 py-2">Service Date</th>
                 <th className="border px-4 py-2">Phone</th>
                 <th className="border px-4 py-2">Status</th>
-                <th className="border px-4 py-2">Description</th>
                 <th className="border px-4 py-2">Actions</th>
               </tr>
             </thead>
             <tbody className="text-sm text-gray-700">
               {filteredAppointments.map((appointment) => (
                 <tr key={appointment._id} className="hover:bg-gray-100">
-                  <td className="border px-4 py-2">{appointment.serviceID}</td>
+                  <td className="border px-4 py-2">{appointment.displayID}</td>
                   <td className="border px-4 py-2">{appointment.customerName}</td>
                   <td className="border px-4 py-2">{appointment.vehicleNumber}</td>
                   <td className="border px-4 py-2">
@@ -215,8 +218,7 @@ const ScheduleDetails = ({ section }) => {
                       </select>
                     )}
                   </td>
-                  <td className="border px-4 py-2">{appointment.description}</td>
-                  <td className="border px-4 py-17 flex justify-center space-x-2">
+                  <td className="border px-4 py-2 flex justify-center space-x-2">
                     <button
                       onClick={() => handleUpdate(appointment)}
                       className="text-blue-500 hover:text-blue-700 p-2 rounded-md transition"
@@ -265,3 +267,4 @@ const ScheduleDetails = ({ section }) => {
 };
 
 export default ScheduleDetails;
+

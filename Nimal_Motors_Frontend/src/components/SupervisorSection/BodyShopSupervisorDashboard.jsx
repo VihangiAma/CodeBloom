@@ -2,23 +2,16 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import { useNavigate } from "react-router-dom"; // Add this import
+import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
-
-const DashboardCard = ({ title, description, emoji, color, onClick }) => (
-  <div
-    onClick={onClick}
-    className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
-  >
-    <div className="text-5xl mb-4">{emoji}</div>
-    <h2 className="text-2xl font-bold mb-2">{title}</h2>
-    <p className="opacity-90">{description}</p>
-  </div>
-);
+import CompletedServices from './CompletedServices';
 
 const BodyShopSupervisorSection = () => {
+  const navigate = useNavigate();
+
   const [activePage, setActivePage] = useState("dashboard");
   const [stats, setStats] = useState({
     total: 0,
@@ -28,11 +21,9 @@ const BodyShopSupervisorSection = () => {
   });
   const [showProgressFetcher, setShowProgressFetcher] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
     if (activePage === "dashboard") {
       setShowProgressFetcher(true);
-    } else {
-      setShowProgressFetcher(false);
     }
   }, [activePage]);
 
@@ -80,25 +71,12 @@ const BodyShopSupervisorSection = () => {
       case "schedules":
         return (
           <div className="p-6">
-            <button
-              onClick={() => setActivePage("dashboard")}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
-            >
-              Back to Dashboard
-            </button>
             <ScheduleDetails section="bodyshop" />
           </div>
         );
-
       case "addservice":
         return (
           <div className="p-6">
-            <button
-              onClick={() => setActivePage("dashboard")}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
-            >
-              Back to Dashboard
-            </button>
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -108,55 +86,55 @@ const BodyShopSupervisorSection = () => {
             </motion.div>
           </div>
         );
-
-      case "progress":
-        return (
-          <div className="p-6">
-            <button
-              onClick={() => setActivePage("dashboard")}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 mb-4"
-            >
-              Back to Dashboard
-            </button>
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white p-8 rounded-2xl shadow-2xl"
-            >
-              <Progress section="bodyshop" />
-            </motion.div>
-          </div>
-        );
-
+        case "invoices":
+          return (
+            <div className="text-gray-600 p-8 text-center text-xl">
+              <CompletedServices section="bodyshop" sectionPrefix="BS" />
+            </div>
+          );
       case "report":
-      case "invoices":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
-            {activePage.charAt(0).toUpperCase() + activePage.slice(1)} page coming soon...
+            {activePage.charAt(0).toUpperCase() + activePage.slice(1)} page
+            coming soon...
           </div>
         );
 
       default:
         return (
-
           <>
-            {/* Top Summary Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
-              <div className="bg-blue-500 text-white p-4 rounded-xl text-center">
-                <p>Total Appointments</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+            {/* Progress Summary Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaListAlt className="text-blue-600 text-3xl" />
+                <div>
+                  <p className="text-sm">Total Appointments</p>
+                  <h2 className="text-xl font-semibold">{stats.total}</h2>
+                </div>
               </div>
-              <div className="bg-green-500 text-white p-4 rounded-xl text-center">
-                <p>Completed</p>
-                <p className="text-2xl font-bold">{stats.completed}</p>
+
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaCheckCircle className="text-green-600 text-3xl" />
+                <div>
+                  <p className="text-sm">Completed</p>
+                  <h2 className="text-xl font-semibold">{stats.completed}</h2>
+                </div>
               </div>
-              <div className="bg-yellow-400 text-white p-4 rounded-xl text-center">
-                <p>In Progress</p>
-                <p className="text-2xl font-bold">{stats.inProgress}</p>
+
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaSpinner className="text-yellow-500 text-3xl animate-spin-slow" />
+                <div>
+                  <p className="text-sm">In Progress</p>
+                  <h2 className="text-xl font-semibold">{stats.inProgress}</h2>
+                </div>
               </div>
-              <div className="bg-red-400 text-white p-4 rounded-xl text-center">
-                <p>Pending</p>
-                <p className="text-2xl font-bold">{stats.pending}</p>
+
+              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+                <FaClock className="text-red-500 text-3xl" />
+                <div>
+                  <p className="text-sm">Pending</p>
+                  <h2 className="text-xl font-semibold">{stats.pending}</h2>
+                </div>
               </div>
             </div>
 
@@ -164,7 +142,7 @@ const BodyShopSupervisorSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
               <DashboardCard
                 title="Add Service"
-                description="Add a new body-shop service."
+                description="Add a new mechanical service."
                 color="bg-blue-500"
                 emoji="➕"
                 onClick={() => setActivePage("addservice")}
@@ -177,10 +155,10 @@ const BodyShopSupervisorSection = () => {
                 onClick={() => setActivePage("schedules")}
               />
               <DashboardCard
-                title="View Invoices"
-                description="Track service progress of vehicles."
+                title="Invoices"
+                description="View invoices."
                 color="bg-yellow-500"
-                emoji="🔄"
+                emoji="🧾"
                 onClick={() => setActivePage("invoices")}
               />
               <DashboardCard
@@ -192,52 +170,136 @@ const BodyShopSupervisorSection = () => {
               />
             </div>
 
-            {/* Background Stats Fetching */}
+            {/* Progress Updater */}
             {showProgressFetcher && (
-              <Progress section="mechanical" onStatsUpdate={handleStatsUpdate} />
+              <Progress
+                section="bodyshop"
+                onStatsUpdate={handleStatsUpdate}
+              />
             )}
           </>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
-            <DashboardCard
-              title="Add Customer"
-              description="Add a new customer details."
-              color="bg-blue-500"
-              emoji="➕"
-              onClick={() => setActivePage("addservice")}
-            />
-            <DashboardCard
-              title="Manage Appointments"
-              description="View and manage customer bookings."
-              color="bg-green-500"
-              emoji="📅"
-              onClick={() => setActivePage("schedules")}
-            />
-            <DashboardCard
-              title="View Progress"
-              description="Track service progress of vehicles."
-              color="bg-yellow-500"
-              emoji="🔄"
-              onClick={() => setActivePage("progress")}
-            />
-            <DashboardCard
-              title="View Reports"
-              description="Generate and review service reports."
-              color="bg-purple-500"
-              emoji="📋"
-              onClick={() => setActivePage("report")}
-            />
-
         );
     }
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">Body-Shop Service Section</h2>
-      {renderContent()}
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
+        <div>
+        {/* Company Name and Logo */}
+        <div className="flex items-center p-6 space-x-3">
+          {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
+          <h1 className="text-xl font-bold">Nimal Motors</h1>
+        </div>
+        {/* Navigation Menu */}
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
+          <ul className="space-y-3">
+            <li>
+              <button
+                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                  activePage === "dashboard" && "bg-gray-700"
+                }`}
+                onClick={() => setActivePage("dashboard")}
+              >
+                Dashboard
+              </button>
+            </li>
+            <li>
+              <button
+                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                  activePage === "addservice" && "bg-gray-700"
+                }`}
+                onClick={() => setActivePage("addservice")}
+              >
+                Add Service
+              </button>
+            </li>
+            <li>
+              <button
+                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                  activePage === "schedules" && "bg-gray-700"
+                }`}
+                onClick={() => setActivePage("schedules")}
+              >
+                Manage Appointments
+              </button>
+            </li>
+            <li>
+              <button
+                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                  activePage === "invoices" && "bg-gray-700"
+                }`}
+                onClick={() => setActivePage("invoices")}
+              >
+                Invoices
+              </button>
+            </li>
+            <li>
+              <button
+                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                  activePage === "report" && "bg-gray-700"
+                }`}
+                onClick={() => setActivePage("report")}
+              >
+                View Reports
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      </div>
+      {/* Main Content */}
+      <div className="flex-1">
+        {/* Header */}
+        <div className="bg-white shadow flex justify-between items-center px-6 py-4">
+          <h2 className="text-2xl font-bold text-gray-800">
+            BodyShop Service Section
+          </h2>
+          <div className="flex items-center space-x-4">
+            <button
+              className="hover:text-blue-600 text-gray-700 text-xl"
+              title="Notifications"
+              onClick={() => navigate("/notification")} // Replace with actual route
+            >
+              🔔
+            </button>
+            <button
+              className="hover:text-blue-600 text-gray-700 text-xl"
+              title="Profile"
+              onClick={() => navigate("/bodyshop-supervisor")} // Replace with actual route
+            >
+              👤
+            </button>
+            <button
+              className="hover:text-red-600 text-gray-700 text-xl"
+              title="Logout"
+              onClick={() => navigate("/login")} // Replace with actual route
+            >
+              LogOut
+            </button>
+          </div>
+        </div>
+
+        {/* Page Content */}
+        <div className="p-4">{renderContent()}</div>
+      </div>
     </div>
   );
 };
 
 export default BodyShopSupervisorSection;
+
+const DashboardCard = ({ title, description, emoji, color, onClick }) => {
+  return (
+    <div
+      onClick={onClick}
+      className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
+    >
+      <div className="text-5xl mb-4">{emoji}</div>
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      <p className="opacity-90">{description}</p>
+    </div>
+  );
+};

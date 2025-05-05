@@ -4,10 +4,12 @@ import AutoIncrementFactory from "mongoose-sequence";
 const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const electricalSchema = new mongoose.Schema({
-  serviceID: { type: Number, unique: true }, // will be auto-incremented
+  serviceID: { type: Number, unique: true },
+  displayID: { type: String, unique: true }, // e.g., "ES001"
   customerName: { type: String, required: true },
+  vehicleType: { type: String, required: true },
   contact: {
-    phone: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
     email: { type: String }
   },
   vehicleNumber: { type: String, required: true },
@@ -24,8 +26,6 @@ const electricalSchema = new mongoose.Schema({
   }
 });
 
-// Apply the auto-increment plugin
 electricalSchema.plugin(AutoIncrement, { inc_field: "serviceID", id: "electrical_seq" });
-
 
 export default mongoose.model("ElectricalSection", electricalSchema, "ElectricalSection");

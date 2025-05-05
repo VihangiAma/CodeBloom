@@ -1,3 +1,8 @@
+// Manage appointments for the service section
+
+
+
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -19,9 +24,9 @@ const AppointmentDetails = ({ goBack }) => {
     }
   };
 
-  const approveAppointment = async (id) => {
+  const approveAppointment = async (serviceID) => {
     try {
-      await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Approved" });
+      await axios.put(`http://localhost:5001/api/appointments/${serviceID}`, { status: "Approved" });
       fetchAppointments();
     } catch (error) {
       console.error(error);
@@ -29,9 +34,9 @@ const AppointmentDetails = ({ goBack }) => {
     }
   };
 
-  const rejectAppointment = async (id) => {
+  const rejectAppointment = async (serviceID) => {
     try {
-      await axios.put(`http://localhost:5001/api/appointments/${id}`, { status: "Rejected" });
+      await axios.put(`http://localhost:5001/api/appointments/${serviceID}`, { status: "Rejected" });
       fetchAppointments();
     } catch (error) {
       console.error(error);
@@ -39,7 +44,7 @@ const AppointmentDetails = ({ goBack }) => {
     }
   };
 
-  const deleteAppointment = async (id) => {
+  const deleteAppointment = async (serviceID) => {
     const confirmResult = await Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -52,7 +57,7 @@ const AppointmentDetails = ({ goBack }) => {
 
     if (confirmResult.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5001/api/appointments/${id}`);
+        await axios.delete(`http://localhost:5001/api/appointments/${serviceID}`);
         fetchAppointments();
         Swal.fire('Deleted!', 'Appointment has been deleted.', 'success');
       } catch (error) {
@@ -74,13 +79,12 @@ const AppointmentDetails = ({ goBack }) => {
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      {/* Back Button */}
-      <button
+      {/* <button
         onClick={goBack}
         className="mb-6 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center"
       >
         ← Back to Dashboard
-      </button>
+      </button> */}
 
       <h2 className="text-3xl font-bold mb-6 text-center">Service Booking Details</h2>
 
@@ -104,9 +108,10 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
       <table className="min-w-full table-auto border mb-6">
         <thead>
           <tr className="bg-gray-200">
+            <th className="px-4 py-2 border">Service ID</th>
             <th className="px-4 py-2 border">Customer</th>
             <th className="px-4 py-2 border">Phone</th>
-            <th className="px-4 py-2 border">Vehicle ID</th>
+            <th className="px-4 py-2 border">Vehicle No.</th>
             <th className="px-4 py-2 border">Vehicle Type</th>
             <th className="px-4 py-2 border">Date</th>
             <th className="px-4 py-2 border">Time Slot</th>
@@ -116,12 +121,41 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
         <tbody>
           {appointments.map((appointment) => (
             <tr key={appointment._id} className="text-center">
+              <td className="px-4 py-2 border font-medium">{appointment.displayID || `SS${String(appointment.serviceID).padStart(3, "0")}`}</td>
               <td className="px-4 py-2 border">{appointment.customerName}</td>
               <td className="px-4 py-2 border">{appointment.phone}</td>
-              <td className="px-4 py-2 border">{appointment.vehicleID}</td>
+              <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
               <td className="px-4 py-2 border">{appointment.vehicleType}</td>
               <td className="px-4 py-2 border">{new Date(appointment.date).toLocaleDateString()}</td>
               <td className="px-4 py-2 border">{appointment.time}</td>
+
+<td className="px-4 py-2 border">
+  {onApprove && onReject && appointment.status === "Pending" ? (
+    <>
+      <button
+        onClick={() => onApprove(appointment.serviceID)}
+        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2"
+      >
+        Approve
+      </button>
+      <button
+        onClick={() => onReject(appointment.serviceID)}
+        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+      >
+        Reject
+      </button>
+    </>
+  ) : (
+    <button
+      onClick={() => onDelete(appointment.serviceID)}
+      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+    >
+      Delete
+    </button>
+  )}
+</td>
+
+
               <td className="px-4 py-2 border">
                 {onApprove && onReject && appointment.status === "Pending" ? (
                   <>
@@ -132,6 +166,7 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                   <button onClick={() => onDelete(appointment._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
                 )}
               </td>
+
             </tr>
           ))}
         </tbody>

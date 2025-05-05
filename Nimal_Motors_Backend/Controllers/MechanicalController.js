@@ -5,6 +5,11 @@ export const createService = async (req, res) => {
   try {
     const newService = new MechanicalSection(req.body);
     const savedService = await newService.save();
+
+    // Generate displayID like "MS001"
+    savedService.displayID = `MS${String(savedService.serviceID).padStart(3, "0")}`;
+    await savedService.save();
+
     res.status(201).json(savedService);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -21,7 +26,7 @@ export const getAllServices = async (req, res) => {
   }
 };
 
-// Get a single service by ID
+// Get a single service by MongoDB _id
 export const getServiceById = async (req, res) => {
   try {
     const service = await MechanicalSection.findById(req.params.id);
@@ -35,12 +40,14 @@ export const getServiceById = async (req, res) => {
 // Update a service entry
 export const updateService = async (req, res) => {
   try {
-    const updatedService = await MechanicalSection.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const updatedService = await MechanicalSection.findOneAndUpdate(
+      { serviceID: Number(req.params.id) }, // Ensure you're using serviceID, not _id
+      { $set: req.body },
       { new: true }
     );
-    if (!updatedService) return res.status(404).json({ message: "Service not found" });
+    if (!updatedService) {
+      return res.status(404).json({ message: "Service not found" });
+    }
     res.status(200).json(updatedService);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -50,8 +57,12 @@ export const updateService = async (req, res) => {
 // Delete a service entry
 export const deleteService = async (req, res) => {
   try {
-    const deletedService = await MechanicalSection.findByIdAndDelete(req.params.id);
-    if (!deletedService) return res.status(404).json({ message: "Service not found" });
+    const deletedService = await MechanicalSection.findOneAndDelete({
+       serviceID: Number(req.params.id) 
+    });
+    if (!deletedService) {
+      return res.status(404).json({ message: "Service not found" });
+    }
     res.status(200).json({ message: "Service deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });

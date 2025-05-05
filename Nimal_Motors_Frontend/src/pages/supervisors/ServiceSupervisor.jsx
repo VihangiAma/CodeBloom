@@ -111,7 +111,7 @@ export default function ServiceSupervisor() {
         <div className="space-y-2 border-t border-gray-600 pt-6">
         
           <button
-            onClick={() => navigate("/supervisor/service")}
+            onClick={() => navigate("/service-supervisor-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />

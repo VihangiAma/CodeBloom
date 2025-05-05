@@ -4,10 +4,12 @@ import AutoIncrementFactory from "mongoose-sequence";
 const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const bodyShopSchema = new mongoose.Schema({
-  serviceID: { type: Number, unique: true }, // will be auto-incremented
+  serviceID: { type: Number, unique: true }, // Auto-incremented
+  displayID: { type: String, unique: true }, // e.g., "BS001"
   customerName: { type: String, required: true },
+  vehicleType: { type: String, required: true },
   contact: {
-    phone: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
     email: { type: String }
   },
   vehicleNumber: { type: String, required: true },
@@ -24,7 +26,7 @@ const bodyShopSchema = new mongoose.Schema({
   }
 });
 
-// Apply the auto-increment plugin
+// Auto-increment plugin for serviceID
 bodyShopSchema.plugin(AutoIncrement, { inc_field: "serviceID", id: "bodyshop_seq" });
 
 export default mongoose.model("BodyShopSection", bodyShopSchema, "BodyShopSection");
