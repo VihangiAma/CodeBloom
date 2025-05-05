@@ -30,6 +30,7 @@ import AppointmentDetails from './Components/SupervisorSection/Supervisors/Appoi
 import CompletedServices from './components/SupervisorSection/CompletedServices';
 import NotificationBar from './components/SupervisorSection/Notification';
 import InvoicePage from './components/SupervisorSection/InvoicePage';
+import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
 
 
 // Section-specific Dashboards
@@ -102,6 +103,7 @@ function App() {
          <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
         <Route path="/invoice/:id" element={<InvoicePage />} />
+        <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         {/* Section-specific Dashboards */}
       
         <Route path="/service-supervisor-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
