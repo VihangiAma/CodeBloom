@@ -65,6 +65,7 @@ const ServiceSupervisorDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
+      
 
       case "report":
         return (
