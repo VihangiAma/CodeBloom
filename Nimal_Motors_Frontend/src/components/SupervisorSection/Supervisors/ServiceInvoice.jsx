@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const InvoiceForm = ({ initialData = {}, onSubmit, onCancel }) => {
+const ServiceInvoice = ({ initialData = {}, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     serviceID: initialData.serviceID || "",
     customerName: initialData.customerName || "",
@@ -126,7 +126,6 @@ const InvoiceForm = ({ initialData = {}, onSubmit, onCancel }) => {
               <option value="">-- Select Type --</option>
               <option value="Car">Car</option>
               <option value="Van">Van</option>
-              <option value="Bike">Bike</option>
             </select>
           </div>
         </div>
@@ -182,4 +181,5 @@ const InvoiceForm = ({ initialData = {}, onSubmit, onCancel }) => {
   );
 };
 
-export default InvoiceForm;
+
+export default ServiceInvoice;
