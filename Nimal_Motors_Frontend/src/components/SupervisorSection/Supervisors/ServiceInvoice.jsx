@@ -1,5 +1,5 @@
 // Service invoice see all costs and details
-
+import axios from 'axios';
 import React, { useState, useEffect } from "react";
 
 const ServiceInvoice = ({ initialData = {}, onSubmit, onCancel }) => {
@@ -62,10 +62,23 @@ const ServiceInvoice = ({ initialData = {}, onSubmit, onCancel }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   onSubmit(formData);
+  //   alert("Invoice sent to Admin ✅");
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    alert("Invoice sent to Admin ✅");
+  
+    try {
+      const response = await axios.post("http://localhost:5001/api/service-invoices", formData); // Adjust URL if needed
+      alert("✅ Invoice sent to Admin!");
+      if (onSubmit) onSubmit(response.data);  // Optional callback
+    } catch (error) {
+      console.error("❌ Error sending invoice:", error);
+      alert("❌ Failed to send invoice. Please try again.");
+    }
   };
 
   return (
