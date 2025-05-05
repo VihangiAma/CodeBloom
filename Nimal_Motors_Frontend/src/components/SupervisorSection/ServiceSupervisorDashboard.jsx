@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppointmentDetails from "./Supervisors/AppointmentDetails";
 import ApprovedAppointments from "./Supervisors/ApprovedAppointments";
-import ServiceInvoice from "./Supervisors/ServiceInvoice";
+import Completedappoinments from "./Supervisors/Competedappoinments";
 import AddCustomer from "./Supervisors/AddCustomer";
 //import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 
@@ -60,7 +60,7 @@ const ServiceSupervisorDashboard = () => {
 
       case "invoices":
         return (
-          <ServiceInvoice
+          <Completedappoinments
             view="invoices"
             goBack={() => setActivePage("dashboard")}
           />
