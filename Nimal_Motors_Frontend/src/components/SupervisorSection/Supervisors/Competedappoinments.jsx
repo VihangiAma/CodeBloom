@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import ServiceInvoice from "./ServiceInvoice";
 
-const InvoicesPage = () => {
+const Completedappoinments = () => {
   const [invoices, setInvoices] = useState([]);
 
   useEffect(() => {
@@ -40,7 +41,10 @@ const InvoicesPage = () => {
               <td className="px-4 py-2 border">{new Date(invoice.date).toLocaleDateString()}</td>
                 <td className="px-4 py-2 border">
                     <button
-                    onClick={() => navigate(`/invoice/${invoice._id}`)}
+                    onClick={() => {
+                      // Open the ServiceInvoice component with the selected invoice
+                      <ServiceInvoice invoice={invoice} />;
+                    }}
                     className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                     >
                     View Invoice
@@ -55,4 +59,4 @@ const InvoicesPage = () => {
   );
 };
 
-export default InvoicesPage;
+export default Completedappoinments;
