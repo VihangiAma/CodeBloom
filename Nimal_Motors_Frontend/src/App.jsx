@@ -33,6 +33,7 @@ import InvoicePage from './components/SupervisorSection/InvoicePage';
 import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
 import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
+import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 
 
 // Section-specific Dashboards
@@ -94,6 +95,7 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        <Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />
         
 
 
