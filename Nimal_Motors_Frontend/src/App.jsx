@@ -36,10 +36,10 @@ import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceIn
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 
-import SupervisorDashboard from './components/SupervisorSection/SupervisorDashboard';
-import ProgressPage from './components/SupervisorSection/ProgressPage';
-import ReportPage from './Components/SupervisorSection/ReportPage';
-import AppointmentDetails from './components/SupervisorSection/Supervisors/AppointmentDetails';
+
+//import ProgressPage from './components/SupervisorSection/ProgressPage';
+//import ReportPage from './Components/SupervisorSection/ReportPage';
+//import AppointmentDetails from './components/SupervisorSection/Supervisors/AppointmentDetails';
 import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 
 
@@ -117,6 +117,7 @@ function App() {
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
         <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
+        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
         
         {/* Section-specific Dashboards */}
       
