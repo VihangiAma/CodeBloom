@@ -128,12 +128,12 @@ const Completedappoinments = () => {
     setShowInvoice(false);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (serviceID) => {
     if (window.confirm("Are you sure you want to delete this invoice?")) {
       try {
-        await axios.delete(`http://localhost:5001/api/appointments/serviceID/${id}`);
+        await axios.delete(`http://localhost:5001/api/appointments/${serviceID}`);
 
-        setInvoices((prev) => prev.filter((inv) => inv._id !== id));
+        setInvoices((prev) => prev.filter((inv) => inv.serviceID !== serviceID));
       } catch (error) {
         console.error("Error deleting invoice:", error);
         alert("Failed to delete invoice.");
@@ -173,7 +173,7 @@ const Completedappoinments = () => {
                   View Invoice
                 </button>
                 <button
-                  onClick={() => handleDelete(invoice._id, invoice.serviceID)}
+                  onClick={() => handleDelete(invoice.serviceID)}
                   className="bg-red-500 text-white px-3 py-1 rounded"
                 >
                   Delete
