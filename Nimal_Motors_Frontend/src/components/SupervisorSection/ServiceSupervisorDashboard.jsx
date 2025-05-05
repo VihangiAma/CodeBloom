@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AppointmentDetails from "./Supervisors/AppointmentDetails";
 import ApprovedAppointments from "./Supervisors/ApprovedAppointments";
 import ServiceInvoice from "./Supervisors/ServiceInvoice";
+import AddCustomer from "./Supervisors/AddCustomer";
 //import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => (
@@ -64,7 +65,7 @@ const ServiceSupervisorDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-        
+
       case "report":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
@@ -76,7 +77,11 @@ const ServiceSupervisorDashboard = () => {
       case "addservice":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
-            Add Service form coming soon...
+            <AddCustomer
+              goBack={() => setActivePage("dashboard")}
+              sectionPrefix="service"
+              section="appointments"
+            />
           </div>
         );
       default:
