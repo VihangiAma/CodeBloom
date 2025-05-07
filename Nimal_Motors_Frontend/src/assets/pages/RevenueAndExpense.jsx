@@ -3,17 +3,17 @@ import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
-const SalesReportView = () => {
-  const [salesReports, setSalesReports] = useState([]);
+const RevenueAndExpense = () => {
+  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [pdfError, setPdfError] = useState("");
 
   useEffect(() => {
-    const fetchSalesReports = async () => {
+    const fetchReports = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:5001/api/SalesReports");
+        const response = await axios.get("http://localhost:5001/api/revenueReportAndExpencenew");
         
         if (!response.data) {
           throw new Error("No data received from server");
@@ -21,9 +21,9 @@ const SalesReportView = () => {
         
         if (!Array.isArray(response.data)) {
           console.warn("API response is not an array:", response.data);
-          setSalesReports([response.data]);
+          setReports([response.data]);
         } else {
-          setSalesReports(response.data);
+          setReports(response.data);
         }
         
         setLoading(false);
@@ -33,20 +33,20 @@ const SalesReportView = () => {
           response: err.response?.data,
           stack: err.stack
         });
-        setError(`Failed to load sales reports: ${err.message}`);
+        setError(`Failed to load reports: ${err.message}`);
         setLoading(false);
       }
     };
 
-    fetchSalesReports();
+    fetchReports();
   }, []);
 
   const handleDownloadPDF = () => {
     try {
       setPdfError("");
       
-      if (!salesReports || salesReports.length === 0) {
-        throw new Error("No sales reports available to generate PDF");
+      if (!reports || reports.length === 0) {
+        throw new Error("No reports available to generate PDF");
       }
 
       const doc = new jsPDF({
@@ -76,30 +76,32 @@ const SalesReportView = () => {
       // Report title
       doc.setFont("helvetica", "bold");
       doc.setFontSize(18);
-      doc.text("Sales Reports", 148, 55, { align: "center" });
+      doc.text("Revenue and Expense Report", 148, 55, { align: "center" });
 
       doc.setFontSize(10);
       doc.setTextColor(100);
       doc.text(`Generated on ${new Date().toLocaleString()}`, 148, 65, { align: "center" });
 
       const headers = [
-        ["ID", "Name", "Price", "Net Price", "Quantity", "Amount"]
+        ["Section ID", "Section Name", "Profit", "Item ID", "Item Name", "Amount"]
       ];
 
-      // Calculate total amount
+      // Calculate totals
+      let totalProfit = 0;
       let totalAmount = 0;
       
-      const rows = salesReports.map((report) => {
+      const rows = reports.map((report) => {
         try {
-          const amount = report.net_price_for_item * report.Sales_Quntity;
-          totalAmount += amount;
+          totalProfit += report.profit || 0;
+          totalAmount += report.amount || 0;
+          
           return [
+            report.SectionId?.toString() || "N/A",
+            report.SectionName?.toString() || "N/A",
+            `Rs ${(report.profit || 0).toFixed(2)}`,
             report.itemId?.toString() || "N/A",
             report.itemName?.toString() || "N/A",
-            `Rs ${report.price?.toFixed(2) || "0.00"}`,
-            `Rs ${report.net_price_for_item?.toFixed(2) || "0.00"}`,
-            report.Sales_Quntity?.toString() || "0",
-            `Rs ${amount.toFixed(2)}`
+            `Rs ${(report.amount || 0).toFixed(2)}`
           ];
         } catch (rowError) {
           console.error("Error processing row:", report, rowError);
@@ -107,11 +109,20 @@ const SalesReportView = () => {
         }
       });
 
-      // Add total row only to PDF
+      // Add total rows to PDF
       const footer = [
         {
-          content: "Total Amount:",
-          colSpan: 5,
+          content: "Total Profit of Revenue:",
+          colSpan: 2,
+          styles: { halign: 'right', fontStyle: 'bold' }
+        },
+        {
+          content: `Rs ${totalProfit.toFixed(2)}`,
+          styles: { fontStyle: 'bold' }
+        },
+        {
+          content: "Total Amount Expence:",
+          colSpan: 2,
           styles: { halign: 'right', fontStyle: 'bold' }
         },
         {
@@ -142,11 +153,11 @@ const SalesReportView = () => {
           fillColor: [245, 245, 245]
         },
         columnStyles: {
-          0: { cellWidth: 20 },  // ID
-          1: { cellWidth: 80 },  // Name
-          2: { cellWidth: 25 },  // Price
-          3: { cellWidth: 25 },  // Net Price
-          4: { cellWidth: 20 },  // Quantity
+          0: { cellWidth: 25 },  // Section ID
+          1: { cellWidth: 40 },  // Section Name
+          2: { cellWidth: 25 },  // Profit
+          3: { cellWidth: 25 },  // Item ID
+          4: { cellWidth: 60 },  // Item Name
           5: { cellWidth: 40 }   // Amount
         },
         didDrawPage: (data) => {
@@ -161,7 +172,7 @@ const SalesReportView = () => {
       });
 
       try {
-        doc.save(`sales_reports_${new Date().toISOString().slice(0, 10)}.pdf`);
+        doc.save(`revenue_expense_${new Date().toISOString().slice(0, 10)}.pdf`);
       } catch (saveError) {
         console.warn("Standard save failed, trying alternative method:", saveError);
         const pdfUrl = doc.output("bloburl");
@@ -171,9 +182,9 @@ const SalesReportView = () => {
       console.error("PDF Generation Failure:", {
         error: error.message,
         stack: error.stack,
-        reportsData: salesReports,
-        reportsType: typeof salesReports,
-        reportsLength: Array.isArray(salesReports) ? salesReports.length : "N/A"
+        reportsData: reports,
+        reportsType: typeof reports,
+        reportsLength: Array.isArray(reports) ? reports.length : "N/A"
       });
       setPdfError(`PDF generation failed: ${error.message}`);
     }
@@ -183,7 +194,7 @@ const SalesReportView = () => {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        <span className="ml-4 text-gray-700">Loading sales reports...</span>
+        <span className="ml-4 text-gray-700">Loading revenue and expense reports...</span>
       </div>
     );
   }
@@ -206,16 +217,16 @@ const SalesReportView = () => {
   return (
     <div className="p-6 max-w-screen-2xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Expences Details</h2>
+        <h2 className="text-2xl font-bold text-gray-800"></h2>
         <div className="flex items-center space-x-4">
           {pdfError && (
             <span className="text-red-500 text-sm">{pdfError}</span>
           )}
           <button
             onClick={handleDownloadPDF}
-            disabled={salesReports.length === 0}
+            disabled={reports.length === 0}
             className={`px-4 py-2 rounded-lg shadow transition-colors ${
-              salesReports.length === 0
+              reports.length === 0
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
@@ -225,16 +236,16 @@ const SalesReportView = () => {
         </div>
       </div>
 
-      {salesReports.length === 0 ? (
+      {reports.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">No sales reports found</p>
+          <p className="text-gray-500">No revenue and expense reports found</p>
         </div>
       ) : (
         <div className="overflow-x-auto shadow-md rounded-lg border border-gray-200">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-blue-600">
               <tr>
-                {["ID", "Name", "Price", "Net Price", "Quantity", "Amount"].map((header) => (
+                {["Section ID", "Section Name", "Profit", "Item ID", "Item Name", "Amount"].map((header) => (
                   <th
                     key={header}
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
@@ -245,31 +256,30 @@ const SalesReportView = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {salesReports.map((report, index) => {
-                const amount = report.net_price_for_item * report.Sales_Quntity;
-                return (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {report.itemId || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {report.itemName || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      Rs {report.price?.toFixed(2) || "0.00"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      Rs {report.net_price_for_item?.toFixed(2) || "0.00"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {report.Sales_Quntity || "0"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      Rs {amount.toFixed(2)}
-                    </td>
-                  </tr>
-                );
-              })}
+              {reports.map((report, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {report.SectionId || "N/A"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {report.SectionName || "N/A"}
+                  </td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${
+                    (report.profit || 0) >= 0 ? "text-green-600" : "text-red-600"
+                  }`}>
+                    Rs {(report.profit || 0).toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {report.itemId || "N/A"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {report.itemName || "N/A"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    Rs {(report.amount || 0).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -278,4 +288,4 @@ const SalesReportView = () => {
   );
 };
 
-export default SalesReportView;
+export default RevenueAndExpense;
