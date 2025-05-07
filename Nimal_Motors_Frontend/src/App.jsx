@@ -39,6 +39,7 @@ import UserTable from './components/SupervisorSection/UserTable';
 
 
 
+
 // Section-specific Dashboards
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
 import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
@@ -114,7 +115,11 @@ function App() {
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
         <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
+
         <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
+
+        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+
         
         {/* Section-specific Dashboards */}
       
