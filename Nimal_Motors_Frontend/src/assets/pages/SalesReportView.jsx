@@ -206,7 +206,7 @@ const SalesReportView = () => {
   return (
     <div className="p-6 max-w-screen-2xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Expences Reports</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Expences Details</h2>
         <div className="flex items-center space-x-4">
           {pdfError && (
             <span className="text-red-500 text-sm">{pdfError}</span>

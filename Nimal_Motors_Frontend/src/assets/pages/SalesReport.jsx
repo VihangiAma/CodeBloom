@@ -174,7 +174,7 @@ const SalesReport = () => {
 
       {/* Sales Report Table */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Sales Report</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4"></h2>
         <SalesReportView 
           salesData={sales} 
           onEdit={(item) => openModal("update", item)}
@@ -184,7 +184,7 @@ const SalesReport = () => {
 
       {/* Revenue Report Table */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Revenue Report</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Revenue Details</h2>
         <RevenueReport
           revenueData={revenue}
           formatCurrency={formatCurrency}
