@@ -35,12 +35,8 @@ import ApprovedAppointments from './components/SupervisorSection/Supervisors/App
 import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
+import UserTable from './components/SupervisorSection/UserTable';
 
-import SupervisorDashboard from './components/SupervisorSection/SupervisorDashboard';
-import ProgressPage from './components/SupervisorSection/ProgressPage';
-import ReportPage from './Components/SupervisorSection/ReportPage';
-import AppointmentDetails from './components/SupervisorSection/Supervisors/AppointmentDetails';
-import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 
 
 // Section-specific Dashboards
@@ -63,6 +59,7 @@ import SalesReportAdd from './assets/pages/SalesReportAdd';
 import SalesReportUpdate from './assets/pages/SalesReportUpdate';
 import SalesReportDelete from './assets/pages/SalesReportDelete';
 import SalesReportView from './assets/pages/SalesReportView';
+
 
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
@@ -117,6 +114,7 @@ function App() {
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
         <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
+        <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
         
         {/* Section-specific Dashboards */}
       
