@@ -8,7 +8,7 @@ const ServiceInvoice = ({ initialData = {}, onSubmit, onCancel }) => {
     customerName: initialData.customerName || "",
     vehicleNumber: initialData.vehicleNumber || "",
     vehicleType: initialData.vehicleType || "",
-    contactPhone: initialData.contactPhone || "",
+    contactPhone: initialData.contact.phone || "",
     description: initialData.description || "",
     services: {
       fullService: { selected: false, cost: 0 },
