@@ -70,7 +70,7 @@ const ApprovedAppointments = () => {
               </td>
               <td className="px-4 py-2 border">{appointment.customerName}</td>
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
-              <td className="px-4 py-2 border">{appointment.phone}</td>
+              <td className="px-4 py-2 border">{appointment.contact.phone}</td>
               <td className="px-4 py-2 border">
                 {new Date(appointment.date).toLocaleDateString()}
               </td>
