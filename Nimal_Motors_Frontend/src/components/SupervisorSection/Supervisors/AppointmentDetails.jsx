@@ -153,7 +153,7 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                   `SS${String(appointment.serviceID).padStart(3, "0")}`}
               </td>
               <td className="px-4 py-2 border">{appointment.customerName}</td>
-              <td className="px-4 py-2 border">{appointment.phone}</td>
+              <td className="px-4 py-2 border">{appointment.contact.phone}</td>
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
               <td className="px-4 py-2 border">{appointment.vehicleType}</td>
               <td className="px-4 py-2 border">
