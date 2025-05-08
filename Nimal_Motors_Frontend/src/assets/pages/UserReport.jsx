@@ -169,14 +169,24 @@ const UserTable = () => {
           5: { cellWidth: 30 }
         },
         didDrawPage: (data) => {
-          // Footer with page number and user counts (only on last page)
-          if (data.pageNumber === doc.internal.getNumberOfPages()) {
-            // Add separator line above footer
+          // Footer with page number
+          const pageCount = doc.internal.getNumberOfPages();
+          doc.setFontSize(10);
+          doc.setTextColor(150);
+          doc.text(
+            `Page ${data.pageNumber} of ${pageCount}`,
+            data.settings.margin.left,
+            doc.internal.pageSize.height - 10
+          );
+          
+          // Add user counts summary at the end of the report (last page only)
+          if (data.pageNumber === pageCount) {
+            // Add separator line above counts
             doc.setDrawColor(200);
             doc.setLineWidth(0.5);
             doc.line(20, doc.internal.pageSize.height - 30, 190, doc.internal.pageSize.height - 30);
             
-            // Add user counts summary at the bottom
+            // Add user counts (exactly as requested)
             doc.setFontSize(12);
             doc.setTextColor(100);
             doc.text(`Total Users: ${userCounts.total}`, 20, doc.internal.pageSize.height - 25);
@@ -185,15 +195,6 @@ const UserTable = () => {
             doc.text(`Electrical: ${userCounts.electrical}`, 140, doc.internal.pageSize.height - 25);
             doc.text(`Appointments: ${userCounts.appointments}`, 20, doc.internal.pageSize.height - 20);
           }
-          
-          // Page number for all pages
-          doc.setFontSize(10);
-          doc.setTextColor(150);
-          doc.text(
-            `Page ${data.pageNumber} of ${doc.internal.getNumberOfPages()}`,
-            data.settings.margin.left,
-            doc.internal.pageSize.height - 10
-          );
         }
       });
 
