@@ -4,9 +4,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import SalesReportView from "./SalesReportView";
 import RevenueReport from "./RevenueReport";
 import Modal from "./Modal";
-import AddItem from "./SalesReportAdd";
-import UpdateItem from "./SalesReportUpdate";
-import DeleteItem from "./SalesReportDelete";
+
+
+
 import RevenueAndExpense from "./RevenueAndExpense";
 
 const SalesReport = () => {
@@ -118,22 +118,10 @@ const SalesReport = () => {
   };
 
   // CRUD operations for sales
-  const handleAdd = (newItem) => {
-    setSales([...sales, newItem]);
-    closeModal();
-  };
+  
+  
 
-  const handleUpdate = (updatedItem) => {
-    setSales(sales.map(item => 
-      item.id === updatedItem.id ? updatedItem : item
-    ));
-    closeModal();
-  };
-
-  const handleDelete = (itemId) => {
-    setSales(sales.filter(item => item.id !== itemId));
-    closeModal();
-  };
+  
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -210,26 +198,9 @@ const SalesReport = () => {
           "Delete Item"
         }
       >
-        {modalType === "add" && (
-          <AddItem 
-            onAdd={handleAdd} 
-            onClose={closeModal} 
-          />
-        )}
-        {modalType === "update" && (
-          <UpdateItem
-            item={selectedItem}
-            onUpdate={handleUpdate}
-            onClose={closeModal}
-          />
-        )}
-        {modalType === "delete" && (
-          <DeleteItem
-            item={selectedItem}
-            onDelete={handleDelete}
-            onClose={closeModal}
-          />
-        )}
+        
+        
+        
       </Modal>
     </div>
   );
