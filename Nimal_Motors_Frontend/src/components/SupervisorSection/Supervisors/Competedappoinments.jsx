@@ -75,7 +75,7 @@ const Completedappoinments = () => {
               <td className="px-4 py-2 border">{invoice.displayID}</td>
               <td className="px-4 py-2 border">{invoice.customerName}</td>
               <td className="px-4 py-2 border">{invoice.vehicleNumber}</td>
-              <td className="px-4 py-2 border">{invoice.contactPhone}</td>
+              <td className="px-4 py-2 border">{invoice.contact.phone}</td>
               <td className="px-4 py-2 border">
                 {new Date(invoice.date).toLocaleDateString()}
               </td>

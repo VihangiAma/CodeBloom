@@ -1,21 +1,3 @@
-// import mongoose from "mongoose";
-
-// const appointmentSchema = new mongoose.Schema({
-//   customerName: { type: String, required: true },
-//   address: { type: String, required: true },
-//   phone: { type: String, required: true },
-//   vehicleNumber: { type: String, required: true },
-//   vehicleType: { type: String, required: true },
-//   date: { type: Date, required: true },
-//   time: { type: String, required: true },
-//   status: {
-//     type: String,
-//     enum: ['Pending', 'Approved', 'Rejected'],
-//     default: 'Pending'
-//   }
-// }, { timestamps: true });
-
-// export default mongoose.model('Appointment', appointmentSchema);
 
 import mongoose from "mongoose";
 import AutoIncrementFactory from "mongoose-sequence";

@@ -35,6 +35,7 @@ import ApprovedAppointments from './components/SupervisorSection/Supervisors/App
 import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
+import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
 import UserTable from './components/SupervisorSection/UserTable';
 
 
@@ -117,8 +118,7 @@ function App() {
         <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
 
         <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
-
-        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+       <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
 
         
         {/* Section-specific Dashboards */}
