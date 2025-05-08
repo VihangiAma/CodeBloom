@@ -4,6 +4,7 @@ import SalesReport from "./SalesReport";
 import UsersReport from "./UserReport";
 import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
 import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
+import UserTable from "../../components/SupervisorSection/UserTable";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
