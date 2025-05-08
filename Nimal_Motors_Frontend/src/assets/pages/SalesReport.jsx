@@ -4,14 +4,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import SalesReportView from "./SalesReportView";
 import RevenueReport from "./RevenueReport";
 import Modal from "./Modal";
-
 import RevenueAndExpense from "./RevenueAndExpense";
 
 const SalesReport = () => {
   // State management
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [modalType, setModalType] = useState("");
+  // const [selectedItem, setSelectedItem] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   
@@ -115,7 +114,7 @@ const SalesReport = () => {
     setSelectedItem(null);
   };
 
-  // // CRUD operations for sales
+  // CRUD operations for sales
   // const handleAdd = (newItem) => {
   //   setSales([...sales, newItem]);
   //   closeModal();
@@ -197,8 +196,6 @@ const SalesReport = () => {
           formatCurrency={formatCurrency}
         />
       </div>
-
-      
     </div>
   );
 };

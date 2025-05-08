@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import SalesReport from "./SalesReport";
-
 import AdminDashboard from "./AdminDashBord";
 import ProfilePage from "./ProfilePage";
 import SalesReportView from "./SalesReportView";
-
 import UsersReport from "./UserReport";
 
 export default function HomePage() {
@@ -31,7 +29,7 @@ export default function HomePage() {
     <div>
       <AdminDashboard />
       {tab === "salesreport" && <SalesReport />}
-      {tab==="User Report"&&<UsersReport/>}
+      {tab === "User Report" && <UsersReport/>}
       {tab === "profile" && <ProfilePage />}
       {tab === "viewreport" && <SalesReportView />}
     </div>

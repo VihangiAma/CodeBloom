@@ -25,6 +25,14 @@ import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
 import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+import CompletedServices from './components/SupervisorSection/CompletedServices';
+import NotificationBar from './components/SupervisorSection/Notification';
+import InvoicePage from './components/SupervisorSection/InvoicePage';
+import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
+import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
+import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
+import AdminInvoiceView from './pages/admin/AdminInvoiceView';
+import UserTable from './components/SupervisorSection/UserTable';
 
 // Section-specific Dashboards
 import MechanicalDashboard from './Components/SupervisorSection/Supervisors/MechanicalDashboard';
@@ -45,10 +53,6 @@ import InventoryDashboard from './components/InventoryDashboard';
 import AccountantDashboard  from './components/AccountantDashboard';    
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
-
-//import SalesReportAdd from './assets/pages/SalesReportAdd';
-//import SalesReportUpdate from './assets/pages/SalesReportUpdate';
-//import SalesReportDelete from './assets/pages/SalesReportDelete';
 import SalesReportView from './assets/pages/SalesReportView';
 
 // Protected Route Components
@@ -89,7 +93,6 @@ function App() {
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
 
-
         {/* Supervisor Protected Routes */}
         <Route path="/dashboard" element={<SupervisorPrivateRoute><SupervisorDashboard /></SupervisorPrivateRoute>} />
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
@@ -106,8 +109,6 @@ function App() {
         <Route path="/mechanical-supervisor-dashboard" element={<SupervisorPrivateRoute><MechanicalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/body-shop-supervisor-dashboard" element={<SupervisorPrivateRoute><BodyShopSupervisorSection /></SupervisorPrivateRoute>} />
-
-
 
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
