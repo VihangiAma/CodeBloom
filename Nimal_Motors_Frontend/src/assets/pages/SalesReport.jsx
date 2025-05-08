@@ -4,9 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import SalesReportView from "./SalesReportView";
 import RevenueReport from "./RevenueReport";
 import Modal from "./Modal";
-import AddItem from "./SalesReportAdd";
-import UpdateItem from "./SalesReportUpdate";
-import DeleteItem from "./SalesReportDelete";
+
 import RevenueAndExpense from "./RevenueAndExpense";
 
 const SalesReport = () => {
@@ -117,23 +115,23 @@ const SalesReport = () => {
     setSelectedItem(null);
   };
 
-  // CRUD operations for sales
-  const handleAdd = (newItem) => {
-    setSales([...sales, newItem]);
-    closeModal();
-  };
+  // // CRUD operations for sales
+  // const handleAdd = (newItem) => {
+  //   setSales([...sales, newItem]);
+  //   closeModal();
+  // };
 
-  const handleUpdate = (updatedItem) => {
-    setSales(sales.map(item => 
-      item.id === updatedItem.id ? updatedItem : item
-    ));
-    closeModal();
-  };
+  // const handleUpdate = (updatedItem) => {
+  //   setSales(sales.map(item => 
+  //     item.id === updatedItem.id ? updatedItem : item
+  //   ));
+  //   closeModal();
+  // };
 
-  const handleDelete = (itemId) => {
-    setSales(sales.filter(item => item.id !== itemId));
-    closeModal();
-  };
+  // const handleDelete = (itemId) => {
+  //   setSales(sales.filter(item => item.id !== itemId));
+  //   closeModal();
+  // };
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -200,37 +198,7 @@ const SalesReport = () => {
         />
       </div>
 
-      {/* Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title={
-          modalType === "add" ? "Add New Item" :
-          modalType === "update" ? "Update Item" :
-          "Delete Item"
-        }
-      >
-        {modalType === "add" && (
-          <AddItem 
-            onAdd={handleAdd} 
-            onClose={closeModal} 
-          />
-        )}
-        {modalType === "update" && (
-          <UpdateItem
-            item={selectedItem}
-            onUpdate={handleUpdate}
-            onClose={closeModal}
-          />
-        )}
-        {modalType === "delete" && (
-          <DeleteItem
-            item={selectedItem}
-            onDelete={handleDelete}
-            onClose={closeModal}
-          />
-        )}
-      </Modal>
+      
     </div>
   );
 };
