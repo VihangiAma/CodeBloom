@@ -186,7 +186,7 @@ const UserTable = () => {
             doc.setLineWidth(0.5);
             doc.line(20, doc.internal.pageSize.height - 30, 190, doc.internal.pageSize.height - 30);
             
-            // Add user counts (exactly as requested)
+            // Add user counts ki (exactly as requested)
             doc.setFontSize(12);
             doc.setTextColor(100);
             doc.text(`Total Users: ${userCounts.total}`, 20, doc.internal.pageSize.height - 25);
