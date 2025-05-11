@@ -266,7 +266,7 @@ const BookAppointment = () => {
     if (!phoneRegex.test(formData.contact.phone.trim())) {
       Swal.fire(
         "Invalid Input",
-        "Phone must be a valid 10-digit number.",
+        "Check the phone number. ",
         "warning"
       );
       return false;
