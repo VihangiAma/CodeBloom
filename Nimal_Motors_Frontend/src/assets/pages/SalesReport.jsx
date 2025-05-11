@@ -4,9 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import SalesReportView from "./SalesReportView";
 import RevenueReport from "./RevenueReport";
 import Modal from "./Modal";
-
-
-
 import RevenueAndExpense from "./RevenueAndExpense";
 
 const SalesReport = () => {

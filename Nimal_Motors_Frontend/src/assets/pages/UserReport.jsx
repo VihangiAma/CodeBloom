@@ -13,7 +13,7 @@ const UserTable = () => {
     mechanical: 0,
     bodyShop: 0,
     electrical: 0,
-    appointments: 0
+    appointments: 0,
   });
 
   useEffect(() => {
@@ -53,16 +53,15 @@ const UserTable = () => {
 
         setUsers(allUsers);
         setFilteredUsers(allUsers);
-        
-        // Calculate user counts for PDF only
+
         setUserCounts({
           total: allUsers.length,
           mechanical: mechData.length,
           bodyShop: bodyData.length,
           electrical: elecData.length,
-          appointments: appData.length
+          appointments: appData.length,
         });
-        
+
         setLoading(false);
       } catch (err) {
         console.error('Error fetching section data:', err);
@@ -74,72 +73,66 @@ const UserTable = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedSection === 'all') {
-      setFilteredUsers(users);
-    } else {
-      setFilteredUsers(users.filter(user => user.section === selectedSection));
-    }
+    setFilteredUsers(
+      selectedSection === 'all'
+        ? users
+        : users.filter((user) => user.section === selectedSection)
+    );
   }, [selectedSection, users]);
 
   const handleDownloadPDF = () => {
     try {
       setPdfError('');
-      
       const dataToExport = selectedSection === 'all' ? users : filteredUsers;
-      
+
       if (!dataToExport || dataToExport.length === 0) {
-        throw new Error("No user data available to generate PDF");
+        throw new Error('No user data available to generate PDF');
       }
 
-      const doc = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-      // Add header
-      doc.setFont("helvetica", "bold");
+      // Header section
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
-      doc.text("NIMAL MOTORS", 105, 15, { align: "center" });
-      
-      doc.setFont("helvetica", "normal");
+      doc.text('NIMAL MOTORS', 105, 15, { align: 'center' });
+
+      doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      doc.text("No:321/2A, Galle Road, Aluthgama", 105, 20, { align: "center" });
-      doc.text("Tel: 055-2298868 / 077-8888888", 105, 25, { align: "center" });
-      doc.text("Email: nimalmotors.nm@gmail.com", 105, 30, { align: "center" });
-      doc.text("All Vehicle Repairs, Cut & Polish & Service Center", 105, 35, { align: "center" });
-      doc.text(`Reg No: 168507`, 105, 40, { align: "center" });
-      
-      // Add separator line
+      doc.text('No:321/2A, Galle Road, Aluthgama', 105, 20, { align: 'center' });
+      doc.text('Tel: 055-2298868 / 077-8888888', 105, 25, { align: 'center' });
+      doc.text('Email: nimalmotors.nm@gmail.com', 105, 30, { align: 'center' });
+      doc.text('All Vehicle Repairs, Cut & Polish & Service Center', 105, 35, { align: 'center' });
+      doc.text('Reg No: 168507', 105, 40, { align: 'center' });
+
       doc.setDrawColor(200);
       doc.setLineWidth(0.5);
       doc.line(20, 45, 190, 45);
 
-      // Report title with section filter info
-      doc.setFont("helvetica", "bold");
+      // Report title
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
-      const reportTitle = selectedSection === 'all' 
-        ? "Customer Service Report (All Sections)" 
-        : `Customer Service Report (${selectedSection})`;
-      doc.text(reportTitle, 105, 55, { align: "center" });
+      const reportTitle =
+        selectedSection === 'all'
+          ? 'Customer Service Report (All Sections)'
+          : `Customer Service Report (${selectedSection})`;
+      doc.text(reportTitle, 105, 55, { align: 'center' });
 
       doc.setFontSize(10);
       doc.setTextColor(100);
-      doc.text(`Generated on ${new Date().toLocaleString()}`, 105, 65, { align: "center" });
+      doc.text(`Generated on ${new Date().toLocaleString()}`, 105, 65, { align: 'center' });
 
-      const headers = [
-        ["Customer Name", "ID", "Contact", "Vehicle No", "Service Date", "Section"]
-      ];
-
-      const data = dataToExport.map(user => [
+      // Prepare table data
+      const headers = [['Customer Name', 'ID', 'Contact', 'Vehicle No', 'Service Date', 'Section']];
+      const data = dataToExport.map((user) => [
         user.customerName,
         user.displayID,
         user.contact,
         user.vehicleNumber,
         user.serviceDate,
-        user.section
+        user.section,
       ]);
 
+      // Generate the table
       autoTable(doc, {
         startY: 70,
         head: headers,
@@ -148,17 +141,17 @@ const UserTable = () => {
         styles: {
           fontSize: 9,
           cellPadding: 3,
-          overflow: "linebreak",
-          valign: "middle",
-          halign: "left"
+          overflow: 'linebreak',
+          valign: 'middle',
+          halign: 'left',
         },
         headStyles: {
           fillColor: [33, 150, 243],
           textColor: 255,
-          fontStyle: "bold"
+          fontStyle: 'bold',
         },
         alternateRowStyles: {
-          fillColor: [245, 245, 245]
+          fillColor: [245, 245, 245],
         },
         columnStyles: {
           0: { cellWidth: 40 },
@@ -166,41 +159,58 @@ const UserTable = () => {
           2: { cellWidth: 30 },
           3: { cellWidth: 30 },
           4: { cellWidth: 30 },
-          5: { cellWidth: 30 }
+          5: { cellWidth: 30 },
         },
         didDrawPage: (data) => {
-          // Footer with page number
-          const pageCount = doc.internal.getNumberOfPages();
-          doc.setFontSize(10);
-          doc.setTextColor(150);
-          doc.text(
-            `Page ${data.pageNumber} of ${pageCount}`,
-            data.settings.margin.left,
-            doc.internal.pageSize.height - 10
-          );
-          
-          // Add user counts summary at the end of the report (last page only)
-          if (data.pageNumber === pageCount) {
-            // Add separator line above counts
-            doc.setDrawColor(200);
-            doc.setLineWidth(0.5);
-            doc.line(20, doc.internal.pageSize.height - 30, 190, doc.internal.pageSize.height - 30);
-            
-            // Add user counts ki (exactly as requested)
+          const totalPages = doc.internal.getNumberOfPages();
+          const isLastPage = data.pageNumber === totalPages;
+
+          if (isLastPage) {
+            const yStart = data.cursor.y + 10;
+            let y = yStart;
+
+            doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
-            doc.setTextColor(100);
-            doc.text(`Total Users: ${userCounts.total}`, 20, doc.internal.pageSize.height - 25);
-            doc.text(`Mechanical: ${userCounts.mechanical}`, 60, doc.internal.pageSize.height - 25);
-            doc.text(`BodyShop: ${userCounts.bodyShop}`, 100, doc.internal.pageSize.height - 25);
-            doc.text(`Electrical: ${userCounts.electrical}`, 140, doc.internal.pageSize.height - 25);
-            doc.text(`Appointments: ${userCounts.appointments}`, 20, doc.internal.pageSize.height - 20);
+            doc.setTextColor(0);
+            doc.text('User Count Summary', 20, y);
+            y += 8;
+
+            const addLine = (label, value) => {
+              doc.setFont('helvetica', 'bold');
+              doc.text(`• ${label}`, 25, y);
+              doc.setFont('helvetica', 'normal');
+              doc.text(`${value}`, 60, y);
+              y += 6;
+            };
+
+            if (selectedSection === 'all') {
+              addLine('Mechanical', userCounts.mechanical);
+              addLine('BodyShop', userCounts.bodyShop);
+              addLine('Electrical', userCounts.electrical);
+              addLine('Appointments', userCounts.appointments);
+            } else {
+              addLine('Current Section', filteredUsers.length);
+            }
+
+            doc.setDrawColor(200);
+            doc.setLineWidth(0.3);
+            doc.line(25, y, 70, y);
+            y += 5;
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(selectedSection === 'all' ? 'Total Users' : 'Total in Section', 25, y);
+            doc.text(`${selectedSection === 'all' ? userCounts.total : filteredUsers.length}`, 60, y);
           }
-        }
+        },
       });
 
-      doc.save(`customer_report_${selectedSection === 'all' ? 'all' : selectedSection.toLowerCase()}_${new Date().toISOString().slice(0, 10)}.pdf`);
+      doc.save(
+        `customer_report_${selectedSection === 'all' ? 'all' : selectedSection.toLowerCase()}_${new Date()
+          .toISOString()
+          .slice(0, 10)}.pdf`
+      );
     } catch (error) {
-      console.error("PDF Generation Failure:", error);
+      console.error('PDF Generation Failure:', error);
       setPdfError(`PDF generation failed: ${error.message}`);
     }
   };
@@ -214,9 +224,7 @@ const UserTable = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800">All Customers Summary</h2>
         <div className="flex items-center space-x-4">
-          {pdfError && (
-            <span className="text-red-500 text-sm">{pdfError}</span>
-          )}
+          {pdfError && <span className="text-red-500 text-sm">{pdfError}</span>}
           <select
             value={selectedSection}
             onChange={handleSectionChange}
@@ -233,8 +241,8 @@ const UserTable = () => {
             disabled={filteredUsers.length === 0 || loading}
             className={`px-4 py-2 rounded-lg shadow transition-colors ${
               filteredUsers.length === 0 || loading
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
+                ? 'bg-gray-300 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
             Download PDF
