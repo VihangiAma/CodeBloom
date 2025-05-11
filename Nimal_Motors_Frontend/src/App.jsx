@@ -5,9 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
-// import RegisterPage from './pages/register/RegisterPage';
-
- import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
@@ -23,8 +21,6 @@ import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
-
-
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
@@ -37,9 +33,6 @@ import Completedappoinments from './components/SupervisorSection/Supervisors/Com
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 import UserTable from './components/SupervisorSection/UserTable';
-
-
-
 
 // Section-specific Dashboards
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
@@ -78,7 +71,6 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/register" element={<RegisterPage />} /> */}
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
 
 
@@ -113,9 +105,8 @@ function App() {
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
         <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
-
         <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
-       <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
 
         
         {/* Section-specific Dashboards */}
@@ -130,7 +121,6 @@ function App() {
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
-        
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
