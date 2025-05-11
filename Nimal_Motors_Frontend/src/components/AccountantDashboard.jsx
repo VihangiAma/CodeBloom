@@ -140,7 +140,7 @@ const AccountantDashboard = () => {
 
         <div className="mt-4 text-right">
           <button
-            onClick={() => navigate("/accountant-profile")}
+            onClick={() => navigate("/accountant")}
             className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300"
           >
             ← Back to Profile

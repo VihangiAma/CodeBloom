@@ -1,28 +1,35 @@
 import mongoose from "mongoose";
+import AutoIncrementFactory from "mongoose-sequence";
+
+const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const mechanicalSchema = new mongoose.Schema({
-  serviceID: { type: String, required: true, unique: true }, 
+  serviceID: { type: Number, unique: true }, // auto-incremented
+  displayID: { type: String, unique: true }, // e.g., "MS001"
   customerName: { type: String, required: true },
   contact: {
-    phone: { type: String, required: true }, // New: phone number (required)
-    email: { type: String }                   // New: optional email
+    phone: { type: String, required: true, unique: true },
+    email: { type: String }
   },
-  vehicleID: { type: String, required: true },
-  serviceDate: { type: Date, required: true }, // This is appointment date
-  serviceTime: { type: String, required: true }, // This is appointment time slot
-  description: { 
-    type: String, 
+  vehicleType: { type: String, required: true }, // NEW FIELD
+  vehicleNumber: { type: String, required: true },
+  serviceDate: { type: Date, required: true },
+  presentMeter: {
+    type: Number,
     required: true,
-    maxlength: 100  // Limit description to 100 characters
+    min: 0
   },
-  status: { 
-    type: String, 
-    enum: ["Pending", "In Progress", "Completed"], 
-    default: "Pending" 
+  status: {
+    type: String,
+    enum: ["Pending", "In Progress", "Completed"],
+    default: "Pending"
   }
 });
 
+// Auto-increment serviceID
+mechanicalSchema.plugin(AutoIncrement, {
+  inc_field: "serviceID",
+  id: "mechanical_seq"
+});
+
 export default mongoose.model("MechanicalSection", mechanicalSchema, "MechanicalSection");
-
-
-

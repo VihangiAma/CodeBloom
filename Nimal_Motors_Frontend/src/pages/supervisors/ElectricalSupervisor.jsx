@@ -127,7 +127,7 @@ export default function ElectricalSupervisor() {
 
 
           <button
-            onClick={() => navigate("/supervisor/electrical")}
+            onClick={() => navigate("/electrical-supervisor-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />

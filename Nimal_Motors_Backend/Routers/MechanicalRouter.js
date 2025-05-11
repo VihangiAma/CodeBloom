@@ -1,18 +1,19 @@
 import express from "express";
 import {
-  createMechanicalService,
-  getAllMechanicalServices,
-  getMechanicalServiceById,
-  updateMechanicalService,
-  deleteMechanicalService
+  createService,
+  getAllServices,
+  getServiceById,
+  updateService,
+  deleteService
 } from "../Controllers/MechanicalController.js";
 
 const router = express.Router();
 
-router.post("/", createMechanicalService);
-router.get("/", getAllMechanicalServices);
-router.get("/:id", getMechanicalServiceById);
-router.put("/:id", updateMechanicalService);
-router.delete("/:id", deleteMechanicalService);
+// Base path: /api/mechanical
+router.post("/", createService);
+router.get("/", getAllServices);
+router.get("/:id", getServiceById);
+router.put("/:id", updateService);
+router.delete("/:id", deleteService);
 
 export default router;

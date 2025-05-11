@@ -1,7 +1,10 @@
+
+
+// ScheduleDetails.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { ImSpinner2 } from "react-icons/im"; // Spinner icon
+import { ImSpinner2 } from "react-icons/im";
 import UpdateBookingForm from "./UpdateBookingForm";
 
 const ScheduleDetails = ({ section }) => {
@@ -14,7 +17,7 @@ const ScheduleDetails = ({ section }) => {
   const [deleteId, setDeleteId] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
   const [monthFilter, setMonthFilter] = useState("All");
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     fetchAppointments();
@@ -35,21 +38,20 @@ const ScheduleDetails = ({ section }) => {
 
   const applyFilters = () => {
     let filtered = [...appointments];
-    
     if (statusFilter !== "All") {
-      filtered = filtered.filter(appointment => appointment.status === statusFilter);
+      filtered = filtered.filter((a) => a.status === statusFilter);
     }
-
     if (monthFilter !== "All") {
-      const month = new Date(`${monthFilter}-01`).getMonth(); // Format for comparison
-      filtered = filtered.filter(appointment => new Date(appointment.serviceDate).getMonth() === month);
+      const month = new Date(`${monthFilter}-01`).getMonth();
+      filtered = filtered.filter(
+        (a) => new Date(a.serviceDate).getMonth() === month
+      );
     }
-
     setFilteredAppointments(filtered);
   };
 
-  const confirmDelete = (id) => {
-    setDeleteId(id);
+  const confirmDelete = (serviceID) => {
+    setDeleteId(serviceID);
     setShowConfirmModal(true);
   };
 
@@ -69,16 +71,15 @@ const ScheduleDetails = ({ section }) => {
     setIsEditing(true);
     setSelectedAppointment({
       serviceID: appointment.serviceID,
+      displayID: appointment.displayID,
       customerName: appointment.customerName,
-      vehicleID: appointment.vehicleID,
+      vehicleNumber: appointment.vehicleNumber,
       serviceDate: appointment.serviceDate,
-      serviceTime: appointment.serviceTime,
       description: appointment.description,
       status: appointment.status,
       contact: {
         phone: appointment.contact?.phone || "",
       },
-      _id: appointment._id,
     });
   };
 
@@ -89,7 +90,10 @@ const ScheduleDetails = ({ section }) => {
 
   const handleFormSubmit = async (updatedData) => {
     try {
-      await axios.put(`http://localhost:5001/api/${section}/${selectedAppointment._id}`, updatedData);
+      await axios.put(
+        `http://localhost:5001/api/${section}/${selectedAppointment.serviceID}`,
+        updatedData
+      );
       setIsEditing(false);
       fetchAppointments();
     } catch (error) {
@@ -97,10 +101,12 @@ const ScheduleDetails = ({ section }) => {
     }
   };
 
-  const handleStatusChange = async (appointmentId, newStatus) => {
-    setUpdatingStatusId(appointmentId);
+  const handleStatusChange = async (serviceID, newStatus) => {
+    setUpdatingStatusId(serviceID);
     try {
-      await axios.put(`http://localhost:5001/api/${section}/${appointmentId}`, { status: newStatus });
+      await axios.put(`http://localhost:5001/api/${section}/${serviceID}`, {
+        status: newStatus,
+      });
       fetchAppointments();
     } catch (error) {
       console.error("Error updating status", error);
@@ -122,7 +128,6 @@ const ScheduleDetails = ({ section }) => {
     }
   };
 
-  // Dynamically generate an array of months
   const months = Array.from({ length: 12 }, (_, index) => {
     const date = new Date(currentYear, index, 1);
     return date.toLocaleString("default", { month: "long" });
@@ -130,8 +135,8 @@ const ScheduleDetails = ({ section }) => {
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">
-        {section.charAt(0).toUpperCase() + section.slice(1)} Appointment Schedule
+      <h2 className="text-2xl font-bold mb-4 capitalize">
+        {section} Appointment Schedule
       </h2>
 
       {/* Filters */}
@@ -162,14 +167,12 @@ const ScheduleDetails = ({ section }) => {
       </div>
 
       {isEditing ? (
-        <div>
-          <UpdateBookingForm
-            existingBooking={selectedAppointment}
-            isEditMode={true}
-            onSubmit={handleFormSubmit}
-            onCancel={handleCancelUpdate}
-          />
-        </div>
+        <UpdateBookingForm
+          existingBooking={selectedAppointment}
+          isEditMode={true}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancelUpdate}
+        />
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto border-separate border-spacing-0">
@@ -177,35 +180,36 @@ const ScheduleDetails = ({ section }) => {
               <tr>
                 <th className="border px-4 py-2">Service ID</th>
                 <th className="border px-4 py-2">Customer Name</th>
-                <th className="border px-4 py-2">Vehicle ID</th>
+                <th className="border px-4 py-2">Vehicle Number</th>
                 <th className="border px-4 py-2">Service Date</th>
-                <th className="border px-4 py-2">Service Time</th>
                 <th className="border px-4 py-2">Phone</th>
                 <th className="border px-4 py-2">Status</th>
-                <th className="border px-4 py-2">Description</th>
                 <th className="border px-4 py-2">Actions</th>
               </tr>
             </thead>
             <tbody className="text-sm text-gray-700">
               {filteredAppointments.map((appointment) => (
                 <tr key={appointment._id} className="hover:bg-gray-100">
-                  <td className="border px-4 py-2">{appointment.serviceID}</td>
+                  <td className="border px-4 py-2">{appointment.displayID}</td>
                   <td className="border px-4 py-2">{appointment.customerName}</td>
-                  <td className="border px-4 py-2">{appointment.vehicleID}</td>
+                  <td className="border px-4 py-2">{appointment.vehicleNumber}</td>
                   <td className="border px-4 py-2">
                     {new Date(appointment.serviceDate).toLocaleDateString()}
                   </td>
-                  <td className="border px-4 py-2">{appointment.serviceTime}</td>
-                  <td className="border px-4 py-2">{appointment.contact?.phone || "N/A"}</td>
                   <td className="border px-4 py-2">
-                    {updatingStatusId === appointment._id ? (
+                    {appointment.contact?.phone || "N/A"}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {updatingStatusId === appointment.serviceID ? (
                       <div className="flex justify-center">
                         <ImSpinner2 className="animate-spin text-blue-500 text-2xl" />
                       </div>
                     ) : (
                       <select
                         value={appointment.status}
-                        onChange={(e) => handleStatusChange(appointment._id, e.target.value)}
+                        onChange={(e) =>
+                          handleStatusChange(appointment.serviceID, e.target.value)
+                        }
                         className={`border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${getStatusColor(appointment.status)}`}
                       >
                         <option value="Pending">Pending</option>
@@ -214,8 +218,7 @@ const ScheduleDetails = ({ section }) => {
                       </select>
                     )}
                   </td>
-                  <td className="border px-4 py-2">{appointment.description}</td>
-                  <td className="border px-4 py-17 flex justify-center space-x-2">
+                  <td className="border px-4 py-2 flex justify-center space-x-2">
                     <button
                       onClick={() => handleUpdate(appointment)}
                       className="text-blue-500 hover:text-blue-700 p-2 rounded-md transition"
@@ -223,7 +226,7 @@ const ScheduleDetails = ({ section }) => {
                       <FaEdit className="text-xl" />
                     </button>
                     <button
-                      onClick={() => confirmDelete(appointment._id)}
+                      onClick={() => confirmDelete(appointment.serviceID)}
                       className="text-red-500 hover:text-red-700 p-2 rounded-md transition"
                     >
                       <FaTrashAlt className="text-xl" />
@@ -264,3 +267,4 @@ const ScheduleDetails = ({ section }) => {
 };
 
 export default ScheduleDetails;
+
