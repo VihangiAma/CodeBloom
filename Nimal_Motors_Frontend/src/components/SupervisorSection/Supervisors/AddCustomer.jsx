@@ -16,7 +16,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     vehicleType: "",
     date: "",
     time: "",
-    status: "Not Complete yet", // Default status
+    // status: "Not Complete yet", // Default status
   });
 
   const timeSlots = [
@@ -32,15 +32,78 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     if (name === "phone" || name === "email") {
       setFormData({
         ...formData,
-        contact: { ...formData.contact, [name]: value },
+        contact: { 
+          ...formData.contact, 
+          [name]: value 
+        },
       });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
+  const validateForm = () => {
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    const vehicleNumberRegex = /^[A-Z]{2,3}-\d{3,4}$/i;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!nameRegex.test(formData.customerName.trim())) {
+      Swal.fire(
+        "Invalid Input",
+        "Invalid Customer Name. Only letters and spaces allowed.",
+        "warning"
+      );
+      return false;
+    }
+    if (formData.address.trim().length < 5) {
+      Swal.fire(
+        "Invalid Input",
+        "Address must be at least 5 characters.",
+        "warning"
+      );
+      return false;
+    }
+    if (!phoneRegex.test(formData.contact.phone.trim())) {
+      Swal.fire("Invalid Input", "Check the phone number. ", "warning");
+      return false;
+    }
+    if (
+      formData.contact.email &&
+      !emailRegex.test(formData.contact.email.trim())
+    ) {
+      Swal.fire("Invalid Input", "Invalid email format.", "warning");
+      return false;
+    }
+    if (!vehicleNumberRegex.test(formData.vehicleNumber.trim())) {
+      Swal.fire(
+        "Invalid Input",
+        "Vehicle Number must be like ABC-1234.",
+        "warning"
+      );
+      return false;
+    }
+    if (!formData.vehicleType) {
+      Swal.fire("Invalid Input", "Please select a vehicle type.", "warning");
+      return false;
+    }
+    if (!formData.date) {
+      Swal.fire("Invalid Input", "Date is required.", "warning");
+      return false;
+    }
+    if (!formData.time) {
+      Swal.fire("Invalid Input", "Time slot must be selected.", "warning");
+      return false;
+    }
+
+    return true;
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     try {
       await axios.post("http://localhost:5001/api/appointments", formData);
@@ -65,11 +128,22 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
         status: "Not Complete yet",
       });
     } catch (error) {
-      console.error("Error saving appointment:", error);
+      console.error(error);
+      let errorMessage = "Something went wrong. Please try again.";
+      if (error.response?.data?.error) {
+        const serverError = error.response.data.error;
+        if (serverError.toLowerCase().includes("already booked")) {
+          errorMessage =
+            "This time slot is already booked. Please choose another time.";
+        } else {
+          errorMessage = serverError;
+        }
+      }
+
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Failed to save customer. Please try again.",
+        title: "Booking Failed",
+        text: errorMessage,
       });
     }
   };
