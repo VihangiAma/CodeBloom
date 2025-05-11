@@ -1,6 +1,5 @@
 //Add service section customers manualy
 
-
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -134,9 +133,13 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           required
           className="w-full border p-2 rounded"
         >
-          <option value="" disabled>Select Vehicle Type</option>
+          <option value="" disabled>
+            Select Vehicle Type
+          </option>
           {vehicleTypes.map((type) => (
-            <option key={type} value={type}>{type}</option>
+            <option key={type} value={type}>
+              {type}
+            </option>
           ))}
         </select>
 
@@ -156,9 +159,13 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           required
           className="w-full border p-2 rounded"
         >
-          <option value="" disabled>Select Time Slot</option>
+          <option value="" disabled>
+            Select Time Slot
+          </option>
           {timeSlots.map((slot) => (
-            <option key={slot} value={slot}>{slot}</option>
+            <option key={slot} value={slot}>
+              {slot}
+            </option>
           ))}
         </select>
 
@@ -166,7 +173,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           type="submit"
           className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
         >
-          Add Customer Details 
+          Add Customer Details
         </button>
       </form>
     </div>
