@@ -23,8 +23,6 @@ import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
-
-
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
@@ -35,15 +33,7 @@ import ApprovedAppointments from './components/SupervisorSection/Supervisors/App
 import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
-import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
-
-import CompletedServices from './components/SupervisorSection/CompletedServices';
-import NotificationBar from './components/SupervisorSection/Notification';
-import InvoicePage from './components/SupervisorSection/InvoicePage';
-import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
-import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
-import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
-import AdminInvoiceView from './pages/admin/AdminInvoiceView';
+import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 import UserTable from './components/SupervisorSection/UserTable';
 
 
@@ -63,9 +53,6 @@ import AccountantDashboard  from './components/AccountantDashboard';
 import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
-
-import OperationDashbord from './assets/pages/OperationDashbord';
-
 import SalesReportView from './assets/pages/SalesReportView';
 
 

@@ -44,11 +44,11 @@ const OperationDashboard = () => {
         );
       default:
         return (
-          <>
+          <div className="p-8">
             <h2 className="text-2xl font-bold mb-6">Operation Dashboard</h2>
             <button
               onClick={() => setActiveReport("financial")}
-              className="px-6 py-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition flex items-center mb-4"
+              className="px-6 py-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition flex items-center mb-4 w-full max-w-md"
             >
               <span className="text-2xl mr-3">📈</span>
               <div className="text-left">
@@ -59,7 +59,7 @@ const OperationDashboard = () => {
             
             <button
               onClick={() => setActiveReport("user")}
-              className="px-6 py-4 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition flex items-center"
+              className="px-6 py-4 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition flex items-center w-full max-w-md"
             >
               <span className="text-2xl mr-3">👤</span>
               <div className="text-left">
@@ -67,7 +67,7 @@ const OperationDashboard = () => {
                 <p className="text-sm opacity-90">Analyze user activity</p>
               </div>
             </button>
-          </>
+          </div>
         );
     }
   };

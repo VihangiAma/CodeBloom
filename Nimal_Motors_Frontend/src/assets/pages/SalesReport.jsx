@@ -5,12 +5,11 @@ import SalesReportView from "./SalesReportView";
 import Modal from "./Modal";
 
 const SalesReport = () => {
-  // State management
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [modalType, setModalType] = useState("");
-  // const [selectedItem, setSelectedItem] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null);
   
   // Sample sales data
   const [sales, setSales] = useState([
@@ -52,7 +51,6 @@ const SalesReport = () => {
     setSelectedItem(null);
   };
 
-
   // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -92,14 +90,13 @@ const SalesReport = () => {
 
       {/* Sales Report Table */}
       <div className="mb-8">
-        
         <SalesReportView 
           salesData={sales} 
+          formatCurrency={formatCurrency}
           onEdit={(item) => openModal("update", item)}
           onDelete={(item) => openModal("delete", item)}
         />
       </div>
-
 
       {/* Modal */}
       <Modal
@@ -113,7 +110,6 @@ const SalesReport = () => {
       >
         {/* Modal content here */}
       </Modal>
-
     </div>
   );
 };

@@ -64,7 +64,7 @@ const AdminDashboard = () => {
         navigate("/admin/users");
         return null;
 
-      case "salesReport":
+      case "operationDashboard":
 
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
