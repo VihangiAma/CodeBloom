@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import SalesReport from "./SalesReport";
-import SalesReportAdd from "./SalesReportAdd";
-import SalesReportUpdate from "./SalesReportUpdate";
-import SalesReportDelete from "./SalesReportDelete";
 import AdminDashboard from "./AdminDashBord";
 import ProfilePage from "./ProfilePage";
 import SalesReportView from "./SalesReportView";
-
+import InvoiceApproORreject  from "./InvoiceApproORreject";
 import UsersReport from "./UserReport";
 
 export default function HomePage() {
@@ -32,11 +29,9 @@ export default function HomePage() {
   return (
     <div>
       <AdminDashboard />
+      {tab==="mk"&&<InvoiceApproORreject/>}
       {tab === "salesreport" && <SalesReport />}
       {tab==="User Report"&&<UsersReport/>}
-      {tab === "addreport" && <SalesReportAdd onAdd={handleAddReport} />}
-      {tab === "updatereport" && <SalesReportUpdate />}
-      {tab === "deletereport" && <SalesReportDelete />}
       {tab === "profile" && <ProfilePage />}
       {tab === "viewreport" && <SalesReportView />}
     </div>
