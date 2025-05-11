@@ -4,7 +4,7 @@ import SalesReport from "./SalesReport";
 import AdminDashboard from "./AdminDashBord";
 import ProfilePage from "./ProfilePage";
 import SalesReportView from "./SalesReportView";
-
+import InvoiceApproORreject  from "./InvoiceApproORreject";
 import UsersReport from "./UserReport";
 
 export default function HomePage() {
@@ -29,6 +29,7 @@ export default function HomePage() {
   return (
     <div>
       <AdminDashboard />
+      {tab==="mk"&&<InvoiceApproORreject/>}
       {tab === "salesreport" && <SalesReport />}
       {tab==="User Report"&&<UsersReport/>}
       {tab === "profile" && <ProfilePage />}
