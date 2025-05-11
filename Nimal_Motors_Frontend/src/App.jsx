@@ -35,7 +35,7 @@ import ApprovedAppointments from './components/SupervisorSection/Supervisors/App
 import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
-import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 import UserTable from './components/SupervisorSection/UserTable';
 
 
@@ -57,9 +57,6 @@ import AccountantDashboard  from './components/AccountantDashboard';
 import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
-// import SalesReportAdd from './assets/pages/SalesReportAdd';
-// import SalesReportUpdate from './assets/pages/SalesReportUpdate';
-// import SalesReportDelete from './assets/pages/SalesReportDelete';
 import SalesReportView from './assets/pages/SalesReportView';
 
 
@@ -137,9 +134,6 @@ function App() {
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
-        {/* <Route path="/add-sales-report" element={<SalesReportAdd onAdd={() => {}} />} />
-        <Route path="/update-sales-report" element={<SalesReportUpdate />} />
-        <Route path="/delete-sales-report" element={<SalesReportDelete />} /> */}
         <Route path="/view-sales-report" element={<SalesReportView />} />
 
         {/* Fallback */}
