@@ -8,9 +8,9 @@ import RevenueAndExpense from "./RevenueAndExpense";
 
 const SalesReport = () => {
   // State management
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [modalType, setModalType] = useState("");
+  // const [selectedItem, setSelectedItem] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   
@@ -114,8 +114,7 @@ const SalesReport = () => {
     setSelectedItem(null);
   };
 
-  // CRUD operations for sales
-  
+
   
 
   
@@ -185,20 +184,6 @@ const SalesReport = () => {
         />
       </div>
 
-      {/* Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title={
-          modalType === "add" ? "Add New Item" :
-          modalType === "update" ? "Update Item" :
-          "Delete Item"
-        }
-      >
-        
-        
-        
-      </Modal>
     </div>
   );
 };

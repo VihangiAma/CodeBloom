@@ -79,8 +79,10 @@ const AdminDashboard = () => {
           </div>
         );
       case "userManagement":
-        navigate("/admin/users"); 
-        return null; 
+
+        navigate("/admin/users");
+        return null;
+
       case "salesReport":
         return (
           <ReportSection
