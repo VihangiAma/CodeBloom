@@ -36,9 +36,15 @@ import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceIn
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+
+import CompletedServices from './components/SupervisorSection/CompletedServices';
+import NotificationBar from './components/SupervisorSection/Notification';
+import InvoicePage from './components/SupervisorSection/InvoicePage';
+import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
+import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
+import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
+import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import UserTable from './components/SupervisorSection/UserTable';
-
-
 
 
 // Section-specific Dashboards
@@ -57,6 +63,7 @@ import AccountantDashboard  from './components/AccountantDashboard';
 import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
+
 import OperationDashbord from './assets/pages/OperationDashbord';
 
 import SalesReportView from './assets/pages/SalesReportView';
@@ -103,7 +110,6 @@ function App() {
         <Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />
         
 
-
         {/* Supervisor Protected Routes */}
         
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
@@ -127,14 +133,13 @@ function App() {
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/body-shop-supervisor-dashboard" element={<SupervisorPrivateRoute><BodyShopSupervisorSection /></SupervisorPrivateRoute>} />
 
-
-
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
+
         <Route path="/view-sales-report" element={<SalesReportView />} />
 
         {/* Fallback */}

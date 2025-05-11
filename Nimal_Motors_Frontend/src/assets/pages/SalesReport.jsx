@@ -6,9 +6,9 @@ import Modal from "./Modal";
 
 const SalesReport = () => {
   // State management
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [modalType, setModalType] = useState("");
+  // const [selectedItem, setSelectedItem] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   
@@ -51,6 +51,7 @@ const SalesReport = () => {
     setIsModalOpen(false);
     setSelectedItem(null);
   };
+
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -99,6 +100,7 @@ const SalesReport = () => {
         />
       </div>
 
+
       {/* Modal */}
       <Modal
         isOpen={isModalOpen}
@@ -111,6 +113,7 @@ const SalesReport = () => {
       >
         {/* Modal content here */}
       </Modal>
+
     </div>
   );
 };

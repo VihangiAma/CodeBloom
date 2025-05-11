@@ -60,9 +60,12 @@ const AdminDashboard = () => {
           </div>
         );
       case "userManagement":
-        navigate("/admin/users"); 
-        return null; 
-      case "operationDashboard":
+
+        navigate("/admin/users");
+        return null;
+
+      case "salesReport":
+
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6">
