@@ -189,8 +189,9 @@ const BodyShopSupervisorSection = () => {
         <div>
         {/* Company Name and Logo */}
         <div className="flex items-center p-6 space-x-3">
-          {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
-          <h1 className="text-xl font-bold">Nimal Motors</h1>
+        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+          🚗 NIMAL MOTORS
+        </h1>
         </div>
         {/* Navigation Menu */}
         <div className="p-6">
