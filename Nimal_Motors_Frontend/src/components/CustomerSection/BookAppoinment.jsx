@@ -212,7 +212,6 @@ const BookAppointment = () => {
     vehicleType: "",
     date: "",
     time: "",
-    status: "Not Complete yet", // Default status
   });
 
   const timeSlots = [
@@ -265,11 +264,7 @@ const BookAppointment = () => {
       return false;
     }
     if (!phoneRegex.test(formData.contact.phone.trim())) {
-      Swal.fire(
-        "Invalid Input",
-        "Check the phone number. ",
-        "warning"
-      );
+      Swal.fire("Invalid Input", "Check the phone number. ", "warning");
       return false;
     }
     if (
