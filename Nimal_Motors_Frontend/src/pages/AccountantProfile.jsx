@@ -117,12 +117,12 @@ export default function AccountantProfile() {
             <FaUserCircle className="text-lg" />
             Profile
           </button> */}
-<button
+{/*<button
             onClick={() => setShowChangePasswordForm(true)}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-yellow-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaShieldAlt className="text-lg" /> Change Password
-          </button>
+          </button>*/}
 
           
           <button

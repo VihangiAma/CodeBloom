@@ -126,6 +126,7 @@ export default function Login() {
             </p>
           )}
 
+
           {isForgotPassword ? (
             <form onSubmit={handleForgotPasswordSubmit}>
               <div className="mb-4">
@@ -197,12 +198,13 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-black py-2 rounded font-semibold"
               >
                 Login
               </button>
             </form>
           )}
+
         </div>
       </div>
     </div>
