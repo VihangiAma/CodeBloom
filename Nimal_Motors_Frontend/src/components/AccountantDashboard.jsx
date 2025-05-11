@@ -25,6 +25,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+
+
 const COLORS = ["#ff0000", "#ff6666", "#cc0000", "#990000", "#660000"];
 
 const AccountantDashboard = () => {
@@ -32,6 +34,13 @@ const AccountantDashboard = () => {
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
   const [categorySummary, setCategorySummary] = useState([]);
   const [supplierSummary, setSupplierSummary] = useState([]);
+  const [approvedRepairs, setApprovedRepairs] = useState([]);
+
+  useEffect(() => {
+  axios.get("http://localhost:5001/api/repairs/approved") // Adjust API path as needed
+    .then((res) => setApprovedRepairs(res.data))
+    .catch((err) => console.error("Failed to fetch approved repairs", err));
+}, []);
 
   useEffect(() => {
     axios.get("http://localhost:5001/api/expenses/summary/monthly")
@@ -95,6 +104,44 @@ const AccountantDashboard = () => {
             </div>
           </div>
         </div>
+        {/* Approved Repairs for Invoicing - Moved Up */}
+<div className="bg-white p-6 rounded shadow mb-6">
+  <h3 className="text-xl font-semibold mb-4 text-black">Approved Repairs – Generate Invoice</h3>
+  {approvedRepairs.length === 0 ? (
+    <p className="text-gray-500 text-sm">No approved repairs available.</p>
+  ) : (
+    <table className="w-full text-sm border">
+      <thead className="bg-red-600 text-white">
+        <tr>
+          <th className="p-2">Customer</th>
+          <th className="p-2">Vehicle No</th>
+          <th className="p-2">Section</th>
+          <th className="p-2">Estimated Cost</th>
+          <th className="p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {approvedRepairs.map((repair, index) => (
+          <tr key={index} className="text-center border-t hover:bg-gray-100">
+            <td className="p-2">{repair.customerName}</td>
+            <td className="p-2">{repair.vehicleNo}</td>
+            <td className="p-2">{repair.section || "N/A"}</td>
+            <td className="p-2">Rs. {repair.totalCost?.toFixed(2) || "0.00"}</td>
+            <td className="p-2">
+              <button
+                onClick={() => navigate(`/generate-invoice/${repair._id}`)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+              >
+                Generate Invoice
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</div>
+
 
         {/* Monthly Expense Bar Chart */}
         <div className="bg-white p-6 rounded shadow mb-6">
@@ -145,6 +192,8 @@ const AccountantDashboard = () => {
             </tbody>
           </table>
         </div>
+
+
 
         {/* Back Button */}
         <div className="mt-6 text-right">
