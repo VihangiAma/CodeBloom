@@ -114,23 +114,11 @@ const SalesReport = () => {
     setSelectedItem(null);
   };
 
-  // CRUD operations for sales
-  // const handleAdd = (newItem) => {
-  //   setSales([...sales, newItem]);
-  //   closeModal();
-  // };
+  
 
-  // const handleUpdate = (updatedItem) => {
-  //   setSales(sales.map(item => 
-  //     item.id === updatedItem.id ? updatedItem : item
-  //   ));
-  //   closeModal();
-  // };
+  
 
-  // const handleDelete = (itemId) => {
-  //   setSales(sales.filter(item => item.id !== itemId));
-  //   closeModal();
-  // };
+  
 
   // Format currency
   const formatCurrency = (amount) => {
