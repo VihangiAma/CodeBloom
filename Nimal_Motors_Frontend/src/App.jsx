@@ -65,6 +65,7 @@ import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
 
 import SalesReportView from './assets/pages/SalesReportView';
+import GenerateInvoicePage from './components/GenerateInvoicePage ';
 
 
 // Protected Route Components
@@ -140,7 +141,8 @@ function App() {
         <Route path="/sales-report" element={<SalesReport />} />
 
         <Route path="/view-sales-report" element={<SalesReportView />} />
-
+        <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
+        <Route path="/generate-invoice/:repairId" element={<GenerateInvoicePage />} />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

@@ -21,7 +21,7 @@ import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
-import invoiceRoutes from "./routes/invoiceRoutes.js";
+import invoiceRoute from "./Routers/InvoiceRoutes.js";
 
 
 
@@ -69,7 +69,7 @@ app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/service-invoices", invoiceRoutes);
 app.use("/api/expenses", expenseRoutes); 
-app.use("/api/invoices", invoiceRoutes);
+app.use("/api/invoices", invoiceRoute);
 
 
 // ✅ Error Handling Middleware
