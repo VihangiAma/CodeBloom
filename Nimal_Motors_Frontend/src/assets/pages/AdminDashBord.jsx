@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SalesReport from "./SalesReport";
 import UsersReport from "./UserReport";
+import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
+import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
+import UserTable from "../../components/SupervisorSection/UserTable";
+
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -61,7 +65,9 @@ const AdminDashboard = () => {
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6 text-center">
               <p className="text-gray-600 text-xl mb-4">
-                Section Management page coming soon...
+                <AdminInvoiceView
+                  onClick={() => setActivePage("sectionManagement")}
+                />
               </p>
               <button
                 onClick={() => setActivePage("dashboard")}
@@ -73,8 +79,10 @@ const AdminDashboard = () => {
           </div>
         );
       case "userManagement":
+
         navigate("/admin/users");
         return null;
+
       case "salesReport":
         return (
           <ReportSection
@@ -187,7 +195,7 @@ const AdminDashboard = () => {
             </li>
             <li>
               <button
-                onClick={() => setActivePage("userManagement")}
+                onClick={() => navigate("/admin/users")}
                 className={`w-full text-left p-4 rounded-lg flex items-center transition ${
                   activePage === "userManagement" ? "bg-blue-700" : "hover:bg-blue-700"
                 }`}

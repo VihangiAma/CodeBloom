@@ -1,10 +1,13 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
+
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
-import RegisterPage from './pages/register/RegisterPage';
-import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+// import RegisterPage from './pages/register/RegisterPage';
+
+ import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
@@ -20,11 +23,20 @@ import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
-import SupervisorDashboard from './Components/SupervisorSection/SupervisorDashboard';
+
+
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
 import ReportPage from './Components/SupervisorSection/ReportPage';
 import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
+import CompletedServices from './components/SupervisorSection/CompletedServices';
+import NotificationBar from './components/SupervisorSection/Notification';
+import InvoicePage from './components/SupervisorSection/InvoicePage';
+import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
+import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
+import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
+import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import AddServiceForm from './Components/SupervisorSection/AddServiceForm';
+
 import CompletedServices from './components/SupervisorSection/CompletedServices';
 import NotificationBar from './components/SupervisorSection/Notification';
 import InvoicePage from './components/SupervisorSection/InvoicePage';
@@ -34,14 +46,11 @@ import Completedappoinments from './components/SupervisorSection/Supervisors/Com
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import UserTable from './components/SupervisorSection/UserTable';
 
+
 // Section-specific Dashboards
-import MechanicalDashboard from './Components/SupervisorSection/Supervisors/MechanicalDashboard';
-import ElectricalDashboard from './Components/SupervisorSection/Supervisors/ElectricalDashboard';
-import BodyShopDashboard from './Components/SupervisorSection/Supervisors/BodyShopDashboard';
-import ServiceDashboard from './Components/SupervisorSection/Supervisors/ServiceDashboard';
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
 import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
-import ElectricalSupervisorSection from './Components/SupervisorSection/ElectriaclSupervisorDashboard';
+import ElectricalSupervisorSection from './components/SupervisorSection/ElectriaclSupervisorDashboard';
 import BodyShopSupervisorSection from './Components/SupervisorSection/BodyShopSupervisorDashboard';
 import PremiumCustomerDashboard from './pages/premiumcustomer/PremiumCustomerDashboard'; 
 
@@ -50,10 +59,13 @@ import BookAppointment from './Components/CustomerSection/BookAppoinment';
 
 // Inventory and Sales Pages
 import InventoryDashboard from './components/InventoryDashboard';
-import AccountantDashboard  from './components/AccountantDashboard';    
+import AccountantDashboard  from './components/AccountantDashboard'; 
+import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
+
 import SalesReportView from './assets/pages/SalesReportView';
+
 
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
@@ -73,8 +85,9 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        {/* <Route path="/register" element={<RegisterPage />} /> */}
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
+
 
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
@@ -92,20 +105,28 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        <Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />
+        
 
         {/* Supervisor Protected Routes */}
-        <Route path="/dashboard" element={<SupervisorPrivateRoute><SupervisorDashboard /></SupervisorPrivateRoute>} />
+        
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
         <Route path="/progress" element={<SupervisorPrivateRoute><ProgressPage /></SupervisorPrivateRoute>} />
         <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />
-        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+         <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
+        <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
+        <Route path="/invoice/:id" element={<InvoicePage />} />
+        <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
+        <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
+        <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
 
+        <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
+       <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+
+        
         {/* Section-specific Dashboards */}
-        <Route path="/supervisor/mechanical" element={<SupervisorPrivateRoute><MechanicalDashboard /></SupervisorPrivateRoute>} />
-        <Route path="/supervisor/electrical" element={<SupervisorPrivateRoute><ElectricalDashboard /></SupervisorPrivateRoute>} />
-        <Route path="/supervisor/body-shop" element={<SupervisorPrivateRoute><BodyShopDashboard /></SupervisorPrivateRoute>} />
-        <Route path="/supervisor/service" element={<SupervisorPrivateRoute><ServiceDashboard /></SupervisorPrivateRoute>} />
-        <Route path="/service-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
+      
+        <Route path="/service-supervisor-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
         <Route path="/mechanical-supervisor-dashboard" element={<SupervisorPrivateRoute><MechanicalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/body-shop-supervisor-dashboard" element={<SupervisorPrivateRoute><BodyShopSupervisorSection /></SupervisorPrivateRoute>} />
@@ -113,8 +134,11 @@ function App() {
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
+        
+        <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
+
         <Route path="/view-sales-report" element={<SalesReportView />} />
 
         {/* Fallback */}
