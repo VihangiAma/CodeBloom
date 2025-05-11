@@ -212,6 +212,7 @@ const BookAppointment = () => {
     vehicleType: "",
     date: "",
     time: "",
+    status: "Not Complete yet", // Default status
   });
 
   const timeSlots = [
