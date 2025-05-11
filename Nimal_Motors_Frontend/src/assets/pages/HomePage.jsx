@@ -29,8 +29,11 @@ export default function HomePage() {
   return (
     <div>
       <AdminDashboard />
+      {tab==="mk"&&<InvoiceApproORreject/>}
       {tab === "salesreport" && <SalesReport />}
-      {tab==="User Report"&&<UsersReport/>}
+
+      {tab === "User Report" && <UsersReport/>}
+
       {tab === "profile" && <ProfilePage />}
       {tab === "viewreport" && <SalesReportView />}
     </div>

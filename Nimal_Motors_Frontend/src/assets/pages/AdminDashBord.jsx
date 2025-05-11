@@ -6,6 +6,7 @@ import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
 import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
 import UserTable from "../../components/SupervisorSection/UserTable";
 
+
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
     <div
@@ -77,26 +78,11 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-        case "userManagement":
-          navigate("/admin/users"); 
-          return null; 
-
       case "userManagement":
-        return (
-          <div className="p-8 min-h-[calc(100vh-8rem)]">
-            <div className="bg-white rounded-lg shadow p-6 text-center">
-              <p className="text-gray-600 text-xl mb-4">
-                User Management page coming soon...
-              </p>
-              <button
-                onClick={() => setActivePage("dashboard")}
-                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded transition"
-              >
-                Go Back
-              </button>
-            </div>
-          </div>
-        );
+
+        navigate("/admin/users");
+        return null;
+
       case "salesReport":
         return (
           <ReportSection
@@ -128,12 +114,13 @@ const AdminDashboard = () => {
               emoji="📦"
               onClick={() => setActivePage("sectionManagement")}
             />
-             <DashboardCard
+            <DashboardCard
               title="User Management"
               description="Manage system users."
               color="bg-green-500"
               emoji="👥"
- onClick={() => navigate("/admin/users")}             />
+              onClick={() => navigate("/admin/users")}
+            />
             <DashboardCard
               title="Financial Report"
               description="View and analyze sales data."
@@ -163,11 +150,6 @@ const AdminDashboard = () => {
       >
         {/* Admin Profile */}
         <div className="p-4 flex items-center border-b border-blue-700">
-         {/* <img
-            src="/admin.png"
-            alt="Admin"
-            className="w-10 h-10 rounded-full"
-          />*/}
           {sidebarOpen && (
             <div className="ml-3">
               <p className="font-medium">Admin User</p>
@@ -213,7 +195,7 @@ const AdminDashboard = () => {
             </li>
             <li>
               <button
-                onClick={() => setActivePage("userManagement")}
+                onClick={() => navigate("/admin/users")}
                 className={`w-full text-left p-4 rounded-lg flex items-center transition ${
                   activePage === "userManagement" ? "bg-blue-700" : "hover:bg-blue-700"
                 }`}
