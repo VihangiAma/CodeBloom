@@ -62,14 +62,31 @@ export default function ElectricalSupervisor() {
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const saveProfile = async () => {
-    setIsEditing(false);
-    try {
-      await axios.post("http://localhost:5001/api/user", profile);
-    } catch (err) {
-      console.error("Error updating user data", err);
-    }
-  };
+   const saveProfile = async () => {
+  setIsEditing(false);
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    await axios.put(
+      "http://localhost:5001/api/user/me",
+      {
+        fullName: profile.fullName,
+        email: profile.email,
+        username: profile.username,
+        phoneNumber: profile.phoneNumber,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    alert("Profile updated successfully!");
+  } catch (err) {
+    console.error("Error updating user data", err);
+    alert("Failed to update profile.");
+  }
+};
 
   const handleSignOut = () => navigate("/login");
 

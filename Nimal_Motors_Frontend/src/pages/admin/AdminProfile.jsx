@@ -3,12 +3,10 @@ import axios from "axios";
 import {
   FaUserCircle,
   FaSignOutAlt,
+  FaShieldAlt,
   FaFacebook,
   FaTwitter,
   FaInstagram,
-  FaShieldAlt,
-  FaUserPlus,
-  FaUsers,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -37,7 +35,7 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "admin",
   });
-
+  
   const [isEditing, setIsEditing] = useState(false);
   const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [newUser, setNewUser] = useState({
@@ -48,6 +46,9 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "",
   });
+  
+  // Profile edit form state
+  const [editUser, setEditUser] = useState(null);
 
   // Password change form state
   const [changePassword, setChangePassword] = useState({
@@ -64,9 +65,9 @@ export default function AdminProfile() {
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNewUserChange = (e) => {
+  const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setNewUser((prev) => ({ ...prev, [name]: value }));
+    setEditUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const toggleAddUserForm = () => setShowAddUserForm((prev) => !prev);
@@ -76,19 +77,32 @@ export default function AdminProfile() {
     navigate("/login");
   };
 
-  const saveProfile = async () => {
-    setIsEditing(false);
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+   const saveProfile = async () => {
+  setIsEditing(false);
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-      await axios.post("http://localhost:5001/api/user", profile, {
+    await axios.put(
+      "http://localhost:5001/api/user/me",
+      {
+        fullName: profile.fullName,
+        email: profile.email,
+        username: profile.username,
+        phoneNumber: profile.phoneNumber,
+      },
+      {
         headers: { Authorization: `Bearer ${token}` },
-      });
-    } catch (err) {
-      console.error("Error updating user data", err);
-    }
-  };
+      }
+    );
+
+    alert("Profile updated successfully!");
+  } catch (err) {
+    console.error("Error updating user data", err);
+    alert("Failed to update profile.");
+  }
+};
+
 
   const fetchProfile = async () => {
     try {
@@ -179,35 +193,42 @@ export default function AdminProfile() {
     </p>
   );
 
-  const AddUserForm = () => (
-    <div className="mt-4 p-4 bg-gray-800 rounded space-y-2 border border-gray-600">
-      <h4 className="font-semibold text-white mb-2">Add New User</h4>
-      {["userId", "fullName", "email", "phoneNumber", "username"].map(
-        (field) => (
-          <input
-            key={field}
-            name={field}
-            value={newUser[field]}
-            onChange={handleNewUserChange}
-            placeholder={field}
-            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 placeholder-gray-400"
-          />
-        )
-      )}
-      <select
-        name="type"
-        value={newUser.type}
-        onChange={handleNewUserChange}
-        className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-      >
-        <option value="">Select user type</option>
-        <option value="Bodyshop Supervisor">Bodyshop Supervisor</option>
-        <option value="Mechanical Supervisor">Mechanical Supervisor</option>
-        <option value="Electrical Supervisor">Electrical Supervisor</option>
-        <option value="Service Supervisor">Service Supervisor</option>
-        <option value="Accountant">Accountant</option>
-        <option value="Admin">Admin</option>
-      </select>
+  // ------------------ Profile Edit Modal ------------------
+  const ProfileEditModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+      <div className="bg-gray-800 p-8 rounded-lg w-[500px]">
+        <h3 className="text-lg font-bold mb-4 text-white">Edit Profile</h3>
+
+        <div className="grid grid-cols-2 gap-4 items-center">
+          {["fullName", "email", "phoneNumber", "username"].map((field) => (
+            <React.Fragment key={field}>
+              <label className="text-white">{field}</label>
+              <input
+                type="text"
+                name={field}
+                value={editUser[field]}
+                onChange={handleEditChange}
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
+            </React.Fragment>
+          ))}
+        </div>
+
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            onClick={() => setEditUser(null)}
+            className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={saveProfile}
+            className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
+          >
+            Save
+          </button>
+        </div>
+      </div>
     </div>
   );
 
@@ -274,10 +295,7 @@ export default function AdminProfile() {
               Hi, I’m {profile.fullName || "—"}. As the Admin at Nimal Motors I
               oversee the company’s key support functions—from user management
               and system access control to compliance reporting and process
-              optimisation. With a decade of experience in automotive operations
-              and administration, I bridge the gap between technical teams and
-              management, ensuring every department gets the resources and data
-              they need to perform at their best.
+              optimisation...
             </p>
           </section>
 
@@ -311,39 +329,25 @@ export default function AdminProfile() {
                 </div>
               </div>
             ) : (
-              <>
-                <div>
-                  <label className="font-semibold">Full Name:</label>
-                  <p className="ml-2 text-gray-300">{profile.fullName || "—"}</p>
-                </div>
-                <div>
-                  <label className="font-semibold">Email:</label>
-                  <p className="ml-2 text-gray-300">{profile.email || "—"}</p>
-                </div>
-                <div>
-                  <label className="font-semibold">Username:</label>
-                  <p className="ml-2 text-gray-300">{profile.username || "—"}</p>
-                </div>
-                <div>
-                  <label className="font-semibold">Phone:</label>
-                  <p className="ml-2 text-gray-300">{profile.phoneNumber || "—"}</p>
-                </div>
-
-                {/* Optional social media icons */}
+              <div>
+                <ReadOnlyField label="Full Name" value={profile.fullName} />
+                <ReadOnlyField label="Email" value={profile.email} />
+                <ReadOnlyField label="Username" value={profile.username} />
+                <ReadOnlyField label="Phone" value={profile.phoneNumber} />
+                
                 <div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
                   <FaInstagram className="text-pink-500" />
                 </div>
 
-                {/* Edit button */}
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="mt-4 px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+                  className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
                 >
                   Edit Profile
                 </button>
-              </>
+              </div>
             )}
           </section>
         </div>
@@ -351,42 +355,46 @@ export default function AdminProfile() {
         {showChangePasswordForm && (
           <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-            <div className="space-y-3 relative">
-              {["oldPassword", "newPassword", "confirmPassword"].map((field) => (
-                <div key={field} className="relative">
-                  <label className="font-medium capitalize">
-                    {field.replace(/([A-Z])/g, " $1")}
-                  </label>
-                  <input
-                    name={field}
-                    type="password"
-                    value={changePassword[field]}
-                    onChange={(e) =>
-                      setChangePassword({
-                        ...changePassword,
-                        [field]: e.target.value,
-                      })
-                    }
-                    className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-                    placeholder={`Enter your ${field}`}
-                  />
-                </div>
-              ))}
+            <div className="space-y-4">
+              <input
+                type="password"
+                name="oldPassword"
+                value={changePassword.oldPassword}
+                onChange={(e) => setChangePassword({ ...changePassword, oldPassword: e.target.value })}
+                placeholder="Old Password"
+                className="w-full px-4 py-2 bg-gray-800 rounded text-white"
+              />
+              <input
+                type="password"
+                name="newPassword"
+                value={changePassword.newPassword}
+                onChange={(e) => setChangePassword({ ...changePassword, newPassword: e.target.value })}
+                placeholder="New Password"
+                className="w-full px-4 py-2 bg-gray-800 rounded text-white"
+              />
+              <input
+                type="password"
+                name="confirmPassword"
+                value={changePassword.confirmPassword}
+                onChange={(e) => setChangePassword({ ...changePassword, confirmPassword: e.target.value })}
+                placeholder="Confirm Password"
+                className="w-full px-4 py-2 bg-gray-800 rounded text-white"
+              />
               {passwordError && (
-                <p className="text-red-400 text-sm mt-2">{passwordError}</p>
+                <p className="text-red-500 text-sm">{passwordError}</p>
               )}
-              <div className="space-x-2 mt-4">
-                <button
-                  onClick={handleChangePassword}
-                  className="px-4 py-2 bg-yellow-500 text-black rounded"
-                >
-                  Save Password
-                </button>
+              <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setShowChangePasswordForm(false)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded"
+                  className="px-4 py-2 bg-gray-500 rounded text-white"
                 >
                   Cancel
+                </button>
+                <button
+                  onClick={handleChangePassword}
+                  className="px-4 py-2 bg-blue-500 rounded text-white"
+                >
+                  Change Password
                 </button>
               </div>
             </div>
