@@ -17,8 +17,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
     serviceID: initialData.displayID || "",
   customerName: initialData.customerName || "",
   vehicleNumber: initialData.vehicleNumber || "",
-  vehicleType: initialData.vehicleType || "",
-  date: initialData.serviceDate || ""
+  vehicleType: initialData.vehicleType || ""
   });
   const [description, setDescription] = useState("");
   const [adminRemarks, setAdminRemarks] = useState("");
@@ -129,7 +128,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
           className="p-2 border"
           required
         />
-        <input
+        {/* <input
           placeholder="Date"
           value={customer.date}
           onChange={(e) =>
@@ -137,7 +136,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
           }
           className="p-2 border"
           required
-        />
+        /> */}
       </div>
 
       <textarea
