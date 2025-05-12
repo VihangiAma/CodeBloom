@@ -33,6 +33,7 @@ import Completedappoinments from './components/SupervisorSection/Supervisors/Com
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 import UserTable from './components/SupervisorSection/UserTable';
+import RepairInvoiceSupervisorReview from './components/SupervisorSection/RepairInvoiveSupervisorReview';
 
 // Section-specific Dashboards
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
@@ -107,7 +108,7 @@ function App() {
         <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
         <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
         <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
-
+        <Route path="/repair-invoice-supervisor-review" element={<SupervisorPrivateRoute><RepairInvoiceSupervisorReview /></SupervisorPrivateRoute>} />
         
         {/* Section-specific Dashboards */}
       
