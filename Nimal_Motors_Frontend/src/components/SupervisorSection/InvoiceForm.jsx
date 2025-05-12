@@ -61,10 +61,10 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (section !== "service" && items.length === 0) {
-      alert("Add at least one item");
-      return;
-    }
+    // if (section !== "service" && items.length === 0) {
+    //   alert("Add at least one item");
+    //   return;
+    // }
 
     const payload = {
       ...customer,
@@ -76,15 +76,15 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
       section,
     };
 
-    fetch("http://localhost:5001/api/invoices", {
+    fetch("http://localhost:5001/api/invoice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Invoice submitted successfully");
-      });
+    .then((res) => res.json())
+    .then((_data) => {
+      alert("Invoice submitted successfully");
+    });
   };
 
   return (
@@ -128,15 +128,6 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
           className="p-2 border"
           required
         />
-        {/* <input
-          placeholder="Date"
-          value={customer.date}
-          onChange={(e) =>
-            setCustomer({ ...customer, date: e.target.value })
-          }
-          className="p-2 border"
-          required
-        /> */}
       </div>
 
       <textarea
@@ -147,6 +138,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
       />
 
       {/* Service section */}
+      <h4 className="text-xl font-bold">Services</h4>
       <div className="grid grid-cols-2 gap-4">
         {Object.entries(services).map(([key, value]) => (
           <div key={key} className="flex items-center space-x-2">
@@ -181,9 +173,9 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
       <select
         value={section}
         onChange={(e) => setSection(e.target.value)}
-        className="p-2 border"
+        className="p-2 border text-xl font-bold"
       >
-        <option value="mechanical">Mechanical</option>
+        <option value="mechanical" >Mechanical</option>
         <option value="electrical">Electrical</option>
         <option value="bodyshop">Bodyshop</option>
       </select>
