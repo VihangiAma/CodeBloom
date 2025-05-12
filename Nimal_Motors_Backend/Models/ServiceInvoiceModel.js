@@ -5,7 +5,6 @@ const serviceInvoiceSchema = new mongoose.Schema({
   customerName: { type: String, required: true },
   vehicleNo: { type: String, required: true },
   vehicleType: { type: String, required: true },
-  contact: { type: String, required: true },
   description: { type: String },
   section: {String},
   services: {
