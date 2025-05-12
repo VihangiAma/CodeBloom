@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 // Routes
-router.post('/', createInvoice);
+router.post('/api/invoice', createInvoice);
 router.get('/', getAllInvoices);
 router.get('/:id', getInvoiceById);
 router.put('/:id/approve', updateInvoiceApproval);
