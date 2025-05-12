@@ -90,7 +90,7 @@ const InvoiceForm = ({ userRole }) => {
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4">
-      <h2 className="text-xl font-bold">Create Invoice</h2>
+      <h2 className="text-xl font-bold text-center">Invoice</h2>
 
       <div className="grid grid-cols-2 gap-4">
         <input
