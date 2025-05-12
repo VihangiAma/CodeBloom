@@ -31,7 +31,8 @@ import Completedappoinments from './components/SupervisorSection/Supervisors/Com
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 import UserTable from './components/SupervisorSection/UserTable';
-import RepairInvoiceSupervisorReview from './components/SupervisorSection/RepairInvoiveSupervisorReview';
+import InvoiceForm from './components/SupervisorSection/InvoiceForm';
+
 
 // Section-specific Dashboards
 import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
@@ -102,10 +103,11 @@ function App() {
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
-        <Route path="/repair-invoice-supervisor-review" element={<SupervisorPrivateRoute><RepairInvoiceSupervisorReview /></SupervisorPrivateRoute>} />
         <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
         <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
-        
+        <Route path="/invoice-form" element={<SupervisorPrivateRoute><InvoiceForm/></SupervisorPrivateRoute>}/>
+       
+
         
         {/* Section-specific Dashboards */}
       
