@@ -9,6 +9,7 @@ import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
 import CompletedServices from './CompletedServices';
 
+
 const BodyShopSupervisorSection = () => {
   const navigate = useNavigate();
 
