@@ -6,49 +6,57 @@ export const createInvoice = async (req, res) => {
     const {
       serviceID,
       customerName,
-      vehicleNumber,
+      vehicleNumber: vehicleNo,
       vehicleType,
       description,
+      section,
       services,
       items,
+      repairCost,
       submittedBy,
       adminRemarks
     } = req.body;
 
-    // Calculate total cost from services and items
-    let totalCost = 0;
+    // Calculate total cost from repairCost + services + items
+    let totalCost = parseFloat(repairCost) || 0;
 
     if (services) {
       for (const key in services) {
         if (services[key].selected) {
-          totalCost += services[key].cost || 0;
+          totalCost += parseFloat(services[key].cost) || 0;
         }
       }
     }
 
     if (items) {
       for (const item of items) {
-        totalCost += (item.qty || 0) * (item.cost || 0);
+        const cost = parseFloat(item.cost) || 0;
+        const qty = parseInt(item.qty) || 0;
+        totalCost += qty * cost;
       }
     }
 
     const newInvoice = new ServiceInvoice({
       serviceID,
       customerName,
-      vehicleNumber,
+      vehicleNumber: vehicleNo,
       vehicleType,
-      description,
-      services,
-      items,
+      description: description || "",
+      section: section || "",
+      services: services || {},             // Default empty object
+      items: Array.isArray(items) ? items : [],
+      repairCost,               // Assuming service cost is part of total cost
       totalCost,
       submittedBy,
       adminRemarks
     });
 
-    await newInvoice.save();
-    res.status(201).json(newInvoice);
+    await invoice.save();
+
+    res.status(201).json({ message: "Invoice created successfully", invoice });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to create invoice', error: error.message });
+    console.error("Error creating invoice:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
 
