@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 // Assuming you're using some authentication context or prop for the user role
-const InvoiceForm = ({ userRole }) => {
+const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
   const [section, setSection] = useState("mechanical");
   const [services, setServices] = useState({
     fullService: { selected: false, cost: 0 },
@@ -14,11 +14,11 @@ const InvoiceForm = ({ userRole }) => {
   const [stockData, setStockData] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
   const [customer, setCustomer] = useState({
-    serviceID: "",
-    customerName: "",
-    vehicleNumber: "",
-    vehicleType: "",
-    contactPhone: "",
+    serviceID: initialData.displayID || "",
+  customerName: initialData.customerName || "",
+  vehicleNumber: initialData.vehicleNumber || "",
+  vehicleType: initialData.vehicleType || "",
+  date: initialData.serviceDate || ""
   });
   const [description, setDescription] = useState("");
   const [adminRemarks, setAdminRemarks] = useState("");
@@ -130,10 +130,10 @@ const InvoiceForm = ({ userRole }) => {
           required
         />
         <input
-          placeholder="Contact Phone"
-          value={customer.contactPhone}
+          placeholder="Date"
+          value={customer.date}
           onChange={(e) =>
-            setCustomer({ ...customer, contactPhone: e.target.value })
+            setCustomer({ ...customer, date: e.target.value })
           }
           className="p-2 border"
           required
