@@ -15,11 +15,12 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
   const [totalCost, setTotalCost] = useState(0);
   const [customer, setCustomer] = useState({
     serviceID: initialData.displayID || "",
-  customerName: initialData.customerName || "",
-  vehicleNumber: initialData.vehicleNumber || "",
-  vehicleType: initialData.vehicleType || ""
+    customerName: initialData.customerName || "",
+    vehicleNumber: initialData.vehicleNumber || "",
+    vehicleType: initialData.vehicleType || "",
   });
   const [description, setDescription] = useState("");
+  const [repairCost, setRepairCost] = useState(0);
   const [adminRemarks, setAdminRemarks] = useState("");
 
   useEffect(() => {
@@ -28,21 +29,41 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
       .then((data) => setStockData(data));
   }, []);
 
+  // useEffect(() => {
+  //   let serviceCost = Object.values(services).reduce(
+  //     (sum, svc) => (svc.selected ? sum + Number(svc.cost || 0) : sum),
+  //     0
+  //   );
+  //   let itemCost = items.reduce((sum, item) => sum + item.qty * item.pricePerUnit, 0);
+  //   setTotalCost(serviceCost + itemCost);
+  // }, [services, items]);
+
+
   useEffect(() => {
+    // Calculate service cost (from selected services)
     let serviceCost = Object.values(services).reduce(
       (sum, svc) => (svc.selected ? sum + Number(svc.cost || 0) : sum),
       0
     );
-    let itemCost = items.reduce((sum, item) => sum + item.qty * item.cost, 0);
-    setTotalCost(serviceCost + itemCost);
-  }, [services, items]);
+  
+    // Calculate item cost (from items)
+    let itemCost = items.reduce(
+      (sum, item) => sum + item.qty * item.pricePerUnit,
+      0
+    );
+  
+    // Include repair cost (if any)
+    let total = serviceCost + itemCost + Number(repairCost || 0);
+    setTotalCost(total);
+  }, [services, items, repairCost]); // Add repairCost to the dependency array
+  
 
   const handleItemChange = (index, field, value) => {
     const updated = [...items];
     if (field === "item") {
       const selected = stockData.find((i) => i.itemName === value);
       updated[index][field] = value;
-      updated[index].cost = selected ? selected.price : 0;
+      updated[index].pricePerUnit = selected ? selected.price : 0;
     } else {
       updated[index][field] = value;
     }
@@ -71,6 +92,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
       description,
       services: section === "service" ? services : {},
       items: section !== "service" ? items : [],
+      repairCost: section === "service" ? totalCost : 0,
       totalCost,
       adminRemarks,
       section,
@@ -81,10 +103,10 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
-    .then((res) => res.json())
-    .then((_data) => {
-      alert("Invoice submitted successfully");
-    });
+      .then((res) => res.json())
+      .then((_data) => {
+        alert("Invoice submitted successfully");
+      });
   };
 
   return (
@@ -175,7 +197,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
         onChange={(e) => setSection(e.target.value)}
         className="p-2 border text-xl font-bold"
       >
-        <option value="mechanical" >Mechanical</option>
+        <option value="mechanical">Mechanical</option>
         <option value="electrical">Electrical</option>
         <option value="bodyshop">Bodyshop</option>
       </select>
@@ -194,7 +216,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
             <table className="min-w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="p-2 border">Section</th>
+                  <th className="p-2 border">Description</th>
                   <th className="p-2 border">Category</th>
                   <th className="p-2 border">Item</th>
                   <th className="p-2 border">Qty</th>
@@ -257,7 +279,24 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
                         className="w-16 p-1 border"
                       />
                     </td>
-                    <td className="p-2 border">{item.cost}</td>
+                    <td className="p-2 border">
+                      <select
+                        value={item.pricePerUnit}
+                        onChange={(e) =>
+                          handleItemChange(index, "price", e.target.value)
+                        }
+                        className="p-1 border"
+                      >
+                        <option value="">Cost</option>
+                        {stockData
+                          .filter((i) => i.category === item.category)
+                          .map((i, k) => (
+                            <option key={k} value={i.pricePerUnit}>
+                              {i.pricePerUnit}
+                            </option>
+                          ))}
+                      </select>
+                    </td>
                     <td className="p-2 border">
                       <button
                         type="button"
@@ -284,6 +323,18 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
           className="w-full p-2 border"
         />
       )}
+      {/* Repair Cost field */}
+      <h5 className="text-xl">Repair Cost: Rs.</h5>
+      <div className=" flex justify-between"> 
+        <input
+          type="number"
+          placeholder="Repair Cost"
+          value={repairCost}
+          onChange={(e) => setRepairCost(e.target.value)}
+          className="p-2 border"
+          required
+        />
+      </div>
 
       <div>Total Cost: Rs. {totalCost}</div>
       <div className="flex justify-between">
