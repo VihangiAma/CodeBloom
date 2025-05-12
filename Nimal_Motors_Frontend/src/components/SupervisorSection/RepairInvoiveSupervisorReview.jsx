@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const InvoiceForm = () => {
+// Assuming you're using some authentication context or prop for the user role
+const InvoiceForm = ({ userRole }) => {
   const [section, setSection] = useState("mechanical");
   const [services, setServices] = useState({
     fullService: { selected: false, cost: 0 },
@@ -161,12 +162,16 @@ const InvoiceForm = () => {
         </div>
       )}
 
-      <input placeholder="Admin Remarks" value={adminRemarks} onChange={(e) => setAdminRemarks(e.target.value)} className="w-full p-2 border" />
+      {/* Admin Remarks field, visible only to admins */}
+      {userRole === "admin" && (
+        <input placeholder="Admin Remarks" value={adminRemarks} onChange={(e) => setAdminRemarks(e.target.value)} className="w-full p-2 border" />
+      )}
 
       <div>Total Cost: Rs. {totalCost}</div>
-
+<div className="flex justify-between">
       <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Submit Invoice</button>
       <button type="button" onClick={() => setSection("mechanical")} className="bg-red-600 text-white px-4 py-2 rounded">Cancel</button>
+    </div>
     </form>
   );
 };
