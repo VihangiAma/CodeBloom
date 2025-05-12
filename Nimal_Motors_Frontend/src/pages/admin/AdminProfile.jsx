@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 // ------------------ JWT Decoding ------------------
 const decodeJWT = (token) => {
   const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const base64 = base64Url.replace(/-/g, "+").replace(/\_/g, "/");
   const jsonPayload = decodeURIComponent(
     atob(base64)
       .split("")
@@ -35,7 +35,7 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "admin",
   });
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [newUser, setNewUser] = useState({
@@ -46,7 +46,7 @@ export default function AdminProfile() {
     phoneNumber: "",
     type: "",
   });
-  
+
   // Profile edit form state
   const [editUser, setEditUser] = useState(null);
 
@@ -56,7 +56,6 @@ export default function AdminProfile() {
     newPassword: "",
     confirmPassword: "",
   });
-  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
   // ------------------ Handlers ------------------
@@ -77,32 +76,31 @@ export default function AdminProfile() {
     navigate("/login");
   };
 
-   const saveProfile = async () => {
-  setIsEditing(false);
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  const saveProfile = async () => {
+    setIsEditing(false);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-    await axios.put(
-      "http://localhost:5001/api/user/me",
-      {
-        fullName: profile.fullName,
-        email: profile.email,
-        username: profile.username,
-        phoneNumber: profile.phoneNumber,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+      await axios.put(
+        "http://localhost:5001/api/user/me",
+        {
+          fullName: profile.fullName,
+          email: profile.email,
+          username: profile.username,
+          phoneNumber: profile.phoneNumber,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    alert("Profile updated successfully!");
-  } catch (err) {
-    console.error("Error updating user data", err);
-    alert("Failed to update profile.");
-  }
-};
-
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error("Error updating user data", err);
+      alert("Failed to update profile.");
+    }
+  };
 
   const fetchProfile = async () => {
     try {
@@ -146,7 +144,6 @@ export default function AdminProfile() {
       );
 
       alert("Password changed successfully!");
-      setShowChangePasswordForm(false); // Close the form on success
     } catch (err) {
       console.error("Error changing password", err);
       setPasswordError("Failed to change password.");
@@ -193,67 +190,19 @@ export default function AdminProfile() {
     </p>
   );
 
-  // ------------------ Profile Edit Modal ------------------
-  const ProfileEditModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-      <div className="bg-gray-800 p-8 rounded-lg w-[500px]">
-        <h3 className="text-lg font-bold mb-4 text-white">Edit Profile</h3>
-
-        <div className="grid grid-cols-2 gap-4 items-center">
-          {["fullName", "email", "phoneNumber", "username"].map((field) => (
-            <React.Fragment key={field}>
-              <label className="text-white">{field}</label>
-              <input
-                type="text"
-                name={field}
-                value={editUser[field]}
-                onChange={handleEditChange}
-                className="px-3 py-2 rounded bg-gray-700 text-white"
-              />
-            </React.Fragment>
-          ))}
-        </div>
-
-        <div className="flex justify-end gap-3 mt-6">
-          <button
-            onClick={() => setEditUser(null)}
-            className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={saveProfile}
-            className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   // ------------------ Main Render ------------------
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
-          🚗 NIMAL MOTORS
-        </h1>
+        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🚗 NIMAL MOTORS </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
-          <button
-            onClick={() => setShowChangePasswordForm(true)}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-yellow-400 hover:bg-gray-700 transition font-semibold"
-          >
-            <FaShieldAlt className="text-lg" /> Change Password
-          </button>
           <button
             onClick={() => navigate("/admin-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
-            <FaUserCircle className="text-lg" />
-            Dashboard
+            <FaUserCircle className="text-lg" /> Dashboard
           </button>
           <button
             onClick={handleSignOut}
@@ -329,77 +278,81 @@ export default function AdminProfile() {
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="space-y-3 text-sm">
                 <ReadOnlyField label="Full Name" value={profile.fullName} />
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
-                <ReadOnlyField label="Phone" value={profile.phoneNumber} />
-                
-                <div className="flex items-center space-x-3 mt-2">
+                <ReadOnlyField label="Phone Number" value={profile.phoneNumber} />
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                  Edit Profile
+                </button>
+<div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
                   <FaInstagram className="text-pink-500" />
                 </div>
 
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
-                >
-                  Edit Profile
-                </button>
               </div>
+            )}
+
+            {/* Change Password Form  */}
+            {isEditing && (
+              <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+                <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                <div className="space-y-4 text-sm">
+                  <input
+                    type="password"
+                    placeholder="Old Password"
+                    className="w-full p-2 bg-gray-800 rounded text-white"
+                    value={changePassword.oldPassword}
+                    onChange={(e) =>
+                      setChangePassword({
+                        ...changePassword,
+                        oldPassword: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="password"
+                    placeholder="New Password"
+                    className="w-full p-2 bg-gray-800 rounded text-white"
+                    value={changePassword.newPassword}
+                    onChange={(e) =>
+                      setChangePassword({
+                        ...changePassword,
+                        newPassword: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="password"
+                    placeholder="Confirm New Password"
+                    className="w-full p-2 bg-gray-800 rounded text-white"
+                    value={changePassword.confirmPassword}
+                    onChange={(e) =>
+                      setChangePassword({
+                        ...changePassword,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    onClick={handleChangePassword}
+                    className="w-full px-4 py-2 bg-green-500 text-white rounded mt-4"
+                  >
+                    Change Password
+                  </button>
+                  {passwordError && (
+                    <p className="text-red-500 text-xs mt-2">{passwordError}</p>
+                  )}
+                </div>
+              </section>
             )}
           </section>
         </div>
-
-        {showChangePasswordForm && (
-          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-            <div className="space-y-4">
-              <input
-                type="password"
-                name="oldPassword"
-                value={changePassword.oldPassword}
-                onChange={(e) => setChangePassword({ ...changePassword, oldPassword: e.target.value })}
-                placeholder="Old Password"
-                className="w-full px-4 py-2 bg-gray-800 rounded text-white"
-              />
-              <input
-                type="password"
-                name="newPassword"
-                value={changePassword.newPassword}
-                onChange={(e) => setChangePassword({ ...changePassword, newPassword: e.target.value })}
-                placeholder="New Password"
-                className="w-full px-4 py-2 bg-gray-800 rounded text-white"
-              />
-              <input
-                type="password"
-                name="confirmPassword"
-                value={changePassword.confirmPassword}
-                onChange={(e) => setChangePassword({ ...changePassword, confirmPassword: e.target.value })}
-                placeholder="Confirm Password"
-                className="w-full px-4 py-2 bg-gray-800 rounded text-white"
-              />
-              {passwordError && (
-                <p className="text-red-500 text-sm">{passwordError}</p>
-              )}
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setShowChangePasswordForm(false)}
-                  className="px-4 py-2 bg-gray-500 rounded text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleChangePassword}
-                  className="px-4 py-2 bg-blue-500 rounded text-white"
-                >
-                  Change Password
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
       </main>
     </div>
   );
