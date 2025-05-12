@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ServiceInvoice from "./ServiceInvoice";
+import InvoiceForm from "../InvoiceForm";
+
 
 const Completedappoinments = () => {
   const [invoices, setInvoices] = useState([]);
@@ -100,7 +101,7 @@ const Completedappoinments = () => {
 
       {showInvoice && selectedInvoice && (
         <div className="mt-6 border p-4 bg-gray-50 rounded">
-          <ServiceInvoice
+          <InvoiceForm
             initialData={selectedInvoice}
             onSubmit={handleSubmitInvoice}
             onCancel={handleCancelInvoice}
