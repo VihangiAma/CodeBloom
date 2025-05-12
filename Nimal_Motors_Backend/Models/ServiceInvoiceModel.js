@@ -6,13 +6,28 @@ const serviceInvoiceSchema = new mongoose.Schema({
   vehicleNo: { type: String, required: true },
   vehicleType: { type: String, required: true },
   description: { type: String },
-  section: {String},
+  section: {type: String},
   services: {
-    fullService: { selected: Boolean, cost: Number },
-    bodyWash: { selected: Boolean, cost: Number },
-    oilChange: { selected: Boolean, cost: Number },
-    underbodyWash: { selected: Boolean, cost: Number },
-    interiorVacuum: { selected: Boolean, cost: Number },
+    fullService: {
+      selected: { type: Boolean, default: false },
+      cost: { type: Number, default: 0 }
+    },
+    bodyWash: {
+      selected: { type: Boolean, default: false },
+      cost: { type: Number, default: 0 }
+    },
+    oilChange: { 
+      selected: { type: Boolean, default: false },
+      cost: { type: Number, default: 0 }
+    },
+    underbodyWash: { 
+      selected: { type: Boolean, default: false },
+      cost: { type: Number, default: 0 }
+    },
+    interiorVacuum: { 
+      selected: { type: Boolean, default: false },
+      cost: { type: Number, default: 0 }
+    },
   },
   items: [
     {
@@ -21,10 +36,11 @@ const serviceInvoiceSchema = new mongoose.Schema({
       cost: Number,
     }
   ],
+   repairCost: { type: Number, default: 0 },
   totalCost: { type: Number, required: true },
   submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   isApproved: { type: Boolean, default: false },
-  adminRemarks: String,
+  adminRemarks: {type : String},
   createdAt: { type: Date, default: Date.now },
 });
 
