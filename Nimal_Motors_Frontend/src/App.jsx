@@ -28,7 +28,6 @@ import CompletedServices from './components/SupervisorSection/CompletedServices'
 import NotificationBar from './components/SupervisorSection/Notification';
 import InvoicePage from './components/SupervisorSection/InvoicePage';
 import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
-import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
 import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import AddServiceForm from './components/SupervisorSection/AddServiceForm';
@@ -105,10 +104,10 @@ function App() {
         <Route path="/invoice/:id" element={<InvoicePage />} />
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
-        <Route path="/service-invoice" element={<SupervisorPrivateRoute><ServiceInvoice /></SupervisorPrivateRoute>} />
+        <Route path="/repair-invoice-supervisor-review" element={<SupervisorPrivateRoute><RepairInvoiceSupervisorReview /></SupervisorPrivateRoute>} />
         <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
         <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
-        <Route path="/repair-invoice-supervisor-review" element={<SupervisorPrivateRoute><RepairInvoiceSupervisorReview /></SupervisorPrivateRoute>} />
+        
         
         {/* Section-specific Dashboards */}
       
