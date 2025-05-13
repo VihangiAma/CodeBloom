@@ -6,7 +6,7 @@ export const createInvoice = async (req, res) => {
     const {
       serviceID,
       customerName,
-      vehicleNumber: vehicleNo,
+      vehicleNumber,
       vehicleType,
       description,
       section,
@@ -18,7 +18,7 @@ export const createInvoice = async (req, res) => {
     } = req.body;
 
     // Calculate total cost from repairCost + services + items
-    let totalCost = parseFloat(repairCost) || 0;
+    let totalCost = parseFloat(repairCost) ;
 
     if (services) {
       for (const key in services) {
@@ -36,10 +36,10 @@ export const createInvoice = async (req, res) => {
       }
     }
 
-    const newInvoice = new ServiceInvoice({
+    const invoice = new ServiceInvoice({
       serviceID,
       customerName,
-      vehicleNumber: vehicleNo,
+      vehicleNumber,
       vehicleType,
       description: description || "",
       section: section || "",
