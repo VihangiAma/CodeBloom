@@ -286,7 +286,7 @@ export default function AdminProfile() {
                 <ReadOnlyField label="Phone Number" value={profile.phoneNumber} />
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                  className="mt-4 px-4 py-2 bg-blue-500 text-black rounded"
                 >
                   Edit Profile
                 </button>
@@ -357,15 +357,7 @@ export default function AdminProfile() {
         </div>
 
 
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded text-red-400"
-              >
-                Edit
-              </button>
-            )}
-
+           
        
            
   
