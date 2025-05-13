@@ -6,15 +6,14 @@ import {
   FaFacebook,
   FaTwitter,
   FaInstagram,
-  FaShieldAlt,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function BodyshopSupervisor() {
   const navigate = useNavigate();
 
-
-  /* ────────── state ────────── */
   const [profile, setProfile] = useState({
     userId: "",
     fullName: "",
@@ -23,35 +22,35 @@ export default function BodyshopSupervisor() {
     phoneNumber: "",
     type: "bodyshopsupervisor",
   });
+
   const [isEditing, setIsEditing] = useState(false);
-  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // Add this state
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
+    newPasswordVisible: false,
+    oldPasswordVisible: false,
+    confirmPasswordVisible: false,
   });
-  const [passwordError, setPasswordError] = useState("");
-  
 
-  /* ────────── data fetch ────────── */
-  const fetchProfile = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    try {
-      const res = await axios.get("http://localhost:5001/api/user/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setProfile(res.data.user);
-    } catch (err) {
-      console.error("Error fetching profile data", err);
-    }
-  };
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await axios.get("http://localhost:5001/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProfile(res.data.user);
+      } catch (err) {
+        console.error("Error fetching profile data", err);
+      }
+    };
     fetchProfile();
   }, []);
 
-  /* ────────── handlers ────────── */
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -60,14 +59,30 @@ export default function BodyshopSupervisor() {
   const saveProfile = async () => {
     setIsEditing(false);
     try {
-      await axios.post("http://localhost:5001/api/user", profile);
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      await axios.put(
+        "http://localhost:5001/api/user/me",
+        {
+          fullName: profile.fullName,
+          email: profile.email,
+          username: profile.username,
+          phoneNumber: profile.phoneNumber,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("Profile updated successfully!");
     } catch (err) {
       console.error("Error updating user data", err);
+      alert("Failed to update profile.");
     }
   };
 
-  const handleSignOut = () => navigate("/login");
   const handleChangePassword = async () => {
+    setPasswordError("");
     if (changePassword.newPassword !== changePassword.confirmPassword) {
       setPasswordError("New passwords do not match.");
       return;
@@ -77,7 +92,7 @@ export default function BodyshopSupervisor() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:5001/api/user/change-password",
         {
           userId: profile.userId,
@@ -90,17 +105,61 @@ export default function BodyshopSupervisor() {
       );
 
       alert("Password changed successfully!");
-      setShowChangePasswordForm(false); // Close the form on success
+      setChangePassword({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+        oldPasswordVisible: false,
+        newPasswordVisible: false,
+        confirmPasswordVisible: false,
+      });
     } catch (err) {
       console.error("Error changing password", err);
       setPasswordError("Failed to change password.");
     }
   };
 
-  /* ────────── render ────────── */
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const renderPasswordInput = (field, label) => (
+    <div className="relative">
+      <input
+        type={changePassword[`${field}Visible`] ? "text" : "password"}
+        placeholder={label}
+        value={changePassword[field]}
+        onChange={(e) =>
+          setChangePassword((prev) => ({
+            ...prev,
+            [field]: e.target.value,
+          }))
+        }
+        className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
+      />
+      <button
+        type="button"
+        onClick={() =>
+          setChangePassword((prev) => ({
+            ...prev,
+            [`${field}Visible`]: !prev[`${field}Visible`],
+          }))
+        }
+        className="absolute right-2 top-2"
+      >
+        {changePassword[`${field}Visible`] ? (
+          <FaEyeSlash className="text-white" />
+        ) : (
+          <FaEye className="text-white" />
+        )}
+      </button>
+    </div>
+  );
+
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
-      {/* ───── sidebar ───── */}
+      {/* Sidebar */}
       <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
         <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
           🚗 NIMAL MOTORS
@@ -109,9 +168,6 @@ export default function BodyshopSupervisor() {
         <nav className="flex-1" />
 
         <div className="space-y-2 border-t border-gray-600 pt-6">
-
-
-
 
           <button
             onClick={() => navigate("/body-shop-supervisor-dashboard")}
@@ -131,9 +187,9 @@ export default function BodyshopSupervisor() {
         </div>
       </aside>
 
-      {/* ───── main content ───── */}
+      {/* Main Content */}
       <main className="flex-1 p-6 overflow-auto">
-        {/* cover image + name */}
+        {/* Profile Header */}
         <div
           className="rounded-xl h-48 bg-cover bg-center relative"
           style={{ backgroundImage: `url("/bgimage.jpg")` }}
@@ -148,36 +204,27 @@ export default function BodyshopSupervisor() {
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
               <p className="text-sm">
                 BodyShop Supervisor – Nimal Motors
-                {profile.fullName && ` – ${profile.fullName}`}
               </p>
             </div>
           </div>
         </div>
 
-        {/* about‑me & details */}
+        {/* Profile Details */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* left: about me */}
           <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-sm leading-relaxed">
-              Hi, I’m {profile.fullName || "—"}. With over a decade of hands‑on
-              experience in automotive refinishing, I oversee the entire
-              bodyshop operation at Nimal Motors—from initial damage assessment
-              to the final quality‑control checklist. My passion is blending
-              precision workmanship with exceptional customer care so that every
-              vehicle leaves our facility looking factory‑fresh. When I’m not on
-              the shop floor fine‑tuning repair workflows, you’ll find me
-              mentoring junior technicians or researching the latest
-              eco‑friendly paint technologies to keep our services both
-              cutting‑edge and sustainable.
+              Hi, I’m {profile.fullName || "—"}. With years of hands-on
+              experience in automotive refinishing, I manage the bodyshop
+              operations at Nimal Motors. From damage assessment to final
+              inspection, my role ensures top-quality vehicle restoration. I'm
+              passionate about blending expert workmanship with great customer
+              service.
             </p>
           </section>
 
-          {/* right: detail card */}
           <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">
-              BodyShop Supervisor Profile
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Profile Details</h3>
 
             {isEditing ? (
               <div className="space-y-3 text-sm">
@@ -209,19 +256,10 @@ export default function BodyshopSupervisor() {
               </div>
             ) : (
               <div className="text-sm space-y-2">
-                <p>
-                  <strong>Full Name:</strong> {profile.fullName || "—"}
-                </p>
-                <p>
-                  <strong>Mobile:</strong> {profile.phoneNumber || "—"}
-                </p>
-                <p>
-                  <strong>Email:</strong> {profile.email || "—"}
-                </p>
-                <p>
-                  <strong>Username:</strong> {profile.username || "—"}
-                </p>
-
+                <p><strong>Full Name:</strong> {profile.fullName || "—"}</p>
+                <p><strong>Mobile:</strong> {profile.phoneNumber || "—"}</p>
+                <p><strong>Email:</strong> {profile.email || "—"}</p>
+                <p><strong>Username:</strong> {profile.username || "—"}</p>
                 <div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
@@ -240,84 +278,29 @@ export default function BodyshopSupervisor() {
             )}
           </section>
         </div>
-      {/* Change Password Form */}
-      {showChangePasswordForm && (
-  <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-    <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-    <div className="space-y-3 relative">
-      {["oldPassword", "newPassword", "confirmPassword"].map((field, index) => (
-        <div key={field} className="relative">
-          <input
-            type={changePassword[`show${field}`] ? "text" : "password"}
-            placeholder={
-              field === "oldPassword"
-                ? "Old Password"
-                : field === "newPassword"
-                ? "New Password"
-                : "Confirm New Password"
-            }
-            value={changePassword[field]}
-            onChange={(e) =>
-              setChangePassword((prev) => ({
-                ...prev,
-                [field]: e.target.value,
-              }))
-            }
-            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
-          />
-          <button
-            type="button"
-            onClick={() =>
-              setChangePassword((prev) => ({
-                ...prev,
-                [`show${field}`]: !prev[`show${field}`],
-              }))
-            }
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-yellow-400"
-          >
-            {changePassword[`show${field}`] ? "Hide" : "Show"}
-          </button>
-        </div>
-      ))}
 
-      {changePassword.newPassword.length > 0 &&
-        changePassword.newPassword.length < 6 && (
-          <p className="text-red-400 text-sm">
-            New password must be at least 6 characters.
-          </p>
-      )}
+        {/* Change Password Section */}
+        {isEditing && (
+          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+            <div className="space-y-4 text-sm">
+              {renderPasswordInput("oldPassword", "Old Password")}
+              {renderPasswordInput("newPassword", "New Password")}
+              {renderPasswordInput("confirmPassword", "Confirm Password")}
 
-      {passwordError && (
-        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-      )}
+              {passwordError && (
+                <p className="text-red-400 text-sm">{passwordError}</p>
+              )}
 
-      <div className="flex space-x-4 mt-2">
-        <button
-          onClick={handleChangePassword}
-          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
-        >
-          Change Password
-        </button>
-        <button
-          onClick={() => {
-            setShowChangePasswordForm(false);
-            setChangePassword({
-              oldPassword: "",
-              newPassword: "",
-              confirmPassword: "",
-            });
-            setPasswordError("");
-          }}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </section>
-)}
-
-        
+              <button
+                onClick={handleChangePassword}
+                className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-white"
+              >
+                Update Password
+              </button>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
