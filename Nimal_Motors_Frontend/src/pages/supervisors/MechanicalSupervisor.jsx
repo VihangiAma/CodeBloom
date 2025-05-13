@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 import {
   FaUserCircle,
   FaSignOutAlt,
@@ -167,9 +168,10 @@ export default function MechanicalSupervisor() {
 
         <nav className="flex-1" />
 
+
         <div className="space-y-2 border-t border-gray-600 pt-6">
           <button
-            onClick={() => navigate("/supervisor/mechanical")}
+            onClick={() => navigate("/mechanical-supervisor-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
             <FaUserCircle className="text-lg" />
@@ -234,6 +236,7 @@ export default function MechanicalSupervisor() {
             <h3 className="text-lg font-semibold mb-4">
               Mechanical Supervisor Profile
             </h3>
+
 
              {isEditing ? (
                                       <div className="space-y-3 text-sm">
@@ -324,3 +327,149 @@ export default function MechanicalSupervisor() {
                           );
                         }
                         
+
+            {isEditing ? (
+              <div className="space-y-3 text-sm">
+                {["fullName", "email", "username", "phoneNumber"].map((f) => (
+                  <div key={f} className="flex flex-col">
+                    <label className="font-medium capitalize">{f}:</label>
+                    <input
+                      name={f}
+                      value={profile[f]}
+                      onChange={handleProfileChange}
+                      className="bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                    />
+                  </div>
+                ))}
+                <div className="space-x-2 mt-2">
+                  <button
+                    onClick={saveProfile}
+                    className="text-green-400 text-sm hover:underline"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="text-red-400 text-sm hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm space-y-2">
+                <p>
+                  <strong>Full Name:</strong> {profile.fullName || "—"}
+                </p>
+                <p>
+                  <strong>Mobile:</strong> {profile.phoneNumber || "—"}
+                </p>
+                <p>
+                  <strong>Email:</strong> {profile.email || "—"}
+                </p>
+                <p>
+                  <strong>Username:</strong> {profile.username || "—"}
+                </p>
+
+                <div className="flex items-center space-x-3 mt-2">
+                  <FaFacebook className="text-blue-600" />
+                  <FaTwitter className="text-sky-500" />
+                  <FaInstagram className="text-pink-500" />
+                </div>
+              </div>
+            )}
+
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
+              >
+                Edit
+              </button>
+            )}
+          </section>
+        </div>
+      {/* Change Password Form */}
+      {showChangePasswordForm && (
+  <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+    <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+    <div className="space-y-3 relative">
+      {["oldPassword", "newPassword", "confirmPassword"].map((field, index) => (
+        <div key={field} className="relative">
+          <input
+            type={changePassword[`show${field}`] ? "text" : "password"}
+            placeholder={
+              field === "oldPassword"
+                ? "Old Password"
+                : field === "newPassword"
+                ? "New Password"
+                : "Confirm New Password"
+            }
+            value={changePassword[field]}
+            onChange={(e) =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [field]: e.target.value,
+              }))
+            }
+            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              setChangePassword((prev) => ({
+                ...prev,
+                [`show${field}`]: !prev[`show${field}`],
+              }))
+            }
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-yellow-400"
+          >
+            {changePassword[`show${field}`] ? "Hide" : "Show"}
+          </button>
+        </div>
+      ))}
+
+      {changePassword.newPassword.length > 0 &&
+        changePassword.newPassword.length < 6 && (
+          <p className="text-red-400 text-sm">
+            New password must be at least 6 characters.
+          </p>
+      )}
+
+      {passwordError && (
+        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+      )}
+
+      <div className="flex space-x-4 mt-2">
+        <button
+          onClick={handleChangePassword}
+          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+        >
+          Change Password
+        </button>
+        <button
+          onClick={() => {
+            setShowChangePasswordForm(false);
+            setChangePassword({
+              oldPassword: "",
+              newPassword: "",
+              confirmPassword: "",
+            });
+            setPasswordError("");
+          }}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </section>
+)}
+
+        
+      </main>
+    </div>
+  );
+  
+}
+

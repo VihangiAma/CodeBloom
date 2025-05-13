@@ -7,8 +7,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");  // For Forgot Password
-  const [isForgotPassword, setIsForgotPassword] = useState(false);  // To toggle the forgot password view
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState(""); // For Forgot Password
+  const [isForgotPassword, setIsForgotPassword] = useState(false); // To toggle the forgot password view
 
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        'http://localhost:5001/api/user/login',
+        "http://localhost:5001/api/user/login",
         { email, password }
       );
 
@@ -67,8 +67,13 @@ export default function Login() {
         navigate("/not-found");
       }
     } catch (error) {
-      console.error("Login failed:", error.response?.data?.message || error.message);
-      setMessage("Login failed: " + (error.response?.data?.message || "Server error"));
+      console.error(
+        "Login failed:",
+        error.response?.data?.message || error.message
+      );
+      setMessage(
+        "Login failed: " + (error.response?.data?.message || "Server error")
+      );
     }
   };
 
@@ -82,13 +87,16 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        'http://localhost:5001/api/user/forgot-password',
+        "http://localhost:5001/api/user/forgot-password",
         { email: forgotPasswordEmail }
       );
       setMessage("Password reset email sent! Check your inbox.");
-      setIsForgotPassword(false);  // Hide the forgot password form after successful request
+      setIsForgotPassword(false); // Hide the forgot password form after successful request
     } catch (error) {
-      console.error("Forgot password failed:", error.response?.data?.message || error.message);
+      console.error(
+        "Forgot password failed:",
+        error.response?.data?.message || error.message
+      );
       setMessage("Error: " + (error.response?.data?.message || "Server error"));
     }
   };
@@ -103,18 +111,21 @@ export default function Login() {
 
       {/* Centered Form */}
       <div className="relative z-10 flex items-center justify-center h-full px-4">
-        <div className="bg-white/30 backdrop-blur-sm p-8 rounded-lg shadow-2xl w-full max-w-md border border-white/20 text-white">
+        <div className="bg-white/30 backdrop-blur-sm p-8 rounded-lg shadow-2xl w-full max-w-md border border-white/20 text-red">
           <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
 
           {message && (
             <p
               className={`mb-4 text-center ${
-                message.includes("successful") ? "text-green-200" : "text-red-300"
+                message.includes("successful")
+                  ? "text-green-200"
+                  : "text-red-300"
               }`}
             >
               {message}
             </p>
           )}
+
 
           {isForgotPassword ? (
             <form onSubmit={handleForgotPasswordSubmit}>
@@ -187,27 +198,13 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-black py-2 rounded font-semibold"
               >
                 Login
               </button>
             </form>
           )}
 
-          {/* Create Account Link */}
-          {/* <div className="mt-4 text-center">
-            <p className="text-white text-sm">
-              Don't have an account?(Only for premium Customers)
-              {" "}
-              <span
-                onClick={() => navigate("/register")}
-                className="text-blue-300 hover:text-blue-500 underline cursor-pointer"
-              >
-                
-                Create one
-              </span>
-            </p>
-          </div> */}
         </div>
       </div>
     </div>

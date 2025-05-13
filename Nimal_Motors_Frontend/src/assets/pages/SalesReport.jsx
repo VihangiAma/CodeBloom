@@ -3,19 +3,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import SalesReportView from "./SalesReportView";
 import Modal from "./Modal";
-import AddItem from "./SalesReportAdd";
-import UpdateItem from "./SalesReportUpdate";
-import DeleteItem from "./SalesReportDelete";
 
 const SalesReport = () => {
-  // State management
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   
-  // Sample data - in a real app, this would come from an API
+  // Sample sales data
   const [sales, setSales] = useState([
     {
       id: "001",
@@ -55,22 +51,14 @@ const SalesReport = () => {
     setSelectedItem(null);
   };
 
-  // CRUD operations
-  const handleAdd = (newItem) => {
-    setSales([...sales, newItem]);
-    closeModal();
-  };
-
-  const handleUpdate = (updatedItem) => {
-    setSales(sales.map(item => 
-      item.id === updatedItem.id ? updatedItem : item
-    ));
-    closeModal();
-  };
-
-  const handleDelete = (itemId) => {
-    setSales(sales.filter(item => item.id !== itemId));
-    closeModal();
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
   };
 
   return (
@@ -102,10 +90,15 @@ const SalesReport = () => {
 
       {/* Sales Report Table */}
       <div className="mb-8">
-        <SalesReportView salesData={sales} />
+        <SalesReportView 
+          salesData={sales} 
+          formatCurrency={formatCurrency}
+          onEdit={(item) => openModal("update", item)}
+          onDelete={(item) => openModal("delete", item)}
+        />
       </div>
 
-      {/* Modal - Keeping the modal in case it's used elsewhere */}
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -115,26 +108,7 @@ const SalesReport = () => {
           "Delete Item"
         }
       >
-        {modalType === "add" && (
-          <AddItem 
-            onAdd={handleAdd} 
-            onClose={closeModal} 
-          />
-        )}
-        {modalType === "update" && (
-          <UpdateItem
-            item={selectedItem}
-            onUpdate={handleUpdate}
-            onClose={closeModal}
-          />
-        )}
-        {modalType === "delete" && (
-          <DeleteItem
-            item={selectedItem}
-            onDelete={handleDelete}
-            onClose={closeModal}
-          />
-        )}
+        {/* Modal content here */}
       </Modal>
     </div>
   );

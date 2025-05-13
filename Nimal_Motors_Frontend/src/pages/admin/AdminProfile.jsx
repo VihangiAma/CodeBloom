@@ -198,6 +198,7 @@ export default function AdminProfile() {
         <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🚗 NIMAL MOTORS </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
+
           <button
             onClick={() => navigate("/admin-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
@@ -298,6 +299,7 @@ export default function AdminProfile() {
               </div>
             )}
 
+
             {/* Change Password Form  */}
             {isEditing && (
               <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
@@ -353,6 +355,23 @@ export default function AdminProfile() {
             )}
           </section>
         </div>
+
+
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded text-red-400"
+              >
+                Edit
+              </button>
+            )}
+
+       
+           
+  
+
+        
+
       </main>
     </div>
   );

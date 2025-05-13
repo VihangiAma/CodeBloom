@@ -10,6 +10,8 @@ import StockRoter from "./Routers/Stock.js";
 import SalesRouter from "./Routers/SalesReport.js";
 import UserReportRouter from "./Routers/UserReportRouter.js";
 import InventoryReportRouters  from "./Routers/InventoryReportRoutes.js";
+import RevenueandexpencesRouter from "./Routers/RevenueAndExpenceRouter.js";
+import RevenueRouter from "./Routers/RevenueRoutes.js"
 import repairRouter from "./Routers/RepairRouter.js";
 import appointmentRouter from "./Routers/AppointmentRoutes.js";
 import stockRoutes from "./Routers/stockRoutes.js";
@@ -17,6 +19,8 @@ import supplierRoutes from "./Routers/supplierRoutes.js";
 import MechanicalRouter from "./Routers/MechanicalRouter.js";
 import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
+import expenseRoutes from "./Routers/ExpenseRoutes.js";
+import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
 
 // Connect to DB
 import connectDB from "./Models/db.js";
@@ -50,6 +54,8 @@ app.use("/api/StockReport", StockRoter);
 app.use("/api/SalesReports", SalesRouter);
 app.use("/api/UserReport",UserReportRouter);
 app.use("/api/InventoryReports",InventoryReportRouters )
+app.use("/api/revenueReportAndExpencenew",RevenueandexpencesRouter)
+app.use("/api/revenueReportsNew",RevenueRouter)
 app.use("/api/repair", repairRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/stock", stockRoutes);
@@ -57,6 +63,8 @@ app.use("/api/supplier", supplierRoutes);
 app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
+app.use("/api/expenses", expenseRoutes);
+app.use("/api/service-invoices", invoiceRoutes); 
 
 // ✅ Error Handling Middleware
 app.use((err, req, res, next) => {
