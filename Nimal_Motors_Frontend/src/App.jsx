@@ -7,6 +7,7 @@ import LoginPage from './pages/login/LoginPage';
 // import RegisterPage from './pages/register/RegisterPage';
 
 import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+import PremiumServiceForm from './pages/premiumcustomer/PremiumServiceForm';
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
@@ -67,6 +68,10 @@ function App() {
   return (
     <Router>
       <Routes>
+
+        <Route path="/profile/basic" element={<PremiumServiceForm />} />
+
+
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />

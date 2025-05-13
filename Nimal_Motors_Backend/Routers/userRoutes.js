@@ -19,6 +19,7 @@ import {
   addUserByAdmin,
   changePassword,
   updateOwnProfile,
+  getBasicUserProfile,
 
 } from "../Controllers/UserController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
@@ -26,6 +27,8 @@ import { authenticateToken } from "../MiddleWare/authMiddleware.js";
 const userRoutes = express.Router();
 
 userRoutes.put('/me', authenticateToken, updateOwnProfile);
+userRoutes.get("/profile/basic", authenticateToken, getBasicUserProfile);
+
 
 
 // ✅ PUBLIC ROUTES

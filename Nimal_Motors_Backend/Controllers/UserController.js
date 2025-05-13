@@ -266,6 +266,39 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
+
+export const getBasicUserProfile = async (req, res) => {
+  try {
+    // Extract the email from the decoded JWT (stored in req.user)
+    const { email } = req.user;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email missing in token" });
+    }
+
+    // Query the user from the database based on the email
+    const user = await Users.findOne({ email: email.toLowerCase() });
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Respond with only the necessary fields (fullName, email, phoneNumber)
+    return res.json({
+      success: true,
+      user: {
+        fullName: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+
 export const getAdminProfile = async (req, res) => {
     try {
         console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
