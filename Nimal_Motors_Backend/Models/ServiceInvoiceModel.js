@@ -36,7 +36,7 @@ const serviceInvoiceSchema = new mongoose.Schema({
       cost: Number,
     }
   ],
-   repairCost: { type: Number, default: 0 },
+  repairCost: { type: Number, default: 0 },
   totalCost: { type: Number, required: true },
   submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   isApproved: { type: Boolean, default: false },
