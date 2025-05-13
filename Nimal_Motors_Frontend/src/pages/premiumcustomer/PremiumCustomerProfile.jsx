@@ -8,6 +8,7 @@ import {
   FaInstagram,
   FaEye,
   FaEyeSlash,
+  
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -170,12 +171,7 @@ export default function PremiumCustomerProfile() {
         <div className="space-y-2 border-t border-gray-600 pt-6">
 
           
-        <button
-            onClick={() => setShowChangePasswordForm(true)}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-yellow-400 hover:bg-gray-700 transition font-semibold"
-          >
-            <FaShieldAlt className="text-lg" /> Change Password
-          </button>
+        
 
           <button
             onClick={() => navigate("/premium-customer-dashboard")}
