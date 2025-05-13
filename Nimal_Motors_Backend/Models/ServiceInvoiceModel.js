@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const serviceInvoiceSchema = new mongoose.Schema({
   serviceID: { type: String, required: true, unique: true },
   customerName: { type: String, required: true },
-  vehicleNo: { type: String, required: true },
+  vehicleNumber: { type: String, required: true },
   vehicleType: { type: String, required: true },
   description: { type: String },
   section: {type: String},
