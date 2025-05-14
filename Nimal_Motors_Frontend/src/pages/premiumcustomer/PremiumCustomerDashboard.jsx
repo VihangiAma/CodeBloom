@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PremiumServiceForm from "./PremiumServiceForm";
 
@@ -15,19 +15,126 @@ const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   );
 };
 
-const FeaturePage = ({ title, content, goBack }) => {
+const ServiceHistoryTable = ({ customerName }) => {
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [error, setError] = useState(null); // Track errors
+
+  useEffect(() => {
+    const fetchUserHistory = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const [mechRes, bodyRes, elecRes, appRes] = await Promise.all([
+          fetch('http://localhost:5001/api/mechanical'),
+          fetch('http://localhost:5001/api/bodyshop'),
+          fetch('http://localhost:5001/api/electrical'),
+          fetch('http://localhost:5001/api/appointments'),
+        ]);
+
+        // Check if responses are OK
+        if (!mechRes.ok || !bodyRes.ok || !elecRes.ok || !appRes.ok) {
+          throw new Error('One or more API requests failed');
+        }
+
+        const [mechData, bodyData, elecData, appData] = await Promise.all([
+          mechRes.json(),
+          bodyRes.json(),
+          elecRes.json(),
+          appRes.json(),
+        ]);
+
+        // Log raw data for debugging
+        console.log('API Data:', { mechData, bodyData, elecData, appData });
+        console.log('Filtering for customerName:', customerName);
+
+        const formatData = (data, section) =>
+          data
+            .filter((item) =>
+              item.customerName
+                ? item.customerName.trim().toLowerCase() === customerName.trim().toLowerCase()
+                : false
+            )
+            .map((item) => ({
+              customerName: item.customerName || 'N/A',
+              displayID: item.displayID || 'N/A',
+              contact: item.contact?.phone || item.contact || 'N/A',
+              vehicleNumber: item.vehicleNumber || 'N/A',
+              serviceDate: item.serviceDate ? item.serviceDate.slice(0, 10) : 'N/A',
+              section,
+            }));
+
+        const userHistory = [
+          ...formatData(mechData, 'Mechanical'),
+          ...formatData(bodyData, 'BodyShop'),
+          ...formatData(elecData, 'Electrical'),
+          ...formatData(appData, 'Appointments'),
+        ];
+
+        // Log filtered history
+        console.log('Filtered History:', userHistory);
+
+        setHistory(userHistory);
+      } catch (err) {
+        console.error('Error fetching user history:', err);
+        setError('Failed to fetch service history. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (customerName) {
+      fetchUserHistory();
+    } else {
+      setError('No customer name provided.');
+      setLoading(false);
+    }
+  }, [customerName]);
+
   return (
-    <div className="p-8 bg-white rounded-xl shadow-lg m-4 min-h-screen">
-      <h2 className="text-3xl font-extrabold mb-4 text-gray-800">{title}</h2>
-      <p className="text-gray-600">{content}</p>
-      <div className="mt-6">
-        <button
-          onClick={goBack}
-          className="px-5 py-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold rounded hover:from-sky-600 hover:to-indigo-700 transition"
-        >
-          ⬅ Go Back
-        </button>
-      </div>
+    <div className="p-6 bg-white shadow-md rounded-xl">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Your Service History</h2>
+      {error ? (
+        <div className="text-red-500 text-center py-4">{error}</div>
+      ) : loading ? (
+        <div className="text-gray-500 text-center py-4">Loading service history...</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto border border-gray-300">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border px-4 py-2 text-left">Customer Name</th>
+                <th className="border px-4 py-2 text-left">Display ID</th>
+                <th className="border px-4 py-2 text-left">Contact</th>
+                <th className="border px-4 py-2 text-left">Vehicle Number</th>
+                <th className="border px-4 py-2 text-left">Service Date</th>
+                <th className="border px-4 py-2 text-left">Section</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-4 text-gray-500">
+                    No Service History Found...
+                  </td>
+                </tr>
+              ) : (
+                history.map((record, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="border px-4 py-2">{record.customerName}</td>
+                    <td className="border px-4 py-2">{record.displayID}</td>
+                    <td className="border px-4 py-2">{record.contact}</td>
+                    <td className="border px-4 py-2">{record.vehicleNumber}</td>
+                    <td className="border px-4 py-2">{record.serviceDate}</td>
+                    <td className="border px-4 py-2">{record.section}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
@@ -35,16 +142,24 @@ const FeaturePage = ({ title, content, goBack }) => {
 const PremiumCustomerDashboard = () => {
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState("dashboard");
+  // Replace with actual auth system (e.g., context, prop, or API)
+  const loggedInUser = { customerName: "John Doe" }; // Mock; update with real user data
 
   const renderContent = () => {
     switch (activePage) {
       case "serviceHistory":
         return (
-          <FeaturePage
-            title="Service History"
-            content="View all past service records and invoices."
-            goBack={() => setActivePage("dashboard")}
-          />
+          <div className="p-8 bg-white rounded-xl shadow-lg m-4 min-h-screen">
+            <div className="mb-6">
+              <button
+                onClick={() => setActivePage("dashboard")}
+                className="px-5 py-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold rounded hover:from-sky-600 hover:to-indigo-700 transition"
+              >
+                ⬅ Go Back
+              </button>
+            </div>
+            <ServiceHistoryTable customerName={loggedInUser.customerName} />
+          </div>
         );
       case "addservice":
         return (
@@ -91,7 +206,7 @@ const PremiumCustomerDashboard = () => {
                 description="Manage your personal information."
                 color="bg-gradient-to-r from-indigo-500 to-blue-600"
                 emoji="👤"
-                onClick={() => navigate("/premium-customer")} // 👈 updated
+                onClick={() => navigate("/premium-customer")}
               />
               <DashboardCard
                 title="Service History"
