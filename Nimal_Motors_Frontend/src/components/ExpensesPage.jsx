@@ -16,6 +16,7 @@ const ExpensesPage = () => {
     description: "",
   });
   const navigate = useNavigate();
+  const isSpareParts = formData.category === "Spare Parts";
 
   const fetchExpenses = () => {
     axios
@@ -72,29 +73,29 @@ const ExpensesPage = () => {
     }
   };
 
-  const isSpareParts = formData.category === "Spare Parts";
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen w-350">
-      <h1 className="text-3xl font-bold text-red-500 mb-6">Manage Expenses / Purchases</h1>
-      <button
-        onClick={() => navigate("/accountant-dashboard")}
-        className="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-700"
-      >
-        ← Back to Dashboard
-      </button>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-red-600">Manage Expenses / Purchases</h1>
+        <button
+          onClick={() => navigate("/accountant-dashboard")}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
 
-      {/* Add Expense Form */}
-      <form onSubmit={handleAddExpense} className="bg-gray-300 p-6 rounded shadow-md mb-8 w-200">
-        <h2 className="text-xl font-semibold mb-4">Add New Expense</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Form Section */}
+        <form onSubmit={handleAddExpense} className="bg-white p-6 rounded shadow space-y-4">
+          <h2 className="text-xl font-semibold text-black">Add New Expense/Purchase</h2>
           <div>
-            <label className="block mb-1 font-medium">Category</label>
+            <label className="block font-medium mb-1">Category</label>
             <select
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border rounded p-2"
               required
             >
               <option value="">Select</option>
@@ -106,37 +107,37 @@ const ExpensesPage = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Amount (Rs.)</label>
+            <label className="block font-medium mb-1">Amount (Rs.)</label>
             <input
               type="number"
               name="amount"
               value={formData.amount}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border rounded p-2"
               required
             />
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Date</label>
+            <label className="block font-medium mb-1">Date</label>
             <input
               type="date"
               name="date"
               value={formData.date}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border rounded p-2"
               max={new Date().toISOString().slice(0, 10)}
               required
             />
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Supplier</label>
+            <label className="block font-medium mb-1">Supplier</label>
             <select
               name="supplier"
               value={formData.supplier}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border rounded p-2"
               disabled={!isSpareParts}
               required={isSpareParts}
             >
@@ -149,60 +150,62 @@ const ExpensesPage = () => {
             </select>
           </div>
 
-          <div className="md:col-span-2">
-            <label className="block mb-1 font-medium">Description</label>
+          <div>
+            <label className="block font-medium mb-1">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
-              rows={3}
+              className="w-full border rounded p-2"
               placeholder="Optional note"
+              rows={3}
             ></textarea>
           </div>
-        </div>
 
-        <button
-          type="submit"
-          className="mt-4 bg-blue-800 hover:bg-blue-900 text-black px-4 py-2 rounded"
-        >
-          <FaPlus className="inline mr-1" /> Add Expense
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded mt-2"
+          >
+            <FaPlus className="inline mr-2" /> Add Expense
+          </button>
+        </form>
 
-      {/* Expenses Table */}
-      <div className="bg-white p-6 rounded shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Expense History</h2>
-        <table className="w-full table-auto border">
-          <thead className="bg-red-600 text-white">
-            <tr>
-              <th className="p-2">Date</th>
-              <th className="p-2">Category</th>
-              <th className="p-2">Amount</th>
-              <th className="p-2">Supplier</th>
-              <th className="p-2">Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="p-4 text-center text-gray-500">
-                  No expenses recorded yet.
-                </td>
-              </tr>
-            ) : (
-              expenses.map((exp, idx) => (
-                <tr key={idx} className="text-center border-t">
-                  <td className="p-2">{exp.date?.slice(0, 10)}</td>
-                  <td className="p-2">{exp.category}</td>
-                  <td className="p-2">Rs. {exp.amount}</td>
-                  <td className="p-2">{exp.supplier}</td>
-                  <td className="p-2">{exp.description}</td>
+        {/* Table Section */}
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-semibold mb-4 text-black">Expense History</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full table-auto border">
+              <thead className="bg-red-600 text-white">
+                <tr>
+                  <th className="p-2">Date</th>
+                  <th className="p-2">Category</th>
+                  <th className="p-2">Amount</th>
+                  <th className="p-2">Supplier</th>
+                  <th className="p-2">Description</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {expenses.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="p-4 text-center text-gray-500">
+                      No expenses recorded yet.
+                    </td>
+                  </tr>
+                ) : (
+                  expenses.map((exp, idx) => (
+                    <tr key={idx} className="text-center border-t hover:bg-gray-100">
+                      <td className="p-2">{exp.date?.slice(0, 10)}</td>
+                      <td className="p-2">{exp.category}</td>
+                      <td className="p-2">Rs. {exp.amount}</td>
+                      <td className="p-2">{exp.supplier}</td>
+                      <td className="p-2">{exp.description}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

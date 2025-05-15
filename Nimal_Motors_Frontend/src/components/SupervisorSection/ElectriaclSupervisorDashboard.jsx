@@ -7,7 +7,7 @@ import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
-import CompletedServices from './CompletedServices';
+
 
 const ElectricalSupervisorSection = () => {
   const navigate = useNavigate();
@@ -158,8 +158,9 @@ const ElectricalSupervisorSection = () => {
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
         <div>
         <div className="flex items-center p-6 space-x-3">
-          {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
-          <h1 className="text-xl font-bold">Nimal Motors</h1>
+        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+          🚗 NIMAL MOTORS
+        </h1>
         </div>
         <div className="p-6">
           <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>

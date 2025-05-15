@@ -3,19 +3,17 @@ import axios from "axios";
 import {
   FaUserCircle,
   FaSignOutAlt,
+  FaShieldAlt,
   FaFacebook,
   FaTwitter,
   FaInstagram,
-  FaShieldAlt,
-  FaUserPlus,
-  FaUsers,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 // ------------------ JWT Decoding ------------------
 const decodeJWT = (token) => {
   const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const base64 = base64Url.replace(/-/g, "+").replace(/\_/g, "/");
   const jsonPayload = decodeURIComponent(
     atob(base64)
       .split("")
@@ -49,13 +47,15 @@ export default function AdminProfile() {
     type: "",
   });
 
+  // Profile edit form state
+  const [editUser, setEditUser] = useState(null);
+
   // Password change form state
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
   // ------------------ Handlers ------------------
@@ -64,9 +64,9 @@ export default function AdminProfile() {
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNewUserChange = (e) => {
+  const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setNewUser((prev) => ({ ...prev, [name]: value }));
+    setEditUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const toggleAddUserForm = () => setShowAddUserForm((prev) => !prev);
@@ -82,11 +82,23 @@ export default function AdminProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      await axios.post("http://localhost:5001/api/user", profile, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        "http://localhost:5001/api/user/me",
+        {
+          fullName: profile.fullName,
+          email: profile.email,
+          username: profile.username,
+          phoneNumber: profile.phoneNumber,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      alert("Profile updated successfully!");
     } catch (err) {
       console.error("Error updating user data", err);
+      alert("Failed to update profile.");
     }
   };
 
@@ -132,7 +144,6 @@ export default function AdminProfile() {
       );
 
       alert("Password changed successfully!");
-      setShowChangePasswordForm(false); // Close the form on success
     } catch (err) {
       console.error("Error changing password", err);
       setPasswordError("Failed to change password.");
@@ -179,55 +190,20 @@ export default function AdminProfile() {
     </p>
   );
 
-  const AddUserForm = () => (
-    <div className="mt-4 p-4 bg-gray-800 rounded space-y-2 border border-gray-600">
-      <h4 className="font-semibold text-white mb-2">Add New User</h4>
-      {["userId", "fullName", "email", "phoneNumber", "username"].map(
-        (field) => (
-          <input
-            key={field}
-            name={field}
-            value={newUser[field]}
-            onChange={handleNewUserChange}
-            placeholder={field}
-            className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 placeholder-gray-400"
-          />
-        )
-      )}
-      <select
-        name="type"
-        value={newUser.type}
-        onChange={handleNewUserChange}
-        className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-      >
-        <option value="">Select user type</option>
-        <option value="Bodyshop Supervisor">Bodyshop Supervisor</option>
-        <option value="Mechanical Supervisor">Mechanical Supervisor</option>
-        <option value="Electrical Supervisor">Electrical Supervisor</option>
-        <option value="Service Supervisor">Service Supervisor</option>
-        <option value="Accountant">Accountant</option>
-        <option value="Admin">Admin</option>
-      </select>
-    </div>
-  );
-
   // ------------------ Main Render ------------------
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
-          🚗 NIMAL MOTORS
-        </h1>
+        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🚗 NIMAL MOTORS </h1>
         <nav className="flex-1" />
         <div className="space-y-2 border-t border-gray-600 pt-6">
-          
+
           <button
             onClick={() => navigate("/admin-dashboard")}
             className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
           >
-            <FaUserCircle className="text-lg" />
-            Dashboard
+            <FaUserCircle className="text-lg" /> Dashboard
           </button>
           <button
             onClick={handleSignOut}
@@ -269,10 +245,7 @@ export default function AdminProfile() {
               Hi, I’m {profile.fullName || "—"}. As the Admin at Nimal Motors I
               oversee the company’s key support functions—from user management
               and system access control to compliance reporting and process
-              optimisation. With a decade of experience in automotive operations
-              and administration, I bridge the gap between technical teams and
-              management, ensuring every department gets the resources and data
-              they need to perform at their best.
+              optimisation...
             </p>
           </section>
 
@@ -306,44 +279,91 @@ export default function AdminProfile() {
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="space-y-3 text-sm">
                 <ReadOnlyField label="Full Name" value={profile.fullName} />
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
-                <ReadOnlyField label="Phone" value={profile.phoneNumber} />
-
+                <ReadOnlyField label="Phone Number" value={profile.phoneNumber} />
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="mt-4 px-4 py-2 bg-blue-500 text-black rounded"
+                >
+                  Edit Profile
+                </button>
 <div className="flex items-center space-x-3 mt-2">
                   <FaFacebook className="text-blue-600" />
                   <FaTwitter className="text-sky-500" />
                   <FaInstagram className="text-pink-500" />
                 </div>
 
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="mt-4 px-4 py-2 bg-yellow-500 text-blue rounded"
-                >
-                  Edit Profile
-                </button>
               </div>
+            )}
+
+
+            {/* Change Password Form  */}
+            {isEditing && (
+              <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
+                <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                <div className="space-y-4 text-sm">
+                  <input
+                    type="password"
+                    placeholder="Old Password"
+                    className="w-full p-2 bg-gray-800 rounded text-white"
+                    value={changePassword.oldPassword}
+                    onChange={(e) =>
+                      setChangePassword({
+                        ...changePassword,
+                        oldPassword: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="password"
+                    placeholder="New Password"
+                    className="w-full p-2 bg-gray-800 rounded text-white"
+                    value={changePassword.newPassword}
+                    onChange={(e) =>
+                      setChangePassword({
+                        ...changePassword,
+                        newPassword: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="password"
+                    placeholder="Confirm New Password"
+                    className="w-full p-2 bg-gray-800 rounded text-white"
+                    value={changePassword.confirmPassword}
+                    onChange={(e) =>
+                      setChangePassword({
+                        ...changePassword,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    onClick={handleChangePassword}
+                    className="w-full px-4 py-2 bg-green-500 text-white rounded mt-4"
+                  >
+                    Change Password
+                  </button>
+                  {passwordError && (
+                    <p className="text-red-500 text-xs mt-2">{passwordError}</p>
+                  )}
+                </div>
+              </section>
             )}
           </section>
         </div>
 
 
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded text-red-400"
-              >
-                Edit
-              </button>
-            )}
-
+           
        
            
   
 
         
+
       </main>
     </div>
   );

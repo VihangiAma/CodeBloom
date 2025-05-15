@@ -185,7 +185,7 @@ export async function LogInUser(req, res) {
 
         const token = jwt.sign(
             {
-                id: user.userId,
+               userId: user.userId,
                 email: user.email,
                 type: user.type
             },
@@ -197,7 +197,7 @@ export async function LogInUser(req, res) {
             message: "Login successful",
             token,
             user: {
-                id: user.userId,
+               userId: user.userId,
                 email: user.email,
                 fullName: user.fullName,
                 type: user.type
@@ -266,6 +266,39 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
+
+export const getBasicUserProfile = async (req, res) => {
+  try {
+    // Extract the email from the decoded JWT (stored in req.user)
+    const { email } = req.user;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email missing in token" });
+    }
+
+    // Query the user from the database based on the email
+    const user = await Users.findOne({ email: email.toLowerCase() });
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Respond with only the necessary fields (fullName, email, phoneNumber)
+    return res.json({
+      success: true,
+      user: {
+        fullName: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+
 export const getAdminProfile = async (req, res) => {
     try {
         console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
@@ -308,8 +341,7 @@ export const getAdminProfile = async (req, res) => {
 
 export const getAccountantProfile = async (req, res) => {
     try {
-        console.log("Decoded JWT user:", req.user); // 👈 This will show what's in the token
-
+        console.log("Decoded JWT user:", req.user);
         const { email } = req.user;
 
         if (!email) {
@@ -611,6 +643,45 @@ export const changePassword = async (req, res) => {
         res.status(500).json({ message: "Server error.", error: err.message });
     }
 };
+
+export async function updateOwnProfile(req, res) {
+    try {
+        const { fullName, email, phoneNumber, username } = req.body;
+
+        // ✅ Use correct field name: userId
+        const user = await Users.findOne({ userId: req.user.userId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const updates = {};
+        if (fullName) updates.fullName = fullName;
+        if (email) updates.email = email;
+        if (phoneNumber) updates.phoneNumber = phoneNumber;
+        if (username) updates.username = username;
+
+        // ✅ Use correct field name again here
+        const updatedUser = await Users.findOneAndUpdate(
+            { userId: req.user.userId },
+            updates,
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user: updatedUser
+        });
+
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        res.status(500).json({
+            message: "Error updating profile",
+            error: error.message || 'Internal Server Error'
+        });
+    }
+}
+
+
 
 export function isAdminValid(req) {
     return req.user && req.user.type === "admin";

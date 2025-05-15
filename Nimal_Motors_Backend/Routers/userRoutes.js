@@ -18,11 +18,18 @@ import {
   getServiceSupProfile,
   addUserByAdmin,
   changePassword,
+  updateOwnProfile,
+  getBasicUserProfile,
 
-} from "../Controllers/userController.js";
+} from "../Controllers/UserController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
 
 const userRoutes = express.Router();
+
+userRoutes.put('/me', authenticateToken, updateOwnProfile);
+userRoutes.get("/profile/basic", authenticateToken, getBasicUserProfile);
+
+
 
 // ✅ PUBLIC ROUTES
 //userRoutes.post("/register", postUser);
@@ -47,6 +54,8 @@ userRoutes.get("/", getAllUsers);
 userRoutes.get("/:userId", getUserById);
 userRoutes.delete("/:userId", deleteUserById);
 userRoutes.put("/:userId", putUserById);
+// userRoutes.put("/profile", updateOwnProfile);
+
 
 
 // ✅ ROLE CHECKS

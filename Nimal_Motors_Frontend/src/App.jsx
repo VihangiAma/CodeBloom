@@ -5,9 +5,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
+
 // import RegisterPage from './pages/register/RegisterPage';
 
- import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+
+import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+import PremiumServiceForm from './pages/premiumcustomer/PremiumServiceForm';
+
+//  import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+
+
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
@@ -25,12 +32,6 @@ import AdminUsers from './pages/admin/AdminUsers';
 // Supervisor Protected Pages
 
 
-//import SupervisorDashboard from './components/SupervisorSection/SupervisorDashboard';
-import ProgressPage from './components/SupervisorSection/ProgressPage';
-import ReportPage from './components/SupervisorSection/ReportPage';
-import AppointmentDetails from './components/SupervisorSection/Supervisors/AppointmentDetails';
-import AddServiceForm from './components/SupervisorSection/AddServiceForm';
-
 // Section-specific Dashboards
 //import MechanicalDashboard from './components/SupervisorSection/Supervisors/MechanicalDashboard';
 //import ElectricalDashboard from './components/SupervisorSection/Supervisors/ElectricalDashboard';
@@ -42,46 +43,16 @@ import MechanicalSupervisorSection from './components/SupervisorSection/Mechanic
 
 
 
-import CompletedServices from './components/SupervisorSection/CompletedServices';
-import NotificationBar from './components/SupervisorSection/Notification';
-import InvoicePage from './components/SupervisorSection/InvoicePage';
-import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
-import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
-import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
-import AdminInvoiceView from './pages/admin/AdminInvoiceView';
-
-
-import CompletedServices from './components/SupervisorSection/CompletedServices';
-import NotificationBar from './components/SupervisorSection/Notification';
-import InvoicePage from './components/SupervisorSection/InvoicePage';
-import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
-import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
-import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
-import AdminInvoiceView from './pages/admin/AdminInvoiceView';
-import UserTable from './components/SupervisorSection/UserTable';
 
 
 
 
 
 
-import CompletedServices from './components/SupervisorSection/CompletedServices';
-import NotificationBar from './components/SupervisorSection/Notification';
-import InvoicePage from './components/SupervisorSection/InvoicePage';
-import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
-import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
-import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
-import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 
 
-import CompletedServices from './components/SupervisorSection/CompletedServices';
-import NotificationBar from './components/SupervisorSection/Notification';
-import InvoicePage from './components/SupervisorSection/InvoicePage';
-import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
-import ServiceInvoice from './components/SupervisorSection/Supervisors/ServiceInvoice';
-import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
-import AdminInvoiceView from './pages/admin/AdminInvoiceView';
-import UserTable from './components/SupervisorSection/UserTable';
+
+
 
 
 // Section-specific Dashboards
@@ -99,6 +70,7 @@ import AccountantDashboard  from './components/AccountantDashboard';
 import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
+
 
 //import SalesReportAdd from './assets/pages/SalesReportAdd';
 //import SalesReportUpdate from './assets/pages/SalesReportUpdate';
@@ -122,10 +94,13 @@ function App() {
   return (
     <Router>
       <Routes>
+
+        <Route path="/profile/basic" element={<PremiumServiceForm />} />
+
+
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/register" element={<RegisterPage />} /> */}
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
 
 
@@ -150,8 +125,16 @@ function App() {
 
         {/* Supervisor Protected Routes */}
 
-        <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
-       <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+        
+        <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
+        <Route path="/progress" element={<SupervisorPrivateRoute><ProgressPage /></SupervisorPrivateRoute>} />
+        <Route path="/report" element={<SupervisorPrivateRoute><ReportPage /></SupervisorPrivateRoute>} />
+         <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
+        <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
+        <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
+        <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
+
+
 
         
         {/* Section-specific Dashboards */}
@@ -165,15 +148,15 @@ function App() {
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
-        
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
 
-        {/*<Route path="/add-sales-report" element={<SalesReportAdd onAdd={() => {}} />} />
-        <Route path="/update-sales-report" element={<SalesReportUpdate />} />
-        <Route path="/delete-sales-report" element={<SalesReportDelete />} />
-        <Route path="/view-sales-report" element={<SalesReportView />} />*/}
+
+
+        <Route path="/view-sales-report" element={<SalesReportView />} />
+        <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
+        <Route path="/generate-invoice/:repairId" element={<GenerateInvoicePage />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
