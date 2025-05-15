@@ -53,4 +53,80 @@ export const getRecentExpenses = async (req, res) => {
       res.status(500).json({ message: "Failed to fetch recent expenses" });
     }
   };
+
+
+  // Get total expenses grouped by month (last 6 months)
+export const getMonthlyExpenseSummary = async (req, res) => {
+  try {
+    const result = await Expense.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: new Date(new Date().setMonth(new Date().getMonth() - 5)),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$date" },
+          total: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: { "_id": 1 },
+      },
+    ]);
+
+    res.json(result);
+  } catch (err) {
+    console.error("Error fetching monthly expense summary", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+//get total expenses grouped by category
+export const getCategoryExpenseSummary = async (req, res) => {
+  try {
+    const summary = await Expense.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          total: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: { total: -1 }
+      }
+    ]);
+    res.json(summary);
+  } catch (err) {
+    console.error("Error fetching category summary", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//get total expenses grouped by supplier
+export const getSupplierExpenseSummary = async (req, res) => {
+  try {
+    const summary = await Expense.aggregate([
+      {
+        $group: {
+          _id: "$supplier",
+          total: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: { total: -1 },
+      },
+      {
+        $limit: 5
+      }
+    ]);
+    res.json(summary);
+  } catch (err) {
+    console.error("Error fetching supplier summary", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
   

@@ -36,11 +36,6 @@ import AppointmentDetails from './Components/SupervisorSection/Supervisors/Appoi
 import CompletedServices from './components/SupervisorSection/CompletedServices';
 import NotificationBar from './components/SupervisorSection/Notification';
 import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
-import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
-import AdminInvoiceView from './pages/admin/AdminInvoiceView';
-import AddServiceForm from './components/SupervisorSection/AddServiceForm';
-import UserTable from './components/SupervisorSection/UserTable';
-
 
 
 
@@ -61,6 +56,7 @@ import ExpensesPage from './components/ExpensesPage';
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
 import SalesReportView from './assets/pages/SalesReportView';
+import GenerateInvoicePage from './components/GenerateInvoicePage ';
 
 
 // Protected Route Components
@@ -116,10 +112,7 @@ function App() {
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
         <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
-        <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
-        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
-        <Route path="/invoice-form" element={<SupervisorPrivateRoute><InvoiceForm/></SupervisorPrivateRoute>}/>
-       
+
 
         
         {/* Section-specific Dashboards */}
@@ -137,7 +130,8 @@ function App() {
         <Route path="/sales-report" element={<SalesReport />} />
 
         <Route path="/view-sales-report" element={<SalesReportView />} />
-
+        <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
+        <Route path="/generate-invoice/:repairId" element={<GenerateInvoicePage />} />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
