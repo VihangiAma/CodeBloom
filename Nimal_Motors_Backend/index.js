@@ -12,7 +12,6 @@ import UserReportRouter from "./Routers/UserReportRouter.js";
 import InventoryReportRouters  from "./Routers/InventoryReportRoutes.js";
 import RevenueandexpencesRouter from "./Routers/RevenueAndExpenceRouter.js";
 import RevenueRouter from "./Routers/RevenueRoutes.js"
-import repairRouter from "./Routers/RepairRouter.js";
 import appointmentRouter from "./Routers/AppointmentRoutes.js";
 import stockRoutes from "./Routers/stockRoutes.js";
 import supplierRoutes from "./Routers/supplierRoutes.js";
@@ -59,7 +58,6 @@ app.use("/api/UserReport",UserReportRouter);
 app.use("/api/InventoryReports",InventoryReportRouters )
 app.use("/api/revenueReportAndExpencenew",RevenueandexpencesRouter)
 app.use("/api/revenueReportsNew",RevenueRouter)
-app.use("/api/repair", repairRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/stock", stockRoutes);
 app.use("/api/supplier", supplierRoutes);
@@ -67,9 +65,6 @@ app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
-app.use("/api/service-invoices", invoiceRoutes);
-app.use("/api/expenses", expenseRoutes); 
-app.use("/api/invoices", invoiceRoute);
 
 
 // ✅ Error Handling Middleware

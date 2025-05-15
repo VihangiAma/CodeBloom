@@ -220,7 +220,7 @@ const UserTable = () => {
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-xl">
+    <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800">All Customers Summary</h2>
         <div className="flex items-center space-x-4">
@@ -250,7 +250,7 @@ const UserTable = () => {
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border border-gray-300">
+        <table className="min-w-full table-auto border border-pink-800">
           <thead className="bg-blue-600 text-white">
             <tr>
               <th className="border px-4 py-2 text-left">Customer Name</th>
@@ -289,7 +289,7 @@ const UserTable = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 

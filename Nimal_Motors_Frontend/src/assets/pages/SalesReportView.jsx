@@ -76,7 +76,7 @@ const SalesReportView = () => {
       // Report title
       doc.setFont("helvetica", "bold");
       doc.setFontSize(18);
-      doc.text("Sales Reports", 148, 55, { align: "center" });
+      doc.text("Financial Reports", 148, 55, { align: "center" });
 
       doc.setFontSize(10);
       doc.setTextColor(100);
