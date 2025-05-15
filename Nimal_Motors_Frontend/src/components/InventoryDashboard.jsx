@@ -9,10 +9,9 @@ import logoImage from "../assets/logo.jpg"
 import SuppliersSection from "./SupplierDetails";
 
 
-
-
-
 const InventoryDashboard = () => {
+
+  // States for inventory, filters, supplier info, modals
   const [inventory, setInventory] = useState([]);
   const [totalStock, setTotalStock] = useState(0);
   const [lowStockCount, setLowStockCount] = useState(0);
@@ -48,6 +47,7 @@ history.push('/some-route');
       }
     };*/
 
+    // Load all inventory items and calculate summaries
   useEffect(() => {
     axios.get("http://localhost:5001/api/stock/items")
       .then((response) => {
@@ -78,28 +78,33 @@ history.push('/some-route');
       })
       .catch(error => console.error("Error fetching inventory:", error));
   }, []);
+
+  // Filter inventory table
   const filteredInventory = inventory.filter(item =>
     item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (categoryFilter === "" || item.category === categoryFilter)
   );
 
+  // Load supplier list
   useEffect(() => {
     axios.get("http://localhost:5001/api/supplier/list")
       .then(res => setSupplierList(res.data))
       .catch(err => console.error("Failed to fetch supplier list", err));
   }, []);
   
+  // Edit Item (opens modal and loads data)
  const handleEditClick = (item) => {
     setEditItem(item);
     setFormData(item);
   };
 
+  // Delete item setup
   const handleDeleteClick = (id) => {
     setDeleteItemId(id);
   };
 
  
-  
+  // Save changes from Edit Modal
   const handleUpdate = () => {
     if (!editItem) {
         toast.error("No item to edit!");
@@ -154,6 +159,7 @@ history.push('/some-route');
     setDeleteItemId(id);
   };*/
   
+  // Confirm delete from modal
   const handleDeleteConfirm = () => {
     if (!deleteItemId) return;
   
@@ -197,7 +203,7 @@ history.push('/some-route');
     }
   };
   
-  
+   // Add stock from barcode modal
   const handleAddStockViaBarcode = async () => {
     if (!foundItem || !quantityToAdd) return;
   
@@ -253,13 +259,6 @@ history.push('/some-route');
        >
          <FaBarcode /> Add via Barcode
        </button>
-
-      
-       
-     
-                
-   
-       
           </ul>
         </nav>
       </aside>
@@ -268,6 +267,7 @@ history.push('/some-route');
       <main className="flex-1 bg-#7D0A0A p-6 w-300 h-300">
       {activeSection === "inventory" && (
     <>
+        {/* Header and Filters */}
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold">Inventory Management</h1>
           <div className="flex items-center gap-4">
@@ -414,6 +414,7 @@ history.push('/some-route');
         </div>
       )}
 
+{/* Edit Item Modal */}
         {editItem && (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -510,6 +511,7 @@ history.push('/some-route');
   </div>
 )}
 
+{/* Delete Confirmation Modal */}
 {deleteItemId && (  // Check if there's an item to delete
   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
     <div className="bg-white p-5 rounded shadow-md w-1/3">

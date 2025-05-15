@@ -26,16 +26,21 @@ import {
 } from "recharts";
 
 
-
+//color schema for pie chart
 const COLORS = ["#ff0000", "#ff6666", "#cc0000", "#990000", "#660000"];
 
 const AccountantDashboard = () => {
   const navigate = useNavigate();
+
+  // State variables for various summaries
+  // Monthly expenses, category summary, supplier summary, and approved repairs
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
   const [categorySummary, setCategorySummary] = useState([]);
   const [supplierSummary, setSupplierSummary] = useState([]);
-  const [approvedRepairs, setApprovedRepairs] = useState([]);
+  const [approvedRepairs, setApprovedRepairs] = useState([]);//used for invoicing
 
+  // Fetch approved repairs for invoicing
+  // This effect runs once when the component mounts
   useEffect(() => {
   axios.get("http://localhost:5001/api/repairs/approved") // Adjust API path as needed
     .then((res) => setApprovedRepairs(res.data))
