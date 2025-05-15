@@ -20,6 +20,9 @@ import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
+import invoiceRoute from "./Routers/InvoiceRoutes.js";
+
+
 
 // Connect to DB
 import connectDB from "./Models/db.js";
@@ -62,7 +65,7 @@ app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
-app.use("/api/invoice", invoiceRoutes);
+
 
 // ✅ Error Handling Middleware
 app.use((err, req, res, next) => {
