@@ -42,7 +42,7 @@ export default function AdminUsers() {
   const deleteUser = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
 
-    try {
+        try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:5001/api/user/${userId}`, {
         headers: {
@@ -69,6 +69,31 @@ export default function AdminUsers() {
   };
 
   const saveUpdatedUser = async () => {
+    // Validation for update user
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{10}$/;
+    
+    if (!editUser.fullName || editUser.fullName.length < 2 || editUser.fullName.length > 50) {
+      alert("Full Name is required and must be between 2 and 50 characters.");
+      return;
+    }
+    if (!editUser.email || !emailRegex.test(editUser.email)) {
+      alert("A valid email is required.");
+      return;
+    }
+    if (!editUser.username || editUser.username.length < 3 || editUser.username.length > 30) {
+      alert("Username is required and must be between 3 and 30 characters.");
+      return;
+    }
+    if (editUser.phoneNumber && !phoneRegex.test(editUser.phoneNumber)) {
+      alert("Phone number must be exactly 10 digits if provided.");
+      return;
+    }
+    if (!editUser.type) {
+      alert("Role is required.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       await axios.put(`http://localhost:5001/api/user/${editUser.userId}`, editUser, {
@@ -102,9 +127,45 @@ export default function AdminUsers() {
   };
 
   const handleAddUser = async () => {
+    // Validation for add user
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{10}$/;
+    
+    if (!newUser.fullName || newUser.fullName.length < 2) {
+      alert("Full Name is required and must be at least 2 characters.");
+      return;
+    }
+    if (newUser.fullName.length > 50) {
+      alert("Full Name must not exceed 50 characters.");
+      return;
+    }
+    if (!newUser.email || !emailRegex.test(newUser.email)) {
+      alert("A valid email is required (e.g., user@example.com).");
+      return;
+    }
+    if (!newUser.username || newUser.username.length < 3) {
+      alert("Username is required and must be at least 3 characters.");
+      return;
+    }
+    if (newUser.username.length > 30) {
+      alert("Username must not exceed 30 characters.");
+      return;
+    }
+    if (!newUser.phoneNumber || !phoneRegex.test(newUser.phoneNumber)) {
+      alert("Phone number is required and must be exactly 10 digits (e.g., 1234567890).");
+      return;
+    }
+    if (!newUser.type) {
+      alert("Role is required.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token) {
+        alert("Authentication token missing. Please log in again.");
+        return;
+      }
   
       const { password, ...userData } = newUser;
   
@@ -124,12 +185,11 @@ export default function AdminUsers() {
         });
         setShowAddUserForm(false);
         fetchUsers(); // Refresh the user list
-      } else {
-        alert("Failed to add user");
       }
     } catch (err) {
       console.error("Error adding new user", err.response ? err.response.data : err.message);
-      alert("Failed to add user");
+      const errorMessage = err.response?.data?.message || "Failed to add user due to an unknown error.";
+      alert(`Failed to add user: ${errorMessage}`);
     }
   };
   
@@ -146,7 +206,7 @@ export default function AdminUsers() {
         <div className="flex gap-4">
           <button
             onClick={toggleAddUserForm}
-className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded"
           >
             <FaUserPlus /> Add User
           </button>
@@ -167,74 +227,74 @@ className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px
 
       {/* Add User Form */}
       {showAddUserForm && (
-  <div className="bg-gray-800 p-6 rounded-lg mb-6">
-    <h3 className="text-lg font-bold mb-4">Add New User</h3>
-    <div className="flex flex-col gap-4">
-      <input
-        type="text"
-        name="fullName"
-        value={newUser.fullName}
-        onChange={handleNewUserChange}
-        placeholder="Full Name"
-        className="px-3 py-2 rounded bg-gray-700 text-white"
-      />
-      <input
-        type="email"
-        name="email"
-        value={newUser.email}
-        onChange={handleNewUserChange}
-        placeholder="Email"
-        className="px-3 py-2 rounded bg-gray-700 text-white"
-      />
-      <input
-        type="text"
-        name="username"
-        value={newUser.username}
-        onChange={handleNewUserChange}
-        placeholder="Username"
-        className="px-3 py-2 rounded bg-gray-700 text-white"
-      />
-      <input
-        type="text"
-        name="phoneNumber"
-        value={newUser.phoneNumber}
-        onChange={handleNewUserChange}
-        placeholder="Phone Number"
-        className="px-3 py-2 rounded bg-gray-700 text-white"
-      />
-      <select
-        name="type"
-        value={newUser.type}
-        onChange={handleNewUserChange}
-        className="px-3 py-2 rounded bg-gray-700 text-white"
-      >
-        <option value="">Select Role</option>
-        <option value="admin">Admin</option>
-        <option value="mechanicalsupervisor">Mechanical Supervisor</option>
-        <option value="electricalsupervisor">Electrical Supervisor</option>
-        <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
-        <option value="servicesupervisor">Service Supervisor</option>
-        <option value="accountant">Accountant</option>
-        <option value="premiumCustomer">Premium Customer</option>
-      </select>
-    </div>
+        <div className="bg-gray-800 p-6 rounded-lg mb-6">
+          <h3 className="text-lg font-bold mb-4">Add New User</h3>
+          <div className="flex flex-col gap-4">
+            <input
+              type="text"
+              name="fullName"
+              value={newUser.fullName}
+              onChange={handleNewUserChange}
+              placeholder="Full Name"
+              className="px-3 py-2 rounded bg-gray-700 text-white"
+            />
+            <input
+              type="email"
+              name="email"
+              value={newUser.email}
+              onChange={handleNewUserChange}
+              placeholder="Email"
+              className="px-3 py-2 rounded bg-gray-700 text-white"
+            />
+            <input
+              type="text"
+              name="username"
+              value={newUser.username}
+              onChange={handleNewUserChange}
+              placeholder="Username"
+              className="px-3 py-2 rounded bg-gray-700 text-white"
+            />
+            <input
+              type="text"
+              name="phoneNumber"
+              value={newUser.phoneNumber}
+              onChange={handleNewUserChange}
+              placeholder="Phone Number"
+              className="px-3 py-2 rounded bg-gray-700 text-white"
+            />
+            <select
+              name="type"
+              value={newUser.type}
+              onChange={handleNewUserChange}
+              className="px-3 py-2 rounded bg-gray-700 text-white"
+            >
+              <option value="">Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="mechanicalsupervisor">Mechanical Supervisor</option>
+              <option value="electricalsupervisor">Electrical Supervisor</option>
+              <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
+              <option value="servicesupervisor">Service Supervisor</option>
+              <option value="accountant">Accountant</option>
+              <option value="premiumCustomer">Premium Customer</option>
+            </select>
+          </div>
 
-    <div className="flex justify-end gap-3 mt-6">
-      <button
-        onClick={toggleAddUserForm}
-        className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
-      >
-        Cancel
-      </button>
-      <button
-        onClick={handleAddUser}
-        className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
-      >
-        Add User
-      </button>
-    </div>
-  </div>
-)}
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              onClick={toggleAddUserForm}
+              className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAddUser}
+              className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
+            >
+              Add User
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Users Table */}
       <div className="overflow-auto rounded-lg shadow border border-gray-700">
@@ -289,85 +349,82 @@ className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px
 
       {/* Edit Modal */}
       {editUser && (
-  <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-    <div className="bg-gray-800 p-8 rounded-lg w-[500px]">
-      <h3 className="text-lg font-bold mb-4 text-white">Edit User</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-gray-800 p-8 rounded-lg w-[500px]">
+            <h3 className="text-lg font-bold mb-4 text-white">Edit User</h3>
 
-      <div className="grid grid-cols-2 gap-4 items-center">
-        <label className="text-white">Full Name</label>
-        <input
-          type="text"
-          name="fullName"
-          value={editUser.fullName}
-          onChange={handleEditChange}
-          className="px-3 py-2 rounded bg-gray-700 text-white"
-        />
+            <div className="grid grid-cols-2 gap-4 items-center">
+              <label className="text-white">Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                value={editUser.fullName}
+                onChange={handleEditChange}
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
 
-        <label className="text-white">Email</label>
-        <input
-          type="email"
-          name="email"
-          value={editUser.email}
-          onChange={handleEditChange}
-          className="px-3 py-2 rounded bg-gray-700 text-white"
-        />
+              <label className="text-white">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={editUser.email}
+                onChange={handleEditChange}
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
 
-        <label className="text-white">Phone Number</label>
-        <input
-          type="text"
-          name="phoneNumber"
-          value={editUser.phoneNumber}
-          onChange={handleEditChange}
-          className="px-3 py-2 rounded bg-gray-700 text-white"
-        />
+              <label className="text-white">Phone Number</label>
+              <input
+                type="text"
+                name="phoneNumber"
+                value={editUser.phoneNumber}
+                onChange={handleEditChange}
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
 
-        <label className="text-white">Username</label>
-        <input
-          type="text"
-          name="username"
-          value={editUser.username}
-          onChange={handleEditChange}
-          className="px-3 py-2 rounded bg-gray-700 text-white"
-        />
+              <label className="text-white">Username</label>
+              <input
+                type="text"
+                name="username"
+                value={editUser.username}
+                onChange={handleEditChange}
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              />
 
-        <label className="text-white">Role</label>
-        <select
-          name="type"
-          value={editUser.type}
-          onChange={handleEditChange}
-          className="px-3 py-2 rounded bg-gray-700 text-white"
-        >
-          <option value="">Select Role</option>
-          <option value="admin">Admin</option>
-          <option value="mechanicalsupervisor">Mechanical Supervisor</option>
-          <option value="electricalsupervisor">Electrical Supervisor</option>
-          <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
-          <option value="servicesupervisor">Service Supervisor</option>
-          <option value="accountant">Accountant</option>
-          <option value="premiumCustomer">Premium Customer</option>
-        </select>
-      </div>
+              <label className="text-white">Role</label>
+              <select
+                name="type"
+                value={editUser.type}
+                onChange={handleEditChange}
+                className="px-3 py-2 rounded bg-gray-700 text-white"
+              >
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="mechanicalsupervisor">Mechanical Supervisor</option>
+                <option value="electricalsupervisor">Electrical Supervisor</option>
+                <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
+                <option value="servicesupervisor">Service Supervisor</option>
+                <option value="accountant">Accountant</option>
+                <option value="premiumCustomer">Premium Customer</option>
+              </select>
+            </div>
 
-      <div className="flex justify-end gap-3 mt-6">
-        <button
-          onClick={() => setEditUser(null)}
-          className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={saveUpdatedUser}
-          className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-   
-
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setEditUser(null)}
+                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveUpdatedUser}
+                className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

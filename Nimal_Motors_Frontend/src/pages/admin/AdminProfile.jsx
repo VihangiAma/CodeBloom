@@ -286,7 +286,7 @@ export default function AdminProfile() {
                 <ReadOnlyField label="Phone Number" value={profile.phoneNumber} />
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="mt-4 px-4 py-2 bg-blue-500 text-black rounded"
+                  className="mt-4 px-4 py-2 bg-blue-500 text-green rounded"
                 >
                   Edit Profile
                 </button>

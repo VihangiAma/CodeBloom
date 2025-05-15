@@ -7,8 +7,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState(""); // For Forgot Password
-  const [isForgotPassword, setIsForgotPassword] = useState(false); // To toggle the forgot password view
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,30 +41,38 @@ export default function Login() {
         { email, password }
       );
 
-      const { token, user } = response.data;
+      const { token, user, message } = response.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      setMessage("Login successful!");
+      setMessage(message); // Display backend message (e.g., "Please change your temporary password")
 
-      // Navigation based on role
-      if (user.type === "admin") {
-        navigate("/admin-profile");
-      } else if (user.type === "accountant") {
-        navigate("/accountant");
-      } else if (user.type === "electricalsupervisor") {
-        navigate("/electrical-supervisor");
-      } else if (user.type === "servicesupervisor") {
-        navigate("/service-supervisor");
-      } else if (user.type === "mechanicalsupervisor") {
-        navigate("/mechanical-supervisor");
-      } else if (user.type === "bodyshopsupervisor") {
-        navigate("/bodyshop-supervisor");
-      } else if (user.type === "premiumCustomer") {
-        navigate("/premium-customer");
+      // Check mustChangePassword, default to false if undefined
+      const mustChangePassword = user.mustChangePassword ?? false;
+
+      if (mustChangePassword) {
+        // Redirect to password change page with userId
+        navigate("/change-password", { state: { userId: user.userId } });
       } else {
-        navigate("/not-found");
+        // Navigation based on role
+        if (user.type === "admin") {
+          navigate("/admin-profile");
+        } else if (user.type === "accountant") {
+          navigate("/accountant");
+        } else if (user.type === "electricalsupervisor") {
+          navigate("/electrical-supervisor");
+        } else if (user.type === "servicesupervisor") {
+          navigate("/service-supervisor");
+        } else if (user.type === "mechanicalsupervisor") {
+          navigate("/mechanical-supervisor");
+        } else if (user.type === "bodyshopsupervisor") {
+          navigate("/bodyshop-supervisor");
+        } else if (user.type === "premiumCustomer") {
+          navigate("/premium-customer");
+        } else {
+          navigate("/not-found");
+        }
       }
     } catch (error) {
       console.error(
@@ -91,7 +99,7 @@ export default function Login() {
         { email: forgotPasswordEmail }
       );
       setMessage("Password reset email sent! Check your inbox.");
-      setIsForgotPassword(false); // Hide the forgot password form after successful request
+      setIsForgotPassword(false);
     } catch (error) {
       console.error(
         "Forgot password failed:",
@@ -117,7 +125,7 @@ export default function Login() {
           {message && (
             <p
               className={`mb-4 text-center ${
-                message.includes("successful")
+                message.includes("successful") || message.includes("sent")
                   ? "text-green-200"
                   : "text-red-300"
               }`}
@@ -125,7 +133,6 @@ export default function Login() {
               {message}
             </p>
           )}
-
 
           {isForgotPassword ? (
             <form onSubmit={handleForgotPasswordSubmit}>
@@ -204,7 +211,6 @@ export default function Login() {
               </button>
             </form>
           )}
-
         </div>
       </div>
     </div>
