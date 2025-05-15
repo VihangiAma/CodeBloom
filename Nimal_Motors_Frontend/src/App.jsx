@@ -30,33 +30,18 @@ import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
-
-
-// Section-specific Dashboards
-//import MechanicalDashboard from './components/SupervisorSection/Supervisors/MechanicalDashboard';
-//import ElectricalDashboard from './components/SupervisorSection/Supervisors/ElectricalDashboard';
-//import BodyShopDashboard from './components/SupervisorSection/Supervisors/BodyShopDashboard';
-//import ServiceDashboard from './Components/SupervisorSection/Supervisors/ServiceDashboard';
-import ServiceSupervisorDashboard from './components/SupervisorSection/ServiceSupervisorDashboard';
-import MechanicalSupervisorSection from './components/SupervisorSection/MechanicalSupervisorDashboard';
-
-
-
-
-
-
-
-
-
-
-
-
-
+import ProgressPage from './Components/SupervisorSection/ProgressPage';
+import ReportPage from './Components/SupervisorSection/ReportPage';
+import AppointmentDetails from './Components/SupervisorSection/Supervisors/AppointmentDetails';
+import CompletedServices from './components/SupervisorSection/CompletedServices';
+import NotificationBar from './components/SupervisorSection/Notification';
+import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
 
 
 
 // Section-specific Dashboards
-
+import ServiceSupervisorDashboard from './Components/SupervisorSection/ServiceSupervisorDashboard';
+import MechanicalSupervisorSection from './Components/SupervisorSection/MechanicalSupervisorDashboard';
 import ElectricalSupervisorSection from './components/SupervisorSection/ElectriaclSupervisorDashboard';
 import BodyShopSupervisorSection from './Components/SupervisorSection/BodyShopSupervisorDashboard';
 import PremiumCustomerDashboard from './pages/premiumcustomer/PremiumCustomerDashboard'; 
@@ -70,13 +55,8 @@ import AccountantDashboard  from './components/AccountantDashboard';
 import ExpensesPage from './components/ExpensesPage';   
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
-
-
-//import SalesReportAdd from './assets/pages/SalesReportAdd';
-//import SalesReportUpdate from './assets/pages/SalesReportUpdate';
-//import SalesReportDelete from './assets/pages/SalesReportDelete';
-//import SalesReportView from './assets/pages/SalesReportView';
-
+import SalesReportView from './assets/pages/SalesReportView';
+import GenerateInvoicePage from './components/GenerateInvoicePage ';
 
 
 // Protected Route Components
@@ -120,10 +100,10 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        {/*<Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />*/}
         
 
         {/* Supervisor Protected Routes */}
-
         
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
         <Route path="/progress" element={<SupervisorPrivateRoute><ProgressPage /></SupervisorPrivateRoute>} />
@@ -131,15 +111,13 @@ function App() {
          <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
-        <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
-
+        {/*<Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />*/}
 
 
         
         {/* Section-specific Dashboards */}
-
+      
         <Route path="/service-supervisor-dashboard" element={<SupervisorPrivateRoute><ServiceSupervisorDashboard /></SupervisorPrivateRoute>} />
-
         <Route path="/mechanical-supervisor-dashboard" element={<SupervisorPrivateRoute><MechanicalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/body-shop-supervisor-dashboard" element={<SupervisorPrivateRoute><BodyShopSupervisorSection /></SupervisorPrivateRoute>} />
@@ -151,12 +129,9 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
 
-
-
         <Route path="/view-sales-report" element={<SalesReportView />} />
         <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
         <Route path="/generate-invoice/:repairId" element={<GenerateInvoicePage />} />
-
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
