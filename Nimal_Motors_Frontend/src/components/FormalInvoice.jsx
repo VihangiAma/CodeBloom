@@ -1,6 +1,6 @@
 import React from "react";
 import logoImage from "../assets/logo.jpg";
-import carImage from "../assets/car.png"; // Replace with your car image path
+import carImage from "../assets/car.jpeg"; // Replace with your car image path
 
 const InvoiceTemplate = ({ invoice }) => {
   const total = invoice.totalAmount.toFixed(2);
