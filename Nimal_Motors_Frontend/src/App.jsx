@@ -5,7 +5,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
+
+// import RegisterPage from './pages/register/RegisterPage';
+
+
 import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+import PremiumServiceForm from './pages/premiumcustomer/PremiumServiceForm';
+
+//  import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
+
+
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
@@ -31,7 +40,8 @@ import Completedappoinments from './components/SupervisorSection/Supervisors/Com
 import AdminInvoiceView from './pages/admin/AdminInvoiceView';
 import AddServiceForm from './components/SupervisorSection/AddServiceForm';
 import UserTable from './components/SupervisorSection/UserTable';
-import InvoiceForm from './components/SupervisorSection/InvoiceForm';
+
+
 
 
 // Section-specific Dashboards
@@ -68,6 +78,10 @@ function App() {
   return (
     <Router>
       <Routes>
+
+        <Route path="/profile/basic" element={<PremiumServiceForm />} />
+
+
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
@@ -93,7 +107,6 @@ function App() {
         <Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />
         
 
-
         {/* Supervisor Protected Routes */}
         
         <Route path="/appointments" element={<SupervisorPrivateRoute><AppointmentDetails /></SupervisorPrivateRoute>} />
@@ -116,14 +129,13 @@ function App() {
         <Route path="/electrical-supervisor-dashboard" element={<SupervisorPrivateRoute><ElectricalSupervisorSection /></SupervisorPrivateRoute>} />
         <Route path="/body-shop-supervisor-dashboard" element={<SupervisorPrivateRoute><BodyShopSupervisorSection /></SupervisorPrivateRoute>} />
 
-
-
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/sales-report" element={<SalesReport />} />
+
         <Route path="/view-sales-report" element={<SalesReportView />} />
 
         {/* Fallback */}

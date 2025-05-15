@@ -7,8 +7,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");  // For Forgot Password
-  const [isForgotPassword, setIsForgotPassword] = useState(false);  // To toggle the forgot password view
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState(""); // For Forgot Password
+  const [isForgotPassword, setIsForgotPassword] = useState(false); // To toggle the forgot password view
 
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        'http://localhost:5001/api/user/login',
+        "http://localhost:5001/api/user/login",
         { email, password }
       );
 
@@ -67,8 +67,13 @@ export default function Login() {
         navigate("/not-found");
       }
     } catch (error) {
-      console.error("Login failed:", error.response?.data?.message || error.message);
-      setMessage("Login failed: " + (error.response?.data?.message || "Server error"));
+      console.error(
+        "Login failed:",
+        error.response?.data?.message || error.message
+      );
+      setMessage(
+        "Login failed: " + (error.response?.data?.message || "Server error")
+      );
     }
   };
 
@@ -82,13 +87,16 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        'http://localhost:5001/api/user/forgot-password',
+        "http://localhost:5001/api/user/forgot-password",
         { email: forgotPasswordEmail }
       );
       setMessage("Password reset email sent! Check your inbox.");
-      setIsForgotPassword(false);  // Hide the forgot password form after successful request
+      setIsForgotPassword(false); // Hide the forgot password form after successful request
     } catch (error) {
-      console.error("Forgot password failed:", error.response?.data?.message || error.message);
+      console.error(
+        "Forgot password failed:",
+        error.response?.data?.message || error.message
+      );
       setMessage("Error: " + (error.response?.data?.message || "Server error"));
     }
   };
@@ -109,15 +117,15 @@ export default function Login() {
           {message && (
             <p
               className={`mb-4 text-center ${
-                message.includes("successful") ? "text-green-200" : "text-red-300"
+                message.includes("successful")
+                  ? "text-green-200"
+                  : "text-red-300"
               }`}
             >
               {message}
             </p>
           )}
 
-
-          
 
           {isForgotPassword ? (
             <form onSubmit={handleForgotPasswordSubmit}>
@@ -197,8 +205,6 @@ export default function Login() {
             </form>
           )}
 
-
-          
         </div>
       </div>
     </div>

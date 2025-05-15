@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SalesReport from "./SalesReport";
-import UsersReport from "./UserReport";
 import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
 import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
 import UserTable from "../../components/SupervisorSection/UserTable";
-
+import OperationDashbord from "./OperationDashbord";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -16,23 +14,6 @@ const DashboardCard = ({ title, description, emoji, color, onClick }) => {
       <div className="text-5xl mb-4">{emoji}</div>
       <h2 className="text-2xl font-bold mb-2">{title}</h2>
       <p className="opacity-90">{description}</p>
-    </div>
-  );
-};
-
-const ReportSection = ({ reportType, goBack }) => {
-  return (
-    <div className="p-8 min-h-[calc(100vh-8rem)]">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold mb-6">{reportType}</h2>
-        {reportType === "Financial Report" ? (
-          <SalesReport />
-        ) : reportType === "User Report" ? (
-          <UsersReport />
-        ) : (
-          <p>Displaying {reportType} data...</p>
-        )}
-      </div>
     </div>
   );
 };
@@ -49,7 +30,7 @@ const AdminDashboard = () => {
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6 text-center">
               <p className="text-gray-600 text-xl mb-4">
-                Booking Management page coming soon...
+                
               </p>
               <button
                 onClick={() => setActivePage("dashboard")}
@@ -66,7 +47,7 @@ const AdminDashboard = () => {
             <div className="bg-white rounded-lg shadow p-6 text-center">
               <p className="text-gray-600 text-xl mb-4">
                 <AdminInvoiceView
-                  onClick={() => setActivePage("sectionManagement")}
+                  onClick={() => setActivePage("boking Management")}
                 />
               </p>
               <button
@@ -79,21 +60,24 @@ const AdminDashboard = () => {
           </div>
         );
       case "userManagement":
-        navigate("/admin/users"); 
-        return null; 
-      case "salesReport":
+
+        navigate("/admin/users");
+        return null;
+
+      case "operationDashboard":
+
         return (
-          <ReportSection
-            reportType="Financial Report"
-            goBack={() => setActivePage("dashboard")}
-          />
-        );
-      case "userReport":
-        return (
-          <ReportSection
-            reportType="User Report"
-            goBack={() => setActivePage("dashboard")}
-          />
+          <div className="p-8 min-h-[calc(100vh-8rem)]">
+            <div className="bg-white rounded-lg shadow p-6">
+              <OperationDashbord />
+              <button
+                onClick={() => setActivePage("dashboard")}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded transition"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
         );
       default:
         return (
@@ -120,18 +104,11 @@ const AdminDashboard = () => {
               onClick={() => navigate("/admin/users")}
             />
             <DashboardCard
-              title="Financial Report"
-              description="View and analyze sales data."
-              color="bg-purple-500"
-              emoji="📈"
-              onClick={() => setActivePage("salesReport")}
-            />
-            <DashboardCard
-              title="User Report"
-              description="Analyze user activity."
-              color="bg-pink-500"
-              emoji="👤"
-              onClick={() => setActivePage("userReport")}
+              title="Operation Dashboard"
+              description="View operational metrics."
+              color="bg-orange-500"
+              emoji="⚙️"
+              onClick={() => setActivePage("operationDashboard")}
             />
           </div>
         );
@@ -204,24 +181,13 @@ const AdminDashboard = () => {
             </li>
             <li>
               <button
-                onClick={() => setActivePage("salesReport")}
+                onClick={() => setActivePage("operationDashboard")}
                 className={`w-full text-left p-4 rounded-lg flex items-center transition ${
-                  activePage === "salesReport" ? "bg-blue-700" : "hover:bg-blue-700"
+                  activePage === "operationDashboard" ? "bg-blue-700" : "hover:bg-blue-700"
                 }`}
               >
-                <span className="text-xl">📈</span>
-                {sidebarOpen && <span className="ml-4">Financial Report</span>}
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActivePage("userReport")}
-                className={`w-full text-left p-4 rounded-lg flex items-center transition ${
-                  activePage === "userReport" ? "bg-blue-700" : "hover:bg-blue-700"
-                }`}
-              >
-                <span className="text-xl">👤</span>
-                {sidebarOpen && <span className="ml-4">User Report</span>}
+                <span className="text-xl">⚙️</span>
+                {sidebarOpen && <span className="ml-4">Operation Dashboard</span>}
               </button>
             </li>
           </ul>
@@ -241,7 +207,7 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <div className="p-6 bg-gray-300 min-h-screen">
           {renderContent()}
         </div>
       </div>
