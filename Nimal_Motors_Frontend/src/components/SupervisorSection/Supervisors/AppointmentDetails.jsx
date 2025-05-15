@@ -88,12 +88,6 @@ const AppointmentDetails = ({ goBack }) => {
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      {/* <button
-        onClick={goBack}
-        className="mb-6 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center"
-      >
-        ← Back to Dashboard
-      </button> */}
 
       <h2 className="text-3xl font-bold mb-6 text-center">
         Service Booking Details
@@ -166,13 +160,13 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                   <>
                     <button
                       onClick={() => onApprove(appointment.serviceID)}
-                      className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2"
+                      className="bg-green text-white px-3 py-1 rounded hover:bg-green mr-2"
                     >
                       Approve
                     </button>
                     <button
                       onClick={() => onReject(appointment.serviceID)}
-                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                      className="bg-red text-white px-3 py-1 rounded hover:bg-red"
                     >
                       Reject
                     </button>
@@ -180,7 +174,7 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                 ) : (
                   <button
                     onClick={() => onDelete(appointment.serviceID)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    className="bg-red text-white px-3 py-1 rounded hover:bg-red"
                   >
                     Delete
                   </button>
