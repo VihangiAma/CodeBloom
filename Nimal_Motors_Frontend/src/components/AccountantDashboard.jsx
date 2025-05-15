@@ -57,7 +57,7 @@ const AccountantDashboard = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-200">
+    <div className="flex h-screen bg-gray-200 w-380">
       <aside className="w-64 bg-red-600 text-white p-5 flex flex-col">
         <div className="mb-8 flex flex-col items-center">
           <img src={logoImage} alt="Logo" className="w-20 h-20 rounded mb-2" />

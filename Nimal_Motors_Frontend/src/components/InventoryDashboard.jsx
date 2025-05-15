@@ -258,7 +258,7 @@ history.push('/some-route');
        
      
                 
-         
+   
        
           </ul>
         </nav>
@@ -283,7 +283,15 @@ history.push('/some-route');
                 <option key={index} value={category}>{category}</option>
               ))}
             </select>
-            <FaUser  onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />
+            <div
+  onClick={() => navigate("/accountant-dashboard")}
+  className="flex items-center gap-2 cursor-pointer text-gray-700 hover:text-red-600 transition"
+  title="Go to Accountant Dashboard"
+>
+  <FaUser className="text-2xl" />
+  <span className="hidden sm:inline font-medium">Accountant</span>
+</div>
+
           </div>
         </header>
          {/* Stats Cards */}

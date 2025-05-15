@@ -88,7 +88,7 @@ const ExpensesPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form Section */}
         <form onSubmit={handleAddExpense} className="bg-white p-6 rounded shadow space-y-4">
-          <h2 className="text-xl font-semibold text-black">Add New Expense</h2>
+          <h2 className="text-xl font-semibold text-black">Add New Expense/Purchase</h2>
           <div>
             <label className="block font-medium mb-1">Category</label>
             <select
