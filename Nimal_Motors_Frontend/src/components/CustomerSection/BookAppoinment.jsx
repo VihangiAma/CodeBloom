@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const BookAppointment = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({  //using the useState hook to manage the form inputs
     customerName: "",
     address: "",
     contact: {
