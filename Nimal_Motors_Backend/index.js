@@ -65,6 +65,9 @@ app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/invoice", invoiceRoutes);
+
+
 
 
 // ✅ Error Handling Middleware
