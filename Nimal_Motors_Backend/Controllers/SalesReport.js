@@ -1,39 +1,34 @@
 import SalesReport from "../Models/SalesReport.js";
 
-export async function CreateSalesReport(req, res) {
+// @desc    Create a new sales report
+// @route   POST /api/sales-reports
+export const createSalesReport = async (req, res) => {
   try {
-    console.log("Received request data:", req.body); // ✅ Log request data
+    const { date, Section, Description, Amount } = req.body;
 
-    const Sreport = req.body;
-    const newReport = new SalesReport(Sreport);
-
-    await newReport.save();
-
-    res.status(201).json({
-      message: "Stock Report created successfully",
-      Sreport: newReport,
+    const report = new SalesReport({
+      date,
+      Section,
+      Description,
+      Amount,
     });
+
+    const savedReport = await report.save();
+    res.status(201).json(savedReport);
   } catch (error) {
-    console.error("❌ Error creating sales report:", error); // ✅ Log error details
-
-    res.status(500).json({
-      message: "Report creation failed",
-      error: error.message,
-    });
+    res.status(400).json({ message: "Error creating report", error });
   }
-}
-// Retrieves all user reports
-export async function getSalesReport(req, res) {
+};
+// @desc    Get all sales reports
+// @route   GET /api/sales-reports
+export const getAllSalesReports = async (req, res) => {
   try {
-    const reports = await SalesReport.find();
+    const reports = await SalesReport.find().sort({ date: -1 });
     res.status(200).json(reports);
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to retrieve reports",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Error fetching reports", error });
   }
-}
+};
 
 export async function deleteSalesReport(req, res) {
   try {

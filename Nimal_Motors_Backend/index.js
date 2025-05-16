@@ -51,7 +51,7 @@ connectDB();
 // ✅ Routes
 app.use("/api/user", userRoutes);
 app.use("/api/StockReport", StockRoter);
-app.use("/api/SalesReports", SalesRouter);
+app.use("/api/NewSalesReports", SalesRouter);
 app.use("/api/UserReport",UserReportRouter);
 app.use("/api/InventoryReports",InventoryReportRouters )
 app.use("/api/revenueReportAndExpencenew",RevenueandexpencesRouter)

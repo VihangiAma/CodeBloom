@@ -1,10 +1,10 @@
 import express from  "express";
-import {CreateSalesReport,getSalesReport,deleteSalesReport,updateSalesReport} from '../Controllers/SalesReport.js'
+import {createSalesReport,getAllSalesReports,deleteSalesReport,updateSalesReport} from '../Controllers/SalesReport.js'
 
 const SalesRouter = express.Router();
 
-SalesRouter.post("/",CreateSalesReport);
-SalesRouter.get("/",getSalesReport);
+SalesRouter.post("/",createSalesReport);
+SalesRouter.get("/",getAllSalesReports);
 SalesRouter.delete("/:id",deleteSalesReport);
 SalesRouter.put("/:id",updateSalesReport);
 
