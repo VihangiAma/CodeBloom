@@ -6,7 +6,6 @@ export async function postUser(req, res) {
     try {
       const { fullName, email, phoneNumber, username, password, type } = req.body;
   
-      // Check for missing fields
       if (!fullName || !email || !username || !password || !type) {
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -185,22 +184,26 @@ export async function LogInUser(req, res) {
 
         const token = jwt.sign(
             {
-               userId: user.userId,
+                userId: user.userId,
                 email: user.email,
-                type: user.type
+                type: user.type,
+                mustChangePassword: user.mustChangePassword // Include flag in token
             },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
         res.status(200).json({
-            message: "Login successful",
+            message: user.mustChangePassword 
+                ? "Login successful. Please change your temporary password." 
+                : "Login successful",
             token,
             user: {
-               userId: user.userId,
+                userId: user.userId,
                 email: user.email,
                 fullName: user.fullName,
-                type: user.type
+                type: user.type,
+                mustChangePassword: user.mustChangePassword // Include flag in response
             }
         });
 
@@ -211,7 +214,7 @@ export async function LogInUser(req, res) {
             error: error.message
         });
     }
-}
+};
 
 export async function updatePassword(req, res) {
     const { userId } = req.params;
@@ -541,6 +544,8 @@ export const getServiceSupProfile = async (req, res) => {
 
 
 
+
+// Updated addUserByAdmin to set mustChangePassword flag
 export const addUserByAdmin = async (req, res) => {
     try {
       const { fullName, email, phoneNumber, username, type } = req.body;
@@ -559,7 +564,7 @@ export const addUserByAdmin = async (req, res) => {
           .json({ message: "Email or username already exists." });
       }
   
-      // ✨ Generate strong temporary password
+      // Generate strong temporary password
       const generateStrongTempPassword = (length = 10) => {
         const lower = 'abcdefghijklmnopqrstuvwxyz';
         const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -580,7 +585,7 @@ export const addUserByAdmin = async (req, res) => {
         return password.split('').sort(() => 0.5 - Math.random()).join('');
       };
   
-      const tempPassword = generateStrongTempPassword(); // 🔥
+      const tempPassword = generateStrongTempPassword();
       const hashedPassword = await bcrypt.hash(tempPassword, 10);
   
       const newUser = new Users({
@@ -589,14 +594,15 @@ export const addUserByAdmin = async (req, res) => {
         phoneNumber,
         username,
         type,
-        password: hashedPassword
+        password: hashedPassword,
+        mustChangePassword: true // Set flag to indicate temporary password
       });
   
       await newUser.save();
   
       res.status(201).json({
         message: "User created successfully with a temporary password.",
-        tempPassword, // 👀 Show once
+        tempPassword,
         user: {
           userId: newUser.userId,
           fullName: newUser.fullName,
@@ -610,10 +616,9 @@ export const addUserByAdmin = async (req, res) => {
       console.error("Error in addUserByAdmin:", error);
       res.status(500).json({ message: "Internal server error.", error: error.message });
     }
-  };
-  
+};
 
-
+// Updated changePassword to reset mustChangePassword flag
 export const changePassword = async (req, res) => {
     const { userId, oldPassword, newPassword } = req.body;
 
@@ -634,6 +639,7 @@ export const changePassword = async (req, res) => {
         // Hash the new password and update the user's password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         user.password = hashedPassword;
+        user.mustChangePassword = false; // Reset the flag
         await user.save();
 
         // Respond with success message
@@ -660,7 +666,6 @@ export async function updateOwnProfile(req, res) {
         if (phoneNumber) updates.phoneNumber = phoneNumber;
         if (username) updates.username = username;
 
-        // ✅ Use correct field name again here
         const updatedUser = await Users.findOneAndUpdate(
             { userId: req.user.userId },
             updates,
@@ -690,3 +695,4 @@ export function isAdminValid(req) {
 export function isCustomerValid(req) {
     return req.user && req.user.type === "customer";
 }
+

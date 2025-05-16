@@ -2,22 +2,47 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUser, FaTrash, FaArrowLeft, FaEdit, FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [showAddUserForm, setShowAddUserForm] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [newUser, setNewUser] = useState({
     fullName: "",
     email: "",
     username: "",
     phoneNumber: "",
     type: "",
-    password: "",
+    password: ""
   });
-  
+
   const navigate = useNavigate();
+
+  // Set current user ID from JWT token
+  const setCurrentUserFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("No token found, redirecting to login");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      if (decoded.userId) {
+        setCurrentUserId(decoded.userId);
+      } else {
+        console.warn("No userId in token, redirecting to login");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Error decoding token", err);
+      navigate("/login");
+    }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -36,13 +61,19 @@ export default function AdminUsers() {
       setUsers(Array.isArray(res.data.data) ? res.data.data : []);
     } catch (err) {
       console.error("Error fetching users", err);
+      alert("Failed to fetch users: " + (err.response?.data?.message || "Unknown error"));
     }
   };
 
   const deleteUser = async (userId) => {
+    if (userId === currentUserId) {
+      alert("You cannot delete your own account. Please contact another admin for assistance.");
+      return;
+    }
+
     if (!window.confirm("Are you sure you want to delete this user?")) return;
 
-        try {
+    try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:5001/api/user/${userId}`, {
         headers: {
@@ -51,8 +82,11 @@ export default function AdminUsers() {
       });
 
       setUsers(users.filter((user) => user.userId !== userId));
+      setSuccessMessage("User deleted successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       console.error("Error deleting user", err);
+      alert("Failed to delete user: " + (err.response?.data?.message || "Unknown error"));
     }
   };
 
@@ -69,10 +103,9 @@ export default function AdminUsers() {
   };
 
   const saveUpdatedUser = async () => {
-    // Validation for update user
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\d{10}$/;
-    
+
     if (!editUser.fullName || editUser.fullName.length < 2 || editUser.fullName.length > 50) {
       alert("Full Name is required and must be between 2 and 50 characters.");
       return;
@@ -111,6 +144,7 @@ export default function AdminUsers() {
       setEditUser(null);
     } catch (err) {
       console.error("Error updating user", err);
+      alert("Failed to update user: " + (err.response?.data?.message || "Unknown error"));
     }
   };
 
@@ -127,10 +161,9 @@ export default function AdminUsers() {
   };
 
   const handleAddUser = async () => {
-    // Validation for add user
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\d{10}$/;
-    
+
     if (!newUser.fullName || newUser.fullName.length < 2) {
       alert("Full Name is required and must be at least 2 characters.");
       return;
@@ -166,13 +199,13 @@ export default function AdminUsers() {
         alert("Authentication token missing. Please log in again.");
         return;
       }
-  
+
       const { password, ...userData } = newUser;
-  
+
       const res = await axios.post("http://localhost:5001/api/user/admin/add-user", userData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       if (res.status === 200 || res.status === 201) {
         alert(`User added successfully! Temporary Password: ${res.data.tempPassword}`);
         setNewUser({
@@ -181,10 +214,10 @@ export default function AdminUsers() {
           username: "",
           phoneNumber: "",
           type: "",
-          password: "",
+          password: ""
         });
         setShowAddUserForm(false);
-        fetchUsers(); // Refresh the user list
+        fetchUsers();
       }
     } catch (err) {
       console.error("Error adding new user", err.response ? err.response.data : err.message);
@@ -192,8 +225,9 @@ export default function AdminUsers() {
       alert(`Failed to add user: ${errorMessage}`);
     }
   };
-  
+
   useEffect(() => {
+    setCurrentUserFromToken();
     fetchUsers();
   }, []);
 
@@ -225,7 +259,6 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* Add User Form */}
       {showAddUserForm && (
         <div className="bg-gray-800 p-6 rounded-lg mb-6">
           <h3 className="text-lg font-bold mb-4">Add New User</h3>
@@ -296,7 +329,6 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* Users Table */}
       <div className="overflow-auto rounded-lg shadow border border-gray-700">
         <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-800">
@@ -328,8 +360,12 @@ export default function AdminUsers() {
                       <FaEdit /> Update
                     </button>
                     <button
-                      className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+                      className={`bg-red-600 text-white px-3 py-1 rounded text-xs flex items-center gap-1 ${
+                        user.userId === currentUserId ? "opacity-50 cursor-not-allowed" : "hover:bg-red-500"
+                      }`}
                       onClick={() => deleteUser(user.userId)}
+                      disabled={user.userId === currentUserId}
+                      title={user.userId === currentUserId ? "Cannot delete your own account" : "Delete user"}
                     >
                       <FaTrash /> Delete
                     </button>
@@ -347,7 +383,6 @@ export default function AdminUsers() {
         </table>
       </div>
 
-      {/* Edit Modal */}
       {editUser && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
           <div className="bg-gray-800 p-8 rounded-lg w-[500px]">

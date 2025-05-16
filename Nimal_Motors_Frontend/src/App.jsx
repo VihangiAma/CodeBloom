@@ -24,7 +24,7 @@ import ServiceSupervisor from './pages/supervisors/ServiceSupervisor';
 import ElectricalSupervisor from './pages/supervisors/ElectricalSupervisor';
 import AccountantProfile from './pages/AccountantProfile';
 import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
-import UserManagement from './pages/admin/UserManagement';
+// import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
 
 // Supervisor Protected Pages
@@ -95,7 +95,7 @@ function App() {
         <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="/admin-profile" element={<PrivateRoute><AdminProfile /></PrivateRoute>} />
         <Route path="/admin/users" element={<PrivateRoute><AdminUsers /></PrivateRoute>} />
-        <Route path="/user-management" element={<PrivateRoute><UserManagement /></PrivateRoute>} />
+        {/* <Route path="/user-management" element={<PrivateRoute><UserManagement /></PrivateRoute>} /> */}
         <Route path="/mechanical-supervisor" element={<PrivateRoute><MechanicalSupervisor /></PrivateRoute>} />
         <Route path="/bodyshop-supervisor" element={<PrivateRoute><BodyshopSupervisor /></PrivateRoute>} />
         <Route path="/service-supervisor" element={<PrivateRoute><ServiceSupervisor /></PrivateRoute>} />
