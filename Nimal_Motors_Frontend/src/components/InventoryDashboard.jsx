@@ -258,7 +258,7 @@ history.push('/some-route');
        
      
                 
-         
+   
        
           </ul>
         </nav>
@@ -283,7 +283,15 @@ history.push('/some-route');
                 <option key={index} value={category}>{category}</option>
               ))}
             </select>
-            <FaUser  onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />
+            <div
+  onClick={() => navigate("/accountant-dashboard")}
+  className="flex items-center gap-2 cursor-pointer text-gray-700 hover:text-red-600 transition"
+  title="Go to Accountant Dashboard"
+>
+  <FaUser className="text-2xl" />
+  <span className="hidden sm:inline font-medium">Accountant</span>
+</div>
+
           </div>
         </header>
          {/* Stats Cards */}
@@ -406,75 +414,102 @@ history.push('/some-route');
         </div>
       )}
 
-        {editItem && (  // Check if an item is being edited
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-    <div className="bg-white p-5 rounded shadow-md w-1/3">
-      <h2 className="text-xl font-bold mb-4">Edit Stock Item</h2>
+        {editItem && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h2 className="text-2xl font-bold mb-4 text-red-600 text-center">Edit Stock Item</h2>
 
-      <input 
-  type="text" 
-  value={formData.category} 
-  onChange={e => setFormData({ ...formData, category: e.target.value })} 
-  placeholder="Category" 
-  className="p-2 border w-full mb-2" 
-/>
-<input 
-  type="number" 
-  value={formData.stockQuantity} 
-  onChange={e => setFormData({ ...formData, stockQuantity: e.target.value })} 
-  placeholder="Stock" 
-  className="p-2 border w-full mb-2" 
-/>
-<select
-  value={formData.companyName}
-  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
->
-  <option value="">Select Company</option>
-  {supplierList.map((supplier) => (
-    <option key={supplier.supplierId} value={supplier.companyName}>
-      {supplier.companyName}
-    </option>
-  ))}
-</select>
-  
-<input 
-  type="text" 
-  value={formData.id} 
-  disabled 
-  className="p-2 border w-full mb-2" 
-/>
-<input 
-  type="text" 
-  value={formData.pricePerUnit} 
-  onChange={e => setFormData({ ...formData, pricePerUnit: e.target.value })} 
-  placeholder="Price" 
-  className="p-2 border w-full mb-2" 
-/>
-<input 
-  type="String" 
-  value={formData.itemName} 
-  onChange={e => setFormData({ ...formData, itemName: e.target.value })} 
-  placeholder="Item Name" 
-  className="p-2 border w-full mb-4" 
-/>
-<input 
-  type="text" 
-  value={formData.barcode} 
-  onChange={e => setFormData({ ...formData, barcode: e.target.value })} 
-  placeholder="Barcode" 
-  className="p-2 border w-full mb-4" 
-/>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <input 
+            type="text" 
+            value={formData.category} 
+            onChange={e => setFormData({ ...formData, category: e.target.value })} 
+            placeholder="Enter category" 
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          />
+        </div>
 
-<button onClick={() => {
-  console.log("Update button clicked!");
-  handleUpdate();
-}}>Update</button>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+          <input 
+            type="number" 
+            value={formData.stockQuantity} 
+            onChange={e => setFormData({ ...formData, stockQuantity: e.target.value })} 
+            placeholder="Enter quantity" 
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          />
+        </div>
 
-<button onClick={() => setEditItem(null)} className="ml-3 p-2">Cancel</button>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+          <select
+            value={formData.companyName}
+            onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          >
+            <option value="">Select Company</option>
+            {supplierList.map((supplier) => (
+              <option key={supplier.supplierId} value={supplier.companyName}>
+                {supplier.companyName}
+              </option>
+            ))}
+          </select>
+        </div>
 
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Price per Unit</label>
+          <input 
+            type="text" 
+            value={formData.pricePerUnit} 
+            onChange={e => setFormData({ ...formData, pricePerUnit: e.target.value })} 
+            placeholder="Rs." 
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+          <input 
+            type="text" 
+            value={formData.itemName} 
+            onChange={e => setFormData({ ...formData, itemName: e.target.value })} 
+            placeholder="Enter item name" 
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Barcode</label>
+          <input 
+            type="text" 
+            value={formData.barcode} 
+            onChange={e => setFormData({ ...formData, barcode: e.target.value })} 
+            placeholder="Enter barcode" 
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          />
+        </div>
+      </div>
+
+      <div className="mt-6 flex justify-end gap-3">
+        <button
+          onClick={handleUpdate}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+        >
+          Update
+        </button>
+        <button
+          onClick={() => setEditItem(null)}
+          className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   </div>
 )}
+
 {deleteItemId && (  // Check if there's an item to delete
   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
     <div className="bg-white p-5 rounded shadow-md w-1/3">
