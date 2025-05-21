@@ -205,7 +205,7 @@ const ServiceSupervisorDashboard = () => {
                   }`}
                   onClick={() => setActivePage("addservice")}
                 >
-                  Add Service
+                  Add Customer Details
                 </button>
               </li>
               <li>
