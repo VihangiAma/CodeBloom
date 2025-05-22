@@ -32,9 +32,9 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     if (name === "phone" || name === "email") {
       setFormData({
         ...formData,
-        contact: { 
-          ...formData.contact, 
-          [name]: value 
+        contact: {
+          ...formData.contact,
+          [name]: value,
         },
       });
     } else {
@@ -99,7 +99,6 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     return true;
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -149,7 +148,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
+    <div className="mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
       <h2 className="text-2xl font-bold mb-6 text-center">
         Add Customer Deatils
       </h2>
