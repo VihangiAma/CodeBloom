@@ -58,6 +58,7 @@ history.push('/some-route');
         setLowStockCount(response.data.filter(item => item.stockQuantity < 50).length);
         setTotalSuppliers(new Set(response.data.map(item => item.companyName)).size);
         setRecentUpdates(response.data.slice(-3));
+        
 //fetchLowStockItems();
  // const interval = setInterval(fetchLowStockItems, 60000); // Refresh every minute
   //  return () => clearInterval(interval);

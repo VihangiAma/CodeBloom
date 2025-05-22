@@ -11,6 +11,7 @@ import {
   FaHome,
   FaChartLine,
 } from "react-icons/fa";
+
 import logoImage from "../assets/logo.jpg";
 import {
   BarChart,
@@ -37,7 +38,7 @@ const AccountantDashboard = () => {
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
   const [categorySummary, setCategorySummary] = useState([]);
   const [supplierSummary, setSupplierSummary] = useState([]);
-  const [approvedRepairs, setApprovedRepairs] = useState([]);//used for invoicing
+  const [approvedRepairs, setApprovedRepairs] = useState([]);//used for invoicing 
 
   // Fetch approved repairs for invoicing
   // This effect runs once when the component mounts
@@ -78,6 +79,7 @@ const AccountantDashboard = () => {
 
       <main className="flex-1 p-8 overflow-y-auto">
         <h2 className="text-3xl font-bold mb-6 text-black">Accountant Dashboard</h2>
+
 {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-4 rounded shadow flex items-center gap-4">
@@ -109,6 +111,7 @@ const AccountantDashboard = () => {
             </div>
           </div>
         </div>
+
         {/* Approved Repairs for Invoicing - Moved Up */}
 <div className="bg-white p-6 rounded shadow mb-6">
   <h3 className="text-xl font-semibold mb-4 text-black">Approved Repairs – Generate Invoice</h3>
