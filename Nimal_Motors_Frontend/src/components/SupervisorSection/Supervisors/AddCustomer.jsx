@@ -14,7 +14,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     },
     vehicleNumber: "",
     vehicleType: "",
-    date: "",
+    serviceDate: "",
     time: "",
     // status: "Not Complete yet", // Default status
   });
@@ -87,7 +87,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
       Swal.fire("Invalid Input", "Please select a vehicle type.", "warning");
       return false;
     }
-    if (!formData.date) {
+    if (!formData.serviceDate) {
       Swal.fire("Invalid Input", "Date is required.", "warning");
       return false;
     }
@@ -122,7 +122,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
         },
         vehicleNumber: "",
         vehicleType: "",
-        date: "",
+        serviceDate: "",
         time: "",
         status: "Not Complete yet",
       });
