@@ -4,6 +4,7 @@ import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
 import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
 import UserTable from "../../components/SupervisorSection/UserTable";
 import OperationDashbord from "./OperationDashbord";
+import BookingReport from "./BookingReport";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -30,7 +31,9 @@ const AdminDashboard = () => {
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6 text-center">
               <p className="text-gray-600 text-xl mb-4">
-                
+                <BookingReport
+                onClick={() => setActivePage("boking Management")}
+                />
               </p>
               <button
                 onClick={() => setActivePage("dashboard")}
