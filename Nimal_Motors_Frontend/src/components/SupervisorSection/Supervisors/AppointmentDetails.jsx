@@ -150,7 +150,7 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
               <td className="px-4 py-2 border">{appointment.vehicleType}</td>
               <td className="px-4 py-2 border">
-                {new Date(appointment.date).toLocaleDateString()}
+                {new Date(appointment.serviceDate).toLocaleDateString()}
               </td>
               <td className="px-4 py-2 border">{appointment.time}</td>
 
