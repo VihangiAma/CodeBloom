@@ -3,7 +3,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const BookAppointment = () => {
-  const [formData, setFormData] = useState({  //using the useState hook to manage the form inputs
+  const [formData, setFormData] = useState({
+    //using the useState hook to manage the form inputs
     customerName: "",
     address: "",
     contact: {
@@ -12,7 +13,7 @@ const BookAppointment = () => {
     },
     vehicleNumber: "",
     vehicleType: "",
-    date: "",
+    serviceDate: "",
     time: "",
   });
 
@@ -88,7 +89,7 @@ const BookAppointment = () => {
       Swal.fire("Invalid Input", "Please select a vehicle type.", "warning");
       return false;
     }
-    if (!formData.date) {
+    if (!formData.serviceDate) {
       Swal.fire("Invalid Input", "Date is required.", "warning");
       return false;
     }
@@ -123,7 +124,7 @@ const BookAppointment = () => {
         },
         vehicleNumber: "",
         vehicleType: "",
-        date: "",
+        serviceDate: "",
         time: "",
       });
     } catch (error) {
@@ -219,7 +220,7 @@ const BookAppointment = () => {
         <input
           type="date"
           name="date"
-          value={formData.date}
+          value={formData.serviceDate}
           onChange={handleChange}
           required
           className="w-full border p-2 rounded"
