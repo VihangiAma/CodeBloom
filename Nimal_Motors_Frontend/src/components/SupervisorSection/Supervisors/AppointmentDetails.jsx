@@ -88,9 +88,8 @@ const AppointmentDetails = ({ goBack }) => {
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-
       <h2 className="text-3xl font-bold mb-6 text-center">
-        Service Booking Details
+        Manage Appointments
       </h2>
 
       {errorMessage && (
