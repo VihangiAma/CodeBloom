@@ -214,7 +214,7 @@ const MechanicalSupervisorSection = () => {
                 }`}
                 onClick={() => setActivePage("addcustomer")}
               >
-                Add Customer
+                Add Customer Details.
               </button>
             </li>
             <li>

@@ -1,4 +1,4 @@
-//Approved Appointments can only be marked as complete      
+//Approved Appointments can only be marked as complete
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -25,7 +25,7 @@ const ApprovedAppointments = () => {
   const handleComplete = async (serviceID) => {
     try {
       await axios.put(`http://localhost:5001/api/appointments/${serviceID}`, {
-        status: "Complete"
+        status: "Complete",
       });
 
       setAppointments((prev) =>
@@ -49,7 +49,9 @@ const ApprovedAppointments = () => {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-md rounded-2xl">
-      <h2 className="text-3xl font-bold mb-6 text-center">Approved Appointments</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">
+        Approved Appointments
+      </h2>
       <table className="min-w-full table-auto border mb-6">
         <thead className="bg-gray-200">
           <tr>
@@ -66,7 +68,8 @@ const ApprovedAppointments = () => {
           {appointments.map((appointment) => (
             <tr key={appointment._id} className="text-center">
               <td className="px-4 py-2 border">
-                {appointment.displayID || `SS${String(appointment.serviceID).padStart(3, "0")}`}
+                {appointment.displayID ||
+                  `SS${String(appointment.serviceID).padStart(3, "0")}`}
               </td>
               <td className="px-4 py-2 border">{appointment.customerName}</td>
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
@@ -74,11 +77,15 @@ const ApprovedAppointments = () => {
               <td className="px-4 py-2 border">
                 {new Date(appointment.date).toLocaleDateString()}
               </td>
-             
+
               <td className="px-4 py-2 border">{appointment.time}</td>
               <td className="px-4 py-2 border">
                 <select
-                  value={appointment.status === "Complete" ? "Complete" : "Not Complete yet"}
+                  value={
+                    appointment.status === "Complete"
+                      ? "Complete"
+                      : "Not Complete yet"
+                  }
                   onChange={(e) => {
                     if (e.target.value === "Complete") {
                       handleComplete(appointment.serviceID);
