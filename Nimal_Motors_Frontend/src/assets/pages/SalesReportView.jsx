@@ -18,6 +18,7 @@ const FinancialReport = () => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
+ 
   const months = [
     { value: '', label: 'All Months' },
     { value: '0', label: 'January' },
@@ -34,6 +35,7 @@ const FinancialReport = () => {
     { value: '11', label: 'December' }
   ];
 
+  // Generate array of recent years for dropdown (current year and 4 previous years)
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
   useEffect(() => {
@@ -41,6 +43,7 @@ const FinancialReport = () => {
       try {
         setLoading(true);
         
+        // Fetch both credits and debits in parallel
         const [creditsResponse, debitsResponse] = await Promise.all([
           axios.get("http://localhost:5001/api/NewSalesReports"),
           axios.get("http://localhost:5001/api/expenses")
@@ -61,6 +64,7 @@ const FinancialReport = () => {
           }));
         };
         
+        // Process and store the fetched data
         const processedCredits = processData(creditsResponse.data, 'credit');
         const processedDebits = processData(debitsResponse.data, 'debit');
         
@@ -79,12 +83,14 @@ const FinancialReport = () => {
     fetchData();
   }, []);
 
+  // Filter data whenever month/year selection or raw data changes
   useEffect(() => {
     if (credits.length > 0 && debits.length > 0) {
       filterData();
     }
   }, [selectedMonth, selectedYear, credits, debits]);
 
+  // Filter credits and debits based on selected month and year
   const filterData = () => {
     let filteredCreds = credits;
     let filteredDebs = debits;
@@ -112,6 +118,7 @@ const FinancialReport = () => {
         .reduce((sum, item) => sum + item.amount, 0);
     });
 
+    // Calculate total credits for each section
     return {
       labels: sections,
       datasets: [{
@@ -136,9 +143,12 @@ const FinancialReport = () => {
 
   const sectionChartData = prepareSectionChartData();
 
+
+  // Function to add header to PDF document
   const addHeader = (doc, isFirstPage = true) => {
     if (!isFirstPage) return 15;
-    
+   
+    // Add report title with selected month/year
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.text('NIMAL MOTORS', 105, 15, { align: 'center' });
@@ -165,6 +175,7 @@ const FinancialReport = () => {
     return 65;
   };
 
+   // Generate and download PDF report
   const downloadReport = () => {
     try {
       if (filteredCredits.length === 0 && filteredDebits.length === 0) {
@@ -181,6 +192,7 @@ const FinancialReport = () => {
       doc.setFontSize(12);
       doc.text('Credits', 15, startY);
       
+      // Generate credits table using autoTable
       autoTable(doc, {
         startY: startY + 5,
         head: [['Date', 'Section', 'Amount']],
@@ -268,14 +280,18 @@ const FinancialReport = () => {
     }
   };
 
+  // Loading state UI
+
   if (loading) {
     return <div className="text-center py-8">Loading financial data...</div>;
   }
 
+  // Error state UI
   if (error) {
     return <div className="text-center text-red-500 py-8">{error}</div>;
   }
 
+  // Main component UI
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
