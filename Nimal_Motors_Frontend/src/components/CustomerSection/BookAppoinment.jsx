@@ -219,7 +219,7 @@ const BookAppointment = () => {
 
         <input
           type="date"
-          name="date"
+          name="serviceDate"
           value={formData.serviceDate}
           onChange={handleChange}
           required
