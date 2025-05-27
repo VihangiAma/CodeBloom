@@ -63,30 +63,8 @@ const SalesReport = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Date Range Selector */}
-      <div className="flex items-center gap-2 text-sm mb-6">
-        <span className="font-medium text-gray-700 whitespace-nowrap">Filter by Date Range:</span>
-        <DatePicker 
-          selected={startDate} 
-          onChange={setStartDate} 
-          selectsStart 
-          startDate={startDate} 
-          endDate={endDate} 
-          placeholderText="Start" 
-          className="w-28 p-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
-        />
-        <span>-</span>
-        <DatePicker 
-          selected={endDate} 
-          onChange={setEndDate} 
-          selectsEnd 
-          startDate={startDate} 
-          endDate={endDate} 
-          minDate={startDate} 
-          placeholderText="End" 
-          className="w-28 p-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+      
+      
 
       {/* Sales Report Table */}
       <div className="mb-8">

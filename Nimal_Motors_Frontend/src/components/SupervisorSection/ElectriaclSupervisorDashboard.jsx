@@ -7,7 +7,7 @@ import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
-
+import CompletedServices from "./CompletedServices";
 
 const ElectricalSupervisorSection = () => {
   const navigate = useNavigate();
@@ -85,12 +85,12 @@ const ElectricalSupervisorSection = () => {
             </motion.div>
           </div>
         );
-        case "invoices":
-          return (
-            <div className="text-gray-600 p-8 text-center text-xl">
-               <CompletedServices section="electrical" sectionPrefix="ES" />
-            </div>
-          );
+      case "invoices":
+        return (
+          <div className="text-gray-600 p-8 text-center text-xl">
+            <CompletedServices section="electrical" sectionPrefix="ES" />
+          </div>
+        );
 
       case "report":
         return (
@@ -105,10 +105,30 @@ const ElectricalSupervisorSection = () => {
           <>
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
-              <StatCard icon={<FaListAlt />} label="Total Appointments" value={stats.total} color="text-blue-600" />
-              <StatCard icon={<FaCheckCircle />} label="Completed" value={stats.completed} color="text-green-600" />
-              <StatCard icon={<FaSpinner className="animate-spin-slow" />} label="In Progress" value={stats.inProgress} color="text-yellow-500" />
-              <StatCard icon={<FaClock />} label="Pending" value={stats.pending} color="text-red-500" />
+              <StatCard
+                icon={<FaListAlt />}
+                label="Total Appointments"
+                value={stats.total}
+                color="text-blue-600"
+              />
+              <StatCard
+                icon={<FaCheckCircle />}
+                label="Completed"
+                value={stats.completed}
+                color="text-green-600"
+              />
+              <StatCard
+                icon={<FaSpinner className="animate-spin-slow" />}
+                label="In Progress"
+                value={stats.inProgress}
+                color="text-yellow-500"
+              />
+              <StatCard
+                icon={<FaClock />}
+                label="Pending"
+                value={stats.pending}
+                color="text-red-500"
+              />
             </div>
 
             {/* Dashboard Cards */}
@@ -145,7 +165,10 @@ const ElectricalSupervisorSection = () => {
 
             {/* Stats Fetcher */}
             {showProgressFetcher && (
-              <Progress section="electrical" onStatsUpdate={handleStatsUpdate} />
+              <Progress
+                section="electrical"
+                onStatsUpdate={handleStatsUpdate}
+              />
             )}
           </>
         );
@@ -153,39 +176,47 @@ const ElectricalSupervisorSection = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-w-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
         <div>
-        <div className="flex items-center p-6 space-x-3">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
-          🚗 NIMAL MOTORS
-        </h1>
+          <div className="flex items-center p-6 space-x-3">
+            <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+              🚗 NIMAL MOTORS
+            </h1>
+          </div>
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
+            <ul className="space-y-3">
+              {[
+                "dashboard",
+                "addservice",
+                "schedules",
+                "invoices",
+                "report",
+              ].map((item) => (
+                <li key={item}>
+                  <button
+                    className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                      activePage === item && "bg-gray-700"
+                    }`}
+                    onClick={() => setActivePage(item)}
+                  >
+                    {item === "dashboard"
+                      ? "Dashboard"
+                      : item === "addservice"
+                      ? "Add Service"
+                      : item === "schedules"
+                      ? "Manage Appointments"
+                      : item === "invoices"
+                      ? "Invoices"
+                      : "View Reports"}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <div className="p-6">
-          <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
-          <ul className="space-y-3">
-            {["dashboard", "addservice", "schedules", "invoices", "report"].map((item) => (
-              <li key={item}>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${activePage === item && "bg-gray-700"}`}
-                  onClick={() => setActivePage(item)}
-                >
-                  {item === "dashboard"
-                    ? "Dashboard"
-                    : item === "addservice"
-                    ? "Add Service"
-                    : item === "schedules"
-                    ? "Manage Appointments"
-                    : item === "invoices"
-                    ? "Invoices"
-                    : "View Reports"}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
       </div>
       {/* Main Content */}
       <div className="flex-1">
