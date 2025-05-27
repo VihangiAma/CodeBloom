@@ -2,12 +2,12 @@
 import Appointment from "../Models/Appointment.js";
 
 export const createAppointment = async (req, res) => {
-  const { contact, vehicleNumber, date, time } = req.body;
+  const { contact, vehicleNumber, serviceDate, time } = req.body;
 
   try {
     // Check if the same phone or vehicle number already has an appointment on the same date
     const existingDetails = await Appointment.findOne({
-      date,
+      serviceDate,
       $or: [
         { "contact.phone": contact.phone },
         { vehicleNumber: vehicleNumber },
@@ -21,7 +21,7 @@ export const createAppointment = async (req, res) => {
     }
 
     // Check if the selected time slot on the date is already booked
-    const slotTaken = await Appointment.findOne({ date, time });
+    const slotTaken = await Appointment.findOne({ serviceDate, time });
     if (slotTaken) {
       return res.status(400).json({
         error: "This time slot is already booked. Please choose another time.",
