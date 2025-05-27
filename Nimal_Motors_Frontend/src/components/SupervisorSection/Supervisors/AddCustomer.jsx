@@ -128,6 +128,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
       });
     } catch (error) {
       console.error(error);
+      console.log(formData);
       let errorMessage = "Something went wrong. Please try again.";
       if (error.response?.data?.error) {
         const serverError = error.response.data.error;
@@ -218,8 +219,8 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
 
         <input
           type="date"
-          name="date"
-          value={formData.date}
+          name="serviceDate"
+          value={formData.serviceDate}
           onChange={handleChange}
           required
           className="w-full border p-2 rounded"
