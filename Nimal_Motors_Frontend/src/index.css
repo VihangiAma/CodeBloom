@@ -56,7 +56,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -81,9 +81,9 @@ button:focus-visible {
   }
 
   button {
-    background-color: #ede3e3;
+    /* background-color: #ede3e3; */
     border-color: #030354;
-    color: #0d0d0f;
+    color: gray;
   }
 
 }

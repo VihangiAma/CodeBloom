@@ -86,10 +86,10 @@ const MechanicalSupervisorSection = () => {
             </motion.div>
           </div>
         );
-        case "invoices":
+      case "invoices":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
-              <CompletedServices section="mechanical" sectionPrefix="MS" />
+            <CompletedServices section="mechanical" sectionPrefix="MS" />
           </div>
         );
       case "report":
@@ -183,73 +183,73 @@ const MechanicalSupervisorSection = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-w-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
-      <div>
-         {/* Company Name */}
-        <div className="flex items-center p-6 space-x-3">
-          <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
-          🚗 NIMAL MOTORS
-        </h1>
+        <div>
+          {/* Company Name */}
+          <div className="flex items-center p-6 space-x-3">
+            <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+              🚗 NIMAL MOTORS
+            </h1>
+          </div>
+          {/* Navigation Menu */}
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
+            <ul className="space-y-3">
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "dashboard" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("dashboard")}
+                >
+                  Dashboard
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "addcustomer" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("addcustomer")}
+                >
+                  Add Customer Details.
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "schedules" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("schedules")}
+                >
+                  Manage Appointments
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "report" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("report")}
+                >
+                  View Reports
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "invoices" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("invoices")}
+                >
+                  View Invoices
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
-        {/* Navigation Menu */}
-        <div className="p-6">
-          <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
-          <ul className="space-y-3">
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "dashboard" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("dashboard")}
-              >
-                Dashboard
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "addcustomer" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("addcustomer")}
-              >
-                Add Customer Details.
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "schedules" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("schedules")}
-              >
-                Manage Appointments
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "report" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("report")}
-              >
-                View Reports
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "invoices" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("invoices")}
-              >
-                View Invoices
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
       </div>
 
       {/* Main Content */}
