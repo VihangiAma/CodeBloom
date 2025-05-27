@@ -75,7 +75,7 @@ const ApprovedAppointments = () => {
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
               <td className="px-4 py-2 border">{appointment.contact.phone}</td>
               <td className="px-4 py-2 border">
-                {new Date(appointment.date).toLocaleDateString()}
+                {new Date(appointment.serviceDate).toLocaleDateString()}
               </td>
 
               <td className="px-4 py-2 border">{appointment.time}</td>
