@@ -148,6 +148,7 @@ function App() {
         <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
         <Route path="/generate-invoice/:repairId" element={<GenerateInvoicePage />} />
         {/*<Route path="/formal-invoice" element={<FormalInvoice />} />*/}
+        
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
