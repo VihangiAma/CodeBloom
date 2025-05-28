@@ -9,6 +9,7 @@ import {
   FaIdCard,
   FaIndustry,
   FaUser,
+  FaEye,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
@@ -92,7 +93,7 @@ const SuppliersSection = () => {
   return (
     <div>
       <h2 className="text-3xl font-bold mb-6 text-black-700">Suppliers Directory</h2>
-      <FaUser onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />
+      {/*<FaUser onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />*/}
 
       <div className="overflow-x-auto rounded shadow-md bg-white">
         <table className="min-w-full text-sm text-left">
@@ -121,13 +122,13 @@ const SuppliersSection = () => {
                     onClick={() => handleEditClick(supplier)} // Corrected here
                     className="text-yellow-600 hover:text-yellow-800 block mb-2"
                   >
-                    <FaEdit /> Edit
+                    <FaEdit /> 
                   </button>
                   <button
                     onClick={() => fetchSupplierItems(supplier.companyName)}
                     className="text-blue-600 hover:underline text-sm"
                   >
-                    View Items
+                    <FaEye/>
                   </button>
                 </td>
               </tr>

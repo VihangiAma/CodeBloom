@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ExpensesPage = () => {
-  const [editModalOpen, setEditModalOpen] = useState(false);
-const [selectedExpense, setSelectedExpense] = useState(null);
-const [editForm, setEditForm] = useState({ amount: "", description: "" });
-const [deleteId, setDeleteId] = useState(null);
-
   const [suppliers, setSuppliers] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [formData, setFormData] = useState({
@@ -20,9 +15,15 @@ const [deleteId, setDeleteId] = useState(null);
     supplier: "",
     description: "",
   });
+
+  const [editData, setEditData] = useState(null); // For editing
+  const [editMode, setEditMode] = useState(false); // Modal toggle
+  const [deleteId, setDeleteId] = useState(null); // For deletion
+
   const navigate = useNavigate();
   const isSpareParts = formData.category === "Spare Parts";
 
+  // Fetch all expenses
   const fetchExpenses = () => {
     axios
       .get("http://localhost:5001/api/expenses")
@@ -42,6 +43,7 @@ const [deleteId, setDeleteId] = useState(null);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Add new expense
   const handleAddExpense = async (e) => {
     e.preventDefault();
     const { category, amount, date, supplier } = formData;
@@ -51,13 +53,8 @@ const [deleteId, setDeleteId] = useState(null);
       return;
     }
 
-    if (category === "Spare Parts" && !supplier) {
-      toast.error("Supplier is required for Spare Parts expenses.");
-      return;
-    }
-
-    if (isNaN(amount) || Number(amount) <= 0) {
-      toast.error("Amount must be a valid positive number.");
+    if (isSpareParts && !supplier) {
+      toast.error("Supplier is required for Spare Parts.");
       return;
     }
 
@@ -73,225 +70,217 @@ const [deleteId, setDeleteId] = useState(null);
       });
       fetchExpenses();
     } catch (err) {
-      console.error("Failed to add expense:", err);
       toast.error("Failed to add expense.");
     }
   };
-  const handleEdit = (expense) => {
-  setSelectedExpense(expense);
-  setEditForm({ amount: expense.amount, description: expense.description });
-  setEditModalOpen(true);
-};
 
-const handleUpdateExpense = async () => {
-  try {
-    await axios.put(`http://localhost:5001/api/expenses/update/${selectedExpense._id}`, editForm);
-    toast.success("Expense updated successfully!");
-    fetchExpenses();
-    setEditModalOpen(false);
-  } catch (err) {
-    toast.error("Update failed.");
-  }
-};
+  const handleEdit = (exp) => {
+    setEditData({ ...exp });
+    setEditMode(true);
+  };
 
-const handleDeleteConfirm = (id) => {
-  setDeleteId(id);
-};
+  const handleUpdate = async () => {
+    try {
+      await axios.put(`http://localhost:5001/api/expenses/update/${editData._id}`, editData);
+      toast.success("Expense updated!");
+      setEditMode(false);
+      fetchExpenses();
+    } catch (err) {
+      toast.error("Failed to update expense.");
+    }
+  };
 
-const confirmDelete = async () => {
-  try {
-    await axios.delete(`http://localhost:5001/api/expenses/delete/${deleteId}`);
-    toast.success("Expense deleted.");
-    fetchExpenses();
-    setDeleteId(null);
-  } catch (err) {
-    toast.error("Failed to delete.");
-  }
-};
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5001/api/expenses/delete/${deleteId}`);
+      toast.success("Expense deleted.");
+      setDeleteId(null);
+      fetchExpenses();
+    } catch (err) {
+      toast.error("Failed to delete expense.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-red-600">Manage Expenses / Purchases</h1>
-        <button
-          onClick={() => navigate("/accountant-dashboard")}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-        >
+        <button onClick={() => navigate("/accountant-dashboard")} className="bg-red-600 text-white px-4 py-2 rounded">
           ← Back to Dashboard
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
         {/* Form Section */}
         <form onSubmit={handleAddExpense} className="bg-white p-6 rounded shadow space-y-4">
-          <h2 className="text-xl font-semibold text-black">Add New Expense/Purchase</h2>
-          <div>
-            <label className="block font-medium mb-1">Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full border rounded p-2"
-              required
-            >
-              <option value="">Select</option>
-              <option value="Spare Parts">Spare Parts</option>
-              <option value="Electricity">Electricity</option>
-              <option value="Maintenance">Maintenance</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
+          <h2 className="text-xl font-semibold text-black">Add New Expense</h2>
+          <select name="category" value={formData.category} onChange={handleChange} required className="w-full p-2 border rounded">
+            <option value="">Select Category</option>
+            <option value="Spare Parts">Spare Parts</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Others">Others</option>
+          </select>
 
-          <div>
-            <label className="block font-medium mb-1">Amount (Rs.)</label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              className="w-full border rounded p-2"
-              required
-            />
-          </div>
+          <input type="number" name="amount" value={formData.amount} onChange={handleChange} placeholder="Amount (Rs.)" className="w-full p-2 border rounded" required />
 
-          <div>
-            <label className="block font-medium mb-1">Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full border rounded p-2"
-              max={new Date().toISOString().slice(0, 10)}
-              required
-            />
-          </div>
+          <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full p-2 border rounded" max={new Date().toISOString().slice(0, 10)} required />
 
-          <div>
-            <label className="block font-medium mb-1">Supplier</label>
-            <select
-              name="supplier"
-              value={formData.supplier}
-              onChange={handleChange}
-              className="w-full border rounded p-2"
-              disabled={!isSpareParts}
-              required={isSpareParts}
-            >
-              <option value="">Select Supplier</option>
-              {suppliers.map((s) => (
-                <option key={s._id} value={s.companyName}>
-                  {s.companyName}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select name="supplier" value={formData.supplier} onChange={handleChange} className="w-full p-2 border rounded" disabled={!isSpareParts} required={isSpareParts}>
+            <option value="">Select Supplier</option>
+            {suppliers.map((s) => (
+              <option key={s._id} value={s.companyName}>{s.companyName}</option>
+            ))}
+          </select>
 
-          <div>
-            <label className="block font-medium mb-1">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full border rounded p-2"
-              placeholder="Optional note"
-              rows={3}
-            ></textarea>
-          </div>
+          <textarea name="description" value={formData.description} onChange={handleChange} rows="3" placeholder="Description" className="w-full p-2 border rounded"></textarea>
 
-          <button
-            type="submit"
-            className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded mt-2"
-          >
+          <button type="submit" className="bg-black text-white px-4 py-2 rounded">
             <FaPlus className="inline mr-2" /> Add Expense
           </button>
         </form>
 
-        {/* Table Section */}
+        {/* Expense Table */}
         <div className="bg-white p-6 rounded shadow">
           <h2 className="text-xl font-semibold mb-4 text-black">Expense History</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto border">
-              <thead className="bg-red-600 text-white">
+          <table className="w-full border text-sm">
+            <thead className="bg-red-600 text-white">
+              <tr>
+                <th className="p-2">Date</th>
+                <th className="p-2">Category</th>
+                <th className="p-2">Amount</th>
+                <th className="p-2">Supplier</th>
+                <th className="p-2">Description</th>
+                <th className="p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenses.length === 0 ? (
                 <tr>
-                  <th className="p-2">Date</th>
-                  <th className="p-2">Category</th>
-                  <th className="p-2">Amount</th>
-                  <th className="p-2">Supplier</th>
-                  <th className="p-2">Description</th>
-                  <th className="p-2">Actions</th> {/* 🆕 Add Actions column */}
+                  <td colSpan="6" className="text-center p-4 text-gray-500">No records found.</td>
                 </tr>
-              </thead>
-              <tbody>
-                {expenses.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="p-4 text-center text-gray-500">
-                      No expenses recorded yet.
+              ) : (
+                expenses.map((exp, i) => (
+                  <tr key={i} className="text-center border-t hover:bg-gray-100">
+                    <td className="p-2">{exp.date?.slice(0, 10)}</td>
+                    <td className="p-2">{exp.category}</td>
+                    <td className="p-2">Rs. {exp.amount}</td>
+                    <td className="p-2">{exp.supplier}</td>
+                    <td className="p-2">{exp.description}</td>
+                    <td className="p-2 space-x-2">
+                      <button onClick={() => handleEdit(exp)} className="text-blue-600"><FaEdit /></button>
+                      <button onClick={() => setDeleteId(exp._id)} className="text-red-600"><FaTrash /></button>
                     </td>
                   </tr>
-                ) : (
-                  expenses.map((exp, idx) => (
-                    <tr key={idx} className="text-center border-t hover:bg-gray-100">
-                      <td className="p-2">{exp.date?.slice(0, 10)}</td>
-                      <td className="p-2">{exp.category}</td>
-                      <td className="p-2">Rs. {exp.amount}</td>
-                      <td className="p-2">{exp.supplier}</td>
-                      <td className="p-2">{exp.description}</td>
-                       <td className="p-2 space-x-2">
-           <button onClick={() => handleEdit(exp)} className="text-blue-600 hover:text-blue-800">
-            <FaEdit />
-          </button>
-           <button onClick={() => handleDeleteConfirm(exp._id)} className="text-red-600 hover:text-red-800">
-            <FaTrash />
-          </button>
-        </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-        {editMode && editData && (
+      </div>
+
+     {/* ✅ EDIT MODAL */}
+{editMode && editData && (
   <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-    <div className="bg-white p-6 rounded shadow w-full max-w-md">
-      <h2 className="text-xl font-bold mb-4">Edit Expense</h2>
+    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+      <h2 className="text-2xl font-bold text-red-600 mb-4">Edit Expense</h2>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
           try {
             await axios.put(`http://localhost:5001/api/expenses/update/${editData._id}`, editData);
-            toast.success("Expense updated!");
+            toast.success("Expense updated successfully!");
             fetchExpenses();
             setEditMode(false);
           } catch (err) {
-            console.error("Update failed", err);
+            console.error("Update failed:", err);
             toast.error("Failed to update expense.");
           }
         }}
         className="space-y-4"
       >
-        <input
-          className="w-full border p-2 rounded"
-          type="number"
-          value={editData.amount}
-          onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
-          placeholder="Amount"
-          required
-        />
-        <textarea
-          className="w-full border p-2 rounded"
-          value={editData.description}
-          onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-          placeholder="Description"
-        ></textarea>
-        <div className="flex justify-end gap-2">
-          <button type="submit" className="bg-green-600 px-4 py-2 rounded text-white">
-            Save
+        {/* Category */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Category</label>
+          <select
+            value={editData.category}
+            onChange={(e) => setEditData({ ...editData, category: e.target.value })}
+            className="w-full p-2 border rounded"
+            required
+          >
+            <option value="">Select</option>
+            <option value="Spare Parts">Spare Parts</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        {/* Amount */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Amount (Rs.)</label>
+          <input
+            type="number"
+            value={editData.amount}
+            onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+        {/* Date */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Date</label>
+          <input
+            type="date"
+            value={editData.date?.slice(0, 10)}
+            onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+            className="w-full p-2 border rounded"
+            max={new Date().toISOString().slice(0, 10)}
+            required
+          />
+        </div>
+
+        {/* Supplier */}
+        {editData.category === "Spare Parts" && (
+          <div>
+            <label className="block text-sm font-semibold mb-1">Supplier</label>
+            <select
+              value={editData.supplier}
+              onChange={(e) => setEditData({ ...editData, supplier: e.target.value })}
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="">Select Supplier</option>
+              {suppliers.map((s) => (
+                <option key={s._id} value={s.companyName}>{s.companyName}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Description</label>
+          <textarea
+            value={editData.description}
+            onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+            className="w-full p-2 border rounded"
+            rows={3}
+          ></textarea>
+        </div>
+
+        <div className="flex justify-end gap-3 pt-4">
+          <button
+            type="submit"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Save Changes
           </button>
           <button
             type="button"
-            className="bg-gray-400 px-4 py-2 rounded text-black"
             onClick={() => setEditMode(false)}
+            className="bg-gray-400 text-black px-4 py-2 rounded hover:bg-gray-500"
           >
             Cancel
           </button>
@@ -301,22 +290,32 @@ const confirmDelete = async () => {
   </div>
 )}
 
+
+      {/* ✅ DELETE MODAL */}
 {deleteId && (
   <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
     <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
-      <h3 className="text-lg font-semibold text-red-700 mb-3">Confirm Delete?</h3>
-      <p className="text-gray-600 mb-4">This action cannot be undone.</p>
+      <h3 className="text-xl font-semibold text-red-700 mb-2">Confirm Deletion</h3>
+      <p className="text-gray-600 mb-4">Are you sure you want to delete this expense? This action cannot be undone.</p>
       <div className="flex justify-end gap-3">
-        <button onClick={confirmDelete} className="bg-red-600 text-white px-4 py-2 rounded">Delete</button>
-        <button onClick={() => setDeleteId(null)} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+        <button
+          onClick={confirmDelete}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Yes, Delete
+        </button>
+        <button
+          onClick={() => setDeleteId(null)}
+          className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </div>
 )}
 
-      </div>
     </div>
-    
   );
 };
 
