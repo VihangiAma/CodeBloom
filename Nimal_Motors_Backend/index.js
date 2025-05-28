@@ -53,7 +53,7 @@ connectDB();
 // ✅ Routes
 app.use("/api/user", userRoutes);
 app.use("/api/StockReport", StockRoter);
-app.use("/api/SalesReports", SalesRouter);
+app.use("/api/NewSalesReports", SalesRouter);
 app.use("/api/UserReport",UserReportRouter);
 app.use("/api/InventoryReports",InventoryReportRouters )
 app.use("/api/revenueReportAndExpencenew",RevenueandexpencesRouter)
@@ -65,6 +65,9 @@ app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/invoice", invoiceRoutes);
+
+
 
 
 // ✅ Error Handling Middleware

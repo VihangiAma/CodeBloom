@@ -1,31 +1,25 @@
 import mongoose from "mongoose";
 
 const SalesReportSchema = mongoose.Schema({
-  itemId: {
+  
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  Section:{
+     type: String,
+    default: "",
+
+  },
+   Description: {
     type: String,
-    required: true,
-    unique: true,
+    default: "",
   },
-  itemName: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number, // Change from String to Number
-    required: true,
-  },
-  net_price_for_item: {
-    type: Number, // Change from String to Number
-    required: true,
-  },
-  Sales_Quntity: {
+  Amount: {
     type: Number,
     required: true,
-  },
-  profite: {
-    type: Number,
-    required: true,
+   
   },
 });
-const SalesReport = mongoose.model("SalesReports", SalesReportSchema);
+const SalesReport = mongoose.model("NewSalesReports", SalesReportSchema);
 export default SalesReport;

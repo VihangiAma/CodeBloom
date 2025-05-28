@@ -7,8 +7,7 @@ import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
-import CompletedServices from './CompletedServices';
-
+import CompletedServices from "./CompletedServices";
 
 const BodyShopSupervisorSection = () => {
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ const BodyShopSupervisorSection = () => {
   });
   const [showProgressFetcher, setShowProgressFetcher] = useState(true);
 
- useEffect(() => {
+  useEffect(() => {
     if (activePage === "dashboard") {
       setShowProgressFetcher(true);
     }
@@ -87,12 +86,12 @@ const BodyShopSupervisorSection = () => {
             </motion.div>
           </div>
         );
-        case "invoices":
-          return (
-            <div className="text-gray-600 p-8 text-center text-xl">
-              <CompletedServices section="bodyshop" sectionPrefix="BS" />
-            </div>
-          );
+      case "invoices":
+        return (
+          <div className="text-gray-600 p-8 text-center text-xl">
+            <CompletedServices section="bodyshop" sectionPrefix="BS" />
+          </div>
+        );
       case "report":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
@@ -173,10 +172,7 @@ const BodyShopSupervisorSection = () => {
 
             {/* Progress Updater */}
             {showProgressFetcher && (
-              <Progress
-                section="bodyshop"
-                onStatsUpdate={handleStatsUpdate}
-              />
+              <Progress section="bodyshop" onStatsUpdate={handleStatsUpdate} />
             )}
           </>
         );
@@ -184,73 +180,73 @@ const BodyShopSupervisorSection = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-w-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
         <div>
-        {/* Company Name and Logo */}
-        <div className="flex items-center p-6 space-x-3">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
-          🚗 NIMAL MOTORS
-        </h1>
+          {/* Company Name and Logo */}
+          <div className="flex items-center p-6 space-x-3">
+            <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+              🚗 NIMAL MOTORS
+            </h1>
+          </div>
+          {/* Navigation Menu */}
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
+            <ul className="space-y-3">
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "dashboard" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("dashboard")}
+                >
+                  Dashboard
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "addservice" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("addservice")}
+                >
+                  Add Customer Details.
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "schedules" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("schedules")}
+                >
+                  Manage Appointments
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "invoices" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("invoices")}
+                >
+                  Invoices
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                    activePage === "report" && "bg-gray-700"
+                  }`}
+                  onClick={() => setActivePage("report")}
+                >
+                  View Reports
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
-        {/* Navigation Menu */}
-        <div className="p-6">
-          <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
-          <ul className="space-y-3">
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "dashboard" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("dashboard")}
-              >
-                Dashboard
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "addservice" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("addservice")}
-              >
-                Add Service
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "schedules" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("schedules")}
-              >
-                Manage Appointments
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "invoices" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("invoices")}
-              >
-                Invoices
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "report" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("report")}
-              >
-                View Reports
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
       </div>
       {/* Main Content */}
       <div className="flex-1">

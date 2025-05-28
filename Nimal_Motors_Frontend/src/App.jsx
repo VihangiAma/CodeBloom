@@ -37,6 +37,14 @@ import CompletedServices from './components/SupervisorSection/CompletedServices'
 import NotificationBar from './components/SupervisorSection/Notification';
 import ApprovedAppointments from './components/SupervisorSection/Supervisors/ApprovedAppointments';
 
+import Completedappoinments from './components/SupervisorSection/Supervisors/Competedappoinments';
+import AdminInvoiceView from './pages/admin/AdminInvoiceView';
+import AddServiceForm from './components/SupervisorSection/AddServiceForm';
+import UserTable from './components/SupervisorSection/UserTable';
+import InvoiceForm from './components/SupervisorSection/InvoiceForm';
+
+
+
 
 
 // Section-specific Dashboards
@@ -112,7 +120,13 @@ function App() {
          <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
-        {/*<Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />*/}
+
+        <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
+        <Route path="/add-service" element={<SupervisorPrivateRoute><AddServiceForm /></SupervisorPrivateRoute>} />
+        <Route path="/user-table" element={<SupervisorPrivateRoute><UserTable /></SupervisorPrivateRoute>} />
+        <Route path="/invoice-form" element={<SupervisorPrivateRoute><InvoiceForm /></SupervisorPrivateRoute>} />
+        
+
 
 
         

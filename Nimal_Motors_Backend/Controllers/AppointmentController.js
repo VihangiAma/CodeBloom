@@ -1,24 +1,6 @@
 
 import Appointment from "../Models/Appointment.js";
 
-// Create a new appointment
-// export const createAppointment = async (req, res) => {
-//   try {
-//     const newAppointment = new Appointment(req.body);
-//     const savedAppointment = await newAppointment.save();
-
-//     // Generate displayID like "SS001" after serviceID is set
-//     savedAppointment.displayID = `SS${String(savedAppointment.serviceID).padStart(3, "0")}`;
-//     await savedAppointment.save();
-
-//     res.status(201).json(savedAppointment);
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
-// };
-
-
-
 export const createAppointment = async (req, res) => {
   const { contact, vehicleNumber, date, time } = req.body;
 
