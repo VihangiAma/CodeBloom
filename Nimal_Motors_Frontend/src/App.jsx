@@ -100,7 +100,7 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
-        <Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />
+        {/*<Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />*/}
         
 
         {/* Supervisor Protected Routes */}
@@ -111,7 +111,7 @@ function App() {
          <Route path="/completed-services" element={<SupervisorPrivateRoute><CompletedServices /></SupervisorPrivateRoute>} />
         <Route path="/notification" element={<SupervisorPrivateRoute><NotificationBar /></SupervisorPrivateRoute>} />
         <Route path="/approved-appointments" element={<SupervisorPrivateRoute><ApprovedAppointments /></SupervisorPrivateRoute>} />
-        <Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />
+        {/*<Route path="/completed-appointments" element={<SupervisorPrivateRoute><Completedappoinments /></SupervisorPrivateRoute>} />*/}
 
 
         
