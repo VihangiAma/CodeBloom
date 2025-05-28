@@ -66,7 +66,7 @@ const AccountantDashboard = () => {
       <aside className="w-64 bg-[#2C2C2C] text-white p-5 flex flex-col">
         <div className="mb-8 flex flex-col items-center">
           <img src={logoImage} alt="Logo" className="w-20 h-20 rounded mb-2" />
-          <h1 className="text-xl font-bold text-center text-white">Nimal Motors</h1>
+          <h2 className="text-2xl font-bold text-center text-white">Nimal Motors</h2>
         </div>
         <nav className="space-y-4">
           <button onClick={() => navigate("/accountant-dashboard")} className="flex items-center gap-3 px-3 py-2 rounded bg-[#B30000] hover:bg-[#D63333] text-white"><FaHome /> Dashboard</button>
