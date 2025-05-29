@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //import { useHistory } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import logoImage from "../assets/logo.jpg"
+import logoImage from "../assets/images/logo.png"
 import SuppliersSection from "./SupplierDetails";
 
 

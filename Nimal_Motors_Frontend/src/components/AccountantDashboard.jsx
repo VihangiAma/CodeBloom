@@ -11,7 +11,7 @@ import {
   FaHome,
   FaChartLine,
 } from "react-icons/fa";
-import logoImage from "../assets/logo.jpg";
+import logoImage from "../assets/images/logo.png";
 import {
   BarChart,
   Bar,

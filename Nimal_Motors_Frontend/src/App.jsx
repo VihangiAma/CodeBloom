@@ -5,6 +5,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 // Public Pages
 import LoginPage from './pages/login/LoginPage';
+import Home from './pages/customer/Home';
+import AboutUs from './pages/customer/AboutUs';
+import Sections from './pages/customer/Sections';
+import Packages from './pages/customer/Packages';
+import Appointment from './pages/Appointment';
 
 // import RegisterPage from './pages/register/RegisterPage';
 
@@ -18,7 +23,7 @@ import PremiumServiceForm from './pages/premiumcustomer/PremiumServiceForm';
 
 // Protected Pages (User)
 import ProfilePage from './pages/AccountantProfile';
-import AdminDashboard from './assets/pages/AdminDashBord';
+import AdminDashboard from './pages/AdminDashBord';
 import AdminProfile from './pages/admin/AdminProfile';
 import MechanicalSupervisor from './pages/supervisors/MechanicalSupervisor';
 import BodyshopSupervisor from './pages/supervisors/BodyshopSupervisor';
@@ -61,9 +66,9 @@ import BookAppointment from './Components/CustomerSection/BookAppoinment';
 import InventoryDashboard from './components/InventoryDashboard';
 import AccountantDashboard  from './components/AccountantDashboard'; 
 import ExpensesPage from './components/ExpensesPage';   
-import HomePage from './assets/pages/HomePage';
-import SalesReport from './assets/pages/SalesReport';
-import SalesReportView from './assets/pages/SalesReportView';
+import HomePage from './pages/HomePage';
+import SalesReport from './pages/SalesReport';
+import SalesReportView from './pages/SalesReportView';
 import GenerateInvoicePage from './components/GenerateInvoicePage ';
 
 
@@ -87,8 +92,12 @@ function App() {
 
 
         {/* Public Routes */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/packages" element={<Packages />} />
+        <Route path="/sections" element={<Sections />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/appointment" element={<Appointment />} />
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
 
 

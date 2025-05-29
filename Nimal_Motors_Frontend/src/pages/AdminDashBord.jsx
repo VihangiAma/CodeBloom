@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
-import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
-import UserTable from "../../components/SupervisorSection/UserTable";
+import AddServiceForm from "../components/SupervisorSection/AddServiceForm";
+import AdminInvoiceView from "./admin/AdminInvoiceView";
+import UserTable from "../components/SupervisorSection/UserTable";
 import OperationDashbord from "./OperationDashbord";
 import BookingReport from "./BookingReport";
 
