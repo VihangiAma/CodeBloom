@@ -6,8 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaFileInvoice, FaArrowLeft, FaDownload } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 //import InvoiceTemplate from "./InvoiceTemplate";
-import logoImage from "../assets/logo.jpg";
-import carImage from "../assets/car.jpeg";
+import logoImage from "../assets/images/logo.jpg";
+import carImage from "../assets/images/car.jpeg";
 
 const GenerateInvoicePage = () => {
   const { repairId } = useParams();

@@ -12,7 +12,7 @@ import {
   FaChartLine,
 } from "react-icons/fa";
 
-import logoImage from "../assets/logo.jpg";
+import logoImage from "../assets/images/logo.jpg";
 import {
   BarChart,
   Bar,

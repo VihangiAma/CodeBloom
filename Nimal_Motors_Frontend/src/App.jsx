@@ -7,7 +7,13 @@ import {
 } from "react-router-dom";
 
 // Public Pages
-import LoginPage from "./pages/login/LoginPage";
+import LoginPage from './pages/login/LoginPage';
+import Home from './pages/customer/Home';
+import AboutUs from './pages/customer/AboutUs';
+import Sections from './pages/customer/Sections';
+import Packages from './pages/customer/Packages';
+import Appointment from './pages/Appointment';
+
 
 // import RegisterPage from './pages/register/RegisterPage';
 
@@ -85,8 +91,12 @@ function App() {
         <Route path="/profile/basic" element={<PremiumServiceForm />} />
 
         {/* Public Routes */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/packages" element={<Packages />} />
+        <Route path="/sections" element={<Sections />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/appointment" element={<Appointment />} />
         <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
 
         {/* Customer Public */}
