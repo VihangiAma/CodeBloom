@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from 'react-router-dom';
-import logoImage from "../assets/logo.jpg";
+import logoImage from "../assets/images/logo.jpg";
 import SuppliersSection from "./SupplierDetails";
 
 const InventoryDashboard = () => {
