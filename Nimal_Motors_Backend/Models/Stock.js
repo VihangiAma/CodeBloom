@@ -1,13 +1,7 @@
 import mongoose from "mongoose";
-<<<<<<< Updated upstream
-//stockSchema.index({ itemName: 1, companyName: 1 }, { unique: true });
 
 const stockSchema = new mongoose.Schema({
-    
-=======
 
-const stockSchema = new mongoose.Schema({
->>>>>>> Stashed changes
     category: {
         type: String,
         required: true,
@@ -38,9 +32,7 @@ const stockSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    threshold: { type: Number, default: 10 },
-    
-<<<<<<< Updated upstream
+    threshold: { type: Number, default: 10 }, // ✅ Threshold for low stock alert
     barcode: {
         type: String,
         unique: true,  // ✅ Barcode must be unique ideally
@@ -50,10 +42,5 @@ const stockSchema = new mongoose.Schema({
 
 const Stock = mongoose.model("Stock", stockSchema);
 stockSchema.index({ itemName: 1, companyName: 1 }, { unique: true });
-=======
-});
-
-const Stock = mongoose.model("Stock", stockSchema);
->>>>>>> Stashed changes
 
 export default Stock;
