@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ServiceInvoice from "./ServiceInvoice";
+import InvoiceForm from "../InvoiceForm";
 
 const Completedappoinments = () => {
   const [invoices, setInvoices] = useState([]);
@@ -45,9 +45,13 @@ const Completedappoinments = () => {
   const handleDelete = async (serviceID) => {
     if (window.confirm("Are you sure you want to delete this invoice?")) {
       try {
-        await axios.delete(`http://localhost:5001/api/appointments/${serviceID}`);
+        await axios.delete(
+          `http://localhost:5001/api/appointments/${serviceID}`
+        );
 
-        setInvoices((prev) => prev.filter((inv) => inv.serviceID !== serviceID));
+        setInvoices((prev) =>
+          prev.filter((inv) => inv.serviceID !== serviceID)
+        );
       } catch (error) {
         console.error("Error deleting invoice:", error);
         alert("Failed to delete invoice.");
@@ -77,7 +81,7 @@ const Completedappoinments = () => {
               <td className="px-4 py-2 border">{invoice.vehicleNumber}</td>
               <td className="px-4 py-2 border">{invoice.contact.phone}</td>
               <td className="px-4 py-2 border">
-                {new Date(invoice.date).toLocaleDateString()}
+                {new Date(invoice.serviceDate).toLocaleDateString()}
               </td>
               <td className="px-4 py-2 border space-x-2">
                 <button
@@ -100,7 +104,7 @@ const Completedappoinments = () => {
 
       {showInvoice && selectedInvoice && (
         <div className="mt-6 border p-4 bg-gray-50 rounded">
-          <ServiceInvoice
+          <InvoiceForm
             initialData={selectedInvoice}
             onSubmit={handleSubmitInvoice}
             onCancel={handleCancelInvoice}

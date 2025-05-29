@@ -1,69 +1,109 @@
-import Invoice from "../Models/ServiceInvoiceModel.js";
+import ServiceInvoice from '../Models/ServiceInvoiceModel.js';
+
 // Create a new invoice
 export const createInvoice = async (req, res) => {
   try {
-    const newInvoice = new Invoice(req.body);
-    const savedInvoice = await newInvoice.save();
+    const {
+      serviceID,
+      customerName,
+      vehicleNumber,
+      vehicleType,
+      description,
+      section,
+      services,
+      items,
+      repairCost,
+      submittedBy,
+      adminRemarks
+    } = req.body;
 
-    // Generate displayID like "IN001"
-    savedInvoice.displayID = `IN${String(savedInvoice.serviceID).padStart(3, "0")}`;
-    await savedInvoice.save();
+    // Calculate total cost from repairCost + services + items
+    let totalCost = parseFloat(repairCost) ;
 
-    res.status(201).json(savedInvoice);
+    if (services) {
+      for (const key in services) {
+        if (services[key].selected) {
+          totalCost += parseFloat(services[key].cost) || 0;
+        }
+      }
+    }
+
+    if (items) {
+      for (const item of items) {
+        const cost = parseFloat(item.cost) || 0;
+        const qty = parseInt(item.qty) || 0;
+        totalCost += qty * cost;
+      }
+    }
+
+    const invoice = new ServiceInvoice({
+      serviceID,
+      customerName,
+      vehicleNumber,
+      vehicleType,
+      description: description || "",
+      section: section || "",
+      services: services || {},             // Default empty object
+      items: Array.isArray(items) ? items : [],
+      repairCost,               // Assuming service cost is part of total cost
+      totalCost,
+      submittedBy,
+      adminRemarks
+    });
+
+    await invoice.save();
+
+    res.status(201).json({ message: "Invoice created successfully", invoice });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error creating invoice:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
 
 // Get all invoices
 export const getAllInvoices = async (req, res) => {
   try {
-    const invoices = await Invoice.find();
+    const invoices = await ServiceInvoice.find().populate('submittedBy', 'name email');
     res.status(200).json(invoices);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Failed to fetch invoices', error: error.message });
   }
 };
 
-// Get a single invoice by MongoDB _id
+// Get a single invoice
 export const getInvoiceById = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id);
-    if (!invoice) return res.status(404).json({ message: "Invoice not found" });
+    const invoice = await ServiceInvoice.findById(req.params.id).populate('submittedBy', 'name email');
+    if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
     res.status(200).json(invoice);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Failed to fetch invoice', error: error.message });
   }
 };
 
-// Update an invoice (e.g., mark as paid or canceled)
-export const updateInvoice = async (req, res) => {
+// Update approval status
+export const updateInvoiceApproval = async (req, res) => {
   try {
-    const updatedInvoice = await Invoice.findOneAndUpdate(
-      { serviceID: Number(req.params.id) },
-      { $set: req.body },
+    const { isApproved, adminRemarks } = req.body;
+    const invoice = await ServiceInvoice.findByIdAndUpdate(
+      req.params.id,
+      { isApproved, adminRemarks },
       { new: true }
     );
-    if (!updatedInvoice) {
-      return res.status(404).json({ message: "Invoice not found" });
-    }
-    res.status(200).json(updatedInvoice);
+    if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
+    res.status(200).json(invoice);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: 'Failed to update approval status', error: error.message });
   }
 };
 
-// Delete an invoice
+// Delete invoice
 export const deleteInvoice = async (req, res) => {
   try {
-    const deletedInvoice = await Invoice.findOneAndDelete({
-      serviceID: Number(req.params.id)
-    });
-    if (!deletedInvoice) {
-      return res.status(404).json({ message: "Invoice not found" });
-    }
-    res.status(200).json({ message: "Invoice deleted" });
+    const deleted = await ServiceInvoice.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: 'Invoice not found' });
+    res.status(200).json({ message: 'Invoice deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Failed to delete invoice', error: error.message });
   }
 };

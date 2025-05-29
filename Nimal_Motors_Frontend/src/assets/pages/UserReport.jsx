@@ -3,6 +3,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 const UserTable = () => {
+  // State management for user data and UI
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ const UserTable = () => {
     appointments: 0,
   });
 
+  // Fetch data from all sections when component mounts
   useEffect(() => {
     const fetchAllSections = async () => {
       try {
@@ -27,13 +29,14 @@ const UserTable = () => {
           fetch('http://localhost:5001/api/appointments'),
         ]);
 
+        // Convert all responses to JSON
         const [mechData, bodyData, elecData, appData] = await Promise.all([
           mechRes.json(),
           bodyRes.json(),
           elecRes.json(),
           appRes.json(),
         ]);
-
+        // Helper function to format data with consistent structure
         const formatData = (data, section) =>
           data.map((item) => ({
             customerName: item.customerName || 'N/A',
@@ -44,6 +47,7 @@ const UserTable = () => {
             section,
           }));
 
+          // Combine all section data into single array
         const allUsers = [
           ...formatData(mechData, 'Mechanical'),
           ...formatData(bodyData, 'BodyShop'),
@@ -51,9 +55,11 @@ const UserTable = () => {
           ...formatData(appData, 'Appointments'),
         ];
 
+        // Update state with fetched data
         setUsers(allUsers);
         setFilteredUsers(allUsers);
 
+        // Filter users when section selection changes
         setUserCounts({
           total: allUsers.length,
           mechanical: mechData.length,
@@ -80,15 +86,18 @@ const UserTable = () => {
     );
   }, [selectedSection, users]);
 
+  // Generate and download PDF report
   const handleDownloadPDF = () => {
     try {
       setPdfError('');
       const dataToExport = selectedSection === 'all' ? users : filteredUsers;
 
+      // Validate data before generating PDF
       if (!dataToExport || dataToExport.length === 0) {
         throw new Error('No user data available to generate PDF');
       }
 
+      // Initialize PDF document
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
       // Header section
@@ -117,6 +126,7 @@ const UserTable = () => {
           : `Customer Service Report (${selectedSection})`;
       doc.text(reportTitle, 105, 55, { align: 'center' });
 
+      // Generation timestamp
       doc.setFontSize(10);
       doc.setTextColor(100);
       doc.text(`Generated on ${new Date().toLocaleString()}`, 105, 65, { align: 'center' });
@@ -132,7 +142,7 @@ const UserTable = () => {
         user.section,
       ]);
 
-      // Generate the table
+      // Generate the table using jspdf-autotable
       autoTable(doc, {
         startY: 70,
         head: headers,
@@ -183,6 +193,7 @@ const UserTable = () => {
               y += 6;
             };
 
+            // Show all sections if "All" is selected, otherwise just current section
             if (selectedSection === 'all') {
               addLine('Mechanical', userCounts.mechanical);
               addLine('BodyShop', userCounts.bodyShop);
@@ -192,6 +203,7 @@ const UserTable = () => {
               addLine('Current Section', filteredUsers.length);
             }
 
+            // Total users count
             doc.setDrawColor(200);
             doc.setLineWidth(0.3);
             doc.line(25, y, 70, y);
@@ -204,6 +216,7 @@ const UserTable = () => {
         },
       });
 
+      // Save the PDF with dynamic filename
       doc.save(
         `customer_report_${selectedSection === 'all' ? 'all' : selectedSection.toLowerCase()}_${new Date()
           .toISOString()
@@ -219,8 +232,9 @@ const UserTable = () => {
     setSelectedSection(e.target.value);
   };
 
+  // Render UI
   return (
-    <div className="p-6 bg-white shadow-md rounded-xl">
+    <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800">All Customers Summary</h2>
         <div className="flex items-center space-x-4">
@@ -236,6 +250,7 @@ const UserTable = () => {
             <option value="Electrical">Electrical</option>
             <option value="Appointments">Appointments</option>
           </select>
+          {/* PDF download button */}
           <button
             onClick={handleDownloadPDF}
             disabled={filteredUsers.length === 0 || loading}
@@ -249,8 +264,9 @@ const UserTable = () => {
           </button>
         </div>
       </div>
+      {/* Main data table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border border-gray-300">
+        <table className="min-w-full table-auto border border-pink-800">
           <thead className="bg-blue-600 text-white">
             <tr>
               <th className="border px-4 py-2 text-left">Customer Name</th>
@@ -274,7 +290,9 @@ const UserTable = () => {
                   No data found {selectedSection !== 'all' ? `for ${selectedSection}` : ''}
                 </td>
               </tr>
-            ) : (
+            ) : 
+             /* Data rows */
+            (
               filteredUsers.map((user, idx) => (
                 <tr key={idx} className="hover:bg-gray-50">
                   <td className="border px-4 py-2">{user.customerName}</td>
@@ -289,7 +307,7 @@ const UserTable = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 

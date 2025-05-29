@@ -40,7 +40,6 @@ const ServiceSupervisorDashboard = () => {
   //   setShowProgressFetcher(false);
   // };
 
-
   const renderContent = () => {
     switch (activePage) {
       case "appointments":
@@ -65,11 +64,10 @@ const ServiceSupervisorDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-      
 
       case "report":
         return (
-          <div className="text-gray-600 p-8 text-center text-xl">
+          <div className="mx-auto  mt-10 p-6 bg-white shadow-2xl rounded-2xl">
             {activePage === "report"
               ? "Report page coming soon..."
               : "Invoices page coming soon..."}
@@ -88,8 +86,8 @@ const ServiceSupervisorDashboard = () => {
       default:
         return (
           <>
-          {/* Progress Summary Cards */}
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
+            {/* Progress Summary Cards */}
+            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
               <div className="bg-white p-4 rounded shadow flex items-center gap-4">
                 <FaListAlt className="text-blue-600 text-3xl" />
                 <div>
@@ -122,46 +120,46 @@ const ServiceSupervisorDashboard = () => {
                 </div>
               </div>
             </div> */}
-          {/* Dashboard Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
-            <DashboardCard
-              title="Add Customer"
-              description="Add a new customer details."
-              color="bg-blue-500"
-              emoji="➕"
-              onClick={() => setActivePage("addservice")}
-            />
-            <DashboardCard
-              title="Manage Appointments"
-              description="View and manage customer bookings."
-              color="bg-green-500"
-              emoji="📅"
-              onClick={() => setActivePage("appointments")}
-            />
-            <DashboardCard
-              title="View Reports"
-              description="Generate and review service reports."
-              color="bg-purple-500"
-              emoji="📋"
-              onClick={() => setActivePage("report")}
-            />
-            <DashboardCard
-              title="View Invoice"
-              description="View invoices of vehicles."
-              color="bg-yellow-500"
-              emoji="💰"
-              onClick={() => setActivePage("invoices")}
-            />
-            <DashboardCard
-              title="Approved Appointments"
-              description="Track approved appointments."
-              color="bg-indigo-500"
-              emoji="✅"
-              onClick={() => setActivePage("approved")}
-            />
-          </div>
-          {/* Progress Updater */}
-          {/* {showProgressFetcher && (
+            {/* Dashboard Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
+              <DashboardCard
+                title="Add Customer"
+                description="Add a new customer details."
+                color="bg-blue-500"
+                emoji="➕"
+                onClick={() => setActivePage("addservice")}
+              />
+              <DashboardCard
+                title="Manage Appointments"
+                description="View and manage customer bookings."
+                color="bg-green-500"
+                emoji="📅"
+                onClick={() => setActivePage("appointments")}
+              />
+              <DashboardCard
+                title="View Reports"
+                description="Generate and review service reports."
+                color="bg-purple-500"
+                emoji="📋"
+                onClick={() => setActivePage("report")}
+              />
+              <DashboardCard
+                title="View Invoice"
+                description="View invoices of vehicles."
+                color="bg-yellow-500"
+                emoji="💰"
+                onClick={() => setActivePage("invoices")}
+              />
+              <DashboardCard
+                title="Approved Appointments"
+                description="Track approved appointments."
+                color="bg-indigo-500"
+                emoji="✅"
+                onClick={() => setActivePage("approved")}
+              />
+            </div>
+            {/* Progress Updater */}
+            {/* {showProgressFetcher && (
               <Progress
                 section="appointments"
                 onStatsUpdate={handleStatsUpdate}
@@ -173,14 +171,15 @@ const ServiceSupervisorDashboard = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-w-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
         <div>
           {/* Company Name */}
           <div className="flex items-center p-6 space-x-3">
-            {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
-            <h1 className="text-xl font-bold">Nimal Motors</h1>
+            <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+              🚗 NIMAL MOTORS
+            </h1>
           </div>
 
           {/* Navigation */}
@@ -204,7 +203,7 @@ const ServiceSupervisorDashboard = () => {
                   }`}
                   onClick={() => setActivePage("addservice")}
                 >
-                  Add Service
+                  Add Customer Details
                 </button>
               </li>
               <li>
@@ -253,7 +252,7 @@ const ServiceSupervisorDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 w-full">
         {/* Header */}
         <div className="bg-white shadow flex justify-between items-center px-6 py-4">
           <h2 className="text-2xl font-bold text-gray-800">
@@ -285,7 +284,7 @@ const ServiceSupervisorDashboard = () => {
         </div>
 
         {/* Page Content */}
-        <div className="p-6">{renderContent()}</div>
+        <div className="p-6 w-full">{renderContent()}</div>
       </div>
     </div>
   );
