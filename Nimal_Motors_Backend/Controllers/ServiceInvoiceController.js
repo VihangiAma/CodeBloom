@@ -1,6 +1,6 @@
 import ServiceInvoice from '../Models/ServiceInvoiceModel.js';
+import Stock from '../Models/Stock.js';
 
-// Create a new invoice
 export const createInvoice = async (req, res) => {
   try {
     const {
@@ -17,8 +17,8 @@ export const createInvoice = async (req, res) => {
       adminRemarks
     } = req.body;
 
-    // Calculate total cost from repairCost + services + items
-    let totalCost = parseFloat(repairCost) ;
+    // 1. Calculate total cost
+    let totalCost = parseFloat(repairCost) || 0;
 
     if (services) {
       for (const key in services) {
@@ -36,6 +36,31 @@ export const createInvoice = async (req, res) => {
       }
     }
 
+    // 2. Deduct stock for spare parts
+    if (items && Array.isArray(items)) {
+      for (const item of items) {
+        const { itemId, qty } = item;
+        if (!itemId || !qty) continue;
+
+        const stockItem = await Stock.findOne({ itemId });
+
+        if (!stockItem) {
+          return res.status(400).json({ message: `Stock item with ID ${itemId} not found.` });
+        }
+
+        if (stockItem.stockQuantity < qty) {
+          return res.status(400).json({
+            message: `Insufficient stock for ${stockItem.itemName}. Available: ${stockItem.stockQuantity}, Requested: ${qty}`
+          });
+        }
+
+        stockItem.stockQuantity -= qty;
+        stockItem.lastUpdated = Date.now();
+        await stockItem.save();
+      }
+    }
+
+    // 3. Save invoice
     const invoice = new ServiceInvoice({
       serviceID,
       customerName,
@@ -43,9 +68,9 @@ export const createInvoice = async (req, res) => {
       vehicleType,
       description: description || "",
       section: section || "",
-      services: services || {},             // Default empty object
+      services: services || {},
       items: Array.isArray(items) ? items : [],
-      repairCost,               // Assuming service cost is part of total cost
+      repairCost,
       totalCost,
       submittedBy,
       adminRemarks
@@ -59,7 +84,6 @@ export const createInvoice = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
-
 // Get all invoices
 export const getAllInvoices = async (req, res) => {
   try {
@@ -107,3 +131,4 @@ export const deleteInvoice = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete invoice', error: error.message });
   }
 };
+

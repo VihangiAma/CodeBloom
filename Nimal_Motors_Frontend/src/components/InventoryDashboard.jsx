@@ -49,6 +49,7 @@ const InventoryDashboard = () => {
     item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (categoryFilter === "" || item.category === categoryFilter)
   );
+  
 
   // Load supplier list
   useEffect(() => {
