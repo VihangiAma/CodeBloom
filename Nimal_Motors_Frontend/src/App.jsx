@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 // Public Pages
+
 import LoginPage from './pages/login/LoginPage';
 import Home from './pages/customer/Home';
 import AboutUs from './pages/customer/AboutUs';
@@ -15,9 +16,12 @@ import Packages from './pages/customer/Packages';
 import Appointment from './pages/Appointment';
 
 
+
+
 // import RegisterPage from './pages/register/RegisterPage';
 
 import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
+
 import PremiumServiceForm from "./pages/premiumcustomer/PremiumServiceForm";
 
 //  import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
@@ -36,8 +40,10 @@ import UserManagement from "./pages/admin/UserManagement";
 import AdminUsers from "./pages/admin/AdminUsers";
 
 // Supervisor Protected Pages
+
 import ProgressPage from "./Components/SupervisorSection/ProgressPage";
 import ReportPage from "./Components/SupervisorSection/ReportPage";
+
 import AppointmentDetails from "./Components/SupervisorSection/Supervisors/AppointmentDetails";
 import CompletedServices from "./components/SupervisorSection/CompletedServices";
 import NotificationBar from "./components/SupervisorSection/Notification";
@@ -50,6 +56,7 @@ import UserTable from "./components/SupervisorSection/UserTable";
 import InvoiceForm from "./components/SupervisorSection/InvoiceForm";
 
 // Section-specific Dashboards
+
 import ServiceSupervisorDashboard from "./Components/SupervisorSection/ServiceSupervisorDashboard";
 import MechanicalSupervisorSection from "./Components/SupervisorSection/MechanicalSupervisorDashboard";
 import ElectricalSupervisorSection from "./components/SupervisorSection/ElectriaclSupervisorDashboard";
@@ -62,6 +69,7 @@ import BookAppointment from "./Components/CustomerSection/BookAppoinment";
 //Chatsection
 import ChatBot from "./components/ChatSection/Chatbot";
 
+
 // Inventory and Sales Pages
 import InventoryDashboard from "./components/InventoryDashboard";
 import AccountantDashboard from "./components/AccountantDashboard";
@@ -71,7 +79,11 @@ import SalesReport from "./assets/pages/SalesReport";
 import SalesReportView from "./assets/pages/SalesReportView";
 import GenerateInvoicePage from "./components/GenerateInvoicePage ";
 
+
 //import FormalInvoice from './components/FormalInvoice';
+
+import ChatBot from "./components/Chatbot/Chatbot";
+
 
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
@@ -101,7 +113,6 @@ function App() {
 
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
-
         {/* Protected User Routes */}
         <Route
           path="/profile"
@@ -199,9 +210,11 @@ function App() {
             </PrivateRoute>
           }
         />
+
         {/*<Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />*/}
 
         {/* Supervisor Protected Routes */}
+
 
         <Route
           path="/appointments"
@@ -285,6 +298,7 @@ function App() {
           }
         />
 
+
         {/* Section-specific Dashboards */}
 
         <Route
@@ -325,14 +339,18 @@ function App() {
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/sales-report" element={<SalesReport />} />
-
+        <Route path="/sales-report" element={<SalesReport />} />\
+        <Route
+          path="/chatbot/:section"
+          element={<ChatBot section="Service" />}
+        />
         <Route path="/view-sales-report" element={<SalesReportView />} />
         <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
         <Route
           path="/generate-invoice/:repairId"
           element={<GenerateInvoicePage />}
         />
+
         <Route
           path="/chatbot/:section"
           element={<ChatBot section="Service" />}
