@@ -149,7 +149,7 @@ const BookAppointment = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl ">
       <h2 className="text-2xl font-bold mb-6 text-center">
         Book an Appointment
       </h2>

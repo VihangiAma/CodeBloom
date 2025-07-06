@@ -2,7 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 
-const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
+const AddServiceForm = ({
+  onSubmit,
+  existingBooking,
+  isEditMode,
+  onDelete,
+}) => {
   const [formData, setFormData] = useState({
     serviceID: "",
     customerName: "",
@@ -39,15 +44,22 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.customerName.trim()) newErrors.customerName = "Customer name is required.";
-    if (!formData.vehicleType.trim()) newErrors.vehicleType = "Vehicle type is required.";
-    if (!formData.vehicleNumber.trim()) newErrors.vehicleNumber = "Vehicle number is required.";
-    if (!formData.serviceDate) newErrors.serviceDate = "Service date is required.";
+    if (!formData.customerName.trim())
+      newErrors.customerName = "Customer name is required.";
+    if (!formData.vehicleType.trim())
+      newErrors.vehicleType = "Vehicle type is required.";
+    if (!formData.vehicleNumber.trim())
+      newErrors.vehicleNumber = "Vehicle number is required.";
+    if (!formData.serviceDate)
+      newErrors.serviceDate = "Service date is required.";
     else if (new Date(formData.serviceDate) < new Date().setHours(0, 0, 0, 0))
       newErrors.serviceDate = "Service date cannot be in the past.";
-    if (!formData.presentMeter) newErrors.presentMeter = "Present meter value is required.";
-    else if (formData.presentMeter < 0) newErrors.presentMeter = "Present meter must be positive.";
-    if (!formData.contact.phone.trim()) newErrors.contactPhone = "Phone number is required.";
+    if (!formData.presentMeter)
+      newErrors.presentMeter = "Present meter value is required.";
+    else if (formData.presentMeter < 0)
+      newErrors.presentMeter = "Present meter must be positive.";
+    if (!formData.contact.phone.trim())
+      newErrors.contactPhone = "Phone number is required.";
     return newErrors;
   };
 
@@ -107,7 +119,6 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
         {isEditMode ? "Update Appointment" : "Add Customer Details"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-
         {/* Service ID */}
         {isEditMode && (
           <div>
@@ -132,7 +143,9 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
             onChange={handleChange}
             className="w-full p-2 border rounded-lg"
           />
-          {errors.customerName && <p className="text-red-500 text-sm">{errors.customerName}</p>}
+          {errors.customerName && (
+            <p className="text-red-500 text-sm">{errors.customerName}</p>
+          )}
         </div>
 
         {/* Vehicle Type Dropdown */}
@@ -148,7 +161,9 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
             <option value="Car">Car</option>
             <option value="Van">Van</option>
           </select>
-          {errors.vehicleType && <p className="text-red-500 text-sm">{errors.vehicleType}</p>}
+          {errors.vehicleType && (
+            <p className="text-red-500 text-sm">{errors.vehicleType}</p>
+          )}
         </div>
 
         {/* Vehicle Number */}
@@ -161,7 +176,9 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
             onChange={handleChange}
             className="w-full p-2 border rounded-lg"
           />
-          {errors.vehicleNumber && <p className="text-red-500 text-sm">{errors.vehicleNumber}</p>}
+          {errors.vehicleNumber && (
+            <p className="text-red-500 text-sm">{errors.vehicleNumber}</p>
+          )}
         </div>
 
         {/* Service Date */}
@@ -174,7 +191,9 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
             onChange={handleChange}
             className="w-full p-2 border rounded-lg"
           />
-          {errors.serviceDate && <p className="text-red-500 text-sm">{errors.serviceDate}</p>}
+          {errors.serviceDate && (
+            <p className="text-red-500 text-sm">{errors.serviceDate}</p>
+          )}
         </div>
 
         {/* Present Meter */}
@@ -190,7 +209,9 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
             max="999999"
             step="100"
           />
-          {errors.presentMeter && <p className="text-red-500 text-sm">{errors.presentMeter}</p>}
+          {errors.presentMeter && (
+            <p className="text-red-500 text-sm">{errors.presentMeter}</p>
+          )}
         </div>
 
         {/* Phone */}
@@ -203,12 +224,16 @@ const AddServiceForm= ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
             onChange={handleChange}
             className="w-full p-2 border rounded-lg"
           />
-          {errors.contactPhone && <p className="text-red-500 text-sm">{errors.contactPhone}</p>}
+          {errors.contactPhone && (
+            <p className="text-red-500 text-sm">{errors.contactPhone}</p>
+          )}
         </div>
 
         {/* Email */}
         <div>
-          <label className="block mb-1 font-medium">Email Address (optional)</label>
+          <label className="block mb-1 font-medium">
+            Email Address (optional)
+          </label>
           <input
             type="email"
             name="contact.email"

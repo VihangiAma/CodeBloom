@@ -9,77 +9,76 @@ import {
   FaIdCard,
   FaIndustry,
   FaUser,
+  FaEye,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 
+// Supplier Management Section
 const SuppliersSection = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [supplierItems, setSupplierItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  //const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const navigate = useNavigate();
 
+  // Fetch suppliers on component mount
   useEffect(() => {
     axios
       .get("http://localhost:5001/api/supplier/list")
       .then((res) => setSuppliers(res.data))
       .catch((err) => console.error("Failed to fetch suppliers:", err));
   }, []);
-  const navigate = useNavigate();
 
-  const [editModalOpen, setEditModalOpen] = useState(false);
-const [selectedSupplier, setSelectedSupplier] = useState(null);
+  // Edit button click
+  const handleEditClick = (supplier) => {
+    setSelectedSupplier({ ...supplier }); // Corrected here
+    setEditModalOpen(true);
+  };
 
+  // Save updated supplier
+  const handleSaveUpdate = async () => {
+    const { contactPerson, phoneNumber, email, address, supplierId } = selectedSupplier;
 
-const handleEditClick = (supplier) => {
-  setSelectedSupplier({ ...supplier });  // populate modal
-  setEditModalOpen(true);
-};
+    // Validation
+    if (!contactPerson || !phoneNumber || !email || !address) {
+      toast.error("All fields are required.");
+      return;
+    }
 
-const handleSaveUpdate = async () => {
-  const { contactPerson, phoneNumber, email, address, supplierId } = selectedSupplier;
+    if (!/^\d{10}$/.test(phoneNumber)) {
+      toast.error("Phone number must be exactly 10 digits.");
+      return;
+    }
 
-  // Basic validations
-  if (!contactPerson || !phoneNumber || !email || !address) {
-    toast.error("All fields are required.");
-    return;
-  }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email format.");
+      return;
+    }
 
-  // Phone number: must be 10 digits and numeric
-  if (!/^\d{10}$/.test(phoneNumber)) {
-    toast.error("Phone number must be exactly 10 digits.");
-    return;
-  }
+    try {
+      await axios.put(`http://localhost:5001/api/supplier/update/${supplierId}`, {
+        contactPerson,
+        phoneNumber,
+        email,
+        address
+      });
 
-  // Email: basic format check
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    toast.error("Invalid email format.");
-    return;
-  }
+      toast.success("Supplier updated successfully!");
+      setEditModalOpen(false);
 
-  try {
-    await axios.put(`http://localhost:5001/api/supplier/update/${supplierId}`, {
-      contactPerson,
-      phoneNumber,
-      email,
-      address
-    });
+      // Refresh suppliers
+      const updated = await axios.get("http://localhost:5001/api/supplier/list");
+      setSuppliers(updated.data);
+    } catch (error) {
+      toast.error("Update failed. Please check values.");
+      console.error(error);
+    }
+  };
 
-    toast.success("Supplier updated successfully!");
-    setEditModalOpen(false);
-
-    // Refresh supplier list
-    const updated = await axios.get("http://localhost:5001/api/supplier/list");
-    setSuppliers(updated.data);
-  } catch (error) {
-    toast.error("Update failed. Please check values.");
-    console.error(error);
-  }
-};
-
-
-
+  // View supplier items
   const fetchSupplierItems = async (companyName) => {
     try {
       const res = await axios.get(`http://localhost:5001/api/stock/by-supplier/${companyName}`);
@@ -94,7 +93,8 @@ const handleSaveUpdate = async () => {
   return (
     <div>
       <h2 className="text-3xl font-bold mb-6 text-black-700">Suppliers Directory</h2>
-       <FaUser  onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />
+      {/*<FaUser onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />*/}
+
       <div className="overflow-x-auto rounded shadow-md bg-white">
         <table className="min-w-full text-sm text-left">
           <thead className="bg-red-500 text-black">
@@ -119,28 +119,29 @@ const handleSaveUpdate = async () => {
                 <td className="px-4 py-2">{supplier.address}</td>
                 <td className="px-4 py-2 text-center space-y-2">
                   <button
-                    onClick={() => handleEditClick(supplier.supplierId)}
+                    onClick={() => handleEditClick(supplier)} // Corrected here
                     className="text-yellow-600 hover:text-yellow-800 block mb-2"
                   >
-                    <FaEdit /> Edit
+                    <FaEdit /> 
                   </button>
                   <button
                     onClick={() => fetchSupplierItems(supplier.companyName)}
                     className="text-blue-600 hover:underline text-sm"
                   >
-                    View Items
+                    <FaEye/>
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
         {suppliers.length === 0 && (
           <div className="text-center p-4 text-gray-500">No suppliers found.</div>
         )}
       </div>
 
-      {/* Modal */}
+      {/* Modal to view items by supplier */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-2/3 max-h-[80vh] overflow-y-auto shadow-lg">
@@ -186,46 +187,60 @@ const handleSaveUpdate = async () => {
           </div>
         </div>
       )}
-      {editModalOpen && selectedSupplier && (
-  <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-    <div className="bg-white p-6 rounded shadow-lg w-96">
-      <h2 className="text-xl font-bold mb-4">Edit Supplier</h2>
-      <input
-        type="text"
-        className="w-full mb-2 p-2 border"
-        value={selectedSupplier.contactPerson}
-        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, contactPerson: e.target.value })}
-        placeholder="Contact Person"
-      />
-      <input
-        type="text"
-        className="w-full mb-2 p-2 border"
-        value={selectedSupplier.phoneNumber}
-        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, phoneNumber: e.target.value })}
-        placeholder="Phone Number"
-      />
-      <input
-        type="email"
-        className="w-full mb-2 p-2 border"
-        value={selectedSupplier.email}
-        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, email: e.target.value })}
-        placeholder="Email"
-      />
-      <input
-        type="text"
-        className="w-full mb-4 p-2 border"
-        value={selectedSupplier.address}
-        onChange={(e) => setSelectedSupplier({ ...selectedSupplier, address: e.target.value })}
-        placeholder="Address"
-      />
-      <div className="flex justify-end gap-2">
-        <button onClick={handleSaveUpdate} className="bg-green-600 text-black px-4 py-2 rounded">Save</button>
-        <button onClick={() => setEditModalOpen(false)} className="bg-gray-400 text-black px-4 py-2 rounded">Cancel</button>
-      </div>
-    </div>
-  </div>
-)}
 
+      {/* Edit Supplier Modal */}
+      {editModalOpen && selectedSupplier && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Edit Supplier</h2>
+
+            <input
+              type="text"
+              className="w-full mb-2 p-2 border"
+              value={selectedSupplier.contactPerson || ''}
+              onChange={(e) =>
+                setSelectedSupplier((prev) => ({ ...prev, contactPerson: e.target.value }))
+              }
+              placeholder="Contact Person"
+            />
+
+            <input
+              type="text"
+              className="w-full mb-2 p-2 border"
+              value={selectedSupplier.phoneNumber || ''}
+              onChange={(e) =>
+                setSelectedSupplier((prev) => ({ ...prev, phoneNumber: e.target.value }))
+              }
+              placeholder="Phone Number"
+            />
+
+            <input
+              type="email"
+              className="w-full mb-2 p-2 border"
+              value={selectedSupplier.email || ''}
+              onChange={(e) =>
+                setSelectedSupplier((prev) => ({ ...prev, email: e.target.value }))
+              }
+              placeholder="Email"
+            />
+
+            <input
+              type="text"
+              className="w-full mb-4 p-2 border"
+              value={selectedSupplier.address || ''}
+              onChange={(e) =>
+                setSelectedSupplier((prev) => ({ ...prev, address: e.target.value }))
+              }
+              placeholder="Address"
+            />
+
+            <div className="flex justify-end gap-2">
+              <button onClick={handleSaveUpdate} className="bg-green-600 text-black px-4 py-2 rounded">Save</button>
+              <button onClick={() => setEditModalOpen(false)} className="bg-gray-400 text-black px-4 py-2 rounded">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

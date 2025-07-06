@@ -127,6 +127,42 @@ export const getSupplierExpenseSummary = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+export const updateExpense = async (req, res) => {
+  try {
+    const updated = await Expense.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ message: "Server error while updating expense" });
+  }
+};
+
+// @desc    Delete an expense
+// @route   DELETE /api/expenses/delete/:id
+// @access  Public (Add auth middleware if needed)
+export const deleteExpense = async (req, res) => {
+  try {
+    const deleted = await Expense.findByIdAndDelete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    res.status(200).json({ message: "Expense deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ message: "Server error while deleting expense" });
+  }
+};
 
 
   
