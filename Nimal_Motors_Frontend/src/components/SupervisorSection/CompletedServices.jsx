@@ -27,20 +27,36 @@ const CompletedServices = ({ sectionPrefix, section }) => {
       console.error("Error fetching completed appointments", error);
     }
   };
-
+  //**
   const handleViewInvoice = (appointment) => {
-    setSelectedInvoice(appointment); // Set the selected appointment as the invoice
-    setShowInvoice(true); // Show InvoicePage
+    setSelectedInvoice(appointment);
+    setShowInvoice(true);
   };
-
+  const handleSubmitInvoice = async (invoiceData) => {
+    try {
+      await axios.post(`http://localhost:5001/api/invoices`, invoiceData);
+      setShowInvoice(false);
+      setSelectedInvoice(null);
+      fetchCompletedAppointments(); // Refresh completed appointments
+    } catch (error) {
+      console.error("Error submitting invoice", error);
+    }
+  };
   const handleCancelInvoice = () => {
+    setShowInvoice(false);
     setSelectedInvoice(null);
-    setShowInvoice(false); // Close InvoicePage
   };
-
-  const handleSubmitInvoice = (invoiceData) => {
-    console.log("Submitted invoice:", invoiceData);
-    setShowInvoice(false); // Close InvoicePage after submission
+  const handleDelete = async (appointmentId) => {
+    try {
+      await axios.delete(
+        `http://localhost:5001/api/${section}/${appointmentId}`
+      );
+      setCompletedAppointments((prev) =>
+        prev.filter((appointment) => appointment._id !== appointmentId)
+      );
+    } catch (error) {
+      console.error("Error deleting appointment", error);
+    }
   };
 
   return (
@@ -79,13 +95,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                   <td className="border px-3 py-2">
                     {new Date(appointment.serviceDate).toLocaleDateString()}
                   </td>
-                  <td className="border px-3 py-2">
-                    {/* <button
-                      onClick={() => handleViewInvoice(appointment)} // Pass appointment data
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
-                    >
-                      Invoice
-                    </button> */}
+                  <td className="px-4 py-2 border space-x-2">
                     <button
                       onClick={() => handleViewInvoice(appointment)}
                       className="bg-blue-500 text-white px-3 py-1 rounded "
@@ -94,14 +104,14 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(appointment.serviceID)}
+                      onClick={() => handleDelete(appointment._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded"
                     >
                       <FaTrash />
                     </button>
 
                     <button
-                      onClick={() => handleViewInvoice()}
+                      onClick={() => handleViewInvoice(appointment)}
                       className="bg-green-500 text-white px-3 py-1 rounded "
                     >
                       <AiOutlineEye />
