@@ -826,7 +826,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
               <tbody>
                 {items.map((item, index) => (
                   <tr key={index}>
-                    <td className="p-2 border">{item.section}</td>
+                    <td className="p-2 border">{items.section}</td>
                     <td className="p-2 border">
                       <select
                         value={item.category}
@@ -848,7 +848,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
                     <td className="p-2 border">
                       <input
                         type="text"
-                        value={item.item}
+                        value={items.item}
                         onChange={(e) =>
                           handleItemChange(index, "item", e.target.value)
                         }
@@ -858,7 +858,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
                       />
                       <datalist id={`item-options-${index}`}>
                         {stockData
-                          .filter((i) => i.category === item.category)
+                          .filter((i) => i.category === items.category)
                           .map((i, k) => (
                             <option key={k} value={i.itemName} />
                           ))}
