@@ -124,4 +124,4 @@ const AdminInvoiceView = () => {
   );
 };
 
-export default AdminInvoiceView;
+export default AdminInvoiceView; 

@@ -81,10 +81,6 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
           <p className="text-gray-900">{invoice.section}</p>
         </div>
         <div>
-          <p className="font-medium text-gray-700">Description:</p>
-          <p className="text-gray-900">{invoice.description || "N/A"}</p>
-        </div>
-        <div>
           <p className="font-medium text-gray-700">Total Cost:</p>
           <p className="text-gray-900 font-semibold">Rs. {invoice.totalCost?.toFixed(2) || "0.00"}</p>
         </div>
@@ -103,6 +99,7 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
             id="remarks"
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical min-h-[100px]"
             rows="4"
+            value={remarks}
             onChange={(e) => setRemarks(e.target.value)}
             placeholder="Enter your remarks if there are any issues or deficiencies. Leave blank if invoice is approved without issues..."
             maxLength={500}
@@ -111,7 +108,9 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
           <p className="text-sm text-gray-500 mt-1">
             {remarks.length}/500 characters
           </p>
-          
+          <p className="text-sm text-blue-600 mt-1">
+            Note: If you enter remarks, the invoice will be marked as not approved and sent back to supervisor. If left blank, it will be approved and forwarded to accountant.
+          </p>
         </div>
         
         <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
