@@ -1,8 +1,9 @@
-
 import React, { useEffect, useState } from "react";
+import { AiOutlinePlus, AiOutlineEye } from "react-icons/ai";
+import { FaTrash } from "react-icons/fa";
+
 import axios from "axios";
 import InvoiceForm from "./InvoiceForm";
-
 
 const CompletedServices = ({ sectionPrefix, section }) => {
   const [completedAppointments, setCompletedAppointments] = useState([]);
@@ -57,6 +58,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                 <th className="border px-3 py-2">Service ID</th>
                 <th className="border px-3 py-2">Customer Name</th>
                 <th className="border px-3 py-2">Vehicle No</th>
+                <th className="border px-3 py-2">Contact</th>
                 <th className="border px-3 py-2">Service Date</th>
                 <th className="border px-3 py-2">Actions</th> {/* New Column */}
               </tr>
@@ -72,14 +74,37 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                     {appointment.vehicleNumber}
                   </td>
                   <td className="border px-3 py-2">
+                    {appointment.contact?.phone}
+                  </td>
+                  <td className="border px-3 py-2">
                     {new Date(appointment.serviceDate).toLocaleDateString()}
                   </td>
                   <td className="border px-3 py-2">
-                    <button
+                    {/* <button
                       onClick={() => handleViewInvoice(appointment)} // Pass appointment data
                       className="bg-blue-500 text-white px-3 py-1 rounded"
                     >
                       Invoice
+                    </button> */}
+                    <button
+                      onClick={() => handleViewInvoice(appointment)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded "
+                    >
+                      <AiOutlinePlus />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(appointment.serviceID)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      <FaTrash />
+                    </button>
+
+                    <button
+                      onClick={() => handleViewInvoice()}
+                      className="bg-green-500 text-white px-3 py-1 rounded "
+                    >
+                      <AiOutlineEye />
                     </button>
                   </td>
                 </tr>
