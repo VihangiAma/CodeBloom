@@ -92,14 +92,6 @@ const ElectricalSupervisorSection = () => {
           </div>
         );
 
-      case "report":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            {activePage === "report"
-              ? "Report page coming soon..."
-              : "Invoices page coming soon..."}
-          </div>
-        );
       default:
         return (
           <>
@@ -154,13 +146,6 @@ const ElectricalSupervisorSection = () => {
                 emoji="🧾"
                 onClick={() => setActivePage("invoices")}
               />
-              <DashboardCard
-                title="View Reports"
-                description="Generate and review service reports."
-                color="bg-purple-500"
-                emoji="📋"
-                onClick={() => setActivePage("report")}
-              />
             </div>
 
             {/* Stats Fetcher */}
@@ -188,32 +173,28 @@ const ElectricalSupervisorSection = () => {
           <div className="p-6">
             <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
             <ul className="space-y-3">
-              {[
-                "dashboard",
-                "addservice",
-                "schedules",
-                "invoices",
-                "report",
-              ].map((item) => (
-                <li key={item}>
-                  <button
-                    className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                      activePage === item && "bg-gray-700"
-                    }`}
-                    onClick={() => setActivePage(item)}
-                  >
-                    {item === "dashboard"
-                      ? "Dashboard"
-                      : item === "addservice"
-                      ? "Add Service"
-                      : item === "schedules"
-                      ? "Manage Appointments"
-                      : item === "invoices"
-                      ? "Invoices"
-                      : "View Reports"}
-                  </button>
-                </li>
-              ))}
+              {["dashboard", "addservice", "schedules", "invoices"].map(
+                (item) => (
+                  <li key={item}>
+                    <button
+                      className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
+                        activePage === item && "bg-gray-700"
+                      }`}
+                      onClick={() => setActivePage(item)}
+                    >
+                      {item === "dashboard"
+                        ? "Dashboard"
+                        : item === "addservice"
+                        ? "Add Service"
+                        : item === "schedules"
+                        ? "Manage Appointments"
+                        : item === "invoices"
+                        ? "Invoices"
+                        : "View Reports"}
+                    </button>
+                  </li>
+                )
+              )}
             </ul>
           </div>
         </div>
@@ -222,7 +203,7 @@ const ElectricalSupervisorSection = () => {
       <div className="flex-1">
         <div className="bg-white shadow flex justify-between items-center px-6 py-4">
           <h2 className="text-2xl font-bold text-gray-800">
-            Electrical Service Section
+            Electrical Supervisor Section
           </h2>
           <div className="flex items-center space-x-4">
             <button
