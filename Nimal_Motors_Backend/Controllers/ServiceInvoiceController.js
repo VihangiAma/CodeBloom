@@ -131,4 +131,13 @@ export const deleteInvoice = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete invoice', error: error.message });
   }
 };
+// export const getApprovedInvoices = async (req, res) => {
+//   try {
+//     const invoices = await ServiceInvoice.find({ isApproved: true }).populate('submittedBy', 'name email');
+//     res.status(200).json(invoices);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to fetch approved invoices', error: error.message });
+//   }
+// };
+
 
