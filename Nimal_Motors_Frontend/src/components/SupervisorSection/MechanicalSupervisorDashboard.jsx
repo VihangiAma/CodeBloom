@@ -233,7 +233,7 @@ const MechanicalSupervisorSection = () => {
         {/* Header */}
         <div className="bg-white shadow flex justify-between items-center px-6 py-4">
           <h2 className="text-2xl font-bold text-gray-800">
-            Mechanical Service Section
+            Mechanical Supervisor Section
           </h2>
           <div className="flex items-center space-x-4">
             <button
