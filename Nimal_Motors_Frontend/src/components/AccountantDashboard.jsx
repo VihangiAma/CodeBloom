@@ -41,11 +41,12 @@ const AccountantDashboard = () => {
 
   // Fetch approved repairs for invoicing
   // This effect runs once when the component mounts
-  useEffect(() => {
-  axios.get("http://localhost:5001/api/invoices/approved")
+ useEffect(() => {
+  axios.get("http://localhost:5001/api/invoice/approved")
     .then(res => setApprovedInvoices(res.data))
     .catch(err => console.error("Failed to load invoices", err));
 }, []);
+
 
 
   useEffect(() => {
