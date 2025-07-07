@@ -625,6 +625,8 @@ const BookAppointment = () => {
 
     if (!validateForm()) return;
 
+    console.log(formData);
+
     try {
       await axios.post("http://localhost:5001/api/appointments", formData);
 
