@@ -92,13 +92,6 @@ const BodyShopSupervisorSection = () => {
             <CompletedServices section="bodyshop" sectionPrefix="BS" />
           </div>
         );
-      case "report":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            {activePage.charAt(0).toUpperCase() + activePage.slice(1)} page
-            coming soon...
-          </div>
-        );
 
       default:
         return (
@@ -160,13 +153,6 @@ const BodyShopSupervisorSection = () => {
                 color="bg-yellow-500"
                 emoji="🧾"
                 onClick={() => setActivePage("invoices")}
-              />
-              <DashboardCard
-                title="View Reports"
-                description="Generate and review service reports."
-                color="bg-purple-500"
-                emoji="📋"
-                onClick={() => setActivePage("report")}
               />
             </div>
 
@@ -234,16 +220,7 @@ const BodyShopSupervisorSection = () => {
                   Invoices
                 </button>
               </li>
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "report" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("report")}
-                >
-                  View Reports
-                </button>
-              </li>
+              <li></li>
             </ul>
           </div>
         </div>
@@ -253,7 +230,7 @@ const BodyShopSupervisorSection = () => {
         {/* Header */}
         <div className="bg-white shadow flex justify-between items-center px-6 py-4">
           <h2 className="text-2xl font-bold text-gray-800">
-            BodyShop Service Section
+            BodyShop Supervisor Section
           </h2>
           <div className="flex items-center space-x-4">
             <button
