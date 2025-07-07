@@ -1,11 +1,9 @@
-// //Add service section customers manualy
-
 // import React, { useState } from "react";
 // import axios from "axios";
 // import Swal from "sweetalert2";
 
 // const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
-//   const [formData, setFormData] = useState({
+//   const initialFormState = {
 //     customerName: "",
 //     address: "",
 //     contact: {
@@ -16,8 +14,9 @@
 //     vehicleType: "",
 //     serviceDate: "",
 //     time: "",
-//     // status: "Not Complete yet", // Default status
-//   });
+//   };
+
+//   const [formData, setFormData] = useState(initialFormState);
 
 //   const timeSlots = [
 //     "8.00 am-10.00 am",
@@ -113,19 +112,7 @@
 //         text: "Customer appointment has been saved.",
 //       });
 
-//       setFormData({
-//         customerName: "",
-//         address: "",
-//         contact: {
-//           phone: "",
-//           email: "",
-//         },
-//         vehicleNumber: "",
-//         vehicleType: "",
-//         serviceDate: "",
-//         time: "",
-//         status: "Not Complete yet",
-//       });
+//       setFormData(initialFormState);
 //     } catch (error) {
 //       console.error(error);
 //       let errorMessage = "Something went wrong. Please try again.";
@@ -147,17 +134,21 @@
 //     }
 //   };
 
+//   const handleCancel = () => {
+//     setFormData(initialFormState);
+//   };
+
 //   return (
 //     <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-//       <h2 className="text-2xl font-bold mb-6 text-center">
-//         Add Customer Deatils
+//       <h2 className="text-2xl font-bold mb-4 text-center">
+//         Add Customer Details
 //       </h2>
 
 //       <form onSubmit={handleSubmit} className="space-y-4">
 //         <input
 //           type="text"
 //           name="customerName"
-//           placeholder="Customer Name"
+//           placeholder="Name"
 //           value={formData.customerName}
 //           onChange={handleChange}
 //           required
@@ -175,7 +166,7 @@
 //         <input
 //           type="text"
 //           name="phone"
-//           placeholder="Phone (10 digits)"
+//           placeholder="Phone Number"
 //           value={formData.contact.phone}
 //           onChange={handleChange}
 //           required
@@ -207,7 +198,7 @@
 //           className="w-full border p-2 rounded"
 //         >
 //           <option value="" disabled>
-//             Select Vehicle Type
+//             Vehical Type
 //           </option>
 //           {vehicleTypes.map((type) => (
 //             <option key={type} value={type}>
@@ -233,7 +224,7 @@
 //           className="w-full border p-2 rounded"
 //         >
 //           <option value="" disabled>
-//             Select Time Slot
+//             Select Time
 //           </option>
 //           {timeSlots.map((slot) => (
 //             <option key={slot} value={slot}>
@@ -242,18 +233,29 @@
 //           ))}
 //         </select>
 
-//         <button
-//           type="submit"
-//           className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
-//         >
-//           Add Customer Details
-//         </button>
+//         <div className="flex justify-between gap-4">
+//           <button
+//             type="submit"
+//             className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
+//           >
+//             Add Customer Details
+//           </button>
+
+//           <button
+//             type="button"
+//             onClick={handleCancel}
+//             className="w-full bg-gray-400 text-white p-2 rounded hover:bg-gray-600"
+//           >
+//             Cancel
+//           </button>
+//         </div>
 //       </form>
 //     </div>
 //   );
 // };
 
 // export default AddCustomer;
+
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -395,12 +397,12 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      <h2 className="text-2xl font-bold mb-4 text-center">
+    <div className="max-w-xl mx-auto p-6 bg-black rounded-2xl shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-center text-red-600">
         Add Customer Details
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <input
           type="text"
           name="customerName"
@@ -408,7 +410,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.customerName}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         />
         <input
           type="text"
@@ -417,7 +419,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.address}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         />
         <input
           type="text"
@@ -426,7 +428,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.contact.phone}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         />
         <input
           type="email"
@@ -434,7 +436,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           placeholder="Email (optional)"
           value={formData.contact.email}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         />
         <input
           type="text"
@@ -443,7 +445,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.vehicleNumber}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         />
 
         <select
@@ -451,13 +453,13 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.vehicleType}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         >
           <option value="" disabled>
-            Vehical Type
+            Vehicle Type
           </option>
           {vehicleTypes.map((type) => (
-            <option key={type} value={type}>
+            <option key={type} value={type} className="text-black">
               {type}
             </option>
           ))}
@@ -469,7 +471,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.serviceDate}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         />
 
         <select
@@ -477,30 +479,29 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.time}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
         >
           <option value="" disabled>
             Select Time
           </option>
           {timeSlots.map((slot) => (
-            <option key={slot} value={slot}>
+            <option key={slot} value={slot} className="text-black">
               {slot}
             </option>
           ))}
         </select>
 
-        <div className="flex justify-between gap-4">
+        <div className="flex gap-4">
           <button
             type="submit"
-            className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition"
           >
             Add Customer Details
           </button>
-
           <button
             type="button"
             onClick={handleCancel}
-            className="w-full bg-gray-400 text-white p-2 rounded hover:bg-gray-600"
+            className="flex-1 bg-gray-700 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg transition"
           >
             Cancel
           </button>
