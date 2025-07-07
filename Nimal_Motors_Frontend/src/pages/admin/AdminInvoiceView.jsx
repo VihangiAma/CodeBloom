@@ -16,7 +16,8 @@ const AdminInvoiceView = () => {
         const formattedData = data.map(invoice => ({
           ...invoice,
           totalCost: invoice.totalCost || 0,
-          adminRemarks: invoice.adminRemarks || "N/A"
+          adminRemarks: invoice.adminRemarks || "N/A",
+          description: invoice.description || "N/A" // Added description field
         }));
         
         setInvoices(formattedData);
@@ -90,6 +91,7 @@ const AdminInvoiceView = () => {
                 <th className="p-3 border border-gray-300">Service ID</th>
                 <th className="p-3 border border-gray-300">Customer Name</th>
                 <th className="p-3 border border-gray-300">Section</th>
+                <th className="p-3 border border-gray-300">Description</th>
                 <th className="p-3 border border-gray-300">Total Cost</th>
                 <th className="p-3 border border-gray-300">Admin Remarks</th>
                 <th className="p-3 border border-gray-300">Actions</th>
@@ -101,6 +103,7 @@ const AdminInvoiceView = () => {
                   <td className="p-3 border border-gray-300">{invoice.serviceID}</td>
                   <td className="p-3 border border-gray-300">{invoice.customerName}</td>
                   <td className="p-3 border border-gray-300">{invoice.section}</td>
+                  <td className="p-3 border border-gray-300">{invoice.description}</td>
                   <td className="p-3 border border-gray-300">Rs. {invoice.totalCost.toFixed(2)}</td>
                   <td className="p-3 border border-gray-300">{invoice.adminRemarks}</td>
                   <td className="p-3 border border-gray-300">
@@ -121,4 +124,4 @@ const AdminInvoiceView = () => {
   );
 };
 
-export default AdminInvoiceView;
+export default AdminInvoiceView; 
