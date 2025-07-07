@@ -3,21 +3,29 @@ import {
   createInvoice,
   getAllInvoices,
   getInvoiceById,
+  getApprovedInvoices,
   updateInvoiceApproval,
-  deleteInvoice,
- // getApprovedInvoices
+  deleteInvoice
 } from '../Controllers/ServiceInvoiceController.js';
 
 const router = express.Router();
 
-// Routes
+//  Create a new invoice
 router.post('/', createInvoice);
-router.get('/', getAllInvoices);
-router.get('/:id', getInvoiceById);
-router.put('/:id/approve', updateInvoiceApproval);
-router.delete('/:id', deleteInvoice);
-// New Route for accountant to fetch only approved invoices
-//router.get("/approved", getApprovedInvoices);
 
+// Get only approved invoices (Must be BEFORE '/:id')
+router.get('/approved', getApprovedInvoices);
+
+//  Get all invoices
+router.get('/', getAllInvoices);
+
+// Get invoice by ID
+router.get('/:id', getInvoiceById);
+
+//  Approve or update approval status
+router.put('/:id/approve', updateInvoiceApproval);
+
+//  Delete invoice
+router.delete('/:id', deleteInvoice);
 
 export default router;

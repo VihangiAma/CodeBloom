@@ -49,6 +49,7 @@ const AccountantDashboard = () => {
 
 
 
+
   useEffect(() => {
     axios.get("http://localhost:5001/api/expenses/summary/monthly")
       .then(res => setMonthlyExpenses(res.data))
