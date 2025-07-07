@@ -81,6 +81,10 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
           <p className="text-gray-900">{invoice.section}</p>
         </div>
         <div>
+          <p className="font-medium text-gray-700">Description:</p>
+          <p className="text-gray-900">{invoice.description || "N/A"}</p>
+        </div>
+        <div>
           <p className="font-medium text-gray-700">Total Cost:</p>
           <p className="text-gray-900 font-semibold">Rs. {invoice.totalCost?.toFixed(2) || "0.00"}</p>
         </div>
