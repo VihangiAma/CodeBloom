@@ -1,6 +1,9 @@
 //Can see invoices of completed appointments
 
 import React, { useEffect, useState } from "react";
+import { AiOutlinePlus, AiOutlineEye } from "react-icons/ai";
+import { FaTrash } from "react-icons/fa";
+
 import axios from "axios";
 import InvoiceForm from "../InvoiceForm";
 
@@ -86,15 +89,23 @@ const Completedappoinments = () => {
               <td className="px-4 py-2 border space-x-2">
                 <button
                   onClick={() => handleViewInvoice(invoice)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded"
+                  className="bg-blue-500 text-white px-3 py-1 rounded "
                 >
-                  View Invoice
+                  <AiOutlinePlus />
                 </button>
+
                 <button
                   onClick={() => handleDelete(invoice.serviceID)}
                   className="bg-red-500 text-white px-3 py-1 rounded"
                 >
-                  Delete
+                  <FaTrash />
+                </button>
+
+                <button
+                  onClick={() => handleViewInvoice()}
+                  className="bg-green-500 text-white px-3 py-1 rounded "
+                >
+                  <AiOutlineEye />
                 </button>
               </td>
             </tr>

@@ -154,7 +154,7 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
               </td>
               <td className="px-4 py-2 border">{appointment.time}</td>
 
-              <td className="px-4 py-2 border">
+              {/* <td className="px-4 py-2 border">
                 {onApprove && onReject && appointment.status === "Pending" ? (
                   <>
                     <button
@@ -174,6 +174,73 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                   <button
                     onClick={() => onDelete(appointment.serviceID)}
                     className="bg-red text-white px-3 py-1 rounded hover:bg-red"
+                  >
+                    Delete
+                  </button>
+                )}
+              </td> */}
+
+              <td className="px-4 py-2 border">
+                {onApprove && onReject && appointment.status === "Pending" ? (
+                  <>
+                    <button
+                      onClick={() => onApprove(appointment.serviceID)}
+                      style={{
+                        backgroundColor: "#28a745", // green
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        marginRight: "8px",
+                        cursor: "pointer",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.backgroundColor = "#218838")
+                      } // darker green
+                      onMouseOut={(e) =>
+                        (e.target.style.backgroundColor = "#28a745")
+                      }
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      onClick={() => onReject(appointment.serviceID)}
+                      style={{
+                        backgroundColor: "#dc3545", // red
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.backgroundColor = "#c82333")
+                      } // darker red
+                      onMouseOut={(e) =>
+                        (e.target.style.backgroundColor = "#dc3545")
+                      }
+                    >
+                      Reject
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => onDelete(appointment.serviceID)}
+                    style={{
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      padding: "6px 12px",
+                      borderRadius: "6px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                    onMouseOver={(e) =>
+                      (e.target.style.backgroundColor = "#c82333")
+                    }
+                    onMouseOut={(e) =>
+                      (e.target.style.backgroundColor = "#dc3545")
+                    }
                   >
                     Delete
                   </button>
