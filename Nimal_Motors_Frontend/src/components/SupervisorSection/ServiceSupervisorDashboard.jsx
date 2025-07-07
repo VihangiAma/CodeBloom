@@ -65,14 +65,14 @@ const ServiceSupervisorDashboard = () => {
           />
         );
 
-      case "report":
-        return (
-          <div className="mx-auto  mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-            {activePage === "report"
-              ? "Report page coming soon..."
-              : "Invoices page coming soon..."}
-          </div>
-        );
+      // case "report":
+      //   return (
+      //     <div className="mx-auto  mt-10 p-6 bg-white shadow-2xl rounded-2xl">
+      //       {activePage === "report"
+      //         ? "Report page coming soon..."
+      //         : "Invoices page coming soon..."}
+      //     </div>
+      //   );
       case "addservice":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
@@ -136,13 +136,13 @@ const ServiceSupervisorDashboard = () => {
                 emoji="📅"
                 onClick={() => setActivePage("appointments")}
               />
-              <DashboardCard
+              {/* <DashboardCard
                 title="View Reports"
                 description="Generate and review service reports."
                 color="bg-purple-500"
                 emoji="📋"
                 onClick={() => setActivePage("report")}
-              />
+              /> */}
               <DashboardCard
                 title="View Invoice"
                 description="View invoices of vehicles."
@@ -217,14 +217,14 @@ const ServiceSupervisorDashboard = () => {
                 </button>
               </li>
               <li>
-                <button
+                {/* <button
                   className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
                     activePage === "report" && "bg-gray-700"
                   }`}
                   onClick={() => setActivePage("report")}
                 >
                   View Reports
-                </button>
+                </button> */}
               </li>
               <li>
                 <button
