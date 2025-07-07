@@ -102,7 +102,7 @@ const Completedappoinments = () => {
                 </button>
 
                 <button
-                  onClick={() => handleViewInvoice()}
+                  onClick={() => handleViewInvoice(invoice)}
                   className="bg-green-500 text-white px-3 py-1 rounded "
                 >
                   <AiOutlineEye />

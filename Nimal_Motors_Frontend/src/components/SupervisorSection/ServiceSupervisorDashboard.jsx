@@ -21,24 +21,6 @@ const ServiceSupervisorDashboard = () => {
   const navigate = useNavigate();
 
   const [activePage, setActivePage] = useState("dashboard");
-  // const [stats, setStats] = useState({
-  //   total: 0,
-  //   completed: 0,
-  //   pending: 0,
-  //   inProgress: 0,
-  // });
-  // const [showProgressFetcher, setShowProgressFetcher] = useState(true);
-
-  // useEffect(() => {
-  //   if (activePage === "dashboard") {
-  //     setShowProgressFetcher(true);
-  //   }
-  // }, [activePage]);
-
-  // const handleStatsUpdate = (data) => {
-  //   setStats(data);
-  //   setShowProgressFetcher(false);
-  // };
 
   const renderContent = () => {
     switch (activePage) {
@@ -65,14 +47,6 @@ const ServiceSupervisorDashboard = () => {
           />
         );
 
-      // case "report":
-      //   return (
-      //     <div className="mx-auto  mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      //       {activePage === "report"
-      //         ? "Report page coming soon..."
-      //         : "Invoices page coming soon..."}
-      //     </div>
-      //   );
       case "addservice":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
@@ -86,40 +60,6 @@ const ServiceSupervisorDashboard = () => {
       default:
         return (
           <>
-            {/* Progress Summary Cards */}
-            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaListAlt className="text-blue-600 text-3xl" />
-                <div>
-                  <p className="text-sm">Total Appointments</p>
-                  <h2 className="text-xl font-semibold">{stats.total}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaCheckCircle className="text-green-600 text-3xl" />
-                <div>
-                  <p className="text-sm">Completed</p>
-                  <h2 className="text-xl font-semibold">{stats.completed}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaSpinner className="text-yellow-500 text-3xl animate-spin-slow" />
-                <div>
-                  <p className="text-sm">In Progress</p>
-                  <h2 className="text-xl font-semibold">{stats.inProgress}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaClock className="text-red-500 text-3xl" />
-                <div>
-                  <p className="text-sm">Pending</p>
-                  <h2 className="text-xl font-semibold">{stats.pending}</h2>
-                </div>
-              </div>
-            </div> */}
             {/* Dashboard Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
               <DashboardCard
@@ -136,13 +76,7 @@ const ServiceSupervisorDashboard = () => {
                 emoji="📅"
                 onClick={() => setActivePage("appointments")}
               />
-              {/* <DashboardCard
-                title="View Reports"
-                description="Generate and review service reports."
-                color="bg-purple-500"
-                emoji="📋"
-                onClick={() => setActivePage("report")}
-              /> */}
+
               <DashboardCard
                 title="View Invoice"
                 description="View invoices of vehicles."
@@ -158,13 +92,6 @@ const ServiceSupervisorDashboard = () => {
                 onClick={() => setActivePage("approved")}
               />
             </div>
-            {/* Progress Updater */}
-            {/* {showProgressFetcher && (
-              <Progress
-                section="appointments"
-                onStatsUpdate={handleStatsUpdate}
-              />
-            )} */}
           </>
         );
     }
@@ -216,16 +143,7 @@ const ServiceSupervisorDashboard = () => {
                   Manage Appointments
                 </button>
               </li>
-              <li>
-                {/* <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "report" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("report")}
-                >
-                  View Reports
-                </button> */}
-              </li>
+              <li></li>
               <li>
                 <button
                   className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
@@ -256,7 +174,7 @@ const ServiceSupervisorDashboard = () => {
         {/* Header */}
         <div className="bg-white shadow flex justify-between items-center px-6 py-4">
           <h2 className="text-2xl font-bold text-gray-800">
-            Service Service Section
+            Service Supervisor Section
           </h2>
           <div className="flex items-center space-x-4">
             <button

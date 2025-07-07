@@ -92,14 +92,6 @@ const MechanicalSupervisorSection = () => {
             <CompletedServices section="mechanical" sectionPrefix="MS" />
           </div>
         );
-      case "report":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            {activePage === "report"
-              ? "Report page coming soon..."
-              : "Invoices page coming soon..."}
-          </div>
-        );
       default:
         return (
           <>
@@ -139,7 +131,7 @@ const MechanicalSupervisorSection = () => {
             </div>
 
             {/* Dashboard Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-10 p-10">
               <DashboardCard
                 title="Add Customer"
                 description="Add a new Customer Details."
@@ -160,13 +152,6 @@ const MechanicalSupervisorSection = () => {
                 color="bg-yellow-500"
                 emoji="🧾"
                 onClick={() => setActivePage("invoices")}
-              />
-              <DashboardCard
-                title="View Reports"
-                description="Generate and review service reports."
-                color="bg-purple-500"
-                emoji="📋"
-                onClick={() => setActivePage("report")}
               />
             </div>
 
@@ -227,16 +212,7 @@ const MechanicalSupervisorSection = () => {
                   Manage Appointments
                 </button>
               </li>
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "report" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("report")}
-                >
-                  View Reports
-                </button>
-              </li>
+              <li></li>
               <li>
                 <button
                   className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
@@ -253,11 +229,11 @@ const MechanicalSupervisorSection = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 w-full">
         {/* Header */}
         <div className="bg-white shadow flex justify-between items-center px-6 py-4">
           <h2 className="text-2xl font-bold text-gray-800">
-            Mechanical Service Section
+            Mechanical Supervisor Section
           </h2>
           <div className="flex items-center space-x-4">
             <button
@@ -285,7 +261,7 @@ const MechanicalSupervisorSection = () => {
         </div>
 
         {/* Page Content */}
-        <div className="p-4">{renderContent()}</div>
+        <div className="p-6 w-full">{renderContent()}</div>
       </div>
     </div>
   );
