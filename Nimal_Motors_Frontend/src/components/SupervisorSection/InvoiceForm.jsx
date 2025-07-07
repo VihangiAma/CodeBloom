@@ -430,6 +430,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
         onChange={(e) => setSection(e.target.value)}
         className="p-2 border rounded text-lg font-medium"
       >
+        <option value="service">Service</option>
         <option value="mechanical">Mechanical</option>
         <option value="electrical">Electrical</option>
         <option value="bodyshop">Bodyshop</option>
