@@ -110,12 +110,12 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                       <FaTrash />
                     </button>
 
-                    <button
+                    {/* <button
                       onClick={() => handleViewInvoice(appointment)}
                       className="bg-green-500 text-white px-3 py-1 rounded "
                     >
                       <AiOutlineEye />
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))}
