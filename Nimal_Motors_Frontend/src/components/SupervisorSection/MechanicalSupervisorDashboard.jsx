@@ -281,12 +281,6 @@ const MechanicalSupervisorSection = () => {
               color: "#333",
             }}
           >
-            {/* <button
-              title="Notifications"
-              onClick={() => navigate("/notification")}
-            >
-              🔔
-            </button> */}
             <button
               title="Profile"
               onClick={() => navigate("/mechanical-supervisor")}

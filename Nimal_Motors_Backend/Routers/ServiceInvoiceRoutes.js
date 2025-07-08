@@ -5,7 +5,8 @@ import {
   getInvoiceById,
   getApprovedInvoices,
   updateInvoiceApproval,
-  deleteInvoice
+  deleteInvoice,
+  // updateInvoice
 } from '../Controllers/ServiceInvoiceController.js';
 
 const router = express.Router();
@@ -27,5 +28,8 @@ router.put('/:id/approve', updateInvoiceApproval);
 
 //  Delete invoice
 router.delete('/:id', deleteInvoice);
+
+// // Update full invoice data
+// router.put('/:id', updateInvoice);
 
 export default router;
