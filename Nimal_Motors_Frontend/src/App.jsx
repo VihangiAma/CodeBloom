@@ -17,7 +17,7 @@ import Appointment from "./pages/Appointment";
 
 // import RegisterPage from './pages/register/RegisterPage';
 
-import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
+// import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
 
 import PremiumServiceForm from "./pages/premiumcustomer/PremiumServiceForm";
 
@@ -39,11 +39,10 @@ import AdminUsers from "./pages/admin/AdminUsers";
 // Supervisor Protected Pages
 
 import ProgressPage from "./Components/SupervisorSection/ProgressPage";
-import ReportPage from "./Components/SupervisorSection/ReportPage";
 
 import AppointmentDetails from "./Components/SupervisorSection/Supervisors/AppointmentDetails";
 import CompletedServices from "./components/SupervisorSection/CompletedServices";
-import NotificationBar from "./components/SupervisorSection/Notification";
+
 import ApprovedAppointments from "./components/SupervisorSection/Supervisors/ApprovedAppointments";
 
 import Completedappoinments from "./components/SupervisorSection/Supervisors/Competedappoinments";
@@ -98,7 +97,7 @@ function App() {
         <Route path="/sections" element={<Sections />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/appointment" element={<Appointment />} />
-        <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
+        {/* <Route path="/supervisor-login" element={<SupervisorLoginForm />} /> */}
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
         {/* Protected User Routes */}
@@ -216,14 +215,14 @@ function App() {
             </SupervisorPrivateRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/report"
           element={
             <SupervisorPrivateRoute>
               <ReportPage />
             </SupervisorPrivateRoute>
           }
-        />
+        /> */}
         <Route
           path="/completed-services"
           element={
@@ -232,14 +231,14 @@ function App() {
             </SupervisorPrivateRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/notification"
           element={
             <SupervisorPrivateRoute>
               <NotificationBar />
             </SupervisorPrivateRoute>
           }
-        />
+        /> */}
         <Route
           path="/approved-appointments"
           element={
