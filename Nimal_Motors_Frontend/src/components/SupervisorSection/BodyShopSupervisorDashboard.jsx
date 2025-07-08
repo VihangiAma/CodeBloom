@@ -477,13 +477,6 @@ const BodyShopSupervisorSection = () => {
           <div className="flex items-center space-x-4 text-xl text-gray-700">
             <button
               className="hover:text-red-600"
-              title="Notifications"
-              onClick={() => navigate("/notification")}
-            >
-              🔔
-            </button>
-            <button
-              className="hover:text-red-600"
               title="Profile"
               onClick={() => navigate("/bodyshop-supervisor")}
             >
