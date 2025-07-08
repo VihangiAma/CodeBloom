@@ -564,12 +564,12 @@ const MechanicalSupervisorSection = () => {
               color: "#333",
             }}
           >
-            <button
+            {/* <button
               title="Notifications"
               onClick={() => navigate("/notification")}
             >
               🔔
-            </button>
+            </button> */}
             <button
               title="Profile"
               onClick={() => navigate("/mechanical-supervisor")}
