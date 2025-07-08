@@ -154,32 +154,6 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
               </td>
               <td className="px-4 py-2 border">{appointment.time}</td>
 
-              {/* <td className="px-4 py-2 border">
-                {onApprove && onReject && appointment.status === "Pending" ? (
-                  <>
-                    <button
-                      onClick={() => onApprove(appointment.serviceID)}
-                      className="bg-green text-white px-3 py-1 rounded hover:bg-green mr-2"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => onReject(appointment.serviceID)}
-                      className="bg-red text-white px-3 py-1 rounded hover:bg-red"
-                    >
-                      Reject
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => onDelete(appointment.serviceID)}
-                    className="bg-red text-white px-3 py-1 rounded hover:bg-red"
-                  >
-                    Delete
-                  </button>
-                )}
-              </td> */}
-
               <td className="px-4 py-2 border">
                 {onApprove && onReject && appointment.status === "Pending" ? (
                   <>
