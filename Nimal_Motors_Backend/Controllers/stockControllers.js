@@ -194,6 +194,26 @@ export const checkLowStock = async (req, res) => {
        res.status(500).json({ message: "Failed to fetch items for this supplier" });
      }
    };
+   export const getNextItemId = async (req, res) => {
+  try {
+    // Find the item with the highest itemId (assumes format like 'ITM0010')
+    const lastItem = await Stock.findOne().sort({ itemId: -1 });
+
+    let nextId = "ITM0001"; // Default starting ID
+
+    if (lastItem && lastItem.itemId) {
+      const num = parseInt(lastItem.itemId.replace(/[^\d]/g, ""), 10); // extract numeric part
+      const newNum = num + 1;
+      nextId = `ITM${String(newNum).padStart(4, "0")}`; // Format: ITM0001
+    }
+
+    res.status(200).json({ nextId });
+  } catch (error) {
+    console.error("Error generating next item ID:", error);
+    res.status(500).json({ message: "Failed to generate next item ID" });
+  }
+};
+
   
   
   

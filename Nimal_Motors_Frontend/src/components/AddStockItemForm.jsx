@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,9 @@ const AddStockItemForm = ({ supplierList = [], categoryList = [], onClose, onIte
 
   const [isNewCategory, setIsNewCategory] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
+
+  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,24 +90,61 @@ const AddStockItemForm = ({ supplierList = [], categoryList = [], onClose, onIte
       toast.error(err.response?.data?.message || "Failed to add item");
     }
   };
+  useEffect(() => {
+  axios.get("http://localhost:5001/api/stock/next-id")
+    .then((res) => {
+      setFormData((prev) => ({
+        ...prev,
+        itemId: res.data.nextId,
+      }));
+    })
+    .catch((err) => {
+      console.error("Failed to fetch next item ID", err);
+      toast.error("Cannot generate item ID");
+    });
+}, []);
 return (
   <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-6 bg-white shadow-md rounded border border-gray-300">
     <h2 className="text-2xl font-bold text-[#B30000] mb-6 text-center">Add New Stock Item</h2>
 
-    {/* ItemId, Name, Barcode */}
-    {["itemId", "itemName", "barcode"].map((field) => (
-      <div key={field} className="mb-4">
-        <label className="block text-black text-base font-medium capitalize mb-1">{field}</label>
-        <input
-          type="text"
-          name={field}
-          value={formData[field]}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black focus:ring-[#B30000] focus:border-[#B30000]"
-        />
-      </div>
-    ))}
+    {/* Item ID (Read-only) */}
+<div className="mb-4">
+  <label className="block text-black text-base font-medium mb-1">Item ID</label>
+  <input
+    type="text"
+    name="itemId"
+    value={formData.itemId}
+    readOnly
+    className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black cursor-not-allowed"
+  />
+</div>
+
+{/* Item Name */}
+<div className="mb-4">
+  <label className="block text-black text-base font-medium mb-1">Item Name</label>
+  <input
+    type="text"
+    name="itemName"
+    value={formData.itemName}
+    onChange={handleChange}
+    required
+    className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
+  />
+</div>
+
+{/* Barcode */}
+<div className="mb-4">
+  <label className="block text-black text-base font-medium mb-1">Barcode</label>
+  <input
+    type="text"
+    name="barcode"
+    value={formData.barcode}
+    onChange={handleChange}
+    required
+    className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
+  />
+</div>
+
 
     {/* Category Dropdown */}
     <div className="mb-4">
