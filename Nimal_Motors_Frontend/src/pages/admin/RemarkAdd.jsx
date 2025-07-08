@@ -53,6 +53,19 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
     }
   };
 
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
       <h3 className="text-xl font-semibold mb-4 text-gray-800">Invoice Review</h3>
@@ -77,18 +90,63 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
           <p className="text-gray-900">{invoice.vehicleNumber}</p>
         </div>
         <div>
+          <p className="font-medium text-gray-700">Vehicle Type:</p>
+          <p className="text-gray-900">{invoice.vehicleType}</p>
+        </div>
+        <div>
           <p className="font-medium text-gray-700">Section:</p>
           <p className="text-gray-900">{invoice.section}</p>
+        </div>
+        <div>
+          <p className="font-medium text-gray-700">Repair Cost:</p>
+          <p className="text-gray-900">Rs. {invoice.repairCost?.toFixed(2) || "0.00"}</p>
         </div>
         <div>
           <p className="font-medium text-gray-700">Total Cost:</p>
           <p className="text-gray-900 font-semibold">Rs. {invoice.totalCost?.toFixed(2) || "0.00"}</p>
         </div>
         <div>
-          <p className="font-medium text-gray-700">Current Status:</p>
-          <p className="text-gray-900 capitalize">{invoice.status?.replace(/_/g, ' ') || "Pending"}</p>
+          <p className="font-medium text-gray-700">Description:</p>
+          <p className="text-gray-900">{invoice.description || 'N/A'}</p>
+        </div>
+        <div>
+          <p className="font-medium text-gray-700">Submitted By:</p>
+          <p className="text-gray-900">{invoice.submittedBy?.name || 'N/A'}</p>
+        </div>
+        <div>
+          <p className="font-medium text-gray-700">Created At:</p>
+          <p className="text-gray-900">{formatDate(invoice.createdAt)}</p>
         </div>
       </div>
+
+      {/* Items Table */}
+      {invoice.items && invoice.items.length > 0 && (
+        <div className="mb-6">
+          <h4 className="font-medium text-gray-700 mb-2">Items:</h4>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-2 px-4 border-b text-left">Description</th>
+                  <th className="py-2 px-4 border-b text-right">Quantity</th>
+                  <th className="py-2 px-4 border-b text-right">Cost</th>
+                  <th className="py-2 px-4 border-b text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {invoice.items.map((item, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                    <td className="py-2 px-4 border-b">{item.description || '-'}</td>
+                    <td className="py-2 px-4 border-b text-right">{item.qty || '0'}</td>
+                    <td className="py-2 px-4 border-b text-right">Rs. {item.cost?.toFixed(2) || '0.00'}</td>
+                    <td className="py-2 px-4 border-b text-right">Rs. {((item.qty || 0) * (item.cost || 0)).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
       
       <div>
         <div className="mb-6">
