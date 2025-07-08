@@ -549,12 +549,6 @@ const ElectricalSupervisorSection = () => {
             }}
           >
             <button
-              title="Notifications"
-              onClick={() => navigate("/notification")}
-            >
-              🔔
-            </button>
-            <button
               title="Profile"
               onClick={() => navigate("/electrical-supervisor")}
             >
