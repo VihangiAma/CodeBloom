@@ -424,12 +424,6 @@ const ServiceSupervisorDashboard = () => {
             }}
           >
             <button
-              title="Notifications"
-              onClick={() => navigate("/notification")}
-            >
-              🔔
-            </button>
-            <button
               title="Profile"
               onClick={() => navigate("/service-supervisor")}
             >
