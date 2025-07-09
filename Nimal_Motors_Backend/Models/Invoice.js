@@ -1,26 +1,11 @@
 import mongoose from "mongoose";
 
 const invoiceSchema = new mongoose.Schema({
-  invoiceNo: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  customerName: {
-    type: String,
-    required: true,
-  },
-  vehicleNo: {
-    type: String,
-    required: true,
-  },
-  presentMeter: {
-    type: String,
-  },
-  invoiceDate: {
-    type: Date,
-    default: Date.now,
-  },
+  invoiceNo: { type: String, required: true, unique: true },
+  customerName: { type: String },  // Optional, can be reused from ServiceInvoice
+  vehicleNo: { type: String },
+  presentMeter: { type: String },
+  invoiceDate: { type: Date, default: Date.now },
 
   items: [
     {
@@ -31,23 +16,16 @@ const invoiceSchema = new mongoose.Schema({
     },
   ],
 
-  totalAmount: {
-    type: Number,
-    required: true,
-  },
-  advance: {
-    type: Number,
-    default: 0,
-  },
-  balance: {
-    type: Number,
-    required: true,
-  },
+  totalAmount: { type: Number, required: true },
+  advance: { type: Number, default: 0 },
+  balance: { type: Number, required: true },
 
-  relatedRepairId: {
+  // Link to supervisor's service invoice
+  relatedServiceInvoiceId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Repair",
-  },
+    ref: "ServiceInvoice",
+    required: true,
+  }
 });
 
 const Invoice = mongoose.model("Invoice", invoiceSchema);

@@ -37,7 +37,8 @@ const AccountantDashboard = () => {
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
   const [categorySummary, setCategorySummary] = useState([]);
   const [supplierSummary, setSupplierSummary] = useState([]);
-  const [approvedRepairs, setApprovedInvoices] = useState([]); //used for invoicing 
+  const [approvedRepairs, setApprovedInvoices] = useState([]);
+  
 
   // Fetch approved repairs for invoicing
   // This effect runs once when the component mounts
@@ -75,7 +76,7 @@ const AccountantDashboard = () => {
           <button onClick={() => navigate("/accountant-dashboard")} className="flex items-center gap-3 px-3 py-2 rounded bg-[#B30000] hover:bg-[#D63333] text-white"><FaHome /> Dashboard</button>
           <button onClick={() => navigate("/expenses")} className="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#5A5A5A] text-white"><FaClipboardList /> Manage Expenses</button>
           <button onClick={() => navigate("/inventory-dashboard")} className="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#5A5A5A] text-white"><FaCogs /> Inventory Overview</button>
-          <button onClick={() => navigate("/reports")} className="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#5A5A5A] text-white"><FaChartLine /> Financial Reports</button>
+          <button onClick={() => navigate("/operation-dashboard")} className="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#5A5A5A] text-white"><FaChartLine /> Financial Reports</button>
         </nav>
       </aside>
 
