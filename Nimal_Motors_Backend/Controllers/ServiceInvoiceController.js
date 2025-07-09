@@ -11,56 +11,69 @@ export const createInvoice = async (req, res) => {
       description,
       section,
       services,
-      items,
+      items = [],
       repairCost,
       submittedBy,
       adminRemarks
     } = req.body;
 
-    // 1. Calculate total cost
     let totalCost = parseFloat(repairCost) || 0;
 
-    if (services) {
+
+
+    // Clean and convert services object
+    const cleanedServices = {};
+    if (services && typeof services === "object") {
       for (const key in services) {
-        if (services[key].selected) {
-          totalCost += parseFloat(services[key].cost) || 0;
+        const entry = services[key];
+        cleanedServices[key] = {
+          selected: !!entry.selected,
+          cost: Number(entry.cost || 0)
+        };
+
+        // Add service cost to total if selected
+        if (entry.selected) {
+          totalCost += Number(entry.cost || 0);
         }
       }
     }
+    // 2. Normalize and calculate item costs
+    const normalizedItems = [];
 
-    if (items) {
-      for (const item of items) {
-        const cost = parseFloat(item.cost) || 0;
-        const qty = parseInt(item.qty) || 0;
-        totalCost += qty * cost;
-      }
-    }
+    for (const item of items) {
+      const { item: itemName, qty, pricePerUnit, itemId } = item;
+      const cost = parseFloat(pricePerUnit) || 0;
+      const quantity = parseInt(qty) || 0;
 
-    // 2. Deduct stock for spare parts
-    if (items && Array.isArray(items)) {
-      for (const item of items) {
-        const { itemId, qty } = item;
-        if (!itemId || !qty) continue;
+      totalCost += quantity * cost;
 
+      normalizedItems.push({
+        description: itemName,
+        qty: quantity,
+        cost,
+      });
+
+      // 3. Deduct stock (if itemId exists)
+      if (itemId) {
         const stockItem = await Stock.findOne({ itemId });
 
         if (!stockItem) {
           return res.status(400).json({ message: `Stock item with ID ${itemId} not found.` });
         }
 
-        if (stockItem.stockQuantity < qty) {
+        if (stockItem.stockQuantity < quantity) {
           return res.status(400).json({
-            message: `Insufficient stock for ${stockItem.itemName}. Available: ${stockItem.stockQuantity}, Requested: ${qty}`
+            message: `Insufficient stock for ${stockItem.itemName}. Available: ${stockItem.stockQuantity}, Requested: ${quantity}`
           });
         }
 
-        stockItem.stockQuantity -= qty;
+        stockItem.stockQuantity -= quantity;
         stockItem.lastUpdated = Date.now();
         await stockItem.save();
       }
     }
 
-    // 3. Save invoice
+    // 4. Save invoice
     const invoice = new ServiceInvoice({
       serviceID,
       customerName,
@@ -68,8 +81,8 @@ export const createInvoice = async (req, res) => {
       vehicleType,
       description: description || "",
       section: section || "",
-      services: services || {},
-      items: Array.isArray(items) ? items : [],
+      services: cleanedServices, // use cleaned object
+      items: normalizedItems,
       repairCost,
       totalCost,
       submittedBy,
@@ -87,7 +100,9 @@ export const createInvoice = async (req, res) => {
 // Get all invoices
 export const getAllInvoices = async (req, res) => {
   try {
-    const invoices = await ServiceInvoice.find().populate('submittedBy', 'name email');
+    const invoices = await ServiceInvoice.find()
+      .populate('submittedBy', 'name email')
+      .sort({ createdAt: -1 }); // Sort by creation date, newest first
     res.status(200).json(invoices);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch invoices', error: error.message });
