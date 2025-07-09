@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import RemarkAdd from "./RemarkAdd";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const AdminInvoiceView = () => {
   const [invoices, setInvoices] = useState([]);
@@ -126,6 +127,7 @@ const AdminInvoiceView = () => {
                 <th className="p-3 border border-gray-300">Repair Cost</th>
                 <th className="p-3 border border-gray-300">Total Cost</th>
                 <th className="p-3 border border-gray-300">Admin Remarks</th>
+                <th className="p-3 border border-gray-300">Status</th>
                 <th className="p-3 border border-gray-300">Actions</th>
               </tr>
             </thead>
@@ -141,6 +143,13 @@ const AdminInvoiceView = () => {
                   <td className="p-3 border border-gray-300">Rs. {invoice.repairCost.toFixed(2)}</td>
                   <td className="p-3 border border-gray-300">Rs. {invoice.totalCost.toFixed(2)}</td>
                   <td className="p-3 border border-gray-300">{invoice.adminRemarks}</td>
+                  <td className="p-3 border border-gray-300 text-center">
+                    {invoice.adminRemarks !== "N/A" ? (
+                      <FaCheckCircle className="text-green-500 text-xl" title="Admin remark added" />
+                    ) : (
+                      <FaTimesCircle className="text-red-500 text-xl" title="Admin remark not added" />
+                    )}
+                  </td>
                   <td className="p-3 border border-gray-300">
                     <button
                       onClick={() => handleViewInvoice(invoice)}

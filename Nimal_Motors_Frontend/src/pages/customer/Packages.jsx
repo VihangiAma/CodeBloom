@@ -3,31 +3,12 @@ import NavBar from "../../components/NavBar/NavBar";
 
 export default function Packages() {
   const packages = [
-    {
-      title: "Basic Service Package",
-      items: [
-        "Engine oil change (with filter)",
-        "Air filter cleaning/replacement",
-        "Brake inspection",
-        "Fluid top-up (coolant, brake, power steering)",
-        "Battery check",
-        "Tire pressure check & rotation",
-      ],
-    },
-    {
-      title: "Full Service Package",
-      items: [
-        "Includes everything in the Basic Package",
-        "Spark plug inspection & replacement",
-        "Engine tuning",
-        "Wheel alignment & balancing",
-        "AC filter cleaning",
-        "Underbody check & lubrication",
-      ],
-    },
+    
+    
     {
       title: "Premium Care Package",
       items: [
+        "Free inspection & diagnostic  report",
         "Includes everything in the Full Service Package",
         "Engine diagnostic scan",
         "Suspension & steering check",
@@ -47,8 +28,12 @@ export default function Packages() {
       ],
     },
     {
-      title: "Electrical & Battery Care Package",
+      title: " Battery Care Package",
       items: [
+        " HV battery repair & replace",
+        "ECU / Meterbord Programming",
+        "WagonR battery programming ",
+        "Key programming",
         "Battery testing & replacement",
         "Alternator & starter motor check",
         "Wiring & fuse inspection",
@@ -56,16 +41,7 @@ export default function Packages() {
         "ECU & sensor diagnosis",
       ],
     },
-    {
-      title: "Body & Paint Protection Package",
-      items: [
-        "Full body wash & wax polish",
-        "Paint correction & touch-up",
-        "Dent removal",
-        "Undercoating & rust-proofing",
-        "Interior vacuum & detailing",
-      ],
-    },
+    
   ];
 
   return (

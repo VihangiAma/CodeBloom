@@ -4,7 +4,7 @@ import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
 import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
 import UserTable from "../../components/SupervisorSection/UserTable";
 import OperationDashbord from "./OperationDashbord";
-import BookingReport from "./BookingReport";
+
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -26,24 +26,6 @@ const AdminDashboard = () => {
 
   const renderContent = () => {
     switch (activePage) {
-      case "booking":
-        return (
-          <div className="p-8 min-h-[calc(100vh-8rem)]">
-            <div className="bg-white rounded-lg shadow p-6 text-center">
-              <p className="text-gray-600 text-xl mb-4">
-                <BookingReport
-                onClick={() => setActivePage("boking Management")}
-                />
-              </p>
-              <button
-                onClick={() => setActivePage("dashboard")}
-                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded transition"
-              >
-                Go Back
-              </button>
-            </div>
-          </div>
-        );
       case "sectionManagement":
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
@@ -63,12 +45,10 @@ const AdminDashboard = () => {
           </div>
         );
       case "userManagement":
-
         navigate("/admin/users");
         return null;
 
       case "operationDashboard":
-
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6">

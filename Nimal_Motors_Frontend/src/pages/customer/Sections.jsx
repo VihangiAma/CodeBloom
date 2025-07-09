@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Award, Users, Calendar, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
+import { Phone, Mail, MapPin, Award, Users, Calendar, ChevronDown, ChevronUp, MessageSquare, Wrench, Car, Battery, Settings } from 'lucide-react';
 import NavBar from "../../components/NavBar/NavBar"
 import Footer from "../../components/Footer/Footer"
 import ChatBot from "../../components/ChatSection/Chatbot"
 
 const SupervisorSection = () => {
   const [expandedSupervisor, setExpandedSupervisor] = useState(null);
+  const [expandedSection, setExpandedSection] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Sample supervisor data
@@ -120,8 +121,120 @@ const SupervisorSection = () => {
     }
   ];
 
+  // Section data
+  const sections = [
+    {
+      id: 1,
+      name: "Mechanical Section",
+      icon: <Wrench className="w-6 h-6 text-blue-600" />,
+      image: "https://images.unsplash.com/photo-1486754735734-325b5831c3ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description: "Complete engine overhauls, transmission rebuilds, clutch repairs, brake servicing, suspension work, and comprehensive mechanical diagnostics for all vehicle makes and models.",
+      services: [
+        "Engine Repair & Rebuilds",
+        "Transmission Services",
+        "Brake & Suspension Systems",
+        "Exhaust System Repairs",
+        "Cooling System Maintenance"
+      ],
+      equipment: [
+        "Engine diagnostic computers",
+        "Transmission lifts",
+        "Brake lathes",
+        "Suspension alignment systems",
+        "Hydraulic presses"
+      ],
+      stats: [
+        { label: "Annual Repairs", value: "1,000+" },
+        { label: "Specialists", value: "105" },
+        { label: "Warranty", value: "1 Years" }
+      ]
+    },
+    {
+      id: 2,
+      name: "Bodyshop Section",
+      icon: <Car className="w-6 h-6 text-red-600" />,
+      image: "https://images.unsplash.com/photo-1632515924640-cfef4ac441fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description: "Professional accident repair, dent removal, panel beating, spray painting, frame alignment, and full vehicle restoration services with insurance claim support.",
+      services: [
+        "Collision Repair & Panel Beating",
+        "Spray Painting & Color Matching",
+        "Frame Straightening",
+        "Dent Removal",
+        "Rust Treatment"
+      ],
+      equipment: [
+        "Frame straightening machines",
+        "Paint booths with ventilation",
+        "Color matching spectrophotometers",
+        "Dent removal tools",
+        "Sandblasting equipment"
+      ],
+      stats: [
+        { label: "Annual Repairs", value: "800+" },
+        { label: "Paint Jobs", value: "1,500+" },
+        { label: "Warranty", value: "1 Years" }
+      ]
+    },
+    {
+      id: 3,
+      name: "Electrical Section",
+      icon: <Battery className="w-6 h-6 text-yellow-600" />,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description: "Advanced auto electrical repairs, ECU programming, wiring harness replacement, alternator/starter motor services, battery diagnostics, and modern vehicle electronics.",
+      services: [
+        "ECU Programming & Diagnostics",
+        "Alternator & Starter Repairs",
+        "Wiring & Electrical Systems",
+        "Battery Services",
+        "Lighting Systems"
+      ],
+      equipment: [
+        "OBD diagnostic scanners",
+        "Oscilloscopes",
+        "Multimeters",
+        "Battery testers",
+        "ECU programmers"
+      ],
+      stats: [
+        { label: "Annual Repairs", value: "1,000+" },
+        { label: "Diagnostics", value: "1,00+" },
+        { label: "Warranty", value: "1 Years" }
+      ]
+    },
+    {
+      id: 4,
+      name: "Vehicle Service Section",
+      icon: <Settings className="w-6 h-6 text-green-600" />,
+      image: "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description: "Regular maintenance services including oil changes, tire rotations, wheel alignment, vehicle inspections, tune-ups, and preventive maintenance scheduling.",
+      services: [
+        "Oil Changes & Tune-ups",
+        "Tire Services & Alignment",
+        "Vehicle Inspections",
+        "Fluid Replacements",
+        "Filter Changes"
+      ],
+      equipment: [
+        "Oil change pits",
+        "Tire changers",
+        "Wheel balancers",
+        "Alignment racks",
+        "Fluid exchangers"
+      ],
+      stats: [
+        { label: "Annual Services", value: "2,000+" },
+        { label: "Customers", value: "1,200+" },
+        { label: "Warranty", value: "1 Year" }
+      ]
+    }
+  ];
+
   const toggleSupervisor = (supervisorId) => {
     setExpandedSupervisor(expandedSupervisor === supervisorId ? null : supervisorId);
+  };
+
+  const toggleSection = (sectionId) => {
+    setExpandedSection(expandedSection === sectionId ? null : sectionId);
   };
 
   const toggleChat = () => {
@@ -144,121 +257,79 @@ const SupervisorSection = () => {
 
           {/* Sections Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-              <img 
-                src="https://images.unsplash.com/photo-1486754735734-325b5831c3ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Mechanical Section" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Mechanical Section</h3>
-                <p className="text-gray-600 text-sm mb-4">Complete engine overhauls, transmission rebuilds, clutch repairs, brake servicing, suspension work, and comprehensive mechanical diagnostics for all vehicle makes and models.</p>
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    Engine Repair & Rebuilds
+            {sections.map((section) => (
+              <div 
+                key={section.id} 
+                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+              >
+                <img 
+                  src={section.image} 
+                  alt={section.name} 
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      {section.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">{section.name}</h3>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    Transmission Services
+                  <p className="text-gray-600 text-sm mb-4">{section.description}</p>
+                  <div className="mb-4">
+                    {section.services.slice(0, 3).map((service, index) => (
+                      <div key={index} className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        {service}
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    Brake & Suspension Systems
-                  </div>
-                </div>
-                <button className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
-                  VIEW DETAILS
-                </button>
-              </div>
-            </div>
+                  <button 
+                    onClick={() => toggleSection(section.id)}
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                  >
+                    {expandedSection === section.id ? 'Hide Details' : 'Section Details'}
+                  </button>
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-              <img 
-                src="https://images.unsplash.com/photo-1632515924640-cfef4ac441fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Bodyshop Section" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Bodyshop Section</h3>
-                <p className="text-gray-600 text-sm mb-4">Professional accident repair, dent removal, panel beating, spray painting, frame alignment, and full vehicle restoration services with insurance claim support.</p>
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                    Collision Repair & Panel Beating
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                    Spray Painting & Color Matching
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                    Frame Straightening
-                  </div>
-                </div>
-                <button className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
-                  VIEW DETAILS
-                </button>
-              </div>
-            </div>
+                  {/* Expanded Section Details */}
+                  {expandedSection === section.id && (
+                    <div className="mt-6 space-y-4 border-t pt-4">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Services Offered</h4>
+                        <ul className="space-y-1">
+                          {section.services.map((service, index) => (
+                            <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
+                              {service}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-              <img 
-                src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Electrical Section" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Electrical Section</h3>
-                <p className="text-gray-600 text-sm mb-4">Advanced auto electrical repairs, ECU programming, wiring harness replacement, alternator/starter motor services, battery diagnostics, and modern vehicle electronics.</p>
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                    ECU Programming & Diagnostics
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                    Alternator & Starter Repairs
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                    Wiring & Electrical Systems
-                  </div>
-                </div>
-                <button className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
-                  VIEW DETAILS
-                </button>
-              </div>
-            </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Specialized Equipment</h4>
+                        <ul className="space-y-1">
+                          {section.equipment.map((item, index) => (
+                            <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></div>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-              <img 
-                src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Vehicle Service Section" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Vehicle Service Section</h3>
-                <p className="text-gray-600 text-sm mb-4">Regular maintenance services including oil changes, tire rotations, wheel alignment, vehicle inspections, tune-ups, and preventive maintenance scheduling.</p>
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    Oil Changes & Tune-ups
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    Tire Services & Alignment
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    Vehicle Inspections
-                  </div>
+                      <div className="grid grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg">
+                        {section.stats.map((stat, index) => (
+                          <div key={index} className="text-center">
+                            <div className="text-lg font-bold text-blue-600">{stat.value}</div>
+                            <div className="text-xs text-gray-600">{stat.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <button className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
-                  VIEW DETAILS
-                </button>
               </div>
-            </div>
+            ))}
           </div>
 
           {/* Supervisors Header */}

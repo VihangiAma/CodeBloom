@@ -30,7 +30,15 @@ export default function Home() {
       src: mechanical, 
       alt: "Mechanical Section", 
       title: "Mechanical Section", 
-      info: ""
+      info: "",
+      details: {
+        description: "Complete engine overhauls, transmission rebuilds, clutch repairs, brake servicing, suspension work, and comprehensive mechanical diagnostics for all vehicle makes and models.",
+        services: [
+          "Engine Repair & Rebuilds",
+          "Transmission Services",
+          "Brake & Suspension Systems"
+        ]
+      }
     },
     { 
       id: "bodyshop",
@@ -111,7 +119,12 @@ export default function Home() {
   };
 
   const handleViewDetails = (sectionId) => {
-    navigate(`/sections#${sectionId}`, { state: { scrollTo: sectionId } });
+    navigate(`/sections`, { 
+      state: { 
+        scrollTo: sectionId,
+        sectionData: sections.find(section => section.id === sectionId)
+      } 
+    });
   };
 
   const handleMoreDetails = () => {
