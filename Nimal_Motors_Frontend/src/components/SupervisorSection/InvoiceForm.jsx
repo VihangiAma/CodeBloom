@@ -17,6 +17,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
     customerName: initialData.customerName || "",
     vehicleNumber: initialData.vehicleNumber || "",
     vehicleType: initialData.vehicleType || "",
+    contactNumber: initialData.contact?.phone || "",
   });
   const [description, setDescription] = useState("");
   const [repairCost, setRepairCost] = useState(0);
@@ -148,6 +149,15 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
           }
           required
         />
+        <input
+          className="p-3 border rounded shadow-sm"
+          placeholder="Contact Number"
+          value={customer.contactNumber || ""}
+          onChange={(e) =>
+            setCustomer({ ...customer, contactNumber: e.target.value })
+          }
+          required
+        />
       </div>
 
       <textarea
@@ -210,7 +220,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
           <button
             type="button"
             onClick={addItemRow}
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded shadow hover:bg-red-700"
+            className="mt-4 px-4 py-2  bg-red-600 text-white rounded shadow hover:bg-red-700"
           >
             + Add Item
           </button>
