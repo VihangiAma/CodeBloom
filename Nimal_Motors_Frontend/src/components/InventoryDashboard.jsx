@@ -6,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from 'react-router-dom';
 import logoImage from "../assets/images/logo.jpg";
 import SuppliersSection from "./SupplierDetails";
+import AddStockItemForm from "./AddStockItemForm"; 
+
 
 const InventoryDashboard = () => {
   // States for inventory, filters, supplier info, modals
@@ -20,12 +22,14 @@ const InventoryDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [categories, setCategories] = useState([]);
-  const [barcodeModalOpen, setBarcodeModalOpen] = useState(false);
-  const [barcodeInput, setBarcodeInput] = useState("");
-  const [foundItem, setFoundItem] = useState(null);
-  const [quantityToAdd, setQuantityToAdd] = useState("");
+  //const [barcodeModalOpen, setBarcodeModalOpen] = useState(false);
+  // const [barcodeInput, setBarcodeInput] = useState("");
+  // const [foundItem, setFoundItem] = useState(null);
+  // const [quantityToAdd, setQuantityToAdd] = useState("");
   const [activeSection, setActiveSection] = useState("inventory");
   const [supplierList, setSupplierList] = useState([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -124,51 +128,51 @@ const InventoryDashboard = () => {
       });
   };
 
-  // Handle barcode inputs
-  const handleBarcodeSubmit = async () => {
-    if (!barcodeInput.trim()) {
-      toast.error("Please enter a barcode before submitting!");
-      return;
-    }
+  // // Handle barcode inputs
+  // const handleBarcodeSubmit = async () => {
+  //   if (!barcodeInput.trim()) {
+  //     toast.error("Please enter a barcode before submitting!");
+  //     return;
+  //   }
 
-    try {
-      const response = await axios.get(`http://localhost:5001/api/stock/barcode/${barcodeInput.trim()}`);
-      const matchedItem = response.data;
+  //   try {
+  //     const response = await axios.get(`http://localhost:5001/api/stock/barcode/${barcodeInput.trim()}`);
+  //     const matchedItem = response.data;
 
-      if (matchedItem) {
-        setFoundItem(matchedItem);
-      } else {
-        alert("No item found for this barcode.");
-        setFoundItem(null);
-      }
-    } catch (error) {
-      console.error("Error checking barcode:", error);
-      alert("Failed to check barcode. Please try again.");
-    }
-  };
+  //     if (matchedItem) {
+  //       setFoundItem(matchedItem);
+  //     } else {
+  //       alert("No item found for this barcode.");
+  //       setFoundItem(null);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error checking barcode:", error);
+  //     alert("Failed to check barcode. Please try again.");
+  //   }
+  // };
 
-  // Add stock from barcode modal
-  const handleAddStockViaBarcode = async () => {
-    if (!foundItem || !quantityToAdd) return;
+  // // Add stock from barcode modal
+  // const handleAddStockViaBarcode = async () => {
+  //   if (!foundItem || !quantityToAdd) return;
 
-    try {
-      await axios.put(`http://localhost:5001/api/stock/barcode/${foundItem.barcodeInput}/add-stock`, {
-        quantityToAdd: parseInt(quantityToAdd)
-      });
+  //   try {
+  //     await axios.put(`http://localhost:5001/api/stock/barcode/${foundItem.barcodeInput}/add-stock`, {
+  //       quantityToAdd: parseInt(quantityToAdd)
+  //     });
 
-      toast.success(`Successfully added ${quantityToAdd} units to ${foundItem.itemName}`);
-      setFoundItem(null);
-      setQuantityToAdd("");
-      setBarcodeInput("");
-      setBarcodeModalOpen(false);
+  //     toast.success(`Successfully added ${quantityToAdd} units to ${foundItem.itemName}`);
+  //     setFoundItem(null);
+  //     setQuantityToAdd("");
+  //     setBarcodeInput("");
+  //     setBarcodeModalOpen(false);
 
-      const updatedInventory = await axios.get("http://localhost:5001/api/stock/items");
-      setInventory(updatedInventory.data);
-    } catch (err) {
-      console.error("Update error:", err);
-      toast.error("Failed to update stock.");
-    }
-  };
+  //     const updatedInventory = await axios.get("http://localhost:5001/api/stock/items");
+  //     setInventory(updatedInventory.data);
+  //   } catch (err) {
+  //     console.error("Update error:", err);
+  //     toast.error("Failed to update stock.");
+  //   }
+  // };
 
   return (
     <div className="flex h-screen w-screen bg-[#F5F5F5] min-w-0">
@@ -195,12 +199,21 @@ const InventoryDashboard = () => {
             </li>
             <li>
               <button
+  onClick={() => setShowAddForm(true)}
+  className={`flex items-center gap-3 p-2 rounded cursor-pointer ${activeSection === "addNewItem" ? "bg-[#B30000] text-white" : "hover:bg-[#5A5A5A]"}`}
+>
+  + Add New Item
+</button>
+
+            </li>
+            {/* <li>
+              <button
                 onClick={() => setBarcodeModalOpen(true)}
                 className="w-full  text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-[#5A5A5A] shadow-sm"
               >
                 <FaBarcode /> Add via Barcode
               </button>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </aside>
@@ -319,7 +332,7 @@ const InventoryDashboard = () => {
           <SuppliersSection />
         )}
 
-        {/* Barcode Modal */}
+        {/* Barcode Modal
         {barcodeModalOpen && (
           <div className="fixed inset-0 bg-[#000000] bg-opacity-40 flex justify-center items-center z-50">
             <div className="bg-[#FFFFFF] p-6 rounded shadow-lg w-96">
@@ -357,7 +370,29 @@ const InventoryDashboard = () => {
               )}
             </div>
           </div>
-        )}
+        )} */}
+
+        {showAddForm && (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded shadow-md w-full max-w-xl relative">
+      <button
+        onClick={() => setShowAddForm(false)}
+        className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl"
+      >
+        &times;
+      </button>
+      <AddStockItemForm 
+      supplierList={supplierList}
+      categoryList={categories}
+  onClose={() => setShowAddForm(false)}
+  onItemAdded={() => {
+    setShowAddForm(false);
+    axios.get("http://localhost:5001/api/stock/items").then((res) => setInventory(res.data));
+  }}/>
+    </div>
+  </div>
+)}
+
 
         {/* Edit Item Modal */}
         {editItem && (
