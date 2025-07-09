@@ -268,7 +268,7 @@ const Completedappoinments = () => {
       )}
 
       <h2 className="text-xl font-semibold mb-4 capitalize">
-        {section} - Pending Invoices
+        {section} - Pending Invoices(Not Approved)
       </h2>
 
       {pendingInvoices.length === 0 ? (
@@ -295,14 +295,14 @@ const Completedappoinments = () => {
                     {invoice.adminRemarks || "N/A"}
                   </td>
                   <td className="border px-3 py-2">
-                    <button
+                    {/* <button
                       // onClick={() => handleViewInvoice(appointment)}
                       className=" px-3 py-2 text-yellow-600 font-medium"
                     >
                       Not Approved
-                    </button>
+                    </button> */}
                     <button
-                      onClick={() => handleDelete()}
+                      // onClick={() => handleDelete()}
                       className="bg-blue-500 text-white px-3 py-1 rounded"
                     >
                       <AiOutlinePlus />
