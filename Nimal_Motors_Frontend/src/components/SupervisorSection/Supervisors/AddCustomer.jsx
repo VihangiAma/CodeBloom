@@ -50,7 +50,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     if (!nameRegex.test(formData.customerName.trim())) {
       Swal.fire(
         "Invalid Input",
-        "Invalid Customer Name. Only letters and spaces allowed.",
+        "Only letters and spaces allowed in name.",
         "warning"
       );
       return false;
@@ -64,7 +64,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
       return false;
     }
     if (!phoneRegex.test(formData.contact.phone.trim())) {
-      Swal.fire("Invalid Input", "Check the phone number. ", "warning");
+      Swal.fire("Invalid Input", "Invalid phone number.", "warning");
       return false;
     }
     if (
@@ -77,21 +77,17 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     if (!vehicleNumberRegex.test(formData.vehicleNumber.trim())) {
       Swal.fire(
         "Invalid Input",
-        "Vehicle Number must be like ABC-1234.",
+        "Vehicle Number format must be like ABC-1234.",
         "warning"
       );
       return false;
     }
-    if (!formData.vehicleType) {
-      Swal.fire("Invalid Input", "Please select a vehicle type.", "warning");
-      return false;
-    }
-    if (!formData.serviceDate) {
-      Swal.fire("Invalid Input", "Date is required.", "warning");
-      return false;
-    }
-    if (!formData.time) {
-      Swal.fire("Invalid Input", "Time slot must be selected.", "warning");
+    if (!formData.vehicleType || !formData.serviceDate || !formData.time) {
+      Swal.fire(
+        "Missing Field",
+        "Please fill in all required fields.",
+        "warning"
+      );
       return false;
     }
 
@@ -100,37 +96,20 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     try {
       await axios.post("http://localhost:5001/api/appointments", formData);
-
-      Swal.fire({
-        icon: "success",
-        title: "Customer Added",
-        text: "Customer appointment has been saved.",
-      });
-
+      Swal.fire("Success", "Customer appointment saved.", "success");
       setFormData(initialFormState);
     } catch (error) {
-      console.error(error);
       let errorMessage = "Something went wrong. Please try again.";
-      if (error.response?.data?.error) {
-        const serverError = error.response.data.error;
-        if (serverError.toLowerCase().includes("already booked")) {
-          errorMessage =
-            "This time slot is already booked. Please choose another time.";
-        } else {
-          errorMessage = serverError;
-        }
+      if (
+        error.response?.data?.error?.toLowerCase().includes("already booked")
+      ) {
+        errorMessage = "This time slot is already booked.";
       }
-
-      Swal.fire({
-        icon: "error",
-        title: "Booking Failed",
-        text: errorMessage,
-      });
+      Swal.fire("Booking Failed", errorMessage, "error");
     }
   };
 
@@ -139,20 +118,20 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-black rounded-2xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 text-center text-red-600">
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-xl shadow-md border border-gray-200">
+      <h2 className="text-2xl font-bold mb-6 text-center text-red-600">
         Add Customer Details
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5 text-gray-800">
         <input
           type="text"
           name="customerName"
-          placeholder="Name"
+          placeholder="Customer Name"
           value={formData.customerName}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -161,7 +140,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.address}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -170,7 +149,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.contact.phone}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="email"
@@ -178,7 +157,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           placeholder="Email (optional)"
           value={formData.contact.email}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -187,47 +166,44 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.vehicleNumber}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="vehicleType"
           value={formData.vehicleType}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
-            Vehicle Type
+            Select Vehicle Type
           </option>
           {vehicleTypes.map((type) => (
-            <option key={type} value={type} className="text-black">
+            <option key={type} value={type}>
               {type}
             </option>
           ))}
         </select>
-
         <input
           type="date"
           name="serviceDate"
           value={formData.serviceDate}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="time"
           value={formData.time}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
-            Select Time
+            Select Time Slot
           </option>
           {timeSlots.map((slot) => (
-            <option key={slot} value={slot} className="text-black">
+            <option key={slot} value={slot}>
               {slot}
             </option>
           ))}
@@ -236,14 +212,14 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
         <div className="flex gap-4">
           <button
             type="submit"
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition"
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-md transition"
           >
-            Add Customer Details
+            Add Details
           </button>
           <button
             type="button"
             onClick={handleCancel}
-            className="flex-1 bg-gray-700 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg transition"
+            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-md transition"
           >
             Cancel
           </button>
