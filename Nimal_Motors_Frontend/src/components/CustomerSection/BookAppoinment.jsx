@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const BookAppointment = () => {
-  const navigate = useNavigate(); // For navigation
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -83,16 +83,12 @@ const BookAppointment = () => {
       );
       return false;
     }
-    if (!formData.vehicleType) {
-      Swal.fire("Invalid Input", "Please select a vehicle type.", "warning");
-      return false;
-    }
-    if (!formData.serviceDate) {
-      Swal.fire("Invalid Input", "Service date is required.", "warning");
-      return false;
-    }
-    if (!formData.time) {
-      Swal.fire("Invalid Input", "Time slot must be selected.", "warning");
+    if (!formData.vehicleType || !formData.serviceDate || !formData.time) {
+      Swal.fire(
+        "Missing Field",
+        "Please fill in all required fields.",
+        "warning"
+      );
       return false;
     }
 
@@ -104,16 +100,13 @@ const BookAppointment = () => {
 
     if (!validateForm()) return;
 
-    console.log(formData);
-
     try {
       await axios.post("http://localhost:5001/api/appointments", formData);
-
-      Swal.fire({
-        icon: "success",
-        title: "Appointment Booked!",
-        text: "Your appointment has been placed successfully.",
-      });
+      Swal.fire(
+        "Success",
+        "Your appointment has been placed successfully.",
+        "success"
+      );
 
       setFormData({
         customerName: "",
@@ -139,26 +132,21 @@ const BookAppointment = () => {
           errorMessage = serverError;
         }
       }
-
-      Swal.fire({
-        icon: "error",
-        title: "Booking Failed",
-        text: errorMessage,
-      });
+      Swal.fire("Booking Failed", errorMessage, "error");
     }
   };
 
   const handleCancel = () => {
-    navigate("/"); // Adjust the route to your actual dashboard path
+    navigate("/");
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-black rounded-2xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 text-center text-red-600">
+    <div className="max-w-xl mx-auto mt-10 p-8 bg-white border border-gray-200 rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center text-red-600">
         Book an Appointment
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5 text-gray-800">
         <input
           type="text"
           name="customerName"
@@ -166,7 +154,7 @@ const BookAppointment = () => {
           value={formData.customerName}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -175,7 +163,7 @@ const BookAppointment = () => {
           value={formData.address}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -184,7 +172,7 @@ const BookAppointment = () => {
           value={formData.contact.phone}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="email"
@@ -192,7 +180,7 @@ const BookAppointment = () => {
           placeholder="Email (optional)"
           value={formData.contact.email}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -201,47 +189,44 @@ const BookAppointment = () => {
           value={formData.vehicleNumber}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white placeholder-gray-400"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="vehicleType"
           value={formData.vehicleType}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
             Select Vehicle Type
           </option>
           {vehicleTypes.map((type) => (
-            <option key={type} value={type} className="text-black">
+            <option key={type} value={type}>
               {type}
             </option>
           ))}
         </select>
-
         <input
           type="date"
           name="serviceDate"
           value={formData.serviceDate}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="time"
           value={formData.time}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded-lg border border-red-600 bg-gray-900 text-white"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
             Select Time Slot
           </option>
           {timeSlots.map((slot) => (
-            <option key={slot} value={slot} className="text-black">
+            <option key={slot} value={slot}>
               {slot}
             </option>
           ))}
@@ -250,7 +235,7 @@ const BookAppointment = () => {
         <div className="flex justify-between gap-4">
           <button
             type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-md transition"
           >
             Book Appointment
           </button>
@@ -258,7 +243,7 @@ const BookAppointment = () => {
           <button
             type="button"
             onClick={handleCancel}
-            className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 rounded-lg transition"
+            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-md transition"
           >
             Cancel
           </button>
