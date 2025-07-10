@@ -50,6 +50,7 @@ import AdminInvoiceView from "./pages/admin/AdminInvoiceView";
 import AddServiceForm from "./components/SupervisorSection/AddServiceForm";
 import UserTable from "./components/SupervisorSection/UserTable";
 import InvoiceForm from "./components/SupervisorSection/InvoiceForm";
+import RepairPackage from "./Components/SupervisorSection/RepairPackagesPage";
 
 // Section-specific Dashboards
 
@@ -100,6 +101,7 @@ function App() {
         {/* <Route path="/supervisor-login" element={<SupervisorLoginForm />} /> */}
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
+        <Route path="/repair-packages" element={<RepairPackage />} />
         {/* Protected User Routes */}
         <Route
           path="/profile"
