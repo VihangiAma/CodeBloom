@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-/** Util – safe number */
+/* ---------- utils ---------- */
 const num = (v) => (isNaN(+v) ? 0 : +v);
 
+/* ---------- component ---------- */
 const InvoiceForm = ({
-  userRole = "staff", // "admin" gets the remarks box
-  initialData = {}, // pass existing invoice to edit
+  userRole = "staff",
+  initialData = {},
   onCancel = () => {},
   onSubmit = () => {},
 }) => {
@@ -21,15 +22,14 @@ const InvoiceForm = ({
     adminRemarks: initialData.adminRemarks || "",
   });
 
-  /* repairs & stock fetched from API */
-  const [repairPackages, setRepairPackages] = useState([]); // GET /repair-packages
-  const [stock, setStock] = useState([]); // GET /stock/items
-
-  /* line-item state */
-  const [repairs, setRepairs] = useState(initialData.repairs || []);
-  const [items, setItems] = useState(initialData.items || []);
-
-  /* section state */
+  const [repairPackages, setRepairPackages] = useState([]);
+  const [stock, setStock] = useState([]);
+  const [repairs, setRepairs] = useState(
+    initialData.repairs?.length ? initialData.repairs : []
+  );
+  const [items, setItems] = useState(
+    initialData.items?.length ? initialData.items : []
+  );
   const [section, setSection] = useState(initialData.section || "");
 
   useEffect(() => {
@@ -44,16 +44,21 @@ const InvoiceForm = ({
       .catch(() => setStock([]));
   }, []);
 
-  const inventoryCost = items.reduce(
-    (s, i) => s + i.qty * num(i.pricePerUnit),
+  const calcPackagePrice = (repairList) =>
+    repairList.reduce((sum, r) => sum + num(r.price), 0);
+
+  const repairsCost = repairs.reduce(
+    (sum, r) => sum + calcPackagePrice(r.repairs),
     0
   );
-  const repairsCost = repairs.reduce((s, r) => s + num(r.price), 0);
+  const inventoryCost = items.reduce(
+    (sum, i) => sum + i.qty * num(i.pricePerUnit),
+    0
+  );
   const totalCost = repairsCost + inventoryCost;
 
   const patchForm = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
-  /** inventory row helpers */
   const addItem = () =>
     setItems((p) => [
       ...p,
@@ -67,13 +72,13 @@ const InvoiceForm = ({
     ]);
 
   const updateItem = (idx, field, value) =>
-    setItems((p) =>
-      p.map((row, i) =>
+    setItems((prev) =>
+      prev.map((row, i) =>
         i === idx
           ? (() => {
               const r = { ...row, [field]: value };
               if (field === "item" && !r.custom) {
-                const found = stock.find((s) => s.itemName === value);
+                const found = stock.find((st) => st.itemName === value);
                 r.pricePerUnit = found ? found.pricePerUnit : 0;
               }
               return r;
@@ -84,36 +89,51 @@ const InvoiceForm = ({
 
   const removeItem = (idx) => setItems((p) => p.filter((_, i) => i !== idx));
 
-  /** repair row helpers */
   const addRepair = () =>
     setRepairs((p) => [
       ...p,
       {
         package: "",
-        repair: "",
-        price: 0,
+        repairs: [],
         custom: false,
       },
     ]);
 
-  const updateRepair = (idx, field, value) =>
-    setRepairs((p) =>
-      p.map((row, i) =>
+  const updateRepairRow = (idx, field, value) =>
+    setRepairs((prev) =>
+      prev.map((row, i) => (i === idx ? { ...row, [field]: value } : row))
+    );
+
+  const toggleRepairCheckbox = (idx, repairLabel) => {
+    setRepairs((prev) =>
+      prev.map((row, i) =>
         i === idx
           ? (() => {
-              const r = { ...row, [field]: value };
-              if (field === "repairs" && !r.custom) {
-                const found = repairPackages.find(
-                  (pkg) =>
-                    pkg.packageName === row.package && pkg.repairs === value
-                );
-                r.price = found ? found.price : 0;
-              }
-              return r;
+              const exists = row.repairs.find((r) => r.label === repairLabel);
+              const next = exists
+                ? row.repairs.filter((r) => r.label !== repairLabel)
+                : [...row.repairs, { label: repairLabel, price: 0 }];
+              return { ...row, repairs: next };
             })()
           : row
       )
     );
+  };
+
+  const updateRepairPrice = (idx, repairLabel, newPrice) => {
+    setRepairs((prev) =>
+      prev.map((row, i) =>
+        i === idx
+          ? {
+              ...row,
+              repairs: row.repairs.map((r) =>
+                r.label === repairLabel ? { ...r, price: num(newPrice) } : r
+              ),
+            }
+          : row
+      )
+    );
+  };
 
   const removeRepair = (idx) =>
     setRepairs((p) => p.filter((_, i) => i !== idx));
@@ -122,54 +142,47 @@ const InvoiceForm = ({
     e.preventDefault();
 
     const mappedRepairs = repairs.map((r) => ({
-      package: r.package || "Custom", // fallback
-      repair: r.repair,
-      price: Number(r.price),
+      package: r.package || "Custom",
+      repairs: r.repairs.map((rep) => ({
+        label: rep.label,
+        price: num(rep.price),
+      })),
+      price: calcPackagePrice(r.repairs),
     }));
 
-    const mappedItems = items.map((i) => ({
-      itemName: i.item,
-      qty: Number(i.qty),
-      price: Number(i.pricePerUnit),
+    const mappedItems = items.map((it) => ({
+      itemName: it.item,
+      qty: num(it.qty),
+      price: num(it.pricePerUnit),
     }));
 
     const payload = {
       serviceID: form.serviceID,
       customerName: form.customerName,
       vehicleNumber: form.vehicleNumber,
-      presentMeter: Number(form.presentMeter),
+      presentMeter: num(form.presentMeter),
       serviceDate: new Date(form.serviceDate),
       description: form.description,
-      repair: mappedRepairs,
+      repairs: mappedRepairs,
       items: mappedItems,
-      totalCost: Number(totalCost),
+      totalCost: num(totalCost),
       adminRemarks: form.adminRemarks || "",
     };
-
-    console.log("Submitting payload:", JSON.stringify(payload, null, 2));
 
     fetch("http://localhost:5001/api/invoice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
-      .then((res) => {
-        if (!res.ok) {
-          return res.json().then((err) => {
-            console.error("Server error response:", err);
-            throw new Error(`HTTP ${res.status}`);
-          });
-        }
-        return res.json();
+      .then((r) => {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
       })
       .then(() => {
-        alert("Invoice submitted successfully");
-        if (onSubmit) onSubmit();
+        alert("Invoice saved");
+        onSubmit();
       })
-      .catch((err) => {
-        console.error("Error submitting invoice:", err);
-        alert("Failed to submit invoice. Please check the data.");
-      });
+      .catch((err) => alert("Save failed: " + err));
   };
 
   return (
@@ -179,7 +192,6 @@ const InvoiceForm = ({
     >
       <h2 className="text-3xl font-bold text-center text-red-600">Invoice</h2>
 
-      {/* Customer & job info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
         {[
           ["serviceID", "Service ID"],
@@ -187,19 +199,17 @@ const InvoiceForm = ({
           ["vehicleNumber", "Vehicle Number"],
           ["presentMeter", "Present Meter"],
           ["serviceDate", "Service Date", "date"],
-        ].map(([key, label, type = "text"]) => (
+        ].map(([k, pl, type = "text"]) => (
           <input
-            key={key}
+            key={k}
             type={type}
-            placeholder={label}
-            value={form[key]}
-            onChange={(e) => patchForm(key, e.target.value)}
+            placeholder={pl}
+            value={form[k]}
+            onChange={(e) => patchForm(k, e.target.value)}
             className="p-2 border rounded"
             required
           />
         ))}
-
-        {/* Section selector */}
         <select
           value={section}
           onChange={(e) => setSection(e.target.value)}
@@ -216,7 +226,6 @@ const InvoiceForm = ({
         </select>
       </div>
 
-      {/* Description */}
       <textarea
         placeholder="Description"
         value={form.description}
@@ -224,7 +233,7 @@ const InvoiceForm = ({
         className="w-full p-2 border rounded text-black"
       />
 
-      {/* Repairs Table */}
+      {/* Repairs */}
       <div className="space-y-2">
         <div className="flex justify-between items-end">
           <h3 className="text-lg font-semibold">Repairs (Packages)</h3>
@@ -242,9 +251,8 @@ const InvoiceForm = ({
             <tr>
               <th className="border p-2">Package</th>
               <th className="border p-2">Custom?</th>
-              <th className="border p-2">Repair</th>
-              <th className="border p-2">Price (Rs.)</th>
-              <th className="border p-2"></th>
+              <th className="border p-2">Repairs</th>
+              <th className="border p-2">Remove</th>
             </tr>
           </thead>
           <tbody>
@@ -254,67 +262,84 @@ const InvoiceForm = ({
                   <select
                     value={row.package}
                     onChange={(e) =>
-                      updateRepair(idx, "package", e.target.value)
+                      updateRepairRow(idx, "package", e.target.value)
                     }
                     className="w-full border p-1 rounded"
                   >
                     <option value="">Select</option>
-                    {repairPackages.map((pkg) => (
-                      <option key={pkg._id} value={pkg.packageName}>
-                        {pkg.packageName}
-                      </option>
-                    ))}
+                    {[...new Set(repairPackages.map((p) => p.packageName))].map(
+                      (pkg) => (
+                        <option key={pkg} value={pkg}>
+                          {pkg}
+                        </option>
+                      )
+                    )}
                   </select>
                 </td>
-
                 <td className="border p-1 text-center">
                   <input
                     type="checkbox"
                     checked={row.custom}
-                    onChange={() => updateRepair(idx, "custom", !row.custom)}
+                    onChange={() => updateRepairRow(idx, "custom", !row.custom)}
                   />
                 </td>
-
                 <td className="border p-1">
                   {row.custom ? (
-                    <input
-                      value={row.repairs}
+                    <textarea
+                      value={row.repairs.map((r) => r.label).join("\n")}
                       onChange={(e) =>
-                        updateRepair(idx, "repairs", e.target.value)
+                        updateRepairRow(
+                          idx,
+                          "repairs",
+                          e.target.value
+                            .split("\n")
+                            .filter((line) => line.trim().length > 0)
+                            .map((label) => ({ label: label.trim(), price: 0 }))
+                        )
                       }
                       className="w-full border p-1 rounded"
+                      rows={Math.max(3, row.repairs.length)}
                     />
                   ) : (
-                    <select
-                      value={row.repairs}
-                      onChange={(e) =>
-                        updateRepair(idx, "repairs", e.target.value)
-                      }
-                      className="w-full border p-1 rounded"
-                    >
-                      <option value="">Select repair</option>
+                    <div className="max-h-40 overflow-y-auto space-y-1 px-1">
                       {repairPackages
                         .filter((p) => p.packageName === row.package)
-                        .map((p) => (
-                          <option key={p._id} value={p.repairs}>
-                            {p.repairs}
-                          </option>
-                        ))}
-                    </select>
+                        .flatMap((p) => p.repairs)
+                        .map((repairLabel, i) => {
+                          const selected = row.repairs.find(
+                            (r) => r.label === repairLabel
+                          );
+                          return (
+                            <div key={i} className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={!!selected}
+                                onChange={() =>
+                                  toggleRepairCheckbox(idx, repairLabel)
+                                }
+                              />
+                              <span className="w-32">{repairLabel}</span>
+                              {selected && (
+                                <input
+                                  type="number"
+                                  value={selected.price}
+                                  onChange={(e) =>
+                                    updateRepairPrice(
+                                      idx,
+                                      repairLabel,
+                                      e.target.value
+                                    )
+                                  }
+                                  className="w-20 border p-1 rounded"
+                                  placeholder="Rs."
+                                />
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
                   )}
                 </td>
-
-                <td className="border p-1">
-                  <input
-                    type="number"
-                    value={row.price}
-                    onChange={(e) =>
-                      updateRepair(idx, "price", num(e.target.value))
-                    }
-                    className="w-full border p-1 rounded"
-                  />
-                </td>
-
                 <td className="border p-1 text-center">
                   <button
                     type="button"
@@ -330,7 +355,7 @@ const InvoiceForm = ({
         </table>
       </div>
 
-      {/* Inventory Table */}
+      {/* Items */}
       <div className="space-y-2">
         <div className="flex justify-between items-end">
           <h3 className="text-lg font-semibold">Inventory / Parts</h3>
@@ -383,7 +408,6 @@ const InvoiceForm = ({
                     </select>
                   )}
                 </td>
-
                 <td className="border p-1 text-center">
                   <input
                     type="checkbox"
@@ -391,7 +415,6 @@ const InvoiceForm = ({
                     onChange={() => updateItem(idx, "custom", !row.custom)}
                   />
                 </td>
-
                 <td className="border p-1">
                   {row.custom ? (
                     <input
@@ -416,7 +439,6 @@ const InvoiceForm = ({
                     </select>
                   )}
                 </td>
-
                 <td className="border p-1">
                   <input
                     type="number"
@@ -428,7 +450,6 @@ const InvoiceForm = ({
                     className="w-20 border p-1 rounded"
                   />
                 </td>
-
                 <td className="border p-1">
                   <input
                     type="number"
@@ -439,7 +460,6 @@ const InvoiceForm = ({
                     className="w-24 border p-1 rounded"
                   />
                 </td>
-
                 <td className="border p-1 text-center">
                   <button
                     type="button"
@@ -455,7 +475,6 @@ const InvoiceForm = ({
         </table>
       </div>
 
-      {/* Admin remarks */}
       {userRole === "admin" && (
         <textarea
           placeholder="Admin Remarks"
@@ -469,7 +488,6 @@ const InvoiceForm = ({
         Total: Rs. {totalCost.toFixed(2)}
       </div>
 
-      {/* Actions */}
       <div className="flex justify-end gap-4">
         <button
           type="button"

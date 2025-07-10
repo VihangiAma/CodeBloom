@@ -103,8 +103,7 @@ const MechanicalSupervisorSection = () => {
             <CompletedServices section="mechanical" sectionPrefix="MS" />
           </div>
         );
-      case "repair-packages":
-        return navigate("/repair-packages");
+
       default:
         return (
           <>
@@ -231,11 +230,6 @@ const MechanicalSupervisorSection = () => {
                 { label: "Add Customer Details", value: "addcustomer" },
                 { label: "Manage Appointments", value: "schedules" },
                 { label: "View Invoices", value: "invoices" },
-                {
-                  label: "Repair Packages",
-                  value: "repair-packages",
-                  special: true, // ✅ Mark this as special
-                },
               ].map((item) => (
                 <li key={item.value}>
                   <button
@@ -244,13 +238,7 @@ const MechanicalSupervisorSection = () => {
                       textAlign: "left",
                       padding: "0.75rem 1rem",
                       backgroundColor:
-                        activePage === item.value
-                          ? item.special
-                            ? "#FFEBEB"
-                            : "#333"
-                          : item.special
-                          ? "#FFF5F5"
-                          : "transparent",
+                        activePage === item.value ? "#D32F2F" : "#1C1C1C",
                       border: item.special ? "2px solid #FF5C5C" : "none",
                       color: item.special ? "#B00020" : "#FFF",
                       borderRadius: "0.5rem",
