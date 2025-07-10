@@ -35,6 +35,11 @@ const serviceInvoiceSchema = new mongoose.Schema({
 
   totalCost: { type: Number, required: true },
   isApproved: { type: Boolean, default: false },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected", "resubmitted"],
+    default: "pending",
+  },
   submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   adminRemarks: { type: String },
 
