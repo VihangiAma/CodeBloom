@@ -3,7 +3,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 
 import axios from "axios";
-import InvoiceForm from "./InvoiceForm"; // Assuming you have an InvoiceForm component
+import InvoiceForm from "./InvoiceForm";
 
 const CompletedServices = ({ sectionPrefix, section }) => {
   const [completedAppointments, setCompletedAppointments] = useState([]);
