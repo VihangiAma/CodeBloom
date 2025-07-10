@@ -10,7 +10,7 @@ export default function About() {
       <NavBar />
 
       {/* Hero */}
-      <section className="hero bg-gray-100 py-24 px-4 sm:px-6 lg:px-8">
+      <section className="hero relative bg-gradient-to-r from-red-300 to-red-500 py-24 px-4 sm:px-6 lg:px-8">
         <div className="hero-content max-w-7xl mx-auto text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">About Nimal Motors</h1>
           <p className="text-lg text-gray-600">Your trusted partner for all vehicle repairs and services.</p>

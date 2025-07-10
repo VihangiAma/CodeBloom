@@ -18,7 +18,6 @@ const FinancialReport = () => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
- 
   const months = [
     { value: '', label: 'All Months' },
     { value: '0', label: 'January' },
@@ -143,7 +142,6 @@ const FinancialReport = () => {
 
   const sectionChartData = prepareSectionChartData();
 
-
   // Function to add header to PDF document
   const addHeader = (doc, isFirstPage = true) => {
     if (!isFirstPage) return 15;
@@ -175,7 +173,7 @@ const FinancialReport = () => {
     return 65;
   };
 
-   // Generate and download PDF report
+  // Generate and download PDF report
   const downloadReport = () => {
     try {
       if (filteredCredits.length === 0 && filteredDebits.length === 0) {
@@ -281,7 +279,6 @@ const FinancialReport = () => {
   };
 
   // Loading state UI
-
   if (loading) {
     return <div className="text-center py-8">Loading financial data...</div>;
   }
@@ -339,9 +336,9 @@ const FinancialReport = () => {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-200">
-              <th className="border p-2 text-left">Date</th>
-              <th className="border p-2 text-left">Section</th>
-              <th className="border p-2 text-right">Amount</th>
+              <th className="border p-2 text-center bg-blue-600  text-white">Date</th>
+              <th className="border p-2 text-center  bg-blue-600  text-white">Section</th>
+              <th className="border p-2 text-center  bg-blue-600  text-white">Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -369,17 +366,17 @@ const FinancialReport = () => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-semibold">Debits</h2>
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-500 ">
             Showing {filteredDebits.length} of {debits.length} records
           </div>
         </div>
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-200">
-              <th className="border p-2 text-left">Date</th>
-              <th className="border p-2 text-left">Supplier</th>
-              <th className="border p-2 text-left">Details</th>
-              <th className="border p-2 text-right">Amount</th>
+              <th className="border p-2 text-center bg-blue-600  text-white">Date</th>
+              <th className="border p-2 text-center  bg-blue-600  text-white">Supplier</th>
+              <th className="border p-2 text-center  bg-blue-600  text-white">Details</th>
+              <th className="border p-2 text-center  bg-blue-600  text-white">Amount</th>
             </tr>
           </thead>
           <tbody>

@@ -9,7 +9,7 @@ import mechanical from "../../assets/images/mechanical.jpg";
 import bodyshop from "../../assets/images/bodyshop.jpg";
 import electrical from "../../assets/images/electrical.jpg";
 import service from "../../assets/images/service.jpg";
-import sup1 from "../../assets/images/sup1.jpg";
+import sup1 from "../../assets/images/sup1.jpeg";
 import sup2 from "../../assets/images/sup2.jpg";
 import sup3 from "../../assets/images/sup3.jpg";
 import sup4 from "../../assets/images/sup4.jpg";
@@ -68,37 +68,37 @@ export default function Home() {
       id: "supervisors",
       src: sup1, 
       alt: "Supervisor 1", 
-      name: "John Doe", 
-      phone: "+94717286020", 
-      email: "john.doe@example.com",
+      name: "Kavindu Nirmal", 
+      phone: "074 5566777", 
+      email: "chamath.gunasekara@gmail.com",
       section: "Mechanical Section" 
     },
     { 
       id: "supervisors",
       src: sup2, 
       alt: "Supervisor 2", 
-      name: "Jane Smith", 
-      phone: "+94717286021", 
-      email: "jane.smith@example.com",
-      section: "Mechanical Section" 
+      name: "Nimal Sirisena", 
+      phone: "076 2233445", 
+      email: "suresh.fernando@gmail.com",
+      section: "Bodyshop Section" 
     },
     { 
       id: "supervisors",
       src: sup3, 
       alt: "Supervisor 3", 
-      name: "Michael Brown", 
-      phone: "+94717286022", 
-      email: "michael.brown@example.com",
-      section: "Mechanical Section" 
+      name: "Dasun Tharindu", 
+      phone: "075 3344555", 
+      email: "ishara.wickramasinghe@gmail.com",
+      section: "Electrical Section" 
     },
     { 
       id: "supervisors",
       src: sup4, 
       alt: "Supervisor 4", 
-      name: "Emily White", 
-      phone: "+94717286023", 
-      email: "emily.white@example.com",
-      section: "Mechanical Section" 
+      name: "Dilani Rajapaksha", 
+      phone: "072 6655444", 
+      email: "dilani.rajapaksha@gmail.com",
+      section: "Service Section" 
     },
   ];
 
@@ -214,14 +214,14 @@ export default function Home() {
                     <div className="flex justify-center gap-4 mb-4">
                       <a
                         href={`tel:${expert.phone}`}
-                        className="text-gray-800 hover:text-blue-600 transition-colors duration-200"
+                        className="text-gray-800 hover:text-blue-800 transition-colors duration-200"
                         aria-label={`Call ${expert.name}`}
                       >
                         <i className="fas fa-phone text-xl"></i>
                       </a>
                       <a
                         href={`mailto:${expert.email}`}
-                        className="text-gray-800 hover:text-blue-600 transition-colors duration-200"
+                        className="text-gray-800 hover:text-blue-800 transition-colors duration-200"
                         aria-label={`Email ${expert.name}`}
                       >
                         <i className="fas fa-envelope text-xl"></i>

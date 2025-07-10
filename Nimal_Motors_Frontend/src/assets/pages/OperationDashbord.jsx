@@ -52,7 +52,7 @@ const OperationDashboard = () => {
             >
               <span className="text-2xl mr-3">📈</span>
               <div className="text-left">
-                <h3 className="font-bold">Financial Report</h3>
+                <h3 className="font-bold text-red-600">Financial Report</h3>
                 <p className="text-sm opacity-90">View and analyze sales data</p>
               </div>
             </button>

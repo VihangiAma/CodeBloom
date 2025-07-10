@@ -19,7 +19,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gray-800 text-gray-200 py-12 px-4 sm:px-6 lg:px-8 shadow-inner">
+    <footer className="bg-gray-900 text-gray-200 py-12 px-4 sm:px-6 lg:px-8 shadow-inner">
       <div className="footer-container max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
         {/* Opening Hours */}
         <div className="footer-section">
