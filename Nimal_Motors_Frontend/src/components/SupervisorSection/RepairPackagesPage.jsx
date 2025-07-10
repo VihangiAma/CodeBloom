@@ -221,9 +221,7 @@ const RepairPackagesPage = () => {
         </div>
 
         <button
-          onClick={() =>
-            (window.location.href = "/service-supervisor-dashboard")
-          }
+          onClick={() => (window.location.href = "/accountant-dashboard")}
           className="mt-6 inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded shadow"
         >
           Back to Dashboard
