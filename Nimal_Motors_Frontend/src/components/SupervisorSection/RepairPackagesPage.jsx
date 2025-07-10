@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FaTrash } from "react-icons/fa";
+
 
 const RepairPackagesPage = () => {
   const [packages, setPackages] = useState([]);
@@ -76,94 +78,85 @@ const RepairPackagesPage = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-red-50 to-gray-100">
-      <h1 className="text-4xl font-bold text-center text-red-600 mb-10 underline underline-offset-8">
+    <div className="p-6 min-h-screen bg-[#F5F5F5]">
+      <h1 className="text-4xl font-bold text-center text-[#B30000] mb-10 underline underline-offset-8">
         Repair Packages
       </h1>
 
-      <div className="overflow-x-auto bg-white shadow-xl rounded-lg border border-gray-200">
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg border border-[#E0E0E0]">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-red-100">
+          <thead className="bg-[#FFE5E5]">
             <tr>
-              <th className="p-3 text-left text-sm font-bold text-red-800">
-                Package
-              </th>
-              <th className="p-3 text-left text-sm font-bold text-red-800">
-                Repair
-              </th>
-              <th className="p-3 text-center text-sm font-bold text-red-800">
-                Action
-              </th>
+              <th className="p-3 text-left text-sm font-bold text-[#2C2C2C]">Package</th>
+              <th className="p-3 text-left text-sm font-bold text-[#2C2C2C]">Repair</th>
+              <th className="p-3 text-center text-sm font-bold text-[#2C2C2C]">Action</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
-            {packages.map((pkg) =>
-              pkg.repairs.length ? (
-                pkg.repairs.map((repair, idx) => (
-                  <tr key={`${pkg._id}-${idx}`} className="hover:bg-gray-50">
-                    {idx === 0 ? (
-                      <td
-                        className="p-3 font-medium text-gray-800 align-top"
-                        rowSpan={pkg.repairs.length}
-                      >
-                        <div className="flex justify-between items-start">
-                          <span>{pkg.packageName}</span>
-                          <button
-                            onClick={() => handleDeletePackage(pkg._id)}
-                            className="ml-2 text-xs text-red-500 hover:text-red-700 hover:underline"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    ) : null}
-                    <td className="p-3 text-gray-700">{repair}</td>
-                    <td className="p-3 text-center">
-                      <button
-                        onClick={() => handleDeleteRepair(pkg, idx)}
-                        className="text-xs text-red-600 hover:underline"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr key={pkg._id}>
-                  <td className="p-3 font-medium text-gray-800">
-                    {pkg.packageName}
-                  </td>
-                  <td className="p-3 italic text-gray-500">(no repairs)</td>
-                  <td className="p-3 text-center">
-                    <button
-                      onClick={() => handleDeletePackage(pkg._id)}
-                      className="text-xs text-red-500 hover:underline"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              )
-            )}
-          </tbody>
+         <tbody className="bg-white divide-y divide-gray-100">
+  {packages.map((pkg) => (
+    <React.Fragment key={pkg._id}>
+      {/* Package Row Header */}
+      <tr className="bg-gray-100">
+        <td className="p-3 font-semibold text-[#212121]" colSpan={3}>
+          <div className="flex justify-between items-center">
+            <span className="text-lg">{pkg.packageName}</span>
+            <button
+              onClick={() => handleDeletePackage(pkg._id)}
+              className="text-[#B30000] hover:text-[#D63333]"
+              title="Delete Package"
+            >
+              <FaTrash />
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      {/* Repairs under the package */}
+      {pkg.repairs.length > 0 ? (
+        pkg.repairs.map((repair, idx) => (
+          <tr key={`${pkg._id}-${idx}`} className="hover:bg-[#FAFAFA]">
+            <td className="p-3 pl-6 text-[#2C2C2C]">{/* Indent */}</td>
+            <td className="p-3 text-[#212121]">{repair}</td>
+            <td className="p-3 text-center">
+              <button
+                onClick={() => handleDeleteRepair(pkg, idx)}
+                className="text-[#B30000] hover:text-[#D63333]"
+                title="Delete Repair"
+              >
+                <FaTrash />
+              </button>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr className="text-gray-500 italic">
+          <td className="p-3 pl-6"></td>
+          <td className="p-3">(No repairs listed)</td>
+          <td className="p-3 text-center">—</td>
+        </tr>
+      )}
+    </React.Fragment>
+  ))}
+</tbody>
+
         </table>
       </div>
 
-      {/* Add Repair */}
+      {/* Add Repair Section */}
       {selectedPackageId && (
         <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center">
           <input
             type="text"
             value={newRepairText}
             onChange={(e) => setNewRepairText(e.target.value)}
-            className="flex-grow p-2 border rounded shadow-sm"
+            className="flex-grow p-2 border border-[#2C2C2C] rounded shadow-sm"
             placeholder="Enter new repair"
           />
           <button
             onClick={() =>
               handleAddRepair(packages.find((p) => p._id === selectedPackageId))
             }
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+            className="bg-[#29527A] hover:bg-blue-800 text-white px-4 py-2 rounded shadow"
           >
             Add
           </button>
@@ -182,11 +175,11 @@ const RepairPackagesPage = () => {
       {/* Select package to add repair */}
       {!selectedPackageId && (
         <div className="mt-6">
-          <label className="mr-2 text-sm font-medium">Add repair to:</label>
+          <label className="mr-2 text-sm font-medium text-[#2C2C2C]">Add repair to:</label>
           <select
             value=""
             onChange={(e) => setSelectedPackageId(e.target.value)}
-            className="p-2 border rounded shadow-sm"
+            className="p-2 border border-[#2C2C2C] rounded shadow-sm"
           >
             <option value="" disabled>
               Select package
@@ -200,17 +193,15 @@ const RepairPackagesPage = () => {
         </div>
       )}
 
-      {/* Add Package */}
+      {/* Add Package Section */}
       <div className="mt-10 border-t pt-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">
-          Add New Package
-        </h3>
+        <h3 className="text-lg font-semibold text-[#2C2C2C] mb-3">Add New Package</h3>
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             value={newPackageName}
             onChange={(e) => setNewPackageName(e.target.value)}
             placeholder="New package name"
-            className="p-2 border rounded shadow-sm flex-grow"
+            className="p-2 border border-[#2C2C2C] rounded shadow-sm flex-grow"
           />
           <button
             onClick={handleAddPackage}
@@ -222,7 +213,7 @@ const RepairPackagesPage = () => {
 
         <button
           onClick={() => (window.location.href = "/accountant-dashboard")}
-          className="mt-6 inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded shadow"
+          className="mt-6 inline-block bg-[#2C2C2C] hover:bg-[#444] text-white px-6 py-2 rounded shadow"
         >
           Back to Dashboard
         </button>
