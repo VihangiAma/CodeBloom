@@ -20,6 +20,14 @@ import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
+import repairRoutes from "./Routers/repairPackageRoutes.js";
+
+
+
+
+
+
+
 //import invoiceRoute from "./Routers/InvoiceRoutes.js";
 
 
@@ -66,6 +74,10 @@ app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/invoice", invoiceRoutes);
+app.use("/api/repair-packages", repairRoutes);
+
+
+
 
 
 
@@ -80,3 +92,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
