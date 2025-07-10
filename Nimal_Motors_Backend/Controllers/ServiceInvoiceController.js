@@ -156,67 +156,7 @@ export const deleteInvoice = async (req, res) => {
   }
 };
 
-// Update full invoice data
-// export const updateInvoice = async (req, res) => {
-//   try {
-//     const {
-//       serviceID,
-//       customerName,
-//       vehicleNumber,
-//       vehicleType,
-//       description,
-//       section,
-//       services,
-//       items,
-//       repairCost,
-//       adminRemarks,
-//     } = req.body;
 
-//     let totalCost = parseFloat(repairCost) || 0;
-
-//     if (services) {
-//       for (const key in services) {
-//         if (services[key].selected) {
-//           totalCost += parseFloat(services[key].cost) || 0;
-//         }
-//       }
-//     }
-
-//     if (items) {
-//       for (const item of items) {
-//         const cost = parseFloat(item.cost) || 0;
-//         const qty = parseInt(item.qty) || 0;
-//         totalCost += qty * cost;
-//       }
-//     }
-
-//     const updatedInvoice = await ServiceInvoice.findByIdAndUpdate(
-//       req.params.id,
-//       {
-//         serviceID,
-//         customerName,
-//         vehicleNumber,
-//         vehicleType,
-//         description,
-//         section,
-//         services,
-//         items,
-//         repairCost,
-//         totalCost,
-//         adminRemarks,
-//       },
-//       { new: true }
-//     );
-
-//     if (!updatedInvoice)
-//       return res.status(404).json({ message: "Invoice not found" });
-
-//     res.status(200).json({ message: "Invoice updated successfully", invoice: updatedInvoice });
-//   } catch (error) {
-//     console.error("Error updating invoice:", error);
-//     res.status(500).json({ message: "Failed to update invoice", error: error.message });
-//   }
-// };
 
 
 
