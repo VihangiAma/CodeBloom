@@ -5,7 +5,12 @@ import ServiceInvoice from "../Models/ServiceInvoiceModel.js";
 // Create a new invoice
 export const createInvoice = async (req, res) => {
   try {
-    const invoice = new ServiceInvoice(req.body);
+      const invoiceData = {
+      ...req.body,
+      status: "pending", 
+      isApproved: false,
+    };
+    const invoice = new ServiceInvoice(invoiceData);
     await invoice.save();
     res.status(201).json(invoice);
   } catch (error) {
@@ -38,6 +43,11 @@ export const getInvoiceById = async (req, res) => {
 // Update invoice by ID
 export const updateInvoice = async (req, res) => {
   try {
+    const update = {...req.body };
+    if (update.status == "rejected" ) {
+      update.status === "resubmitted";
+      update.isApproved = false;
+    }
     const updated = await ServiceInvoice.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -61,4 +71,42 @@ export const deleteInvoice = async (req, res) => {
     res.status(500).json({ message: "Error deleting invoice", error });
   }
 };
+
+// PATCH /api/invoice/:id/approve
+export const approveInvoice = async (req, res) => {
+  try {
+    const invoice = await ServiceInvoice.findByIdAndUpdate(
+      req.params.id,
+      {
+        isApproved: true,
+        status: "approved",
+      },
+      { new: true }
+    );
+    if (!invoice) return res.status(404).json({ message: "Not found" });
+    res.status(200).json(invoice);
+  } catch (error) {
+    res.status(500).json({ message: "Approval failed", error });
+  }
+};
+
+// PATCH /api/invoice/:id/reject
+export const rejectInvoice = async (req, res) => {
+  try {
+    const invoice = await ServiceInvoice.findByIdAndUpdate(
+      req.params.id,
+      {
+        isApproved: false,
+        status: "rejected",
+        adminRemarks: req.body.adminRemarks || "", // optional message
+      },
+      { new: true }
+    );
+    if (!invoice) return res.status(404).json({ message: "Not found" });
+    res.status(200).json(invoice);
+  } catch (error) {
+    res.status(500).json({ message: "Rejection failed", error });
+  }
+};
+
 
