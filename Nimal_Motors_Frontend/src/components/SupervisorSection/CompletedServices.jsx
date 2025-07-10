@@ -185,6 +185,11 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                     >
                       <AiOutlinePlus />
                     </button>
+                    <button
+                      onClick={() => navigate(`/invoice/edit/${invoice._id}`)}
+                    >
+                      Update
+                    </button>
                   </td>
                 </tr>
               ))}
