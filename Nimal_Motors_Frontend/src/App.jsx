@@ -5,6 +5,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+//import './styles/Global.css';
+
 
 // Public Pages
 

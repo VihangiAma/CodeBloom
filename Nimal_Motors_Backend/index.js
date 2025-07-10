@@ -21,6 +21,7 @@ import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
 import repairRoutes from "./Routers/repairPackageRoutes.js";
+import summaryRoutes from "./Routers/summary.js"; // Import summary routes
 
 
 
@@ -75,6 +76,7 @@ app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/repair-packages", repairRoutes);
+app.use("/api", summaryRoutes); // Add summary routes
 
 
 
