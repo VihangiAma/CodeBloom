@@ -194,6 +194,7 @@ export const checkLowStock = async (req, res) => {
        res.status(500).json({ message: "Failed to fetch items for this supplier" });
      }
    };
+
    export const getNextItemId = async (req, res) => {
   try {
     // Find the item with the highest itemId (assumes format like 'ITM0010')
@@ -211,6 +212,39 @@ export const checkLowStock = async (req, res) => {
   } catch (error) {
     console.error("Error generating next item ID:", error);
     res.status(500).json({ message: "Failed to generate next item ID" });
+  }
+};
+// GET item by barcode
+export const getItemByBarcode = async (req, res) => {
+  try {
+    const item = await Stock.findOne({ barcode: req.params.barcode });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.json(item);
+  } catch (err) {
+    console.error("Barcode lookup error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// PUT - Add stock quantity via barcode
+export const addStockByBarcode = async (req, res) => {
+  const { quantityToAdd } = req.body;
+
+  try {
+    const item = await Stock.findOne({ barcode: req.params.barcode });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    item.stockQuantity += parseInt(quantityToAdd);
+    await item.save();
+
+    res.json({ message: "Stock updated successfully", item });
+  } catch (err) {
+    console.error("Stock update error:", err);
+    res.status(500).json({ message: "Failed to update stock" });
   }
 };
 
