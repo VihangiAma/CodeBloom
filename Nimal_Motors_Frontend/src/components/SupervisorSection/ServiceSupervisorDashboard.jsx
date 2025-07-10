@@ -171,7 +171,7 @@ const ServiceSupervisorDashboard = () => {
                 {
                   label: "Repair Packages",
                   value: "repair-packages",
-                  special: true, // ✅ Mark this as special
+                  special: true, //
                 },
               ].map((item) => (
                 <li key={item.value}>
@@ -183,10 +183,10 @@ const ServiceSupervisorDashboard = () => {
                       backgroundColor:
                         activePage === item.value
                           ? item.special
-                            ? "#FFEBEB" // light red background if selected
+                            ? "#FFEBEB"
                             : "#333"
                           : item.special
-                          ? "#FFF5F5" // light red border otherwise
+                          ? "#FFF5F5"
                           : "transparent",
                       border: item.special ? "2px solid #FF5C5C" : "none",
                       color: item.special ? "#B00020" : "#FFF",
