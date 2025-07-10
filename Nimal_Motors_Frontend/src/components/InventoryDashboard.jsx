@@ -29,6 +29,11 @@ const InventoryDashboard = () => {
   const [activeSection, setActiveSection] = useState("inventory");
   const [supplierList, setSupplierList] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [barcodeModalOpen, setBarcodeModalOpen] = useState(false);
+  const [barcodeInput, setBarcodeInput] = useState("");
+const [foundItem, setFoundItem] = useState(null);
+const [quantityToAdd, setQuantityToAdd] = useState("");
+
 
 
   const navigate = useNavigate();
@@ -127,6 +132,47 @@ const InventoryDashboard = () => {
         toast.error("Failed to delete item!");
       });
   };
+  const handleBarcodeSubmit = async () => {
+  if (!barcodeInput.trim()) {
+    toast.error("Please scan or enter a barcode.");
+    return;
+  }
+
+  try {
+    const response = await axios.get(`http://localhost:5001/api/stock/barcode/${barcodeInput}`);
+    setFoundItem(response.data);
+    toast.success("Item found!");
+  } catch (error) {
+    console.error("Barcode error:", error);
+    toast.error("No item found for this barcode.");
+    setFoundItem(null);
+  }
+};
+const handleAddStock = async () => {
+  if (!quantityToAdd || isNaN(quantityToAdd) || parseInt(quantityToAdd) <= 0) {
+    toast.error("Enter a valid quantity.");
+    return;
+  }
+
+  try {
+    await axios.put(`http://localhost:5001/api/stock/barcode/${barcodeInput}/add-stock`, {
+      quantityToAdd: parseInt(quantityToAdd),
+    });
+
+    toast.success("Stock updated!");
+    setBarcodeInput("");
+    setQuantityToAdd("");
+    setFoundItem(null);
+
+    const updatedInventory = await axios.get("http://localhost:5001/api/stock/items");
+    setInventory(updatedInventory.data);
+  } catch (error) {
+    console.error("Stock update error:", error);
+    toast.error("Failed to update stock.");
+  }
+};
+
+
 
   // // Handle barcode inputs
   // const handleBarcodeSubmit = async () => {
@@ -206,6 +252,15 @@ const InventoryDashboard = () => {
 </button>
 
             </li>
+            <li>
+  <button
+    onClick={() => setBarcodeModalOpen(true)}
+    className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-[#5A5A5A] text-white w-full"
+  >
+    <FaBoxes /> Scan Barcode
+  </button>
+</li>
+
             {/* <li>
               <button
                 onClick={() => setBarcodeModalOpen(true)}
@@ -226,6 +281,7 @@ const InventoryDashboard = () => {
             <header className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-semibold text-[#B30000]">Inventory Management</h1>
               <div className="flex items-center gap-4">
+                {/* Search Input */}
                 <input
                   type="text"
                   placeholder="Search..."
@@ -233,6 +289,7 @@ const InventoryDashboard = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                {/* Category Filter */}
                 <select
                   className="p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
                   value={categoryFilter}
@@ -243,13 +300,15 @@ const InventoryDashboard = () => {
                     <option key={index} value={category}>{category}</option>
                   ))}
                 </select>
+                
+
                 <div
                   onClick={() => navigate("/accountant-dashboard")}
                   className="flex items-center gap-2 cursor-pointer text-[#000000] hover:text-[#B30000] transition"
                   title="Go to Accountant Dashboard"
                 >
                   <FaUser className="text-2xl" />
-                  <span className="hidden sm:inline font-medium">Accountant</span>
+                  {/*<span className="hidden sm:inline font-medium">Accountant</span>*/}
                 </div>
               </div>
             </header>
@@ -509,6 +568,66 @@ const InventoryDashboard = () => {
             </div>
           </div>
         )}
+
+        {/* Barcode Modal */}
+
+        {barcodeModalOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded shadow-lg w-full max-w-md relative">
+      <button
+        className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl"
+        onClick={() => {
+          setBarcodeModalOpen(false);
+          setBarcodeInput("");
+          setFoundItem(null);
+          setQuantityToAdd("");
+        }}
+      >
+        &times;
+      </button>
+
+      <h2 className="text-xl font-bold text-[#B30000] mb-4">Scan or Enter Barcode</h2>
+
+      <input
+        type="text"
+        placeholder="Barcode..."
+        value={barcodeInput}
+        onChange={(e) => setBarcodeInput(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleBarcodeSubmit()}
+        className="w-full mb-4 p-2 border border-[#2C2C2C] rounded text-black"
+      />
+
+      <button
+        onClick={handleBarcodeSubmit}
+        className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] w-full mb-4"
+      >
+        Find Item
+      </button>
+
+      {foundItem && (
+        <>
+          <p className="mb-2 text-black">Item: <strong>{foundItem.itemName}</strong></p>
+          <p className="mb-2 text-black">Current Stock: {foundItem.stockQuantity}</p>
+          <input
+            type="number"
+            placeholder="Quantity to Add"
+            value={quantityToAdd}
+            onChange={(e) => setQuantityToAdd(e.target.value)}
+            className="w-full p-2 border border-[#2C2C2C] rounded text-black mb-4"
+          />
+          <button
+            onClick={handleAddStock}
+            className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] w-full"
+          >
+            Add Stock
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
+
       </main>
     </div>
   );
