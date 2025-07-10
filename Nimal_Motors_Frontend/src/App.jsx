@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 //import './styles/Global.css';
 
-
 // Public Pages
 
 import LoginPage from "./pages/login/LoginPage";
@@ -219,14 +218,6 @@ function App() {
             </SupervisorPrivateRoute>
           }
         />
-        {/* <Route
-          path="/report"
-          element={
-            <SupervisorPrivateRoute>
-              <ReportPage />
-            </SupervisorPrivateRoute>
-          }
-        /> */}
         <Route
           path="/completed-services"
           element={
@@ -235,14 +226,6 @@ function App() {
             </SupervisorPrivateRoute>
           }
         />
-        {/* <Route
-          path="/notification"
-          element={
-            <SupervisorPrivateRoute>
-              <NotificationBar />
-            </SupervisorPrivateRoute>
-          }
-        /> */}
         <Route
           path="/approved-appointments"
           element={
