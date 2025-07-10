@@ -57,8 +57,7 @@ const ServiceSupervisorDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-      case "repair-packages":
-        return navigate("/repair-packages");
+
       case "addservice":
         return (
           <div
@@ -110,12 +109,6 @@ const ServiceSupervisorDashboard = () => {
               emoji="✅"
               onClick={() => setActivePage("approved")}
             />
-            {/* <DashboardCard
-              title={"repair packages"}
-              description="Manage repair packages."
-              emoji="🔧"
-              onClick={() => navigate("/repair-packages")}
-            /> */}
           </div>
         );
     }
@@ -168,11 +161,6 @@ const ServiceSupervisorDashboard = () => {
                 { label: "Manage Appointments", value: "appointments" },
                 { label: "View Invoices", value: "invoices" },
                 { label: "Approved Appointments", value: "approved" },
-                {
-                  label: "Repair Packages",
-                  value: "repair-packages",
-                  special: true, //
-                },
               ].map((item) => (
                 <li key={item.value}>
                   <button
@@ -181,13 +169,7 @@ const ServiceSupervisorDashboard = () => {
                       textAlign: "left",
                       padding: "0.75rem 1rem",
                       backgroundColor:
-                        activePage === item.value
-                          ? item.special
-                            ? "#FFEBEB"
-                            : "#333"
-                          : item.special
-                          ? "#FFF5F5"
-                          : "transparent",
+                        activePage === item.value ? "#D32F2F" : "transparent",
                       border: item.special ? "2px solid #FF5C5C" : "none",
                       color: item.special ? "#B00020" : "#FFF",
                       borderRadius: "0.5rem",
