@@ -38,6 +38,12 @@ const AccountantDashboard = () => {
   const [categorySummary, setCategorySummary] = useState([]);
   const [supplierSummary, setSupplierSummary] = useState([]);
   const [approvedRepairs, setApprovedInvoices] = useState([]);
+  const [summary, setSummary] = useState({
+  stockValue: 0,
+  purchases: 0,
+  invoices: 0,
+  outstanding: 0
+});
   
 
   // Fetch approved repairs for invoicing
@@ -64,6 +70,11 @@ const AccountantDashboard = () => {
       .then(res => setSupplierSummary(res.data))
       .catch(err => console.error("Failed to load supplier summary", err));
   }, []);
+  useEffect(() => {
+  axios.get("http://localhost:5001/api/dashboard/summary")
+    .then(res => setSummary(res.data))
+    .catch(err => console.error("Dashboard summary load failed", err));
+}, []);
 
   return (
     <div className="flex h-screen bg-[#F5F5F5] w-380">
@@ -89,28 +100,28 @@ const AccountantDashboard = () => {
             <FaMoneyBillWave className="text-[#B30000] text-3xl" />
             <div>
               <p className="text-sm text-[#000000]">Total Stock Value</p>
-              <h2 className="text-xl font-semibold text-[#000000]">Rs. 0.00</h2>
+              <h2 className="text-xl font-semibold text-[#000000]">Rs. {Number(summary.stockValue).toLocaleString("en-LK", { minimumFractionDigits: 2 })}</h2>
             </div>
           </div>
           <div className="bg-[#FFFFFF] p-4 rounded shadow flex items-center gap-4">
             <FaReceipt className="text-[#B30000] text-3xl" />
             <div>
-              <p className="text-sm text-[#000000]">Purchase Records</p>
-              <h2 className="text-xl font-semibold text-[#000000]">0</h2>
+              <p className="text-sm text-[#000000]">Expence/Purchase Records</p>
+              <h2 className="text-xl font-semibold text-[#000000]">{summary.purchases}</h2>
             </div>
           </div>
           <div className="bg-[#FFFFFF] p-4 rounded shadow flex items-center gap-4">
             <FaFileInvoice className="text-[#B30000] text-3xl" />
             <div>
               <p className="text-sm text-[#000000]">Invoices</p>
-              <h2 className="text-xl font-semibold text-[#000000]">0</h2>
+              <h2 className="text-xl font-semibold text-[#000000]">{summary.invoices}</h2>
             </div>
           </div>
           <div className="bg-[#FFFFFF] p-4 rounded shadow flex items-center gap-4">
             <FaChartBar className="text-[#B30000] text-3xl" />
             <div>
               <p className="text-sm text-[#000000]">Outstanding Payments</p>
-              <h2 className="text-xl font-semibold text-[#000000]">Rs. 0.00</h2>
+              <h2 className="text-xl font-semibold text-[#000000]">Rs. {Number(summary.outstanding).toLocaleString("en-LK", { minimumFractionDigits: 2 })}</h2>
             </div>
           </div>
         </div>
