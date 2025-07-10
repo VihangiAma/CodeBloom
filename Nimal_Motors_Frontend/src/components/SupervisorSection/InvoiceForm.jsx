@@ -1,67 +1,64 @@
-// import React, { useState, useEffect } from "react";
+// import React, { useEffect, useState } from "react";
 
-// const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
-//   const [section, setSection] = useState("mechanical");
-//   const [services, setServices] = useState({
-//     fullService: { selected: false, cost: 0 },
-//     bodyWash: { selected: false, cost: 0 },
-//     oilChange: { selected: false, cost: 0 },
-//     underbodyWash: { selected: false, cost: 0 },
-//     interiorVacuum: { selected: false, cost: 0 },
-//   });
-//   const [items, setItems] = useState([]);
-//   const [stockData, setStockData] = useState([]);
-//   const [totalCost, setTotalCost] = useState(0);
-//   const [customer, setCustomer] = useState({
-//     serviceID: initialData.displayID || "",
+// /** Util – safe number */
+// const num = (v) => (isNaN(+v) ? 0 : +v);
+
+// const InvoiceForm = ({
+//   userRole = "staff", // "admin" gets the remarks box
+//   initialData = {}, // pass existing invoice to edit
+//   onCancel = () => {},
+//   onSubmit = () => {},
+// }) => {
+//   const [form, setForm] = useState({
+//     serviceID: initialData.serviceID || "",
 //     customerName: initialData.customerName || "",
 //     vehicleNumber: initialData.vehicleNumber || "",
-//     vehicleType: initialData.vehicleType || "",
-//     contactNumber: initialData.contact?.phone || "",
+//     presentMeter: initialData.presentMeter || "",
+//     serviceDate: initialData.serviceDate
+//       ? new Date(initialData.serviceDate).toISOString().split("T")[0]
+//       : "",
+//     description: initialData.description || "",
+//     adminRemarks: initialData.adminRemarks || "",
 //   });
-//   const [description, setDescription] = useState("");
-//   const [repairCost, setRepairCost] = useState(0);
-//   const [adminRemarks, setAdminRemarks] = useState("");
+
+//   /* repairs & stock fetched from API */
+//   const [repairPackages, setRepairPackages] = useState([]); // GET /repair‑packages
+//   const [stock, setStock] = useState([]); // GET /stock/items
+
+//   /* line‑item state */
+//   const [repairs, setRepairs] = useState(
+//     // “service” rows
+//     initialData.repairs || [] // [{ package, repairs, price, custom }]
+//   );
+//   const [items, setItems] = useState(
+//     // “inventory” rows
+//     initialData.items || [] // [{ section, category, item, qty, pricePerUnit, custom }]
+//   );
 
 //   useEffect(() => {
+//     fetch("http://localhost:5001/api/repair-packages")
+//       .then((r) => r.json())
+//       .then(setRepairPackages);
+
 //     fetch("http://localhost:5001/api/stock/items")
-//       .then((res) => res.json())
-//       .then((data) => setStockData(data));
+//       .then((r) => r.json())
+//       .then(setStock);
 //   }, []);
 
-//   useEffect(() => {
-//     let serviceCost = Object.values(services).reduce(
-//       (sum, svc) => (svc.selected ? sum + Number(svc.cost || 0) : sum),
-//       0
-//     );
-//     let itemCost = items.reduce(
-//       (sum, item) => sum + item.qty * item.pricePerUnit,
-//       0
-//     );
-//     let total = serviceCost + itemCost + Number(repairCost || 0);
-//     setTotalCost(total);
-//   }, [services, items, repairCost]);
+//   const inventoryCost = items.reduce(
+//     (s, i) => s + i.qty * num(i.pricePerUnit),
+//     0
+//   );
+//   const repairsCost = repairs.reduce((s, r) => s + num(r.price), 0);
+//   const totalCost = repairsCost + inventoryCost;
 
-//   const handleItemChange = (index, field, value) => {
-//     const updated = [...items];
-//     const current = updated[index];
+//   const patchForm = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
-//     if (field === "item" && !current.custom) {
-//       const selected = stockData.find((i) => i.itemName === value);
-//       current.item = value;
-//       current.pricePerUnit = selected ? selected.pricePerUnit : 0;
-//     } else {
-//       current[field] = value;
-//     }
-
-//     setItems(updated);
-//   };
-
-//   const addItemRow = () => {
-//     setItems([
-//       ...items,
+//   /** inventory row helpers */
+//   const addItem = () =>
+//     setItems((p) => [
+//       ...p,
 //       {
-//         section,
 //         category: "",
 //         item: "",
 //         qty: 1,
@@ -69,27 +66,84 @@
 //         custom: false,
 //       },
 //     ]);
-//   };
 
-//   const removeItemRow = (index) => {
-//     const updated = [...items];
-//     updated.splice(index, 1);
-//     setItems(updated);
-//   };
+//   const updateItem = (idx, field, value) =>
+//     setItems((p) =>
+//       p.map((row, i) =>
+//         i === idx
+//           ? (() => {
+//               const r = { ...row, [field]: value };
+//               /* auto‑pull unit price if picked from stock */
+//               if (field === "item" && !r.custom) {
+//                 const found = stock.find((s) => s.itemName === value);
+//                 r.pricePerUnit = found ? found.pricePerUnit : 0;
+//               }
+//               return r;
+//             })()
+//           : row
+//       )
+//     );
+
+//   const removeItem = (idx) => setItems((p) => p.filter((_, i) => i !== idx));
+
+//   /** repair row helpers */
+//   const addRepair = () =>
+//     setRepairs((p) => [
+//       ...p,
+//       {
+//         package: "",
+//         repairs: "",
+//         price: 0,
+//         custom: false,
+//       },
+//     ]);
+
+//   const updateRepair = (idx, field, value) =>
+//     setRepairs((p) =>
+//       p.map((row, i) =>
+//         i === idx
+//           ? (() => {
+//               const r = { ...row, [field]: value };
+//               /* auto‑fill price if not custom */
+//               if (field === "repairs" && !r.custom) {
+//                 const found = repairPackages.find(
+//                   (pkg) =>
+//                     pkg.packageName === row.package && pkg.repairs === value
+//                 );
+//                 r.price = found ? found.price : 0;
+//               }
+//               return r;
+//             })()
+//           : row
+//       )
+//     );
+
+//   const removeRepair = (idx) =>
+//     setRepairs((p) => p.filter((_, i) => i !== idx));
 
 //   const handleSubmit = (e) => {
 //     e.preventDefault();
 //     const payload = {
-//       ...customer,
-//       description,
-//       services,
-//       items,
-//       repairCost: Number(repairCost || 0),
-//       totalCost,
-//       adminRemarks,
+//       ...form,
 //       section,
+//       repairs,
+//       items,
+//       totalCost,
 //     };
 
+//     //   fetch("http://localhost:5001/api/invoice", {
+//     //     method: initialData._id ? "PUT" : "POST",
+//     //     headers: { "Content-Type": "application/json" },
+//     //     body: JSON.stringify(
+//     //       initialData._id ? { ...payload, _id: initialData._id } : payload
+//     //     ),
+//     //   })
+//     //     .then((r) => r.json())
+//     //     .then(() => {
+//     //       alert("Invoice saved");
+//     //       onSubmit();
+//     //     });
+//     // };
 //     fetch("http://localhost:5001/api/invoice", {
 //       method: "POST",
 //       headers: { "Content-Type": "application/json" },
@@ -99,324 +153,320 @@
 //       .then(() => {
 //         alert("Invoice submitted successfully");
 //         if (onSubmit) onSubmit();
+//       })
+//       .catch((err) => {
+//         console.error("Error submitting invoice:", err);
+//         alert("Failed to submit invoice. Please try again.");
 //       });
 //   };
 
 //   return (
 //     <form
 //       onSubmit={handleSubmit}
-//       className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg space-y-6 border border-red-600"
+//       className="max-w-6xl mx-auto p-6 bg-white shadow rounded space-y-6 border border-red-600"
 //     >
-//       <h2 className="text-3xl font-bold text-center text-red-600">
-//         Invoice Form
-//       </h2>
+//       {/* ───── header ───── */}
+//       <h2 className="text-3xl font-bold text-center text-red-600">Invoice</h2>
 
-//       {/* Customer Info */}
+//       {/* ───── customer & job info ───── */}
 //       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
-//         <input
-//           className="p-3 border rounded shadow-sm"
-//           placeholder="Service ID"
-//           value={customer.serviceID}
-//           onChange={(e) =>
-//             setCustomer({ ...customer, serviceID: e.target.value })
-//           }
-//           required
-//         />
-//         <input
-//           className="p-3 border rounded shadow-sm"
-//           placeholder="Customer Name"
-//           value={customer.customerName}
-//           onChange={(e) =>
-//             setCustomer({ ...customer, customerName: e.target.value })
-//           }
-//           required
-//         />
-//         <input
-//           className="p-3 border rounded shadow-sm"
-//           placeholder="Vehicle Number"
-//           value={customer.vehicleNumber}
-//           onChange={(e) =>
-//             setCustomer({ ...customer, vehicleNumber: e.target.value })
-//           }
-//           required
-//         />
-//         <input
-//           className="p-3 border rounded shadow-sm"
-//           placeholder="Vehicle Type"
-//           value={customer.vehicleType}
-//           onChange={(e) =>
-//             setCustomer({ ...customer, vehicleType: e.target.value })
-//           }
-//           required
-//         />
-//         <input
-//           className="p-3 border rounded shadow-sm"
-//           placeholder="Contact Number"
-//           value={customer.contactNumber || ""}
-//           onChange={(e) =>
-//             setCustomer({ ...customer, contactNumber: e.target.value })
-//           }
-//           required
-//         />
-//       </div>
-
-//       <textarea
-//         className="w-full p-3 border rounded shadow-sm text-black"
-//         placeholder="Description"
-//         value={description}
-//         onChange={(e) => setDescription(e.target.value)}
-//       />
-
-//       {/* Service Selection */}
-//       <h4 className="text-xl font-semibold text-gray-800">Service Selection</h4>
-//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-//         {Object.entries(services).map(([key, value]) => (
-//           <div
+//         {[
+//           ["serviceID", "Service ID"],
+//           ["customerName", "Customer Name"],
+//           ["vehicleNumber", "Vehicle Number"],
+//           ["presentMeter", "Present Meter"],
+//           ["serviceDate", "Service Date", "date"],
+//         ].map(([key, label, type = "text"]) => (
+//           <input
 //             key={key}
-//             className="flex items-center bg-gray-100 p-3 rounded shadow-sm"
-//           >
-//             <input
-//               type="checkbox"
-//               checked={value.selected}
-//               onChange={() =>
-//                 setServices({
-//                   ...services,
-//                   [key]: { ...value, selected: !value.selected },
-//                 })
-//               }
-//               className="mr-2"
-//             />
-//             <label className="flex-1 capitalize text-black">{key}</label>
-//             <input
-//               type="number"
-//               value={value.cost}
-//               onChange={(e) =>
-//                 setServices({
-//                   ...services,
-//                   [key]: { ...value, cost: e.target.value },
-//                 })
-//               }
-//               className="p-2 border rounded w-24 text-black"
-//               placeholder="Rs."
-//             />
-//           </div>
+//             type={type}
+//             placeholder={label}
+//             value={form[key]}
+//             onChange={(e) => patchForm(key, e.target.value)}
+//             className="p-2 border rounded"
+//             required
+//           />
 //         ))}
 //       </div>
 
-//       <select
-//         value={section}
-//         onChange={(e) => setSection(e.target.value)}
-//         className="p-2 border rounded text-lg font-medium text-black"
-//       >
-//         <option value="service">Service</option>
-//         <option value="mechanical">Mechanical</option>
-//         <option value="electrical">Electrical</option>
-//         <option value="bodyshop">Bodyshop</option>
-//       </select>
-
-//       {/* Inventory Table */}
-//       {section !== "service" && (
-//         <>
-//           <button
-//             type="button"
-//             onClick={addItemRow}
-//             className="mt-4 px-4 py-2  bg-red-600 text-white rounded shadow hover:bg-red-700"
-//           >
-//             + Add Item
-//           </button>
-//           <table className="min-w-full mt-4 border text-sm text-black">
-//             <thead className="bg-black text-white">
-//               <tr>
-//                 <th className="p-2 border">Section</th>
-//                 <th className="p-2 border">Custom?</th>
-//                 <th className="p-2 border">Category</th>
-//                 <th className="p-2 border">Item</th>
-//                 <th className="p-2 border">Qty</th>
-//                 <th className="p-2 border">Unit Cost</th>
-//                 <th className="p-2 border">Action</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {items.map((item, index) => (
-//                 <tr key={index}>
-//                   <td className="p-2 border">{item.section}</td>
-//                   <td className="p-2 border text-center">
-//                     <input
-//                       type="checkbox"
-//                       checked={item.custom}
-//                       onChange={() => {
-//                         const updated = [...items];
-//                         updated[index].custom = !updated[index].custom;
-//                         setItems(updated);
-//                       }}
-//                     />
-//                   </td>
-//                   <td className="p-2 border">
-//                     {item.custom ? (
-//                       <input
-//                         type="text"
-//                         value={item.category}
-//                         onChange={(e) =>
-//                           handleItemChange(index, "category", e.target.value)
-//                         }
-//                         className="p-1 border rounded w-24"
-//                       />
-//                     ) : (
-//                       <select
-//                         value={item.category}
-//                         onChange={(e) =>
-//                           handleItemChange(index, "category", e.target.value)
-//                         }
-//                         className="p-1 border rounded"
-//                       >
-//                         <option value="">Select</option>
-//                         {[...new Set(stockData.map((i) => i.category))].map(
-//                           (cat, i) => (
-//                             <option key={i} value={cat}>
-//                               {cat}
-//                             </option>
-//                           )
-//                         )}
-//                       </select>
-//                     )}
-//                   </td>
-//                   <td className="p-2 border">
-//                     {item.custom ? (
-//                       <input
-//                         type="text"
-//                         value={item.item}
-//                         onChange={(e) =>
-//                           handleItemChange(index, "item", e.target.value)
-//                         }
-//                         className="p-1 border rounded"
-//                       />
-//                     ) : (
-//                       <select
-//                         value={item.item}
-//                         onChange={(e) =>
-//                           handleItemChange(index, "item", e.target.value)
-//                         }
-//                         className="p-1 border rounded"
-//                       >
-//                         <option value="">Select</option>
-//                         {stockData
-//                           .filter((i) => i.category === item.category)
-//                           .map((i, k) => (
-//                             <option key={k} value={i.itemName}>
-//                               {i.itemName}
-//                             </option>
-//                           ))}
-//                       </select>
-//                     )}
-//                   </td>
-//                   <td className="p-2 border">
-//                     <input
-//                       type="number"
-//                       min="1"
-//                       value={item.qty}
-//                       onChange={(e) =>
-//                         handleItemChange(index, "qty", parseInt(e.target.value))
-//                       }
-//                       className="w-16 p-1 border rounded"
-//                     />
-//                   </td>
-//                   <td className="p-2 border">
-//                     <input
-//                       type="number"
-//                       value={item.pricePerUnit}
-//                       onChange={(e) =>
-//                         handleItemChange(
-//                           index,
-//                           "pricePerUnit",
-//                           Number(e.target.value)
-//                         )
-//                       }
-//                       className="w-24 p-1 border rounded"
-//                     />
-//                   </td>
-//                   <td className="p-2 border">
-//                     <button
-//                       type="button"
-//                       onClick={() => removeItemRow(index)}
-//                       className="text-red-700 font-semibold"
-//                     >
-//                       Remove
-//                     </button>
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </>
-//       )}
-
-//       {userRole === "admin" && (
-//         <input
-//           placeholder="Admin Remarks"
-//           value={adminRemarks}
-//           onChange={(e) => setAdminRemarks(e.target.value)}
-//           className="w-full p-3 border rounded shadow-sm text-black"
-//         />
-//       )}
-
-//       {/* Repair Cost & Summary */}
-//       <h5 className="text-lg text-black font-medium mt-6">Repair Cost</h5>
-//       <input
-//         type="number"
-//         placeholder="Repair Cost"
-//         value={repairCost}
-//         onChange={(e) => setRepairCost(e.target.value)}
-//         className="p-3 border rounded w-64 text-black"
-//         required
+//       {/* description */}
+//       <textarea
+//         placeholder="Description"
+//         value={form.description}
+//         onChange={(e) => patchForm("description", e.target.value)}
+//         className="w-full p-2 border rounded text-black"
 //       />
 
-//       <div className="mt-6">
-//         <table className="w-full text-left border">
-//           <thead className="bg-gray-200 text-black">
+//       {/* ───── repair table ───── */}
+//       <div className="space-y-2">
+//         <div className="flex justify-between items-end">
+//           <h3 className="text-lg font-semibold">Repairs (Packages)</h3>
+//           <button
+//             type="button"
+//             onClick={addRepair}
+//             className="text-sm text-red-600"
+//           >
+//             + Add Repair
+//           </button>
+//         </div>
+
+//         <table className="w-full text-sm border">
+//           <thead className="bg-gray-100">
 //             <tr>
-//               <th className="p-2 border">Service Cost</th>
-//               <th className="p-2 border">Inventory Cost</th>
-//               <th className="p-2 border">Repair Cost</th>
-//               <th className="p-2 border font-bold">Total</th>
+//               <th className="border p-2">Package</th>
+//               <th className="border p-2">Custom?</th>
+//               <th className="border p-2">Repair</th>
+//               <th className="border p-2">Price (Rs.)</th>
+//               <th className="border p-2"></th>
 //             </tr>
 //           </thead>
 //           <tbody>
-//             <tr className="text-black font-medium">
-//               <td className="p-2 border">
-//                 Rs.{" "}
-//                 {Object.values(services).reduce(
-//                   (sum, svc) =>
-//                     svc.selected ? sum + Number(svc.cost || 0) : sum,
-//                   0
-//                 )}
-//               </td>
-//               <td className="p-2 border">
-//                 Rs.{" "}
-//                 {items.reduce(
-//                   (sum, item) => sum + item.qty * item.pricePerUnit,
-//                   0
-//                 )}
-//               </td>
-//               <td className="p-2 border">Rs. {Number(repairCost || 0)}</td>
-//               <td className="p-2 border font-bold">Rs. {totalCost}</td>
-//             </tr>
+//             {repairs.map((row, idx) => (
+//               <tr key={idx}>
+//                 <td className="border p-1">
+//                   <select
+//                     value={row.package}
+//                     onChange={(e) =>
+//                       updateRepair(idx, "package", e.target.value)
+//                     }
+//                     className="w-full border p-1 rounded"
+//                   >
+//                     <option value="">Select</option>
+//                     {repairPackages.map((pkg) => (
+//                       <option key={pkg._id} value={pkg.packageName}>
+//                         {pkg.packageName}
+//                       </option>
+//                     ))}
+//                   </select>
+//                 </td>
+
+//                 {/* custom toggle */}
+//                 <td className="border p-1 text-center">
+//                   <input
+//                     type="checkbox"
+//                     checked={row.custom}
+//                     onChange={() => updateRepair(idx, "custom", !row.custom)}
+//                   />
+//                 </td>
+
+//                 {/* repair selector / free text */}
+//                 <td className="border p-1">
+//                   {row.custom ? (
+//                     <input
+//                       value={row.repairs}
+//                       onChange={(e) =>
+//                         updateRepair(idx, "repairs", e.target.value)
+//                       }
+//                       className="w-full border p-1 rounded"
+//                     />
+//                   ) : (
+//                     <select
+//                       value={row.repairs}
+//                       onChange={(e) =>
+//                         updateRepair(idx, "repairs", e.target.value)
+//                       }
+//                       className="w-full border p-1 rounded"
+//                     >
+//                       <option value="">Select repair</option>
+//                       {repairPackages
+//                         .filter((p) => p.packageName === row.package)
+//                         .map((p) => (
+//                           <option key={p._id} value={p.repairs}>
+//                             {p.repairs}
+//                           </option>
+//                         ))}
+//                     </select>
+//                   )}
+//                 </td>
+
+//                 {/* price */}
+//                 <td className="border p-1">
+//                   <input
+//                     type="number"
+//                     value={row.price}
+//                     onChange={(e) =>
+//                       updateRepair(idx, "price", num(e.target.value))
+//                     }
+//                     className="w-full border p-1 rounded"
+//                   />
+//                 </td>
+
+//                 {/* remove */}
+//                 <td className="border p-1 text-center">
+//                   <button
+//                     type="button"
+//                     onClick={() => removeRepair(idx)}
+//                     className="text-red-600"
+//                   >
+//                     ✕
+//                   </button>
+//                 </td>
+//               </tr>
+//             ))}
 //           </tbody>
 //         </table>
 //       </div>
 
-//       <div className="flex justify-end gap-4 mt-6">
+//       {/* ───── inventory table ───── */}
+//       <div className="space-y-2">
+//         <div className="flex justify-between items-end">
+//           <h3 className="text-lg font-semibold">Inventory / Parts</h3>
+//           <button
+//             type="button"
+//             onClick={addItem}
+//             className="text-sm text-red-600"
+//           >
+//             + Add Item
+//           </button>
+//         </div>
+
+//         <table className="w-full text-sm border">
+//           <thead className="bg-gray-100">
+//             <tr>
+//               <th className="border p-2">Category</th>
+//               <th className="border p-2">Custom?</th>
+//               <th className="border p-2">Item</th>
+//               <th className="border p-2">Qty</th>
+//               <th className="border p-2">Unit (Rs.)</th>
+//               <th className="border p-2"></th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {items.map((row, idx) => (
+//               <tr key={idx}>
+//                 {/* category */}
+//                 <td className="border p-1">
+//                   {row.custom ? (
+//                     <input
+//                       value={row.category}
+//                       onChange={(e) =>
+//                         updateItem(idx, "category", e.target.value)
+//                       }
+//                       className="w-full border p-1 rounded"
+//                     />
+//                   ) : (
+//                     <select
+//                       value={row.category}
+//                       onChange={(e) =>
+//                         updateItem(idx, "category", e.target.value)
+//                       }
+//                       className="w-full border p-1 rounded"
+//                     >
+//                       <option value="">Select</option>
+//                       {[...new Set(stock.map((s) => s.category))].map((c) => (
+//                         <option key={c} value={c}>
+//                           {c}
+//                         </option>
+//                       ))}
+//                     </select>
+//                   )}
+//                 </td>
+
+//                 {/* custom toggle */}
+//                 <td className="border p-1 text-center">
+//                   <input
+//                     type="checkbox"
+//                     checked={row.custom}
+//                     onChange={() => updateItem(idx, "custom", !row.custom)}
+//                   />
+//                 </td>
+
+//                 {/* item */}
+//                 <td className="border p-1">
+//                   {row.custom ? (
+//                     <input
+//                       value={row.item}
+//                       onChange={(e) => updateItem(idx, "item", e.target.value)}
+//                       className="w-full border p-1 rounded"
+//                     />
+//                   ) : (
+//                     <select
+//                       value={row.item}
+//                       onChange={(e) => updateItem(idx, "item", e.target.value)}
+//                       className="w-full border p-1 rounded"
+//                     >
+//                       <option value="">Select</option>
+//                       {stock
+//                         .filter((s) => s.category === row.category)
+//                         .map((s) => (
+//                           <option key={s._id} value={s.itemName}>
+//                             {s.itemName}
+//                           </option>
+//                         ))}
+//                     </select>
+//                   )}
+//                 </td>
+
+//                 {/* qty */}
+//                 <td className="border p-1">
+//                   <input
+//                     type="number"
+//                     min="1"
+//                     value={row.qty}
+//                     onChange={(e) =>
+//                       updateItem(idx, "qty", num(e.target.value))
+//                     }
+//                     className="w-20 border p-1 rounded"
+//                   />
+//                 </td>
+
+//                 {/* unit price */}
+//                 <td className="border p-1">
+//                   <input
+//                     type="number"
+//                     value={row.pricePerUnit}
+//                     onChange={(e) =>
+//                       updateItem(idx, "pricePerUnit", num(e.target.value))
+//                     }
+//                     className="w-24 border p-1 rounded"
+//                   />
+//                 </td>
+
+//                 {/* remove */}
+//                 <td className="border p-1 text-center">
+//                   <button
+//                     type="button"
+//                     onClick={() => removeItem(idx)}
+//                     className="text-red-600"
+//                   >
+//                     ✕
+//                   </button>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+
+//       {/* ───── remarks / totals ───── */}
+//       {userRole === "admin" && (
+//         <textarea
+//           placeholder="Admin Remarks"
+//           value={form.adminRemarks}
+//           onChange={(e) => patchForm("adminRemarks", e.target.value)}
+//           className="w-full p-2 border rounded text-black"
+//         />
+//       )}
+
+//       <div className="text-right text-lg font-semibold text-black">
+//         Total: Rs. {totalCost.toFixed(2)}
+//       </div>
+
+//       {/* ───── actions ───── */}
+//       <div className="flex justify-end gap-4">
 //         <button
 //           type="button"
 //           onClick={onCancel}
-//           className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-black"
+//           className="bg-gray-500 text-white px-4 py-2 rounded"
 //         >
 //           Cancel
 //         </button>
 //         <button
 //           type="submit"
-//           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+//           onClick={handleSubmit}
+//           className="bg-red-600 text-white px-4 py-2 rounded"
 //         >
-//           Submit Invoice
+//           Send Invoice
 //         </button>
 //       </div>
 //     </form>
@@ -424,17 +474,20 @@
 // };
 
 // export default InvoiceForm;
-import React, { useState, useEffect } from "react";
 
-const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
-  const [repairs, setRepairs] = useState([]);
-  const [availableRepairs, setAvailableRepairs] = useState([]);
-  const [items, setItems] = useState([]);
-  const [stockData, setStockData] = useState([]);
-  const [totalCost, setTotalCost] = useState(0);
+import React, { useEffect, useState } from "react";
 
-  const [formData, setFormData] = useState({
-    serviceID: initialData.serviceID || "",
+/** Util – safe number */
+const num = (v) => (isNaN(+v) ? 0 : +v);
+
+const InvoiceForm = ({
+  userRole = "staff", // "admin" gets the remarks box
+  initialData = {}, // pass existing invoice to edit
+  onCancel = () => {},
+  onSubmit = () => {},
+}) => {
+  const [form, setForm] = useState({
+    serviceID: initialData.displayID || "",
     customerName: initialData.customerName || "",
     vehicleNumber: initialData.vehicleNumber || "",
     presentMeter: initialData.presentMeter || "",
@@ -442,262 +495,463 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
       ? new Date(initialData.serviceDate).toISOString().split("T")[0]
       : "",
     description: initialData.description || "",
-    isApproved: initialData.isApproved || false,
     adminRemarks: initialData.adminRemarks || "",
   });
 
+  /* repairs & stock fetched from API */
+  const [repairPackages, setRepairPackages] = useState([]); // GET /repair-packages
+  const [stock, setStock] = useState([]); // GET /stock/items
+
+  /* line-item state */
+  const [repairs, setRepairs] = useState(initialData.repairs || []);
+  const [items, setItems] = useState(initialData.items || []);
+
+  /* section state */
+  const [section, setSection] = useState(initialData.section || "");
+
   useEffect(() => {
     fetch("http://localhost:5001/api/repair-packages")
-      .then((res) => res.json())
-      .then((data) => setAvailableRepairs(data));
+      .then((r) => r.json())
+      .then(setRepairPackages)
+      .catch(() => setRepairPackages([]));
 
     fetch("http://localhost:5001/api/stock/items")
-      .then((res) => res.json())
-      .then((data) => setStockData(data));
+      .then((r) => r.json())
+      .then(setStock)
+      .catch(() => setStock([]));
   }, []);
 
-  useEffect(() => {
-    const repairTotal = repairs.reduce(
-      (sum, r) => sum + Number(r.price || 0),
-      0
+  const inventoryCost = items.reduce(
+    (s, i) => s + i.qty * num(i.pricePerUnit),
+    0
+  );
+  const repairsCost = repairs.reduce((s, r) => s + num(r.price), 0);
+  const totalCost = repairsCost + inventoryCost;
+
+  const patchForm = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+
+  /** inventory row helpers */
+  const addItem = () =>
+    setItems((p) => [
+      ...p,
+      {
+        category: "",
+        item: "",
+        qty: 1,
+        pricePerUnit: 0,
+        custom: false,
+      },
+    ]);
+
+  const updateItem = (idx, field, value) =>
+    setItems((p) =>
+      p.map((row, i) =>
+        i === idx
+          ? (() => {
+              const r = { ...row, [field]: value };
+              if (field === "item" && !r.custom) {
+                const found = stock.find((s) => s.itemName === value);
+                r.pricePerUnit = found ? found.pricePerUnit : 0;
+              }
+              return r;
+            })()
+          : row
+      )
     );
-    const itemTotal = items.reduce((sum, i) => sum + i.qty * i.price, 0);
-    setTotalCost(repairTotal + itemTotal);
-  }, [repairs, items]);
 
-  const handleRepairChange = (index, field, value) => {
-    const updated = [...repairs];
-    updated[index][field] = value;
-    setRepairs(updated);
-  };
+  const removeItem = (idx) => setItems((p) => p.filter((_, i) => i !== idx));
 
-  const addRepairRow = () => {
-    setRepairs([...repairs, { package: "", price: 0 }]);
-  };
+  /** repair row helpers */
+  const addRepair = () =>
+    setRepairs((p) => [
+      ...p,
+      {
+        package: "",
+        repair: "",
+        price: 0,
+        custom: false,
+      },
+    ]);
 
-  const removeRepairRow = (index) => {
-    const updated = [...repairs];
-    updated.splice(index, 1);
-    setRepairs(updated);
-  };
+  const updateRepair = (idx, field, value) =>
+    setRepairs((p) =>
+      p.map((row, i) =>
+        i === idx
+          ? (() => {
+              const r = { ...row, [field]: value };
+              if (field === "repairs" && !r.custom) {
+                const found = repairPackages.find(
+                  (pkg) =>
+                    pkg.packageName === row.package && pkg.repairs === value
+                );
+                r.price = found ? found.price : 0;
+              }
+              return r;
+            })()
+          : row
+      )
+    );
 
-  const handleItemChange = (index, field, value) => {
-    const updated = [...items];
-    updated[index][field] = value;
-    setItems(updated);
-  };
-
-  const addItemRow = () => {
-    setItems([...items, { itemName: "", qty: 1, price: 0 }]);
-  };
-
-  const removeItemRow = (index) => {
-    const updated = [...items];
-    updated.splice(index, 1);
-    setItems(updated);
-  };
+  const removeRepair = (idx) =>
+    setRepairs((p) => p.filter((_, i) => i !== idx));
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const mappedRepairs = repairs.map((r) => ({
+      package: r.package || "Custom", // fallback
+      repair: r.repair,
+      price: Number(r.price),
+    }));
+
+    const mappedItems = items.map((i) => ({
+      itemName: i.item,
+      qty: Number(i.qty),
+      price: Number(i.pricePerUnit),
+    }));
+
     const payload = {
-      ...formData,
-      repairs,
-      items,
-      totalCost,
+      serviceID: form.serviceID,
+      customerName: form.customerName,
+      vehicleNumber: form.vehicleNumber,
+      presentMeter: Number(form.presentMeter),
+      serviceDate: new Date(form.serviceDate),
+      description: form.description,
+      repair: mappedRepairs,
+      items: mappedItems,
+      totalCost: Number(totalCost),
+      adminRemarks: form.adminRemarks || "",
     };
 
+    console.log("Submitting payload:", JSON.stringify(payload, null, 2));
+
     fetch("http://localhost:5001/api/invoice", {
-      method: initialData._id ? "PUT" : "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((err) => {
+            console.error("Server error response:", err);
+            throw new Error(`HTTP ${res.status}`);
+          });
+        }
+        return res.json();
+      })
       .then(() => {
-        alert("Invoice saved successfully");
+        alert("Invoice submitted successfully");
         if (onSubmit) onSubmit();
+      })
+      .catch((err) => {
+        console.error("Error submitting invoice:", err);
+        alert("Failed to submit invoice. Please check the data.");
       });
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-6 bg-white shadow rounded space-y-6 border border-red-600"
+      className="max-w-6xl mx-auto p-6 bg-white shadow rounded space-y-6 border border-red-600"
     >
-      <h2 className="text-2xl font-bold text-center text-red-600">
-        Service Invoice
-      </h2>
+      <h2 className="text-3xl font-bold text-center text-red-600">Invoice</h2>
 
-      <div className="grid grid-cols-2 gap-4 text-black">
-        <input
-          placeholder="Service ID"
-          value={formData.serviceID}
-          onChange={(e) =>
-            setFormData({ ...formData, serviceID: e.target.value })
-          }
-          className="p-2 border rounded"
+      {/* Customer & job info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
+        {[
+          ["serviceID", "Service ID"],
+          ["customerName", "Customer Name"],
+          ["vehicleNumber", "Vehicle Number"],
+          ["presentMeter", "Present Meter"],
+          ["serviceDate", "Service Date", "date"],
+        ].map(([key, label, type = "text"]) => (
+          <input
+            key={key}
+            type={type}
+            placeholder={label}
+            value={form[key]}
+            onChange={(e) => patchForm(key, e.target.value)}
+            className="p-2 border rounded"
+            required
+          />
+        ))}
+
+        {/* Section selector */}
+        <select
+          value={section}
+          onChange={(e) => setSection(e.target.value)}
+          className="p-2 border rounded text-black"
           required
-        />
-        <input
-          placeholder="Customer Name"
-          value={formData.customerName}
-          onChange={(e) =>
-            setFormData({ ...formData, customerName: e.target.value })
-          }
-          className="p-2 border rounded"
-          required
-        />
-        <input
-          placeholder="Vehicle Number"
-          value={formData.vehicleNumber}
-          onChange={(e) =>
-            setFormData({ ...formData, vehicleNumber: e.target.value })
-          }
-          className="p-2 border rounded"
-          required
-        />
-        <input
-          placeholder="Present Meter"
-          value={formData.presentMeter}
-          type="number"
-          onChange={(e) =>
-            setFormData({ ...formData, presentMeter: e.target.value })
-          }
-          className="p-2 border rounded"
-          required
-        />
-        <input
-          type="date"
-          value={formData.serviceDate}
-          onChange={(e) =>
-            setFormData({ ...formData, serviceDate: e.target.value })
-          }
-          className="p-2 border rounded"
-          required
-        />
+        >
+          <option value="" disabled>
+            Select Section
+          </option>
+          <option value="mechanical">Mechanical</option>
+          <option value="electrical">Electrical</option>
+          <option value="bodyshop">Bodyshop</option>
+          <option value="service">Service</option>
+        </select>
       </div>
 
+      {/* Description */}
       <textarea
         placeholder="Description"
-        value={formData.description}
-        onChange={(e) =>
-          setFormData({ ...formData, description: e.target.value })
-        }
+        value={form.description}
+        onChange={(e) => patchForm("description", e.target.value)}
         className="w-full p-2 border rounded text-black"
       />
 
       {/* Repairs Table */}
-      <div>
-        <h3 className="text-lg font-semibold">Repairs</h3>
-        <button
-          type="button"
-          onClick={addRepairRow}
-          className="text-sm text-red-600"
-        >
-          + Add Repair
-        </button>
-        {repairs.map((r, i) => (
-          <div key={i} className="flex items-center gap-2 mt-2">
-            <select
-              value={r.package}
-              onChange={(e) => handleRepairChange(i, "package", e.target.value)}
-              className="p-2 border rounded"
-            >
-              <option value="">Select Package</option>
-              {availableRepairs.map((pkg) => (
-                <option key={pkg._id} value={pkg.packageName}>
-                  {pkg.packageName}
-                </option>
-              ))}
-            </select>
-            <input
-              type="number"
-              value={r.price}
-              onChange={(e) => handleRepairChange(i, "price", e.target.value)}
-              className="p-2 border rounded w-32"
-              placeholder="Price"
-            />
-            <button
-              type="button"
-              onClick={() => removeRepairRow(i)}
-              className="text-red-500"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+      <div className="space-y-2">
+        <div className="flex justify-between items-end">
+          <h3 className="text-lg font-semibold">Repairs (Packages)</h3>
+          <button
+            type="button"
+            onClick={addRepair}
+            className="text-sm text-red-600"
+          >
+            + Add Repair
+          </button>
+        </div>
+
+        <table className="w-full text-sm border">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border p-2">Package</th>
+              <th className="border p-2">Custom?</th>
+              <th className="border p-2">Repair</th>
+              <th className="border p-2">Price (Rs.)</th>
+              <th className="border p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {repairs.map((row, idx) => (
+              <tr key={idx}>
+                <td className="border p-1">
+                  <select
+                    value={row.package}
+                    onChange={(e) =>
+                      updateRepair(idx, "package", e.target.value)
+                    }
+                    className="w-full border p-1 rounded"
+                  >
+                    <option value="">Select</option>
+                    {repairPackages.map((pkg) => (
+                      <option key={pkg._id} value={pkg.packageName}>
+                        {pkg.packageName}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+
+                <td className="border p-1 text-center">
+                  <input
+                    type="checkbox"
+                    checked={row.custom}
+                    onChange={() => updateRepair(idx, "custom", !row.custom)}
+                  />
+                </td>
+
+                <td className="border p-1">
+                  {row.custom ? (
+                    <input
+                      value={row.repairs}
+                      onChange={(e) =>
+                        updateRepair(idx, "repairs", e.target.value)
+                      }
+                      className="w-full border p-1 rounded"
+                    />
+                  ) : (
+                    <select
+                      value={row.repairs}
+                      onChange={(e) =>
+                        updateRepair(idx, "repairs", e.target.value)
+                      }
+                      className="w-full border p-1 rounded"
+                    >
+                      <option value="">Select repair</option>
+                      {repairPackages
+                        .filter((p) => p.packageName === row.package)
+                        .map((p) => (
+                          <option key={p._id} value={p.repairs}>
+                            {p.repairs}
+                          </option>
+                        ))}
+                    </select>
+                  )}
+                </td>
+
+                <td className="border p-1">
+                  <input
+                    type="number"
+                    value={row.price}
+                    onChange={(e) =>
+                      updateRepair(idx, "price", num(e.target.value))
+                    }
+                    className="w-full border p-1 rounded"
+                  />
+                </td>
+
+                <td className="border p-1 text-center">
+                  <button
+                    type="button"
+                    onClick={() => removeRepair(idx)}
+                    className="text-red-600"
+                  >
+                    ✕
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Items Table */}
-      <div>
-        <h3 className="text-lg font-semibold">Items</h3>
-        <button
-          type="button"
-          onClick={addItemRow}
-          className="text-sm text-red-600"
-        >
-          + Add Item
-        </button>
-        {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-2 mt-2">
-            <select
-              value={item.itemName}
-              onChange={(e) => handleItemChange(i, "itemName", e.target.value)}
-              className="p-2 border rounded"
-            >
-              <option value="">Select Item</option>
-              {stockData.map((stock) => (
-                <option key={stock._id} value={stock.itemName}>
-                  {stock.itemName}
-                </option>
-              ))}
-            </select>
-            <input
-              type="number"
-              value={item.qty}
-              onChange={(e) =>
-                handleItemChange(i, "qty", Number(e.target.value))
-              }
-              className="p-2 border rounded w-24"
-              placeholder="Qty"
-            />
-            <input
-              type="number"
-              value={item.price}
-              onChange={(e) =>
-                handleItemChange(i, "price", Number(e.target.value))
-              }
-              className="p-2 border rounded w-32"
-              placeholder="Unit Price"
-            />
-            <button
-              type="button"
-              onClick={() => removeItemRow(i)}
-              className="text-red-500"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+      {/* Inventory Table */}
+      <div className="space-y-2">
+        <div className="flex justify-between items-end">
+          <h3 className="text-lg font-semibold">Inventory / Parts</h3>
+          <button
+            type="button"
+            onClick={addItem}
+            className="text-sm text-red-600"
+          >
+            + Add Item
+          </button>
+        </div>
+
+        <table className="w-full text-sm border">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border p-2">Category</th>
+              <th className="border p-2">Custom?</th>
+              <th className="border p-2">Item</th>
+              <th className="border p-2">Qty</th>
+              <th className="border p-2">Unit (Rs.)</th>
+              <th className="border p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((row, idx) => (
+              <tr key={idx}>
+                <td className="border p-1">
+                  {row.custom ? (
+                    <input
+                      value={row.category}
+                      onChange={(e) =>
+                        updateItem(idx, "category", e.target.value)
+                      }
+                      className="w-full border p-1 rounded"
+                    />
+                  ) : (
+                    <select
+                      value={row.category}
+                      onChange={(e) =>
+                        updateItem(idx, "category", e.target.value)
+                      }
+                      className="w-full border p-1 rounded"
+                    >
+                      <option value="">Select</option>
+                      {[...new Set(stock.map((s) => s.category))].map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </td>
+
+                <td className="border p-1 text-center">
+                  <input
+                    type="checkbox"
+                    checked={row.custom}
+                    onChange={() => updateItem(idx, "custom", !row.custom)}
+                  />
+                </td>
+
+                <td className="border p-1">
+                  {row.custom ? (
+                    <input
+                      value={row.item}
+                      onChange={(e) => updateItem(idx, "item", e.target.value)}
+                      className="w-full border p-1 rounded"
+                    />
+                  ) : (
+                    <select
+                      value={row.item}
+                      onChange={(e) => updateItem(idx, "item", e.target.value)}
+                      className="w-full border p-1 rounded"
+                    >
+                      <option value="">Select</option>
+                      {stock
+                        .filter((s) => s.category === row.category)
+                        .map((s) => (
+                          <option key={s._id} value={s.itemName}>
+                            {s.itemName}
+                          </option>
+                        ))}
+                    </select>
+                  )}
+                </td>
+
+                <td className="border p-1">
+                  <input
+                    type="number"
+                    min="1"
+                    value={row.qty}
+                    onChange={(e) =>
+                      updateItem(idx, "qty", num(e.target.value))
+                    }
+                    className="w-20 border p-1 rounded"
+                  />
+                </td>
+
+                <td className="border p-1">
+                  <input
+                    type="number"
+                    value={row.pricePerUnit}
+                    onChange={(e) =>
+                      updateItem(idx, "pricePerUnit", num(e.target.value))
+                    }
+                    className="w-24 border p-1 rounded"
+                  />
+                </td>
+
+                <td className="border p-1 text-center">
+                  <button
+                    type="button"
+                    onClick={() => removeItem(idx)}
+                    className="text-red-600"
+                  >
+                    ✕
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
+      {/* Admin remarks */}
       {userRole === "admin" && (
         <textarea
           placeholder="Admin Remarks"
-          value={formData.adminRemarks}
-          onChange={(e) =>
-            setFormData({ ...formData, adminRemarks: e.target.value })
-          }
+          value={form.adminRemarks}
+          onChange={(e) => patchForm("adminRemarks", e.target.value)}
           className="w-full p-2 border rounded text-black"
         />
       )}
 
-      <div className="text-black font-medium">Total Cost: Rs. {totalCost}</div>
+      <div className="text-right text-lg font-semibold text-black">
+        Total: Rs. {totalCost.toFixed(2)}
+      </div>
 
-      <div className="flex justify-end gap-4 mt-4">
+      {/* Actions */}
+      <div className="flex justify-end gap-4">
         <button
           type="button"
           onClick={onCancel}
-          className="bg-gray-400 text-white px-4 py-2 rounded"
+          className="bg-gray-500 text-white px-4 py-2 rounded"
         >
           Cancel
         </button>
@@ -705,7 +959,7 @@ const InvoiceForm = ({ userRole, initialData = {}, onCancel, onSubmit }) => {
           type="submit"
           className="bg-red-600 text-white px-4 py-2 rounded"
         >
-          Submit Invoice
+          Send Invoice
         </button>
       </div>
     </form>
