@@ -50,15 +50,15 @@
 import mongoose from "mongoose";
 
 const repairSchema = new mongoose.Schema({
-  package: { type: String, required: true }, 
-  repairs:{ type: String, required: true} , // e.g., "Full Service Package"
-  price: { type: Number, required: true }
+  package: { type: String }, 
+  repair:{ type: String} , // e.g., "Full Service Package"
+  price: { type: Number }
 });
 
 const itemSchema = new mongoose.Schema({
-  itemName: { type: String, required: true },
-  qty: { type: Number, required: true },
-  price: { type: Number, required: true }
+  itemName: { type: String,  },
+  qty: { type: Number },
+  price: { type: Number }
 });
 
 const serviceInvoiceSchema = new mongoose.Schema({
