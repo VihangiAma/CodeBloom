@@ -18,6 +18,7 @@ const InvoiceForm = ({
     serviceDate: initialData.serviceDate
       ? new Date(initialData.serviceDate).toISOString().split("T")[0]
       : "",
+    submittedBy: initialData.submittedBy || "",
     description: initialData.description || "",
     adminRemarks: initialData.adminRemarks || "",
   });
@@ -167,7 +168,12 @@ const InvoiceForm = ({
       items: mappedItems,
       totalCost: num(totalCost),
       adminRemarks: form.adminRemarks || "",
+      section,
     };
+
+    if (form.submittedBy?.trim()) {
+      payload.submittedBy = form.submittedBy;
+    }
 
     fetch("http://localhost:5001/api/invoice", {
       method: "POST",
@@ -199,6 +205,7 @@ const InvoiceForm = ({
           ["vehicleNumber", "Vehicle Number"],
           ["presentMeter", "Present Meter"],
           ["serviceDate", "Service Date", "date"],
+          ["submittedBy", "Submitted By"],
         ].map(([k, pl, type = "text"]) => (
           <input
             key={k}
