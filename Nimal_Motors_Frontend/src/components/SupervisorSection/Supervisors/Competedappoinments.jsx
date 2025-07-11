@@ -128,184 +128,207 @@
 
 // export default Completedappoinments;
 
-import React, { useEffect, useState } from "react";
-import { AiOutlinePlus, AiOutlineEye } from "react-icons/ai";
+import React, { useState, useEffect } from "react";
+import { AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
-
 import axios from "axios";
 import InvoiceForm from "../InvoiceForm";
 
 const Completedappoinments = () => {
-  const [invoices, setInvoices] = useState([]);
+  /* ---------- state ---------- */
+  const [completed, setCompleted] = useState([]); // completed “service” appointments
+  const [pendingInvoices, setPendingInvoices] = useState([]); // invoices waiting for approval
   const [showInvoice, setShowInvoice] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [pendingInvoices, setPendingInvoices] = useState([]);
-  const [section, setSection] = useState("service"); // ✅ adjust based on current user section if needed
 
+  /* ---------- constants ---------- */
+  // If your service invoices use a different prefix, change it here.
+  const SERVICE_PREFIX = "S";
+
+  /* ---------- effects ---------- */
   useEffect(() => {
-    fetchInvoices();
+    fetchCompletedServiceAppointments();
     fetchPendingInvoices();
   }, []);
 
-  const fetchInvoices = async () => {
+  /* ---------- data loaders ---------- */
+  const fetchCompletedServiceAppointments = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5001/api/appointments/"
-      );
-      const completed = response.data.filter(
+      const res = await axios.get("http://localhost:5001/api/appointments/");
+      const completedAppointments = res.data.filter(
         (app) => app.status === "Complete"
       );
-      setInvoices(completed);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
+      setCompleted(completedAppointments);
+    } catch (err) {
+      console.error("Error fetching completed appointments:", err);
     }
   };
 
   const fetchPendingInvoices = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/invoice`);
-      const pending = response.data.filter(
-        (invoice) => invoice.isApproved === false && invoice.section === section
+      const res = await axios.get("http://localhost:5001/api/invoice", {
+        params: { isApproved: false },
+      });
+      const filtered = res.data.filter((inv) =>
+        inv.serviceID?.startsWith(SERVICE_PREFIX)
       );
-      setPendingInvoices(pending);
-    } catch (error) {
-      console.error("Error fetching pending invoices", error);
+      setPendingInvoices(filtered);
+    } catch (err) {
+      console.error("Error fetching pending invoices:", err);
     }
   };
 
-  const handleViewInvoice = (invoice) => {
-    setSelectedInvoice(invoice);
-    setShowInvoice(true);
-  };
-
-  const handleCancelInvoice = () => {
-    setSelectedInvoice(null);
-    setShowInvoice(false);
-  };
-
-  const handleSubmitInvoice = (invoiceData) => {
-    console.log("Submitted invoice:", invoiceData);
-    setShowInvoice(false);
-    fetchPendingInvoices(); // refresh after submitting
-  };
-
-  const handleDelete = async (serviceID) => {
-    if (window.confirm("Are you sure you want to delete this invoice?")) {
-      try {
-        await axios.delete(
-          `http://localhost:5001/api/appointments/${serviceID}`
+  /* ---------- invoice create / update ---------- */
+  const handleSubmitInvoice = async (invoice) => {
+    try {
+      if (invoice._id) {
+        await axios.put(
+          `http://localhost:5001/api/invoice/${invoice._id}`,
+          invoice
         );
-        setInvoices((prev) =>
-          prev.filter((inv) => inv.serviceID !== serviceID)
-        );
-      } catch (error) {
-        console.error("Error deleting invoice:", error);
-        alert("Failed to delete invoice.");
+      } else {
+        await axios.post("http://localhost:5001/api/invoice", invoice);
       }
+      setShowInvoice(false);
+      setSelectedInvoice(null);
+      fetchCompletedServiceAppointments();
+      fetchPendingInvoices();
+    } catch (err) {
+      console.error("Error submitting invoice:", err);
+      alert("Failed to submit invoice.");
     }
   };
 
+  /* ---------- deletions ---------- */
+  const handleDeleteInvoice = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this invoice?"))
+      return;
+    try {
+      await axios.delete(`http://localhost:5001/api/invoice/${id}`);
+      setPendingInvoices((prev) => prev.filter((inv) => inv._id !== id));
+    } catch (err) {
+      console.error("Error deleting invoice:", err);
+      alert("Failed to delete invoice.");
+    }
+  };
+
+  /* ---------- render ---------- */
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Invoices</h2>
+    <div className="p-6 bg-white shadow rounded-lg">
+      {/* completed appointments (service section) */}
+      <h2 className="text-2xl font-bold mb-4">
+        Completed Service Appointments
+      </h2>
 
-      <table className="min-w-full table-auto border mb-8">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-3 py-2">Service ID</th>
-            <th className="border px-3 py-2">Customer Name</th>
-            <th className="border px-3 py-2">Vehicle No</th>
-            <th className="border px-3 py-2">Contact No</th>
-            <th className="border px-3 py-2">Service Date</th>
-            <th className="border px-3 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {invoices.map((invoice) => (
-            <tr key={invoice._id} className="text-center">
-              <td className="px-4 py-2 border">{invoice.displayID}</td>
-              <td className="px-4 py-2 border">{invoice.customerName}</td>
-              <td className="px-4 py-2 border">{invoice.vehicleNumber}</td>
-              <td className="px-4 py-2 border">{invoice.contact.phone}</td>
-              <td className="px-4 py-2 border">
-                {new Date(invoice.serviceDate).toLocaleDateString()}
-              </td>
-              <td className="px-4 py-2 border space-x-2">
-                <button
-                  onClick={() => handleViewInvoice(invoice)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded "
-                >
-                  <AiOutlinePlus />
-                </button>
+      {completed.length === 0 ? (
+        <p className="text-gray-500">
+          No completed service appointments found.
+        </p>
+      ) : (
+        <div className="overflow-x-auto mb-8">
+          <table className="min-w-full table-auto border">
+            <thead className="bg-gray-100">
+              <tr className="bg-gray-200 text-sm">
+                <th className="border px-3 py-2">Service&nbsp;ID</th>
+                <th className="border px-3 py-2">Customer</th>
+                <th className="border px-3 py-2">Vehicle&nbsp;No</th>
+                <th className="border px-3 py-2">Contact</th>
+                <th className="border px-3 py-2">Service&nbsp;Date</th>
+                <th className="border px-3 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {completed.map((app) => (
+                <tr key={app._id} className="text-center text-sm">
+                  <td className="border px-3 py-2">
+                    {app.displayID || app.serviceID}
+                  </td>
+                  <td className="border px-3 py-2">{app.customerName}</td>
+                  <td className="border px-3 py-2">{app.vehicleNumber}</td>
+                  <td className="border px-3 py-2">
+                    {app.contact?.phone || "N/A"}
+                  </td>
+                  <td className="border px-3 py-2">
+                    {new Date(app.serviceDate).toLocaleDateString()}
+                  </td>
+                  <td className="border px-3 py-2">
+                    <button
+                      onClick={() => {
+                        setSelectedInvoice(app);
+                        setShowInvoice(true);
+                      }}
+                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                      title="Create / Edit Invoice"
+                    >
+                      <AiOutlinePlus />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-                <button
-                  onClick={() => handleDelete(invoice.serviceID)}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                >
-                  <FaTrash />
-                </button>
-
-                <button
-                  onClick={() => handleViewInvoice(invoice)}
-                  className="bg-green-500 text-white px-3 py-1 rounded "
-                >
-                  <AiOutlineEye />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
+      {/* invoice form modal / inline */}
       {showInvoice && selectedInvoice && (
-        <div className="mt-6 border p-4 bg-gray-50 rounded">
+        <div className="mb-10 border p-4 bg-gray-50 rounded">
           <InvoiceForm
             initialData={selectedInvoice}
             onSubmit={handleSubmitInvoice}
-            onCancel={handleCancelInvoice}
+            onCancel={() => {
+              setSelectedInvoice(null);
+              setShowInvoice(false);
+            }}
           />
         </div>
       )}
 
-      <h2 className="text-xl font-semibold mb-4 capitalize">
-        {section} - Pending Invoices(Not Approved)
+      {/* pending invoices (service section) */}
+      <h2 className="text-xl font-semibold mb-4">
+        Pending Invoices &ndash; Service Section
       </h2>
 
       {pendingInvoices.length === 0 ? (
         <p className="text-gray-500">No pending invoices found.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm border">
+          <table className="min-w-full border text-sm">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border px-3 py-2">Invoice ID</th>
-                <th className="border px-3 py-2">Customer Name</th>
-                <th className="border px-3 py-2">Vehicle No</th>
-                <th className="border px-3 py-2">Admin Remark</th>
-                <th className="border px-3 py-2">Status</th>
+                <th className="border px-3 py-2">Invoice&nbsp;ID</th>
+                <th className="border px-3 py-2">Customer</th>
+                <th className="border px-3 py-2">Vehicle&nbsp;No</th>
+                <th className="border px-3 py-2">Admin&nbsp;Remark</th>
+                <th className="border px-3 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
-              {pendingInvoices.map((invoice) => (
-                <tr key={invoice._id} className="hover:bg-gray-50 text-center">
-                  <td className="border px-3 py-2">{invoice.serviceID}</td>
-                  <td className="border px-3 py-2">{invoice.customerName}</td>
-                  <td className="border px-3 py-2">{invoice.vehicleNumber}</td>
+              {pendingInvoices.map((inv) => (
+                <tr key={inv._id} className="hover:bg-gray-50 text-center">
+                  <td className="border px-3 py-2">{inv.serviceID}</td>
+                  <td className="border px-3 py-2">{inv.customerName}</td>
+                  <td className="border px-3 py-2">{inv.vehicleNumber}</td>
                   <td className="border px-3 py-2">
-                    {invoice.adminRemarks || "N/A"}
+                    {inv.adminRemarks || "—"}
                   </td>
-                  <td className="border px-3 py-2">
-                    {/* <button
-                      // onClick={() => handleViewInvoice(appointment)}
-                      className=" px-3 py-2 text-yellow-600 font-medium"
-                    >
-                      Not Approved
-                    </button> */}
+                  <td className="border px-3 py-2 space-x-2">
                     <button
-                      // onClick={() => handleDelete()}
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                      onClick={() => {
+                        setSelectedInvoice(inv);
+                        setShowInvoice(true);
+                      }}
+                      className="bg-green-500 text-white px-3 py-1 rounded"
+                      title="Edit Invoice"
                     >
                       <AiOutlinePlus />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteInvoice(inv._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                      title="Delete Invoice"
+                    >
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>
