@@ -20,6 +20,7 @@ import {
   changePassword,
   updateOwnProfile,
   getBasicUserProfile,
+  forgotPasswordHandler
 
 } from "../Controllers/UserController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
@@ -35,6 +36,8 @@ userRoutes.get("/profile/basic", authenticateToken, getBasicUserProfile);
 //userRoutes.post("/register", postUser);
 userRoutes.post("/login", LogInUser);
 userRoutes.post("/admin/add-user", addUserByAdmin);
+userRoutes.post("/forgot-password",forgotPasswordHandler);
+
 
 
 // 🔐 PROTECTED ROUTES
@@ -48,6 +51,7 @@ userRoutes.get("/service/profile", getServiceSupProfile);
 userRoutes.get("/mechanical/profile", getMechanicalSupProfile);
 
 userRoutes.post("/change-password", changePassword);
+
 
 
 userRoutes.get("/", getAllUsers);

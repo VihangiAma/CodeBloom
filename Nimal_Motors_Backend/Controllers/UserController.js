@@ -1,6 +1,9 @@
 import Users from '../Models/userModel.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import nodemailer from "nodemailer";
+
+
 
 export async function postUser(req, res) {
     try {
@@ -685,6 +688,61 @@ export async function updateOwnProfile(req, res) {
         });
     }
 }
+
+
+
+
+export const forgotPasswordHandler = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await Users.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+        const resetLink = `http://localhost:5173/reset-password?userId=${user.userId}`;
+
+
+    // ✅ Create test transport or use real credentials (e.g., Gmail)
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // or "hotmail", "outlook", etc.
+      auth: {
+        user: "sithuprabodha7@gmail.com",      // 🔁 Replace with your email
+        pass: "spsv dfkw bctb cohw",    // 🔁 Use app password (not your Gmail password)
+      },
+    });
+
+    // ✅ Compose message
+    const mailOptions = {
+      from: '"Nimal Motors" <subhajayoda@gmail.com>', // sender
+      to: 'subhagamage100@gmail.com', // receiver
+      subject: "Password Reset - Nimal Motors",
+      text: `Hello ${user.fullName},
+
+We received a request to reset your password.
+
+Please click the link below or copy it into your browser to reset your password:
+http://localhost:5173/change-password?userId=${user.userId}
+
+If you didn’t request this, please ignore this email.
+
+Thanks,
+Nimal Motors Team`,
+    };
+
+    // ✅ Send email
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Reset instructions sent to email." });
+  } catch (error) {
+    console.error("Email error:", error);
+    res.status(500).json({ message: "Failed to send email" });
+  }
+};
+
+
 
 
 

@@ -59,6 +59,7 @@ import ExpensesPage from './components/ExpensesPage';
 import HomePage from './assets/pages/HomePage';
 import SalesReport from './assets/pages/SalesReport';
 import SalesReportView from './assets/pages/SalesReportView';
+import ResetPassword from './pages/login/ResetPassword';
 
 
 // Protected Route Components
@@ -78,6 +79,8 @@ function App() {
       <Routes>
 
         <Route path="/profile/basic" element={<PremiumServiceForm />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
 
 
         {/* Public Routes */}
