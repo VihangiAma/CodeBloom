@@ -173,7 +173,7 @@ const Completedappoinments = () => {
           <table className="min-w-full border text-sm">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border px-3 py-2">Invoice&nbsp;ID</th>
+                <th className="border px-3 py-2">Service&nbsp;</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle&nbsp;No</th>
                 <th className="border px-3 py-2">Admin&nbsp;Remark</th>
