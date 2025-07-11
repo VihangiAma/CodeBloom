@@ -5,7 +5,7 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   return (
-    <header className="flex justify-between items-center w-full p-4 bg-blue-600  ">
+    <header className="flex justify-between items-center w-full p-4 hero relative bg-gradient-to-r from-blue-00 to-blue-500   ">
       {/* Logo */}
       <img
         src={logoImage}

@@ -4,7 +4,7 @@ import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
 import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
 import UserTable from "../../components/SupervisorSection/UserTable";
 import OperationDashbord from "./OperationDashbord";
-
+import PackagesAdd from "./packagesAdd";
 
 const DashboardCard = ({ title, description, emoji, color, onClick }) => {
   return (
@@ -26,70 +26,65 @@ const AdminDashboard = () => {
 
   const renderContent = () => {
     switch (activePage) {
+      case "booking":
+        return (
+          <div className="p-8 min-h-[calc(100vh-8rem)]">
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <p className="text-gray-600 text-xl mb-4">
+                <PackagesAdd />
+              </p>
+            </div>
+          </div>
+        );
       case "sectionManagement":
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6 text-center">
               <p className="text-gray-600 text-xl mb-4">
-                <AdminInvoiceView
-                  onClick={() => setActivePage("boking Management")}
-                />
+                <AdminInvoiceView onClick={() => setActivePage("boking Management")} />
               </p>
-              <button
-                onClick={() => setActivePage("dashboard")}
-                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded transition"
-              >
-                Go Back
-              </button>
             </div>
           </div>
         );
       case "userManagement":
         navigate("/admin/users");
         return null;
-
       case "operationDashboard":
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6">
               <OperationDashbord />
-              <button
-                onClick={() => setActivePage("dashboard")}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded transition"
-              >
-                Go Back
-              </button>
             </div>
           </div>
         );
       default:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 min-h-[calc(100vh-8rem)]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
             <DashboardCard
-              title="Booking"
-              description="Manage customer bookings."
-              color="bg-blue-500"
+              title="Packages"
+              description="Manage customer Packages."
+              color="px-6 py-4  hero relative bg-gradient-to-r from-red-00 to-red-500"
               emoji="🛒"
               onClick={() => setActivePage("booking")}
             />
             <DashboardCard
               title="Section Management"
               description="Manage service sections."
-              color="bg-indigo-500"
+              color=" px-6 py-4  hero relative bg-gradient-to-r from-purple-600 to-purple-800s"
               emoji="📦"
               onClick={() => setActivePage("sectionManagement")}
             />
             <DashboardCard
               title="User Management"
               description="Manage system users."
-              color="bg-green-500"
+              color=" px-6 py-4  hero relative bg-gradient-to-r from -teal-600 to-teal-800"
               emoji="👥"
               onClick={() => navigate("/admin/users")}
             />
             <DashboardCard
               title="Operation Dashboard"
               description="View operational metrics."
-              color="bg-orange-500"
+              color="px-6 py-4  hero relative bg-gradient-to-r from-rose-600 to-rose-800"
               emoji="⚙️"
               onClick={() => setActivePage("operationDashboard")}
             />
@@ -100,13 +95,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <div
         className={`${
           sidebarOpen ? "w-64" : "w-20"
         } bg-blue-800 text-white transition-all duration-300 flex flex-col`}
       >
-        {/* Admin Profile */}
         <div className="p-4 flex items-center border-b border-blue-700">
           {sidebarOpen && (
             <div className="ml-3">
@@ -115,7 +108,6 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-4">
           <ul className="space-y-2">
             <li>
@@ -137,14 +129,14 @@ const AdminDashboard = () => {
                 }`}
               >
                 <span className="text-xl">🛒</span>
-                {sidebarOpen && <span className="ml-4">Booking</span>}
+                {sidebarOpen && <span className="ml-4">Packages</span>}
               </button>
             </li>
             <li>
               <button
                 onClick={() => setActivePage("sectionManagement")}
                 className={`w-full text-left p-4 rounded-lg flex items-center transition ${
-                  activePage === "sectionManagement" ? "bg-blue-700" : "hover:bg-blue-700"
+                  activePage === "sectionManagement" ? "bg-black-700" : "hover:bg-black-700"
                 }`}
               >
                 <span className="text-xl">📦</span>
@@ -176,7 +168,6 @@ const AdminDashboard = () => {
           </ul>
         </nav>
 
-        {/* Logout */}
         <div className="p-4 border-t border-blue-700">
           <button 
             onClick={() => navigate("/login")}
@@ -188,7 +179,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <div className="p-6 bg-gray-300 min-h-screen">
           {renderContent()}

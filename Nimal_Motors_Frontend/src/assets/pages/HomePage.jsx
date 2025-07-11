@@ -3,7 +3,8 @@ import { useLocation } from "react-router-dom";
 import SalesReport from "./SalesReport";
 import AdminDashboard from "./AdminDashBord";
 
-import SalesReportView from "./SalesReportView";
+
+
 
 import UsersReport from "./UserReport";
 
@@ -34,7 +35,7 @@ export default function HomePage() {
 
       {tab === "User Report" && <UsersReport/>}
 
-      
+     
       {tab === "viewreport" && <SalesReportView />}
     </div>
   );

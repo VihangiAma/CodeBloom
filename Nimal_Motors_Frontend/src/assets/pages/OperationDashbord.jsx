@@ -48,7 +48,7 @@ const OperationDashboard = () => {
             <h2 className="text-2xl font-bold mb-6">Operation Dashboard</h2>
             <button
               onClick={() => setActiveReport("financial")}
-              className="px-6 py-4 bg-purple-500 text-white rounded-lg hover:bg-purple-400 transition flex items-center mb-4 w-full max-w-md"
+              className="px-6 py-4  hero relative bg-gradient-to-r from-red-00 to-red-500 text-white rounded-lg hover:bg-purple-400 transition flex items-center mb-4 w-full max-w-md"
             >
               <span className="text-2xl mr-3">📈</span>
               <div className="text-left">
@@ -59,7 +59,7 @@ const OperationDashboard = () => {
             
             <button
               onClick={() => setActiveReport("user")}
-              className="px-6 py-4 bg-pink-500 text-white rounded-lg hover:bg-pink-500 transition flex items-center w-full max-w-md"
+              className="px-6 py-4 hero relative bg-gradient-to-r from-blue-00 to-blue-500  text-white rounded-lg hover:bg-pink-500 transition flex items-center w-full max-w-md"
             >
               <span className="text-2xl mr-3">👤</span>
               <div className="text-left">
