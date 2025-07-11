@@ -183,7 +183,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border px-3 py-2">Invoice ID</th>
+                <th className="border px-3 py-2">ServiceID</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle No</th>
                 <th className="border px-3 py-2">Admin Remark</th>
