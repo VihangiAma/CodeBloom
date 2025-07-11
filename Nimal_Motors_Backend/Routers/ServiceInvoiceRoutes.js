@@ -8,7 +8,7 @@ import {
   deleteInvoice,
   approveInvoice,
   rejectInvoice,
-  getAllApprovedInvoices
+  //getAllApprovedInvoices
 } from "../Controllers/ServiceInvoiceController.js";
 
 const router = express.Router();
@@ -32,6 +32,6 @@ router.patch("/:id/reject", rejectInvoice);
 
 //router.get("/approved", getAllApprovedInvoices);
 
-router.get("/approved", getAllApprovedInvoices); // ✅ Now enabled
+//router.get("/approved", getAllApprovedInvoices); 
 
 export default router;

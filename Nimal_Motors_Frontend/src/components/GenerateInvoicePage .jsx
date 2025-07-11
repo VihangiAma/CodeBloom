@@ -1,133 +1,195 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FaArrowLeft, FaFileInvoice, FaDownload } from "react-icons/fa";
 import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 import logoImage from "../assets/images/logo.jpg";
 import carImage from "../assets/images/car.jpeg";
 
 const GenerateInvoicePage = () => {
-  const { id } = useParams();  // Receiving invoice ID
+  const { id } = useParams();
   const navigate = useNavigate();
+
   const [invoice, setInvoice] = useState(null);
+  const [invoiceNo, setInvoiceNo] = useState("");
+  const [advance, setAdvance] = useState(0);
+  const [balance, setBalance] = useState(0);
+  const [remarks, setRemarks] = useState("");
 
   useEffect(() => {
-    axios.get(`http://localhost:5001/api/invoices/${id}`)
+    axios
+      .get(`http://localhost:5001/api/invoice/${id}`)
       .then((res) => setInvoice(res.data))
       .catch((err) => {
-        console.error(err);
+        console.error("Failed to fetch invoice", err);
         toast.error("Failed to load invoice details.");
       });
   }, [id]);
 
   const generatePDF = () => {
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    if (!invoice) return;
 
-    doc.addImage(logoImage, "PNG", 10, 10, 20, 20);
-    doc.setFontSize(18).setTextColor("#B30000").text("Nimal Motors", 105, 20, { align: "center" });
+    const doc = new jsPDF();
+
+    doc.addImage(logoImage, "PNG", 10, 10, 25, 25);
+    doc.addImage(carImage, "JPEG", 170, 10, 25, 25);
+
+    doc.setFontSize(20).setTextColor("#B30000").text("Nimal Motors", 105, 20, { align: "center" });
     doc.setFontSize(10).setTextColor("#000000");
-    doc.text("No 52/2, Galle Road, Aluthgama", 105, 30, { align: "center" });
-    doc.text("Tel: 034-2238057/7777738057", 105, 35, { align: "center" });
-    doc.text("Repairs, Cut & Polish Service Center", 105, 40, { align: "center" });
-    doc.addImage(carImage, "JPEG", 170, 10, 20, 20);
+    doc.text("No 52/2, Galle Road, Aluthgama", 105, 27, { align: "center" });
+    doc.text("Tel: 034-2238057 / 077-77738057", 105, 32, { align: "center" });
+    doc.text("Repairs, Cut & Polish Service Center", 105, 37, { align: "center" });
 
-    doc.setFontSize(16).setTextColor("#B30000").text("INVOICE", 180, 20, { align: "right" });
+    doc.setFontSize(14).setTextColor("#B30000").text("INVOICE", 180, 45, { align: "right" });
     doc.setFontSize(10).setTextColor("#000000");
-    doc.text(`Invoice No: ${invoice.invoiceNo}`, 180, 30, { align: "right" });
-    doc.text(`Date: ${invoice.invoiceDate?.slice(0, 10)}`, 180, 35, { align: "right" });
+    doc.text(`Invoice No: ${invoiceNo}`, 180, 50, { align: "right" });
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 180, 55, { align: "right" });
 
-    doc.setFontSize(12).setTextColor("#B30000").text("Bill To:", 10, 60);
-    doc.setTextColor("#000000");
-    doc.text(invoice.customerName, 10, 70);
-    doc.text(`Vehicle No: ${invoice.vehicleNumber}`, 10, 75);
-    doc.text(`Section: ${invoice.section}`, 10, 80);
+    doc.setFontSize(11).setTextColor("#B30000").text("Customer Information", 14, 65);
+    doc.setFontSize(10).setTextColor("#000000");
+    doc.text(`Name: ${invoice.customerName}`, 14, 72);
+    doc.text(`Vehicle No: ${invoice.vehicleNumber}`, 14, 77);
+    doc.text(`Service ID: ${invoice.serviceID}`, 14, 82);
+    doc.text(`Date: ${new Date(invoice.serviceDate).toLocaleDateString()}`, 14, 87);
+    doc.text(`Present Meter: ${invoice.presentMeter} km`, 14, 92);
 
-    const startY = 90;
-    doc.setFillColor("#B30000").rect(10, startY - 5, 190, 10, "F");
-    doc.setTextColor("#FFFFFF");
-    doc.text("Description", 15, startY);
-    doc.text("Qty", 100, startY);
-    doc.text("Amount (Rs.)", 150, startY);
+    let y = 100;
 
-    let y = startY + 5;
-    invoice.items.forEach((item, index) => {
-      doc.setTextColor("#000000");
-      doc.text(item.description || "N/A", 15, y);
-      doc.text(item.qty?.toString(), 100, y);
-      doc.text((parseFloat(item.cost) * parseInt(item.qty)).toFixed(2), 150, y, { align: "right" });
-      y += 8;
+    doc.setFontSize(11).setTextColor("#B30000").text("Repair Details", 14, y);
+    y += 4;
+
+    invoice.repairs.forEach((pkg) => {
+      y += 6;
+      doc.setFont("helvetica", "bold").setTextColor("#2C2C2C").text(`Package: ${pkg.package}`, 14, y);
+      y += 4;
+
+      doc.autoTable({
+        startY: y,
+        head: [["Repair", "Cost (Rs.)"]],
+        body: pkg.repairs.map((r) => [r.label, r.price.toFixed(2)]),
+        styles: { fontSize: 9 },
+        theme: "striped",
+        margin: { left: 14 },
+        headStyles: { fillColor: [179, 0, 0], textColor: 255 },
+      });
+
+      y = doc.autoTable.previous.finalY + 5;
+      doc.setFont("helvetica", "bold").text(`Package Total: Rs. ${pkg.price.toFixed(2)}`, 160, y);
     });
 
     y += 10;
-    doc.setFont("helvetica", "bold").text(`Total Cost: Rs. ${invoice.totalCost.toFixed(2)}`, 150, y, { align: "right" });
 
-    doc.save(`Invoice_${invoice.invoiceNo}.pdf`);
+    doc.setFont("helvetica", "bold").setTextColor("#B30000").text("Used Items", 14, y);
+    y += 4;
+
+    doc.autoTable({
+      startY: y,
+      head: [["Item", "Qty", "Unit Price (Rs.)", "Total (Rs.)"]],
+      body: invoice.items.map((item) => [
+        item.itemName,
+        item.qty,
+        item.price.toFixed(2),
+        (item.qty * item.price).toFixed(2),
+      ]),
+      styles: { fontSize: 9 },
+      theme: "striped",
+      margin: { left: 14 },
+      headStyles: { fillColor: [179, 0, 0], textColor: 255 },
+    });
+
+    y = doc.autoTable.previous.finalY + 8;
+
+    doc.setFont("helvetica", "bold").setFontSize(11).setTextColor("#000000");
+    doc.text(`Total Cost: Rs. ${invoice.totalCost.toFixed(2)}`, 180, y, { align: "right" });
+    y += 6;
+    doc.text(`Advance: Rs. ${advance.toFixed(2)}`, 180, y, { align: "right" });
+    y += 6;
+    doc.text(`Balance: Rs. ${balance.toFixed(2)}`, 180, y, { align: "right" });
+
+    y += 10;
+    doc.setFont("helvetica", "normal").setFontSize(10).setTextColor("#000000");
+    doc.text("Remarks:", 14, y);
+    doc.setFont("helvetica", "italic").text(remarks || "-", 30, y);
+
+    doc.save(`Invoice_${invoiceNo}.pdf`);
   };
 
+  if (!invoice) return <p className="p-6">Loading...</p>;
+
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-[#B30000]">Invoice Details</h1>
-        <button
-          onClick={() => navigate("/accountant-dashboard")}
-          className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center gap-2"
-        >
-          <FaArrowLeft /> Back
-        </button>
-      </div>
+    <div className="p-6 min-h-screen bg-[#F5F5F5]">
+      <div className="bg-white shadow rounded-lg max-w-4xl mx-auto p-6">
+        <h2 className="text-2xl font-bold text-[#B30000] mb-6 text-center">
+          Finalize & Download Invoice
+        </h2>
 
-      {invoice ? (
-        <div className="bg-white p-6 rounded shadow max-w-3xl mx-auto space-y-4">
-          <div className="flex items-center gap-2 text-xl font-semibold text-black">
-            <FaFileInvoice /> Invoice Summary
-          </div>
-          <div>
-            <p><strong>Invoice No:</strong> {invoice.invoiceNo}</p>
-            <p><strong>Customer:</strong> {invoice.customerName}</p>
-            <p><strong>Vehicle No:</strong> {invoice.vehicleNumber}</p>
-            <p><strong>Section:</strong> {invoice.section}</p>
-            <p><strong>Date:</strong> {invoice.invoiceDate?.slice(0, 10)}</p>
+        {/* === Invoice Details from Admin === */}
+        <div className="mb-6 border rounded p-4 bg-gray-50">
+          <h3 className="text-lg font-semibold text-[#B30000] mb-3">Invoice Summary</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div><strong>Customer Name:</strong> {invoice.customerName}</div>
+            <div><strong>Vehicle Number:</strong> {invoice.vehicleNumber}</div>
+            <div><strong>Service ID:</strong> {invoice.serviceID}</div>
+            <div><strong>Service Date:</strong> {new Date(invoice.serviceDate).toLocaleDateString()}</div>
+            <div><strong>Present Meter:</strong> {invoice.presentMeter} km</div>
+            <div><strong>Total Cost:</strong> Rs. {invoice.totalCost.toFixed(2)}</div>
           </div>
 
-          <h2 className="font-semibold text-black mt-4">Items:</h2>
-          <table className="w-full border text-sm">
-            <thead className="bg-red-600 text-white">
-              <tr>
-                <th className="p-2">Description</th>
-                <th className="p-2">Qty</th>
-                <th className="p-2">Unit Cost</th>
-                <th className="p-2">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoice.items.map((item, idx) => (
-                <tr key={idx} className="text-center border-t">
-                  <td className="p-2">{item.description}</td>
-                  <td className="p-2">{item.qty}</td>
-                  <td className="p-2">Rs. {parseFloat(item.cost).toFixed(2)}</td>
-                  <td className="p-2">Rs. {(parseFloat(item.cost) * parseInt(item.qty)).toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="mt-4">
+            <h4 className="text-sm font-semibold text-[#2C2C2C] mb-1">Repairs:</h4>
+            {invoice.repairs.map((pkg, index) => (
+              <div key={index} className="mb-2">
+                <p className="font-semibold text-[#B30000]">{pkg.package}</p>
+                <ul className="list-disc pl-6 text-sm text-gray-700">
+                  {pkg.repairs.map((r, i) => (
+                    <li key={i}>{r.label} - Rs. {r.price.toFixed(2)}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
 
-          <h2 className="text-right font-bold text-lg mt-4">
-            Total: Rs. {invoice.totalCost?.toFixed(2)}
-          </h2>
-
-          <div className="flex justify-end gap-3 mt-6">
-            <button
-              onClick={generatePDF}
-              className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] flex items-center gap-2"
-            >
-              <FaDownload /> Download Invoice
-            </button>
+          <div className="mt-3">
+            <h4 className="text-sm font-semibold text-[#2C2C2C] mb-1">Used Items:</h4>
+            {invoice.items.length === 0 ? (
+              <p className="text-gray-500 italic">No items added.</p>
+            ) : (
+              <ul className="list-disc pl-6 text-sm text-gray-700">
+                {invoice.items.map((item, idx) => (
+                  <li key={idx}>{item.itemName} – Qty: {item.qty}, Price: Rs. {item.price.toFixed(2)}</li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
-      ) : (
-        <p>Loading invoice details...</p>
-      )}
+
+        {/* === Accountant Fillable Form === */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block text-sm font-semibold mb-1">Invoice No:</label>
+            <input type="text" value={invoiceNo} onChange={(e) => setInvoiceNo(e.target.value)} className="w-full border rounded px-3 py-2" />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>
+            <input type="number" value={advance} onChange={(e) => setAdvance(parseFloat(e.target.value) || 0)} className="w-full border rounded px-3 py-2" />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold mb-1">Balance (Rs.):</label>
+            <input type="number" value={balance} onChange={(e) => setBalance(parseFloat(e.target.value) || 0)} className="w-full border rounded px-3 py-2" />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-semibold mb-1">Remarks:</label>
+            <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} rows={3} className="w-full border rounded px-3 py-2" />
+          </div>
+        </div>
+
+        <div className="text-right">
+          <button onClick={generatePDF} className="bg-[#B30000] hover:bg-[#D63333] text-white px-6 py-2 rounded">
+            Download Invoice
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

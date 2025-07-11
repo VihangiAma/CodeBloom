@@ -108,20 +108,20 @@ export const rejectInvoice = async (req, res) => {
     res.status(500).json({ message: "Rejection failed", error });
   }
 };
-// GET /api/service-invoice/approved
-export const getAllApprovedInvoices = async (req, res) => {
-  try {
-    const approvedInvoices = await ServiceInvoice.find({
-      isApproved: true,
-      status: "approved",
-    }).sort({ createdAt: -1 }); // Optional: newest first
+// // GET /api/service-invoice/approved
+// export const getAllApprovedInvoices = async (req, res) => {
+//   try {
+//     const approvedInvoices = await ServiceInvoice.find({
+//       isApproved: true,
+//       status: "approved",
+//     }).sort({ createdAt: -1 }); // Optional: newest first
 
-    res.status(200).json(approvedInvoices);
-  } catch (error) {
-    console.error("Error fetching approved invoices:", error);
-    res.status(500).json({ message: "Failed to fetch approved invoices" });
-  }
-};
+//     res.status(200).json(approvedInvoices);
+//   } catch (error) {
+//     console.error("Error fetching approved invoices:", error);
+//     res.status(500).json({ message: "Failed to fetch approved invoices" });
+//   }
+// };
 
 
 

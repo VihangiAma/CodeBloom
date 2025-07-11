@@ -45,12 +45,15 @@ const AccountantDashboard = () => {
     outstanding: 0,
   });
 
-  // Fetch approved repairs for invoicing
-  // This effect runs once when the component mounts
+  useEffect(() => {
   axios
-  .get("http://localhost:5001/api/service-invoice/approved")
-  .then((res) => setApprovedInvoices(res.data))
-  .catch((err) => console.error("Failed to fetch approved invoices", err));
+    .get("http://localhost:5001/api/invoice")
+    .then((res) => {
+      const approved = res.data.filter((inv) => inv.isApproved === true);
+      setApprovedInvoices(approved);
+    })
+    .catch((err) => console.error("Failed to fetch invoices", err));
+}, []);
 
 
 
@@ -171,6 +174,7 @@ const AccountantDashboard = () => {
           </div>
         </div>
 
+        {/* Approved Repairs Table for Invoice Generation */}
         {/* Approved Repairs Table for Invoice Generation */}
 <div className="bg-[#FFFFFF] p-6 rounded shadow mb-6">
   <h3 className="text-xl font-semibold mb-4 text-[#000000]">
