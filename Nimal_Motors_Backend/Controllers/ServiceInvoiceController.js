@@ -13,10 +13,10 @@ export const createInvoice = async (req, res) => {
     const invoice = new ServiceInvoice(invoiceData);
     await invoice.save();
     res.status(201).json(invoice);
-  } catch (error) {
-    console.error("Create Invoice Error:", error);
-    res.status(400).json({ message: "Failed to create invoice", error });
-  }
+  }catch (err) {
+  console.error("Error saving invoice:", err);
+  res.status(400).json({ message: err.message });
+}
 };
 
 // Get all invoices
