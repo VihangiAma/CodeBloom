@@ -10,8 +10,6 @@ import StockRoter from "./Routers/Stock.js";
 import SalesRouter from "./Routers/SalesReport.js";
 import UserReportRouter from "./Routers/UserReportRouter.js";
 import InventoryReportRouters  from "./Routers/InventoryReportRoutes.js";
-import RevenueandexpencesRouter from "./Routers/RevenueAndExpenceRouter.js";
-import RevenueRouter from "./Routers/RevenueRoutes.js"
 import appointmentRouter from "./Routers/AppointmentRoutes.js";
 import stockRoutes from "./Routers/stockRoutes.js";
 import supplierRoutes from "./Routers/supplierRoutes.js";
@@ -20,6 +18,11 @@ import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
+
+import invoiceRoute from "./Routers/InvoiceRoutes.js";
+import FeedbackRouter from"./Routers/FeedbackRouter.js";
+import router from "./Routers/PackageRoutes.js";
+
 import repairRoutes from "./Routers/repairPackageRoutes.js";
 import summaryRoutes from "./Routers/summary.js"; // Import summary routes
 //import accountantInvoiceRoutes from "./Routers/InvoiceRoutes.js";
@@ -31,6 +34,7 @@ import summaryRoutes from "./Routers/summary.js"; // Import summary routes
 
 
 //import invoiceRoute from "./Routers/InvoiceRoutes.js";
+
 
 
 
@@ -66,8 +70,6 @@ app.use("/api/StockReport", StockRoter);
 app.use("/api/NewSalesReports", SalesRouter);
 app.use("/api/UserReport",UserReportRouter);
 app.use("/api/InventoryReports",InventoryReportRouters )
-app.use("/api/revenueReportAndExpencenew",RevenueandexpencesRouter)
-app.use("/api/revenueReportsNew",RevenueRouter)
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/stock", stockRoutes);
 app.use("/api/supplier", supplierRoutes);
@@ -76,12 +78,18 @@ app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/invoice", invoiceRoutes);
+
+
 app.use("/api/repair-packages", repairRoutes);
 app.use("/api", summaryRoutes); // Add summary routes
 //app.use("/api/invoices", accountantInvoiceRoutes);
 
 
+app.use("/api/Feedback",FeedbackRouter);
+app.use("/api/Package", router);
 
+app.use("/api/repair-packages", repairRoutes);
+app.use("/api", summaryRoutes); // Add summary r
 
 
 

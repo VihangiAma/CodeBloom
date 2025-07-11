@@ -232,7 +232,7 @@ import AddServiceForm from "../../components/SupervisorSection/AddServiceForm";
 import AdminInvoiceView from "../../pages/admin/AdminInvoiceView";
 import UserTable from "../../components/SupervisorSection/UserTable";
 import OperationDashbord from "./OperationDashbord";
-
+import PackagesAdd from "./packagesAdd";
 
 const DashboardCard = ({ title, description, emoji, onClick }) => {
   return (
@@ -254,11 +254,24 @@ const AdminDashboard = () => {
 
   const renderContent = () => {
     switch (activePage) {
+      case "booking":
+        return (
+          <div className="p-8 min-h-[calc(100vh-8rem)]">
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <p className="text-gray-600 text-xl mb-4">
+                <PackagesAdd />
+              </p>
+            </div>
+          </div>
+        );
 
       case "sectionManagement":
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6 text-center">
+              <p className="text-gray-600 text-xl mb-4">
+                <AdminInvoiceView onClick={() => setActivePage("boking Management")} />
+              </p>
               <AdminInvoiceView />
               <button
                 onClick={() => setActivePage("dashboard")}
@@ -272,24 +285,17 @@ const AdminDashboard = () => {
       case "userManagement":
         navigate("/admin/users");
         return null;
-
       case "operationDashboard":
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6">
               <OperationDashbord />
-              <button
-                onClick={() => setActivePage("dashboard")}
-                className="mt-4 px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded transition"
-              >
-                Go Back
-              </button>
             </div>
           </div>
         );
       default:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 min-h-[calc(100vh-8rem)]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
             <DashboardCard
               title="Booking"
               description="Manage customer bookings."
@@ -321,53 +327,78 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <div
         className={`${
           sidebarOpen ? "w-64" : "w-20"
         } bg-black text-white transition-all duration-300 flex flex-col`}
       >
-        {/* Admin Profile */}
-        <div className="p-4 flex items-center border-b border-gray-700">
-          {sidebarOpen && (
-            <div className="ml-3">
-              <p className="font-semibold text-red-500">Admin Panel</p>
-            </div>
-          )}
+        <div className="p-4 flex items-center border-b border-blue-700">
+          <div className="p-4 flex items-center border-b border-gray-700">
+            {sidebarOpen && (
+              <div className="ml-3">
+                <p className="font-semibold text-red-500">Admin Panel</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-4">
           <ul className="space-y-2">
-            {[
-              { label: "Dashboard", value: "dashboard", icon: "📊" },
-              { label: "Booking", value: "booking", icon: "🛒" },
-              { label: "Sections", value: "sectionManagement", icon: "📦" },
-              { label: "Users", value: "userManagement", icon: "👥" },
-              {
-                label: "Operation Dashboard",
-                value: "operationDashboard",
-                icon: "⚙️",
-              },
-            ].map((item) => (
-              <li key={item.value}>
-                <button
-                  onClick={() =>
-                    item.value === "userManagement"
-                      ? navigate("/admin/users")
-                      : setActivePage(item.value)
-                  }
-                  className={`w-full text-left p-4 rounded-lg flex items-center transition ${
-                    activePage === item.value
-                      ? "bg-red-700"
-                      : "hover:bg-red-700"
-                  }`}
-                >
-                  <span className="text-xl">{item.icon}</span>
-                  {sidebarOpen && <span className="ml-4">{item.label}</span>}
-                </button>
-              </li>
-            ))}
+            <li>
+              <button
+                onClick={() => setActivePage("dashboard")}
+                className={`w-full text-left p-4 rounded-lg flex items-center transition ${
+                  activePage === "dashboard" ? "bg-blue-700" : "hover:bg-blue-700"
+                }`}
+              >
+                <span className="text-xl">📊</span>
+                {sidebarOpen && <span className="ml-4">Dashboard</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActivePage("booking")}
+                className={`w-full text-left p-4 rounded-lg flex items-center transition ${
+                  activePage === "booking" ? "bg-blue-700" : "hover:bg-blue-700"
+                }`}
+              >
+                <span className="text-xl">🛒</span>
+                {sidebarOpen && <span className="ml-4">Packages</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActivePage("sectionManagement")}
+                className={`w-full text-left p-4 rounded-lg flex items-center transition ${
+                  activePage === "sectionManagement" ? "bg-black-700" : "hover:bg-black-700"
+                }`}
+              >
+                <span className="text-xl">📦</span>
+                {sidebarOpen && <span className="ml-4">Sections</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => navigate("/admin/users")}
+                className={`w-full text-left p-4 rounded-lg flex items-center transition ${
+                  activePage === "userManagement" ? "bg-blue-700" : "hover:bg-blue-700"
+                }`}
+              >
+                <span className="text-xl">👥</span>
+                {sidebarOpen && <span className="ml-4">Users</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActivePage("operationDashboard")}
+                className={`w-full text-left p-4 rounded-lg flex items-center transition ${
+                  activePage === "operationDashboard" ? "bg-blue-700" : "hover:bg-blue-700"
+                }`}
+              >
+                <span className="text-xl">⚙️</span>
+                {sidebarOpen && <span className="ml-4">Operation Dashboard</span>}
+              </button>
+            </li>
           </ul>
         </nav>
 
@@ -383,7 +414,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <div className="p-6 bg-gray-200 min-h-screen">
           <h1 className="text-3xl font-bold text-red-700 mb-4">

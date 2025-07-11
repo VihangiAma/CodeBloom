@@ -1,49 +1,74 @@
+import React, { useState, useEffect } from 'react';
 import Footer from "../../components/Footer/Footer";
 import NavBar from "../../components/NavBar/NavBar";
+import axios from 'axios';
 
 export default function Packages() {
-  const packages = [
-    {
-      title: "Basic Service Package",
-      price: "LKR 22,000",
-      featured: false,
-      items: [
-        "Engine oil change (with filter)",
-        "Air filter cleaning/replacement",
-        "Brake inspection",
-        "Fluid topping (coolant, brake, power steering)",
-        "Battery check",
-        "Tire pressure check & rotation",
-      ],
-    },
-    {
-      title: "Full Service Package",
-      price: "LKR 32,000",
-      featured: true,
-      items: [
-        "Includes everything in the Basic Package",
-        "Spark plug inspection & replacement",
-        "Engine tuning",
-        "Wheel alignment & balancing",
-        "AC filter cleaning",
-        "Underbody check & lubrication",
-      ],
-    },
-    {
-      title: "Premium Care Package",
-      price: "LKR 55,000",
-      featured: false,
-      items: [
-        "Free inspection & diagnostic report",
-        "Includes everything in the Full Service Package",
-        "Engine diagnostic scan",
-        "Suspension & steering check",
-        "Transmission oil change",
-        "AC gas recharge & filter replacement",
-        "Headlight focusing & polishing",
-      ],
-    },
-  ];
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/api/Package');
+        // Log the response to see the actual data structure
+        console.log('API Response:', response.data);
+        
+        // Handle different response formats
+        const packagesData = response.data.packages || response.data;
+        
+        if (!Array.isArray(packagesData)) {
+          throw new Error('Invalid data format received from API');
+        }
+        
+        setPackages(packagesData);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+        console.error('Error fetching packages:', err);
+      }
+    };
+
+    fetchPackages();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
+        <NavBar />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+            <p className="mt-3 text-lg">Loading packages...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
+        <NavBar />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-center text-red-500 p-4 bg-red-50 rounded-lg max-w-md mx-auto">
+            <h3 className="text-xl font-bold">Error loading packages</h3>
+            <p className="mt-2">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
@@ -77,71 +102,120 @@ export default function Packages() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <div
-                key={index}
-                className={`relative rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${
-                  pkg.featured
-                    ? "border-2 border-blue-500 transform scale-105 z-10"
-                    : "border border-gray-200"
-                }`}
-              >
-                {pkg.featured && (
-                  <div className="absolute top-0 right-0 bg-blue-500 text-white px-4 py-1 text-sm font-bold rounded-bl-lg">
-                    MOST POPULAR
-                  </div>
-                )}
+          {packages.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No packages available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {packages.map((pkg, index) => (
                 <div
-                  className={`p-1 ${
-                    pkg.featured ? "bg-blue-500" : "bg-gray-800"
+                  key={pkg._id || index}
+                  className={`relative rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${
+                    pkg.PackageFeatured || pkg.featured
+                      ? "border-2 border-blue-500 transform scale-105 z-10"
+                      : "border border-gray-200"
                   }`}
-                ></div>
-                <div className="p-6 bg-white">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                    {pkg.title}
-                  </h3>
-                  <div className="mb-6">
-                    <span className="text-3xl font-bold text-blue-600">
-                      {pkg.price}
-                    </span>
+                >
+                  {(pkg.PackageFeatured || pkg.featured) && (
+                    <div className="absolute top-0 right-0 bg-blue-500 text-white px-4 py-1 text-sm font-bold rounded-bl-lg">
+                      MOST POPULAR
+                    </div>
+                  )}
+                  <div
+                    className={`p-1 ${
+                      pkg.PackageFeatured || pkg.featured ? "bg-blue-500" : "bg-gray-800"
+                    }`}
+                  ></div>
+                  <div className="p-6 bg-white">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                      {pkg.PackageName || pkg.name || `Package ${index + 1}`}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      {pkg.PackageDescription || pkg.description || 'Comprehensive vehicle service package'}
+                    </p>
+                    <div className="mb-6">
+                      <span className="text-3xl font-bold text-blue-600">
+                        LKR {(pkg.PackagePrice || pkg.price || 0).toLocaleString()}
+                      </span>
+                      {pkg.PackageDuration || pkg.duration ? (
+                        <span className="text-gray-500 ml-2">
+                          / {pkg.PackageDuration || pkg.duration}
+                        </span>
+                      ) : null}
+                    </div>
+                    
+                    <h4 className="font-semibold text-lg mb-3">Includes:</h4>
+                    <ul className="space-y-3 mb-8">
+                      {(pkg.PackageItems || pkg.items || []).map((item, i) => (
+                        <li key={i} className="flex items-start">
+                          <svg
+                            className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    
+                    {pkg.PackageBenefits || pkg.benefits ? (
+                      <>
+                        <h4 className="font-semibold text-lg mb-3">Benefits:</h4>
+                        <ul className="space-y-2 mb-6">
+                          {(pkg.PackageBenefits || pkg.benefits).map((benefit, i) => (
+                            <li key={i} className="flex items-start">
+                              <svg
+                                className="h-5 w-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                                />
+                              </svg>
+                              <span className="text-gray-700">{benefit}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : null}
+                    
+                    
+                    
+                    {pkg.PackageNotes || pkg.notes ? (
+                      <div className="mt-4 text-sm text-gray-500">
+                        <p>{pkg.PackageNotes || pkg.notes}</p>
+                      </div>
+                    ) : null}
                   </div>
-                  <ul className="space-y-3 mb-8">
-                    {pkg.items.map((item, i) => (
-                      <li key={i} className="flex items-start">
-                        <svg
-                          className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                        <span className="text-gray-700">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* Additional Info */}
-      <section className="bg-gray-300 py-16 px-4 sm:px-6 lg:px-8">
+      <section className="bg-gray-100 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
             Why Choose Our Service Packages?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
               <div className="text-blue-500 mb-4">
                 <svg
                   className="h-10 w-10 mx-auto"
@@ -162,7 +236,7 @@ export default function Packages() {
                 Our efficient processes ensure minimal wait times without compromising quality.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
               <div className="text-blue-500 mb-4">
                 <svg
                   className="h-10 w-10 mx-auto"
@@ -183,7 +257,7 @@ export default function Packages() {
                 All services performed by certified technicians with years of experience.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
               <div className="text-blue-500 mb-4">
                 <svg
                   className="h-10 w-10 mx-auto"
