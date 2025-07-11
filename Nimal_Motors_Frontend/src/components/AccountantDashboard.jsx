@@ -47,12 +47,12 @@ const AccountantDashboard = () => {
 
   // Fetch approved repairs for invoicing
   // This effect runs once when the component mounts
-  useEffect(() => {
-    axios
-      .get("http://localhost:5001/api/invoice/approved")
-      .then((res) => setApprovedInvoices(res.data))
-      .catch((err) => console.error("Failed to load invoices", err));
-  }, []);
+  axios
+  .get("http://localhost:5001/api/service-invoice/approved")
+  .then((res) => setApprovedInvoices(res.data))
+  .catch((err) => console.error("Failed to fetch approved invoices", err));
+
+
 
   useEffect(() => {
     axios
@@ -172,58 +172,52 @@ const AccountantDashboard = () => {
         </div>
 
         {/* Approved Repairs Table for Invoice Generation */}
-        <div className="bg-[#FFFFFF] p-6 rounded shadow mb-6">
-          <h3 className="text-xl font-semibold mb-4 text-[#000000]">
-            Approved Repairs – Generate Invoice
-          </h3>
+<div className="bg-[#FFFFFF] p-6 rounded shadow mb-6">
+  <h3 className="text-xl font-semibold mb-4 text-[#000000]">
+    Approved Repairs – Generate Invoice
+  </h3>
 
-          {approvedRepairs.length === 0 ? (
-            <p className="text-gray-500 text-sm">
-              No approved repairs available.
-            </p>
-          ) : (
-            <table className="w-full text-sm border border-[#2C2C2C]">
-              <thead className="bg-[#B30000] text-white">
-                <tr>
-                  <th className="p-2">Customer</th>
-                  <th className="p-2">Vehicle No</th>
-                  <th className="p-2">Section</th>
-                  <th className="p-2">Estimated Cost (Rs.)</th>
-                  <th className="p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {approvedRepairs.map((invoice, index) => (
-                  <tr
-                    key={index}
-                    className="text-center border-t border-[#2C2C2C] hover:bg-[#F5F5F5]"
-                  >
-                    <td className="p-2 text-[#000000]">
-                      {invoice.customerName}
-                    </td>
-                    <td className="p-2 text-[#000000]">{invoice.vehicleNo}</td>
-                    <td className="p-2 text-[#000000]">
-                      {invoice.section || "N/A"}
-                    </td>
-                    <td className="p-2 text-[#B30000] font-semibold">
-                      {invoice.totalCost?.toFixed(2) || "0.00"}
-                    </td>
-                    <td className="p-2">
-                      <button
-                        onClick={() =>
-                          navigate(`/generate-invoice/${invoice._id}`)
-                        }
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-                      >
-                        Generate Invoice
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+  {approvedRepairs.length === 0 ? (
+    <p className="text-gray-500 text-sm">No approved repairs available.</p>
+  ) : (
+    <table className="w-full text-sm border border-[#2C2C2C]">
+      <thead className="bg-[#B30000] text-white">
+        <tr>
+          <th className="p-2">Customer</th>
+          <th className="p-2">Vehicle No</th>
+          <th className="p-2">Service ID</th>
+          <th className="p-2">Service Date</th>
+          <th className="p-2">Estimated Cost (Rs.)</th>
+          <th className="p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {approvedRepairs.map((invoice, index) => (
+          <tr key={index} className="text-center border-t border-[#2C2C2C] hover:bg-[#F5F5F5]">
+            <td className="p-2 text-[#000000]">{invoice.customerName}</td>
+            <td className="p-2 text-[#000000]">{invoice.vehicleNumber}</td>
+            <td className="p-2 text-[#000000]">{invoice.serviceID}</td>
+            <td className="p-2 text-[#000000]">
+              {new Date(invoice.serviceDate).toLocaleDateString()}
+            </td>
+            <td className="p-2 text-[#B30000] font-semibold">
+              Rs. {invoice.totalCost?.toFixed(2)}
+            </td>
+            <td className="p-2">
+              <button
+                onClick={() => navigate(`/generate-invoice/${invoice._id}`)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+              >
+                Generate Invoice
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</div>
+
 
         {/* Monthly Expense Bar Chart */}
         <div className="bg-[#FFFFFF] p-6 rounded shadow mb-6">
