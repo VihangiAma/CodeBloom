@@ -1,5 +1,3 @@
-//Approved Appointments can only be marked as complete
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -8,12 +6,14 @@ const ApprovedAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch only approved appointments
+  // Fetch appointments with status Approved or Complete
   const fetchAppointments = async () => {
     try {
       const res = await axios.get("http://localhost:5001/api/appointments/");
-      const approved = res.data.filter((app) => app.status === "Approved");
-      setAppointments(approved);
+      const filtered = res.data.filter(
+        (app) => app.status === "Approved" || app.status === "Complete"
+      );
+      setAppointments(filtered);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -21,7 +21,7 @@ const ApprovedAppointments = () => {
     }
   };
 
-  // Handle setting status to 'Complete'
+  // Mark appointment as Complete
   const handleComplete = async (serviceID) => {
     try {
       await axios.put(`http://localhost:5001/api/appointments/${serviceID}`, {
@@ -35,6 +35,26 @@ const ApprovedAppointments = () => {
       );
 
       Swal.fire("Updated!", "Appointment marked as complete.", "success");
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error!", "Failed to update status.", "error");
+    }
+  };
+
+  // Mark appointment as Not Complete (Approved)
+  const handleNotComplete = async (serviceID) => {
+    try {
+      await axios.put(`http://localhost:5001/api/appointments/${serviceID}`, {
+        status: "Approved",
+      });
+
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a.serviceID === serviceID ? { ...a, status: "Approved" } : a
+        )
+      );
+
+      Swal.fire("Updated!", "Appointment marked as not complete.", "success");
     } catch (error) {
       console.error(error);
       Swal.fire("Error!", "Failed to update status.", "error");
@@ -75,25 +95,30 @@ const ApprovedAppointments = () => {
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
               <td className="px-4 py-2 border">{appointment.contact.phone}</td>
               <td className="px-4 py-2 border">
-                {new Date(appointment.date).toLocaleDateString()}
+                {new Date(appointment.serviceDate).toLocaleDateString()}
               </td>
-
               <td className="px-4 py-2 border">{appointment.time}</td>
               <td className="px-4 py-2 border">
                 <select
-                  value={
-                    appointment.status === "Complete"
-                      ? "Complete"
-                      : "Not Complete yet"
-                  }
+                  value={appointment.status}
                   onChange={(e) => {
-                    if (e.target.value === "Complete") {
+                    const newStatus = e.target.value;
+                    if (newStatus === "Complete") {
                       handleComplete(appointment.serviceID);
+                    } else if (newStatus === "Approved") {
+                      handleNotComplete(appointment.serviceID);
                     }
                   }}
-                  className="bg-gray-100 px-2 py-1 rounded"
+                  style={{
+                    backgroundColor:
+                      appointment.status === "Complete" ? "#d1fae5" : "#fee2e2", // green or red background
+                    color: appointment.status === "Complete" ? "green" : "red", // green or red text
+                    padding: "0.25rem 0.5rem",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                  }}
                 >
-                  <option value="Not Complete yet">Not Complete yet</option>
+                  <option value="Approved">Not Complete</option>
                   <option value="Complete">Complete</option>
                 </select>
               </td>

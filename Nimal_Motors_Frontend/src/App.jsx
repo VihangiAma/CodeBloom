@@ -5,19 +5,21 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+//import './styles/Global.css';
 
 // Public Pages
-import LoginPage from './pages/login/LoginPage';
-import Home from './pages/customer/Home';
-import AboutUs from './pages/customer/AboutUs';
-import Sections from './pages/customer/Sections';
-import Packages from './pages/customer/Packages';
-import Appointment from './pages/Appointment';
 
+import LoginPage from "./pages/login/LoginPage";
+import Home from "./pages/customer/Home";
+import AboutUs from "./pages/customer/AboutUs";
+import Sections from "./pages/customer/Sections";
+import Packages from "./pages/customer/Packages";
+import Appointment from "./pages/Appointment";
 
 // import RegisterPage from './pages/register/RegisterPage';
 
-import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
+// import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
+
 import PremiumServiceForm from "./pages/premiumcustomer/PremiumServiceForm";
 
 //  import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
@@ -36,11 +38,12 @@ import UserManagement from "./pages/admin/UserManagement";
 import AdminUsers from "./pages/admin/AdminUsers";
 
 // Supervisor Protected Pages
+
 import ProgressPage from "./Components/SupervisorSection/ProgressPage";
-import ReportPage from "./Components/SupervisorSection/ReportPage";
+
 import AppointmentDetails from "./Components/SupervisorSection/Supervisors/AppointmentDetails";
 import CompletedServices from "./components/SupervisorSection/CompletedServices";
-import NotificationBar from "./components/SupervisorSection/Notification";
+
 import ApprovedAppointments from "./components/SupervisorSection/Supervisors/ApprovedAppointments";
 
 import Completedappoinments from "./components/SupervisorSection/Supervisors/Competedappoinments";
@@ -48,8 +51,10 @@ import AdminInvoiceView from "./pages/admin/AdminInvoiceView";
 import AddServiceForm from "./components/SupervisorSection/AddServiceForm";
 import UserTable from "./components/SupervisorSection/UserTable";
 import InvoiceForm from "./components/SupervisorSection/InvoiceForm";
+import RepairPackage from "./Components/SupervisorSection/RepairPackagesPage";
 
 // Section-specific Dashboards
+
 import ServiceSupervisorDashboard from "./Components/SupervisorSection/ServiceSupervisorDashboard";
 import MechanicalSupervisorSection from "./Components/SupervisorSection/MechanicalSupervisorDashboard";
 import ElectricalSupervisorSection from "./components/SupervisorSection/ElectriaclSupervisorDashboard";
@@ -71,8 +76,6 @@ import SalesReport from "./assets/pages/SalesReport";
 import SalesReportView from "./assets/pages/SalesReportView";
 import GenerateInvoicePage from "./components/GenerateInvoicePage ";
 
-//import FormalInvoice from './components/FormalInvoice';
-
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -89,7 +92,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/profile/basic" element={<PremiumServiceForm />} />
-
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
@@ -97,11 +99,10 @@ function App() {
         <Route path="/sections" element={<Sections />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/appointment" element={<Appointment />} />
-        <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
-
+        {/* <Route path="/supervisor-login" element={<SupervisorLoginForm />} /> */}
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
-
+        <Route path="/repair-packages" element={<RepairPackage />} />
         {/* Protected User Routes */}
         <Route
           path="/profile"
@@ -200,9 +201,7 @@ function App() {
           }
         />
         {/*<Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />*/}
-
         {/* Supervisor Protected Routes */}
-
         <Route
           path="/appointments"
           element={
@@ -220,26 +219,10 @@ function App() {
           }
         />
         <Route
-          path="/report"
-          element={
-            <SupervisorPrivateRoute>
-              <ReportPage />
-            </SupervisorPrivateRoute>
-          }
-        />
-        <Route
           path="/completed-services"
           element={
             <SupervisorPrivateRoute>
               <CompletedServices />
-            </SupervisorPrivateRoute>
-          }
-        />
-        <Route
-          path="/notification"
-          element={
-            <SupervisorPrivateRoute>
-              <NotificationBar />
             </SupervisorPrivateRoute>
           }
         />
@@ -251,7 +234,6 @@ function App() {
             </SupervisorPrivateRoute>
           }
         />
-
         <Route
           path="/completed-appointments"
           element={
@@ -284,9 +266,7 @@ function App() {
             </SupervisorPrivateRoute>
           }
         />
-
         {/* Section-specific Dashboards */}
-
         <Route
           path="/service-supervisor-dashboard"
           element={
@@ -319,14 +299,16 @@ function App() {
             </SupervisorPrivateRoute>
           }
         />
-
         {/* Inventory and Sales */}
         <Route path="/inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="/accountant-dashboard" element={<AccountantDashboard />} />
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/sales-report" element={<SalesReport />} />
-
+        <Route path="/sales-report" element={<SalesReport />} />\
+        <Route
+          path="/chatbot/:section"
+          element={<ChatBot section="Service" />}
+        />
         <Route path="/view-sales-report" element={<SalesReportView />} />
         <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
         <Route
@@ -338,7 +320,6 @@ function App() {
           element={<ChatBot section="Service" />}
         />
         {/*<Route path="/formal-invoice" element={<FormalInvoice />} />*/}
-
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

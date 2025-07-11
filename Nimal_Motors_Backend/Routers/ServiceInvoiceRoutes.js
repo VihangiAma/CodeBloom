@@ -1,19 +1,33 @@
-import express from 'express';
+
+import express from "express";
 import {
   createInvoice,
   getAllInvoices,
   getInvoiceById,
-  updateInvoiceApproval,
-  deleteInvoice
-} from '../Controllers/ServiceInvoiceController.js';
+  updateInvoice,
+  deleteInvoice,
+  approveInvoice,
+  rejectInvoice,
+} from "../Controllers/ServiceInvoiceController.js";
 
 const router = express.Router();
 
-// Routes
-router.post('/', createInvoice);
-router.get('/', getAllInvoices);
-router.get('/:id', getInvoiceById);
-router.put('/:id/approve', updateInvoiceApproval);
-router.delete('/:id', deleteInvoice);
+// Create
+router.post("/", createInvoice);
+
+// Read
+router.get("/", getAllInvoices);
+router.get("/:id", getInvoiceById);
+
+// Update
+router.put("/:id", updateInvoice);
+
+// Delete
+router.delete("/:id", deleteInvoice);
+
+// Admin approval actions
+router.patch("/:id/approve", approveInvoice);  
+router.patch("/:id/reject", rejectInvoice);    
+
 
 export default router;

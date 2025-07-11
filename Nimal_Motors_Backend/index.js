@@ -18,9 +18,23 @@ import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
+
 import invoiceRoute from "./Routers/InvoiceRoutes.js";
 import FeedbackRouter from"./Routers/FeedbackRouter.js";
 import router from "./Routers/PackageRoutes.js";
+
+import repairRoutes from "./Routers/repairPackageRoutes.js";
+import summaryRoutes from "./Routers/summary.js"; // Import summary routes
+
+
+
+
+
+
+
+//import invoiceRoute from "./Routers/InvoiceRoutes.js";
+
+
 
 
 // Connect to DB
@@ -63,8 +77,12 @@ app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/invoice", invoiceRoutes);
+
 app.use("/api/Feedback",FeedbackRouter);
 app.use("/api/Package", router);
+
+app.use("/api/repair-packages", repairRoutes);
+app.use("/api", summaryRoutes); // Add summary r
 
 
 
@@ -79,3 +97,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
