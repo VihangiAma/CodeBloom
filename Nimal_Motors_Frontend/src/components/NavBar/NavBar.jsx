@@ -5,7 +5,7 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   return (
-    <header className="flex justify-between items-center w-full p-4 bg-white">
+    <header className="flex justify-between items-center w-full p-4 bg-blue-600  ">
       {/* Logo */}
       <img src={logoImage} alt="Logo" className="w-16 md:w-20 object-contain" />
 
@@ -16,7 +16,7 @@ export default function NavBar() {
             to="/"
             className={({ isActive }) =>
               `cursor-pointer transition-colors duration-200 ${
-                isActive ? "text-red-500" : "hover:text-red-400"
+                isActive ? "text-red-700" : "hover:text-red-400"
               }`
             }
           >

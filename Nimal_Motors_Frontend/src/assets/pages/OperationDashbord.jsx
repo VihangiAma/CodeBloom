@@ -48,18 +48,18 @@ const OperationDashboard = () => {
             <h2 className="text-2xl font-bold mb-6">Operation Dashboard</h2>
             <button
               onClick={() => setActiveReport("financial")}
-              className="px-6 py-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition flex items-center mb-4 w-full max-w-md"
+              className="px-6 py-4 bg-purple-500 text-white rounded-lg hover:bg-purple-400 transition flex items-center mb-4 w-full max-w-md"
             >
               <span className="text-2xl mr-3">📈</span>
               <div className="text-left">
-                <h3 className="font-bold">Financial Report</h3>
+                <h3 className="font-bold text-white-400">Financial Report</h3>
                 <p className="text-sm opacity-90">View and analyze sales data</p>
               </div>
             </button>
             
             <button
               onClick={() => setActiveReport("user")}
-              className="px-6 py-4 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition flex items-center w-full max-w-md"
+              className="px-6 py-4 bg-pink-500 text-white rounded-lg hover:bg-pink-500 transition flex items-center w-full max-w-md"
             >
               <span className="text-2xl mr-3">👤</span>
               <div className="text-left">

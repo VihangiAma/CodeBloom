@@ -10,19 +10,16 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
     setError("");
     
     try {
-      // Determine approval status based on whether remarks are entered
       const hasRemarks = remarks.trim().length > 0;
-      const isApproved = !hasRemarks; // If no remarks, approved = true; if remarks exist, approved = false
+      const isApproved = !hasRemarks;
 
-      // Prepare the request body to match your backend API
       const requestBody = {
         isApproved: isApproved,
         adminRemarks: remarks.trim()
       };
 
-      // Make API call to update invoice approval status
       const response = await fetch(`http://localhost:5001/api/invoice/${invoice._id}/approve`, {
-        method: 'PUT', // or 'PATCH' depending on your route setup
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -35,8 +32,6 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
       }
 
       const updatedInvoice = await response.json();
-
-      // Call the parent component's onSubmit function with the updated invoice
       onSubmit(updatedInvoice);
       
     } catch (error) {
@@ -53,7 +48,6 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
     }
   };
 
-  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -67,7 +61,7 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
+    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-7xl mx-auto">
       <h3 className="text-xl font-semibold mb-4 text-gray-800">Invoice Review</h3>
       
       {error && (
@@ -76,70 +70,85 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
         </div>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-gray-50 p-4 rounded-lg">
-        <div>
-          <p className="font-medium text-gray-700">Service ID:</p>
-          <p className="text-gray-900">{invoice.serviceID}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Customer Name:</p>
-          <p className="text-gray-900">{invoice.customerName}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Vehicle Number:</p>
-          <p className="text-gray-900">{invoice.vehicleNumber}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Vehicle Type:</p>
-          <p className="text-gray-900">{invoice.vehicleType}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Section:</p>
-          <p className="text-gray-900">{invoice.section}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Repair Cost:</p>
-          <p className="text-gray-900">Rs. {invoice.repairCost?.toFixed(2) || "0.00"}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Total Cost:</p>
-          <p className="text-gray-900 font-semibold">Rs. {invoice.totalCost?.toFixed(2) || "0.00"}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Description:</p>
-          <p className="text-gray-900">{invoice.description || 'N/A'}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Submitted By:</p>
-          <p className="text-gray-900">{invoice.submittedBy?.name || 'N/A'}</p>
-        </div>
-        <div>
-          <p className="font-medium text-gray-700">Created At:</p>
-          <p className="text-gray-900">{formatDate(invoice.createdAt)}</p>
-        </div>
+       <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+        <table className="w-full border-collapse">
+          <tbody>
+            <tr>
+              <th className="py-2 px-4 border border-gray-300 font-medium  bg-blue-600  text-white text text-center">Service ID</th>
+              <th className="py-2 px-4 border border-gray-300 font-medium  bg-blue-600   text-white text text-center">Customer Name</th>
+              <th className="py-2 px-4 border border-gray-300 font-medium  bg-blue-600  text-white text text-center">Vehicle Number</th>
+              <th className="py-2 px-4 border border-gray-300 font-medium  bg-blue-600  text-white text text-center">Description</th>
+              <th className="py-2 px-4 border border-gray-300 font-medium  bg-blue-600 text-white text text-center">Total Cost</th>
+              <th className="py-2 px-4 border border-gray-300 font-medium  bg-blue-600  text-white text text-center">Submitted By</th>
+              <th className="py-2 px-4 border border-gray-300 font-medium  bg-blue-600  text-white text text-center">Created At</th>
+              
+            </tr>
+            <tr>
+              <td className="py-2 px-4 border border-gray-300 ">{invoice.serviceID}</td>
+              <td className="py-2 px-4 border border-gray-300 ">{invoice.customerName}</td>
+              <td className="py-2 px-4 border border-gray-300 ">{invoice.vehicleNumber}</td>
+              <td className="py-2 px-4 border border-gray-300">{invoice.description || 'N/A'}</td>
+              <td className="py-2 px-4 border border-gray-300 ">Rs. {invoice.totalCost?.toFixed(2) || "0.00"}</td>
+              <td className="py-2 px-4 border border-gray-300">{invoice.submittedBy?.name || 'N/A'}</td>
+              <td className="py-2 px-4 border border-gray-300" colSpan="3">{formatDate(invoice.createdAt)}</td>
+            </tr>
+           
+          </tbody>
+        </table>
       </div>
 
-      {/* Items Table */}
+      {invoice.repairs && invoice.repairs.length > 0 && (
+        <div className="mb-6">
+          <h4 className="font-medium text-gray-700 mb-2">Repairs:</h4>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border border-gray-300 bg-red-500 text-white text-center">Package</th>
+                  <th className="py-2 px-4 border border-gray-300 bg-red-500 text-white text-center">Repairs</th>
+                  <th className="py-2 px-4 border border-gray-300 bg-red-500 text-white text-center">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {invoice.repairs.map((repair, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                    <td className="py-2 px-4 border border-gray-300">{repair.package || '-'}</td>
+                    <td className="py-2 px-4 border border-gray-300">
+                      {repair.repairs?.map((r, i) => (
+                        <div key={i}>
+                          {r.label} - Rs. {r.price?.toFixed(2) || '0.00'}
+                        </div>
+                      )) || '-'}
+                    </td>
+                    <td className="py-2 px-4 border border-gray-300 text-right">Rs. {repair.price?.toFixed(2) || '0.00'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {invoice.items && invoice.items.length > 0 && (
         <div className="mb-6">
           <h4 className="font-medium text-gray-700 mb-2">Items:</h4>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
+            <table className="min-w-full bg-white border border-gray-300">
               <thead>
-                <tr className="bg-gray-100">
-                  <th className="py-2 px-4 border-b text-left">Description</th>
-                  <th className="py-2 px-4 border-b text-right">Quantity</th>
-                  <th className="py-2 px-4 border-b text-right">Cost</th>
-                  <th className="py-2 px-4 border-b text-right">Total</th>
+                <tr>
+                  <th className="py-2 px-4 border border-gray-300 bg-red-500 text-white text-center">Item Name</th>
+                  <th className="py-2 px-4 border border-gray-300 bg-red-500 text-white text-center">Quantity</th>
+                  <th className="py-2 px-4 border border-gray-300 bg-red-500 text-white text-center">Price</th>
+                  <th className="py-2 px-4 border border-gray-300 bg-red-500 text-white text-center">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {invoice.items.map((item, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
-                    <td className="py-2 px-4 border-b">{item.description || '-'}</td>
-                    <td className="py-2 px-4 border-b text-right">{item.qty || '0'}</td>
-                    <td className="py-2 px-4 border-b text-right">Rs. {item.cost?.toFixed(2) || '0.00'}</td>
-                    <td className="py-2 px-4 border-b text-right">Rs. {((item.qty || 0) * (item.cost || 0)).toFixed(2)}</td>
+                    <td className="py-2 px-4 border border-gray-300">{item.itemName || '-'}</td>
+                    <td className="py-2 px-4 border border-gray-300 text-right">{item.qty || '0'}</td>
+                    <td className="py-2 px-4 border border-gray-300 text-right">Rs. {item.price?.toFixed(2) || '0.00'}</td>
+                    <td className="py-2 px-4 border border-gray-300 text-right">Rs. {((item.qty || 0) * (item.price || 0)).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
