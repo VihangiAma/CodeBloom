@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
+import { AiOutlineEdit } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InvoiceForm from "./InvoiceForm";
@@ -204,8 +205,9 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                         setSelectedInvoice(inv);
                         setShowInvoice(true);
                       }}
+                      className="bg-green-500 text-white px-3 py-1 rounded"
                     >
-                      Edit
+                      <AiOutlineEdit />
                     </button>
                     <button
                       onClick={() => handleDeleteInvoice(inv._id)}
