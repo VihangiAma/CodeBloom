@@ -8,7 +8,12 @@ const AdminInvoiceView = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [isViewingInvoice, setIsViewingInvoice] = useState(false);
   const [selectedSection, setSelectedSection] = useState("all");
-  const [availableSections, setAvailableSections] = useState([]);
+  const [availableSections] = useState([
+    { value: "MS", label: "Mechanical Section" },
+    { value: "BS", label: "Bodyshop Section" },
+    { value: "ES", label: "Electrical Section" },
+    { value: "SS", label: "Vehicle Service Section" }
+  ]);
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -26,10 +31,6 @@ const AdminInvoiceView = () => {
           repairCost: invoice.repairCost || 0,
           section: invoice.section || "N/A"
         }));
-
-        // Extract unique sections for filter dropdown
-        const sections = [...new Set(data.map(inv => inv.section || "N/A"))];
-        setAvailableSections(sections);
         
         setInvoices(formattedData);
         setLoading(false);
@@ -64,10 +65,10 @@ const AdminInvoiceView = () => {
     setSelectedSection(e.target.value);
   };
 
-  // Filter invoices by selected section
+  // Filter invoices by selected section prefix
   const filteredInvoices = selectedSection === "all" 
     ? invoices 
-    : invoices.filter(invoice => invoice.section === selectedSection);
+    : invoices.filter(invoice => invoice.serviceID?.startsWith(selectedSection));
 
   if (loading) {
     return (
@@ -103,7 +104,7 @@ const AdminInvoiceView = () => {
           >
             <option value="all">All Sections</option>
             {availableSections.map((section, index) => (
-              <option key={index} value={section}>{section}</option>
+              <option key={index} value={section.value}>{section.label}</option>
             ))}
           </select>
         </div>
@@ -111,24 +112,21 @@ const AdminInvoiceView = () => {
       
       {filteredInvoices.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 text-lg">No invoices found{selectedSection !== "all" ? ` for section ${selectedSection}` : ""}.</p>
+          <p className="text-gray-500 text-lg">No invoices found{selectedSection !== "all" ? ` for selected section` : ""}.</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse border border-gray-200">
-            <thead className="bg-gray-100">
+          <table className="min-w-full border-collapse border border-gray-600">
+            <thead className="bg-gray-700">
               <tr>
-                <th className="p-3 border border-gray-300">Service ID</th>
-                <th className="p-3 border border-gray-300">Customer Name</th>
-                <th className="p-3 border border-gray-300">Vehicle Number</th>
-                <th className="p-3 border border-gray-300">Vehicle Type</th>
-                <th className="p-3 border border-gray-300">Section</th>
-                <th className="p-3 border border-gray-300">Description</th>
-                <th className="p-3 border border-gray-300">Repair Cost</th>
-                <th className="p-3 border border-gray-300">Total Cost</th>
-                <th className="p-3 border border-gray-300">Admin Remarks</th>
-                <th className="p-3 border border-gray-300">Status</th>
-                <th className="p-3 border border-gray-300">Actions</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Service ID</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Customer Name</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Vehicle Number</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Description</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Total Cost</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Admin Remarks</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Status</th>
+                <th className="p-3 border bg-red-500 border-gray-300 text-white">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -137,10 +135,7 @@ const AdminInvoiceView = () => {
                   <td className="p-3 border border-gray-300">{invoice.serviceID}</td>
                   <td className="p-3 border border-gray-300">{invoice.customerName}</td>
                   <td className="p-3 border border-gray-300">{invoice.vehicleNumber}</td>
-                  <td className="p-3 border border-gray-300">{invoice.vehicleType}</td>
-                  <td className="p-3 border border-gray-300">{invoice.section}</td>
                   <td className="p-3 border border-gray-300">{invoice.description}</td>
-                  <td className="p-3 border border-gray-300">Rs. {invoice.repairCost.toFixed(2)}</td>
                   <td className="p-3 border border-gray-300">Rs. {invoice.totalCost.toFixed(2)}</td>
                   <td className="p-3 border border-gray-300">{invoice.adminRemarks}</td>
                   <td className="p-3 border border-gray-300 text-center">
