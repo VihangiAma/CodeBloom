@@ -1,7 +1,9 @@
+// CompletedServices.jsx
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
-
+import { AiOutlineEdit } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InvoiceForm from "./InvoiceForm";
 
@@ -11,78 +13,97 @@ const CompletedServices = ({ sectionPrefix, section }) => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showInvoice, setShowInvoice] = useState(false);
 
+  const navigate = useNavigate();
+
+  /* ───────── Fetch whenever section changes ───────── */
   useEffect(() => {
     fetchCompletedAppointments();
     fetchPendingInvoices();
+    // eslint‑disable‑next‑line react-hooks/exhaustive-deps
   }, [section, sectionPrefix]);
 
+  /* ---- Completed appointments ---- */
   const fetchCompletedAppointments = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/${section}`);
-      const completed = response.data.filter(
-        (appointment) =>
-          appointment.status === "Completed" &&
-          appointment.displayID.startsWith(sectionPrefix)
+      const { data } = await axios.get(`http://localhost:5001/api/${section}`);
+      setCompletedAppointments(
+        data.filter(
+          (a) =>
+            a.status === "Completed" && a.displayID?.startsWith(sectionPrefix)
+        )
       );
-      setCompletedAppointments(completed);
-    } catch (error) {
-      console.error("Error fetching completed appointments", error);
+    } catch (err) {
+      console.error("Error fetching completed appointments", err);
     }
   };
 
+  /* ---- Pending invoices ---- */
   const fetchPendingInvoices = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/invoice`);
-      const pending = response.data.filter(
-        (invoice) => invoice.isApproved === false && invoice.section === section
+      const { data } = await axios.get(
+        "http://localhost:5001/api/invoice", // ← singular
+        { params: { isApproved: false } } // server filters
       );
-      setPendingInvoices(pending);
-    } catch (error) {
-      console.error("Error fetching pending invoices", error);
+      setPendingInvoices(
+        data.filter((inv) => inv.serviceID?.startsWith(sectionPrefix))
+      );
+    } catch (err) {
+      console.error("Error fetching pending invoices", err);
     }
   };
 
-  const handleViewInvoice = (appointment) => {
-    setSelectedInvoice(appointment);
-    setShowInvoice(true);
-  };
-
+  /* ---- Create invoice ---- */
   const handleSubmitInvoice = async (invoiceData) => {
     try {
-      await axios.post(`http://localhost:5001/api/invoices`, invoiceData);
+      if (invoiceData._id) {
+        // Update existing invoice
+        await axios.put(
+          `http://localhost:5001/api/invoice/${invoiceData._id}`,
+          invoiceData
+        );
+      } else {
+        // Create new invoice
+        await axios.post("http://localhost:5001/api/invoice", invoiceData);
+      }
+
       setShowInvoice(false);
       setSelectedInvoice(null);
       fetchCompletedAppointments();
       fetchPendingInvoices();
-    } catch (error) {
-      console.error("Error submitting invoice", error);
+    } catch (err) {
+      console.error("Error submitting invoice", err);
     }
   };
 
-  const handleCancelInvoice = () => {
-    setShowInvoice(false);
-    setSelectedInvoice(null);
-  };
-
-  const handleDelete = async (appointmentId) => {
+  /* ---- Delete appointment ---- */
+  const handleDeleteAppointment = async (id) => {
     try {
-      await axios.delete(
-        `http://localhost:5001/api/${section}/${appointmentId}`
-      );
-      setCompletedAppointments((prev) =>
-        prev.filter((appointment) => appointment._id !== appointmentId)
-      );
-    } catch (error) {
-      console.error("Error deleting appointment", error);
+      await axios.delete(`http://localhost:5001/api/${section}/${id}`);
+      setCompletedAppointments((prev) => prev.filter((a) => a._id !== id));
+      fetchPendingInvoices(); // keep both tables in sync
+    } catch (err) {
+      console.error("Error deleting appointment", err);
     }
   };
 
+  /* ---- Delete invoice ---- */
+  const handleDeleteInvoice = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5001/api/invoice/${id}`);
+      setPendingInvoices((prev) => prev.filter((inv) => inv._id !== id));
+    } catch (err) {
+      console.error("Error deleting invoice", err);
+    }
+  };
+
+  /* -------------------------------- Render -------------------------------- */
   return (
     <div className="p-4 bg-white shadow rounded-lg">
-      {/* Top Table - Completed Appointments */}
+      {/* ───── Top: Completed services ───── */}
       <h2 className="text-xl font-semibold mb-4 capitalize">
-        {section} - Completed Services
+        {section} – Completed Services
       </h2>
+
       {completedAppointments.length === 0 ? (
         <p className="text-gray-500">No completed services found.</p>
       ) : (
@@ -90,39 +111,40 @@ const CompletedServices = ({ sectionPrefix, section }) => {
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border px-3 py-2">Service ID</th>
-                <th className="border px-3 py-2">Customer Name</th>
-                <th className="border px-3 py-2">Vehicle No</th>
+                <th className="border px-3 py-2">Service ID</th>
+                <th className="border px-3 py-2">Customer</th>
+                <th className="border px-3 py-2">Vehicle No</th>
                 <th className="border px-3 py-2">Contact</th>
-                <th className="border px-3 py-2">Service Date</th>
+                <th className="border px-3 py-2">Date</th>
                 <th className="border px-3 py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {completedAppointments.map((appointment) => (
-                <tr key={appointment._id} className="hover:bg-gray-50">
-                  <td className="border px-3 py-2">{appointment.displayID}</td>
+              {completedAppointments.map((a) => (
+                <tr key={a._id} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2">{a.displayID}</td>
+                  <td className="border px-3 py-2">{a.customerName}</td>
+                  <td className="border px-3 py-2">{a.vehicleNumber}</td>
                   <td className="border px-3 py-2">
-                    {appointment.customerName}
+                    {a.contact?.phone || a.contact?.email || "—"}
                   </td>
                   <td className="border px-3 py-2">
-                    {appointment.vehicleNumber}
-                  </td>
-                  <td className="border px-3 py-2">
-                    {appointment.contact?.phone}
-                  </td>
-                  <td className="border px-3 py-2">
-                    {new Date(appointment.serviceDate).toLocaleDateString()}
+                    {new Date(a.serviceDate).toLocaleDateString("en-GB")}
                   </td>
                   <td className="px-4 py-2 border space-x-2">
+                    {/* Build invoice */}
                     <button
-                      onClick={() => handleViewInvoice(appointment)}
+                      onClick={() => {
+                        setSelectedInvoice(a);
+                        setShowInvoice(true);
+                      }}
                       className="bg-blue-500 text-white px-3 py-1 rounded"
                     >
                       <AiOutlinePlus />
                     </button>
+                    {/* Delete appointment */}
                     <button
-                      onClick={() => handleDelete(appointment._id)}
+                      onClick={() => handleDeleteAppointment(a._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded"
                     >
                       <FaTrash />
@@ -133,22 +155,27 @@ const CompletedServices = ({ sectionPrefix, section }) => {
             </tbody>
           </table>
 
+          {/* Invoice form */}
           {showInvoice && selectedInvoice && (
             <div className="mt-6 border p-4 bg-gray-50 rounded">
               <InvoiceForm
                 initialData={selectedInvoice}
                 onSubmit={handleSubmitInvoice}
-                onCancel={handleCancelInvoice}
+                onCancel={() => {
+                  setShowInvoice(false);
+                  setSelectedInvoice(null);
+                }}
               />
             </div>
           )}
         </div>
       )}
 
-      {/* Bottom Table - Pending Invoices */}
+      {/* ───── Bottom: Pending invoices ───── */}
       <h2 className="text-xl font-semibold mb-4 capitalize">
-        {section} - Pending Invoices(Not Approved)
+        {section} – Pending Invoices
       </h2>
+
       {pendingInvoices.length === 0 ? (
         <p className="text-gray-500">No pending invoices found.</p>
       ) : (
@@ -156,39 +183,37 @@ const CompletedServices = ({ sectionPrefix, section }) => {
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border px-3 py-2">Invoice ID</th>
-                <th className="border px-3 py-2">Customer Name</th>
-                <th className="border px-3 py-2">Vehicle No</th>
-                <th className="border px-3 py-2">Admin Remark</th>
-                <th className="border px-3 py-2">Status</th>
+                <th className="border px-3 py-2">Invoice ID</th>
+                <th className="border px-3 py-2">Customer</th>
+                <th className="border px-3 py-2">Vehicle No</th>
+                <th className="border px-3 py-2">Admin Remark</th>
+                <th className="border px-3 py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {pendingInvoices.map((invoice) => (
-                <tr key={invoice._id} className="hover:bg-gray-50">
-                  <td className="border px-3 py-2">{invoice.serviceID}</td>
-                  <td className="border px-3 py-2">{invoice.customerName}</td>
-                  <td className="border px-3 py-2">{invoice.vehicleNumber}</td>
+              {pendingInvoices.map((inv) => (
+                <tr key={inv._id} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2">{inv.serviceID}</td>
+                  <td className="border px-3 py-2">{inv.customerName}</td>
+                  <td className="border px-3 py-2">{inv.vehicleNumber}</td>
                   <td className="border px-3 py-2">
-                    {invoice.adminRemarks || "N/A"}
+                    {inv.adminRemarks || "—"}
                   </td>
-                  <td className="border px-3 py-2">
-                    {/* <button
-                      // onClick={() => handleViewInvoice(appointment)}
-                      className=" px-3 py-2 text-yellow-600 font-medium"
-                    >
-                      Not Approved
-                    </button> */}
+                  <td className="border px-3 py-2 space-x-2">
                     <button
-                      onClick={() => handleDelete()}
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                      onClick={() => {
+                        setSelectedInvoice(inv);
+                        setShowInvoice(true);
+                      }}
+                      className="bg-green-500 text-white px-3 py-1 rounded"
                     >
-                      <AiOutlinePlus />
+                      <AiOutlineEdit />
                     </button>
                     <button
-                      onClick={() => navigate(`/invoice/edit/${invoice._id}`)}
+                      onClick={() => handleDeleteInvoice(inv._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
                     >
-                      Update
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>

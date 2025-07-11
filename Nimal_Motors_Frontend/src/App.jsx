@@ -36,6 +36,7 @@ import AccountantProfile from "./pages/AccountantProfile";
 import PremiumCustomerProfile from "./pages/premiumcustomer/PremiumCustomerProfile";
 import UserManagement from "./pages/admin/UserManagement";
 import AdminUsers from "./pages/admin/AdminUsers";
+import OperationDashboard from "./assets/pages/OperationDashbord";
 
 // Supervisor Protected Pages
 
@@ -311,14 +312,13 @@ function App() {
         />
         <Route path="/view-sales-report" element={<SalesReportView />} />
         <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
-        <Route
-          path="/generate-invoice/:repairId"
-          element={<GenerateInvoicePage />}
-        />
+       <Route path="/generate-invoice/:id" element={<GenerateInvoicePage />} />
+
         <Route
           path="/chatbot/:section"
           element={<ChatBot section="Service" />}
         />
+        <Route path ="/operation-dashboard" element={<OperationDashboard />} />
         {/*<Route path="/formal-invoice" element={<FormalInvoice />} />*/}
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />

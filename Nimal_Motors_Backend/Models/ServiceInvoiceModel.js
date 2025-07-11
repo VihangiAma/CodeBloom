@@ -40,7 +40,7 @@ const serviceInvoiceSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected", "resubmitted"],
     default: "pending",
   },
-  submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  submittedBy: { type: String },
   adminRemarks: { type: String },
 
   createdAt: { type: Date, default: Date.now },
