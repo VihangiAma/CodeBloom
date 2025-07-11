@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar/NavBar";
 import Footer from "../../components/Footer/Footer";
-import garage1 from "../../assets/images/garage1.jpg";
-import garage2 from "../../assets/images/garage2.jpg";
-import garage3 from "../../assets/images/garage3.jpg";
+import garage1 from "../../assets/images/garage1.jpeg";
+import garage2 from "../../assets/images/garage2.jpeg";
+import garage3 from "../../assets/images/garage3.jpeg";
 import mechanical from "../../assets/images/mechanical.jpg";
 import bodyshop from "../../assets/images/bodyshop.jpg";
 import electrical from "../../assets/images/electrical.jpg";
@@ -40,66 +40,16 @@ export default function Home() {
         ]
       }
     },
-    { 
-      id: "bodyshop",
-      src: bodyshop, 
-      alt: "Bodyshop Section", 
-      title: "Bodyshop Section", 
-      info: ""
-    },
-    { 
-      id: "electrical",
-      src: electrical, 
-      alt: "Electrical Section", 
-      title: "Electrical Section", 
-      info: ""
-    },
-    { 
-      id: "service",
-      src: service, 
-      alt: "Vehicle Service Section", 
-      title: "Vehicle Service Section", 
-      info: ""
-    },
+    { id: "bodyshop", src: bodyshop, alt: "Bodyshop Section", title: "Bodyshop Section", info: "" },
+    { id: "electrical", src: electrical, alt: "Electrical Section", title: "Electrical Section", info: "" },
+    { id: "service", src: service, alt: "Vehicle Service Section", title: "Vehicle Service Section", info: "" },
   ];
   
   const experts = [
-    { 
-      id: "supervisors",
-      src: sup1, 
-      alt: "Supervisor 1", 
-      name: "Kavindu Nirmal", 
-      phone: "074 5566777", 
-      email: "chamath.gunasekara@gmail.com",
-      section: "Mechanical Section" 
-    },
-    { 
-      id: "supervisors",
-      src: sup2, 
-      alt: "Supervisor 2", 
-      name: "Nimal Sirisena", 
-      phone: "076 2233445", 
-      email: "suresh.fernando@gmail.com",
-      section: "Bodyshop Section" 
-    },
-    { 
-      id: "supervisors",
-      src: sup3, 
-      alt: "Supervisor 3", 
-      name: "Dasun Tharindu", 
-      phone: "075 3344555", 
-      email: "ishara.wickramasinghe@gmail.com",
-      section: "Electrical Section" 
-    },
-    { 
-      id: "supervisors",
-      src: sup4, 
-      alt: "Supervisor 4", 
-      name: "Dilani Rajapaksha", 
-      phone: "072 6655444", 
-      email: "dilani.rajapaksha@gmail.com",
-      section: "Service Section" 
-    },
+    { id: "supervisors", src: sup1, alt: "Supervisor 1", name: "Kavindu Nirmal", phone: "074 5566777", email: "chamath.gunasekara@gmail.com", section: "Mechanical Section" },
+    { id: "supervisors", src: sup2, alt: "Supervisor 2", name: "Nimal Sirisena", phone: "076 2233445", email: "suresh.fernando@gmail.com", section: "Bodyshop Section" },
+    { id: "supervisors", src: sup3, alt: "Supervisor 3", name: "Dasun Tharindu", phone: "075 3344555", email: "ishara.wickramasinghe@gmail.com", section: "Electrical Section" },
+    { id: "supervisors", src: sup4, alt: "Supervisor 4", name: "Dilani Rajapaksha", phone: "072 6655444", email: "dilani.rajapaksha@gmail.com", section: "Service Section" },
   ];
 
   useEffect(() => {
@@ -136,7 +86,7 @@ export default function Home() {
       <NavBar />
       <main className="flex-grow">
         {/* Slideshow Section */}
-        <section className="slideshow">
+        <section className="slideshow mt-4">
           <div className="slideshow-container max-w-7xl mx-auto relative">
             {slides.map((slide, index) => (
               <div

@@ -13,16 +13,23 @@ export const createInvoice = async (req, res) => {
     const invoice = new ServiceInvoice(invoiceData);
     await invoice.save();
     res.status(201).json(invoice);
-  } catch (error) {
-    console.error("Create Invoice Error:", error);
-    res.status(400).json({ message: "Failed to create invoice", error });
-  }
+  }catch (err) {
+  console.error("Error saving invoice:", err);
+  res.status(400).json({ message: err.message });
+}
 };
 
 // Get all invoices
 export const getAllInvoices = async (req, res) => {
   try {
-    const invoices = await ServiceInvoice.find().populate("submittedBy");
+    const { isApproved } = req.query; // e.g. /api/invoice?isApproved=false
+    const filter = {};
+
+    if (isApproved !== undefined) {
+      filter.isApproved = isApproved === "true";
+    }
+
+    const invoices = await ServiceInvoice.find(filter).populate("submittedBy");
     res.status(200).json(invoices);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch invoices", error });
@@ -44,13 +51,14 @@ export const getInvoiceById = async (req, res) => {
 export const updateInvoice = async (req, res) => {
   try {
     const update = {...req.body };
-    if (update.status == "rejected" ) {
-      update.status === "resubmitted";
+    if (update.status === "rejected" ) {
+      update.status = "resubmitted";
       update.isApproved = false;
     }
     const updated = await ServiceInvoice.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      update,
+
       { new: true, runValidators: true }
     );
     if (!updated) return res.status(404).json({ message: "Invoice not found" });
