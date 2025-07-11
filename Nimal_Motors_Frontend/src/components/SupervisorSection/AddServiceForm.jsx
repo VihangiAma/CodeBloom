@@ -1,5 +1,3 @@
-//Add Customer Details in mechanical, Electrical, and bodyshop
-
 import React, { useState, useEffect } from "react";
 
 const AddServiceForm = ({
@@ -114,48 +112,46 @@ const AddServiceForm = ({
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-xl border border-gray-200 shadow-sm">
+      <h2 className="text-2xl font-semibold mb-6 text-center text-red-600">
         {isEditMode ? "Update Appointment" : "Add Customer Details"}
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Service ID */}
+
+      <form onSubmit={handleSubmit} className="space-y-4 text-gray-800">
         {isEditMode && (
           <div>
-            <label className="block mb-1 font-medium">Service ID</label>
+            <label className="block font-medium">Service ID</label>
             <input
               type="text"
               name="serviceID"
               value={formData.serviceID}
               disabled
-              className="w-full p-2 border rounded-lg bg-gray-100"
+              className="w-full p-3 border border-gray-300 rounded-md bg-gray-100"
             />
           </div>
         )}
 
-        {/* Customer Name */}
         <div>
-          <label className="block mb-1 font-medium">Customer Name</label>
+          <label className="block font-medium">Customer Name</label>
           <input
             type="text"
             name="customerName"
             value={formData.customerName}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-md"
           />
           {errors.customerName && (
             <p className="text-red-500 text-sm">{errors.customerName}</p>
           )}
         </div>
 
-        {/* Vehicle Type Dropdown */}
         <div>
-          <label className="block mb-1 font-medium">Vehicle Type</label>
+          <label className="block font-medium">Vehicle Type</label>
           <select
             name="vehicleType"
             value={formData.vehicleType}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-md"
           >
             <option value="">-- Select Vehicle Type --</option>
             <option value="Car">Car</option>
@@ -166,91 +162,83 @@ const AddServiceForm = ({
           )}
         </div>
 
-        {/* Vehicle Number */}
         <div>
-          <label className="block mb-1 font-medium">Vehicle Number</label>
+          <label className="block font-medium">Vehicle Number</label>
           <input
             type="text"
             name="vehicleNumber"
             value={formData.vehicleNumber}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-md"
           />
           {errors.vehicleNumber && (
             <p className="text-red-500 text-sm">{errors.vehicleNumber}</p>
           )}
         </div>
 
-        {/* Service Date */}
         <div>
-          <label className="block mb-1 font-medium">Service Date</label>
+          <label className="block font-medium">Service Date</label>
           <input
             type="date"
             name="serviceDate"
             value={formData.serviceDate}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-md"
           />
           {errors.serviceDate && (
             <p className="text-red-500 text-sm">{errors.serviceDate}</p>
           )}
         </div>
 
-        {/* Present Meter */}
         <div>
-          <label className="block mb-1 font-medium">Present Meter</label>
+          <label className="block font-medium">Present Meter</label>
           <input
             type="number"
             name="presentMeter"
             value={formData.presentMeter}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
             min="10000"
             max="999999"
             step="100"
+            className="w-full p-3 border border-gray-300 rounded-md"
           />
           {errors.presentMeter && (
             <p className="text-red-500 text-sm">{errors.presentMeter}</p>
           )}
         </div>
 
-        {/* Phone */}
         <div>
-          <label className="block mb-1 font-medium">Phone Number</label>
+          <label className="block font-medium">Phone Number</label>
           <input
             type="text"
             name="contact.phone"
             value={formData.contact.phone}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-md"
           />
           {errors.contactPhone && (
             <p className="text-red-500 text-sm">{errors.contactPhone}</p>
           )}
         </div>
 
-        {/* Email */}
         <div>
-          <label className="block mb-1 font-medium">
-            Email Address (optional)
-          </label>
+          <label className="block font-medium">Email Address (optional)</label>
           <input
             type="email"
             name="contact.email"
             value={formData.contact.email}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-md"
           />
         </div>
 
-        {/* Status */}
         <div>
-          <label className="block mb-1 font-medium">Status</label>
+          <label className="block font-medium">Status</label>
           <select
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-md"
           >
             <option value="Pending">Pending</option>
             <option value="In Progress">In Progress</option>
@@ -258,20 +246,18 @@ const AddServiceForm = ({
           </select>
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition"
+          className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-md font-semibold transition"
         >
           {isEditMode ? "Update Appointment" : "Submit"}
         </button>
 
-        {/* Delete */}
         {isEditMode && (
           <button
             type="button"
             onClick={handleDelete}
-            className="w-full bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition mt-4"
+            className="w-full mt-3 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-md font-semibold transition"
           >
             Delete Appointment
           </button>

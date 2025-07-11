@@ -159,13 +159,41 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                   <>
                     <button
                       onClick={() => onApprove(appointment.serviceID)}
-                      className="bg-green text-white px-3 py-1 rounded hover:bg-green mr-2"
+                      style={{
+                        backgroundColor: "#28a745", // green
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        marginRight: "8px",
+                        cursor: "pointer",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.backgroundColor = "#218838")
+                      } // darker green
+                      onMouseOut={(e) =>
+                        (e.target.style.backgroundColor = "#28a745")
+                      }
                     >
                       Approve
                     </button>
+
                     <button
                       onClick={() => onReject(appointment.serviceID)}
-                      className="bg-red text-white px-3 py-1 rounded hover:bg-red"
+                      style={{
+                        backgroundColor: "#dc3545", // red
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.backgroundColor = "#c82333")
+                      } // darker red
+                      onMouseOut={(e) =>
+                        (e.target.style.backgroundColor = "#dc3545")
+                      }
                     >
                       Reject
                     </button>
@@ -173,7 +201,20 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                 ) : (
                   <button
                     onClick={() => onDelete(appointment.serviceID)}
-                    className="bg-red text-white px-3 py-1 rounded hover:bg-red"
+                    style={{
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      padding: "6px 12px",
+                      borderRadius: "6px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                    onMouseOver={(e) =>
+                      (e.target.style.backgroundColor = "#c82333")
+                    }
+                    onMouseOut={(e) =>
+                      (e.target.style.backgroundColor = "#dc3545")
+                    }
                   >
                     Delete
                   </button>

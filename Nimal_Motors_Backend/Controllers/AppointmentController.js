@@ -1,13 +1,12 @@
 
 import Appointment from "../Models/Appointment.js";
-
 export const createAppointment = async (req, res) => {
-  const { contact, vehicleNumber, date, time } = req.body;
+  const { contact, vehicleNumber, serviceDate, time } = req.body;
 
   try {
     // Check if the same phone or vehicle number already has an appointment on the same date
     const existingDetails = await Appointment.findOne({
-      date,
+      serviceDate,
       $or: [
         { "contact.phone": contact.phone },
         { vehicleNumber: vehicleNumber },
@@ -20,19 +19,19 @@ export const createAppointment = async (req, res) => {
       });
     }
 
-    // Check if the selected time slot on the date is already booked
-    const slotTaken = await Appointment.findOne({ date, time });
+    // ✅ Correctly check date+time combination
+    const slotTaken = await Appointment.findOne({ serviceDate, time });
     if (slotTaken) {
       return res.status(400).json({
         error: "This time slot is already booked. Please choose another time.",
       });
     }
 
-    // Proceed to save the appointment
+    // Save appointment
     const newAppointment = new Appointment(req.body);
     const savedAppointment = await newAppointment.save();
 
-    // Generate displayID like "SS001"
+    // Generate displayID like SS001
     savedAppointment.displayID = `SS${String(savedAppointment.serviceID).padStart(3, "0")}`;
     await savedAppointment.save();
 
@@ -41,6 +40,47 @@ export const createAppointment = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+// export const createAppointment = async (req, res) => {
+//   const { contact, vehicleNumber, date, time } = req.body;
+
+//   try {
+//     // Check if the same phone or vehicle number already has an appointment on the same date
+//     const existingDetails = await Appointment.findOne({
+//       date,
+//       $or: [
+//         { "contact.phone": contact.phone },
+//         { vehicleNumber: vehicleNumber },
+//       ],
+//     });
+
+//     if (existingDetails) {
+//       return res.status(400).json({
+//         error: "This phone number or vehicle is already registered for the selected date.",
+//       });
+//     }
+
+//     // Check if the selected time slot on the date is already booked
+//     const slotTaken = await Appointment.findOne({ date, time });
+//     if (slotTaken) {
+//       return res.status(400).json({
+//         error: "This time slot is already booked. Please choose another time.",
+//       });
+//     }
+
+//     // Proceed to save the appointment
+//     const newAppointment = new Appointment(req.body);
+//     const savedAppointment = await newAppointment.save();
+
+//     // Generate displayID like "SS001"
+//     savedAppointment.displayID = `SS${String(savedAppointment.serviceID).padStart(3, "0")}`;
+//     await savedAppointment.save();
+
+//     res.status(201).json(savedAppointment);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
 
 
 // Get all appointments
