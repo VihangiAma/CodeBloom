@@ -5,18 +5,19 @@ import ServiceInvoice from "../Models/ServiceInvoiceModel.js";
 // Create a new invoice
 export const createInvoice = async (req, res) => {
   try {
-      const invoiceData = {
+    console.log('📦 Incoming payload:', req.body);   // <‑‑ add
+    const invoiceData = {
       ...req.body,
-      status: "pending", 
+      status: 'pending',
       isApproved: false,
     };
     const invoice = new ServiceInvoice(invoiceData);
     await invoice.save();
     res.status(201).json(invoice);
-  }catch (err) {
-  console.error("Error saving invoice:", err);
-  res.status(400).json({ message: err.message });
-}
+  } catch (err) {
+    console.error('❌ Error saving invoice:', err);  // already prints stack
+    res.status(400).json({ message: err.message }); // this bubble up to the browser
+  }
 };
 
 // Get all invoices
