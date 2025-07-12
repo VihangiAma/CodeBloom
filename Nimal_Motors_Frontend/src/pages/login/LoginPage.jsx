@@ -175,8 +175,24 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded font-semibold"
-                style={{ fontSize: "16px" }}
+                style={{
+                  width: "100%",
+                  backgroundColor: "#B00020",
+                  color: "white",
+                  padding: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#9B0A0A")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#B00020")
+                }
               >
                 Send Reset Link
               </button>
