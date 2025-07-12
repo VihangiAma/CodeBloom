@@ -1,84 +1,95 @@
+// ✅ Full Updated SuppliersSection.jsx with Styled Add/Edit Forms and Confirmation
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  FaPhone,
-  FaEnvelope,
-  FaMapMarkerAlt,
-  FaEdit,
-  FaUserTie,
-  FaIdCard,
-  FaIndustry,
-  FaUser,
-  FaEye,
+  FaPhone, FaEnvelope, FaMapMarkerAlt, FaEdit, FaUserTie,
+  FaIdCard, FaIndustry, FaEye, FaTrash, FaPlus
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 
-// Supplier Management Section
 const SuppliersSection = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [supplierItems, setSupplierItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [newSupplier, setNewSupplier] = useState({
+    supplierId: "",
+    companyName: "",
+    contactPerson: "",
+    phoneNumber: "",
+    email: "",
+    address: "",
+  });
+
   const navigate = useNavigate();
 
-  // Fetch suppliers on component mount
+  // Fetch suppliers
   useEffect(() => {
-    axios
-      .get("http://localhost:5001/api/supplier/list")
-      .then((res) => setSuppliers(res.data))
-      .catch((err) => console.error("Failed to fetch suppliers:", err));
+    fetchSuppliers();
   }, []);
 
-  // Edit button click
+  const fetchSuppliers = async () => {
+    try {
+      const res = await axios.get("http://localhost:5001/api/supplier/list");
+      setSuppliers(res.data);
+      const nextId = `SUP${(res.data.length + 1).toString().padStart(3, '0')}`;
+      setNewSupplier((prev) => ({ ...prev, supplierId: nextId }));
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+  // Edit & Update
   const handleEditClick = (supplier) => {
-    setSelectedSupplier({ ...supplier }); // Corrected here
+    setSelectedSupplier({ ...supplier });
     setEditModalOpen(true);
   };
 
-  // Save updated supplier
   const handleSaveUpdate = async () => {
-    const { contactPerson, phoneNumber, email, address, supplierId } = selectedSupplier;
-
-    // Validation
-    if (!contactPerson || !phoneNumber || !email || !address) {
-      toast.error("All fields are required.");
-      return;
-    }
-
-    if (!/^\d{10}$/.test(phoneNumber)) {
-      toast.error("Phone number must be exactly 10 digits.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast.error("Invalid email format.");
-      return;
-    }
-
     try {
+      const { contactPerson, phoneNumber, email, address, supplierId } = selectedSupplier;
       await axios.put(`http://localhost:5001/api/supplier/update/${supplierId}`, {
-        contactPerson,
-        phoneNumber,
-        email,
-        address
+        contactPerson, phoneNumber, email, address
       });
-
-      toast.success("Supplier updated successfully!");
+      toast.success("Supplier updated!");
       setEditModalOpen(false);
-
-      // Refresh suppliers
-      const updated = await axios.get("http://localhost:5001/api/supplier/list");
-      setSuppliers(updated.data);
-    } catch (error) {
-      toast.error("Update failed. Please check values.");
-      console.error(error);
+      fetchSuppliers();
+    } catch (err) {
+      toast.error("Update failed");
     }
   };
 
-  // View supplier items
+  // Add Supplier
+  const handleAddSupplier = async () => {
+    try {
+      await axios.post("http://localhost:5001/api/supplier/add", newSupplier);
+      toast.success("Supplier added!");
+      setAddModalOpen(false);
+      setNewSupplier({
+        supplierId: `SUP${(suppliers.length + 2).toString().padStart(3, '0')}`,
+        companyName: "", contactPerson: "", phoneNumber: "", email: "", address: ""
+      });
+      fetchSuppliers();
+    } catch (err) {
+      toast.error("Failed to add supplier");
+    }
+  };
+
+  const handleDeleteSupplier = async () => {
+    try {
+      await axios.delete(`http://localhost:5001/api/supplier/delete/${confirmDeleteId}`);
+      toast.success("Deleted!");
+      setConfirmDeleteId(null);
+      fetchSuppliers();
+    } catch (err) {
+      toast.error("Failed to delete supplier");
+    }
+  };
+
   const fetchSupplierItems = async (companyName) => {
     try {
       const res = await axios.get(`http://localhost:5001/api/stock/by-supplier/${companyName}`);
@@ -86,72 +97,120 @@ const SuppliersSection = () => {
       setSelectedSupplier(companyName);
       setShowModal(true);
     } catch (err) {
-      console.error("Error fetching supplier items:", err);
+      console.error("Supplier items fetch error:", err);
     }
   };
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-6 text-black-700">Suppliers Directory</h2>
-      {/*<FaUser onClick={() => navigate("/accountant-dashboard")} className="text-2xl cursor-pointer" />*/}
+    <div className="p-6 bg-[#F5F5F5] min-h-screen">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-[#2C2C2C]">Suppliers Directory</h2>
+        <button onClick={() => setAddModalOpen(true)}
+          className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] flex items-center gap-2">
+          <FaPlus /> Add Supplier
+        </button>
+      </div>
 
-      <div className="overflow-x-auto rounded shadow-md bg-white">
-        <table className="min-w-full text-sm text-left">
-          <thead className="bg-red-500 text-black">
+      {/* Supplier Table */}
+      <div className="overflow-x-auto bg-white rounded shadow-md">
+        <table className="w-full table-auto text-sm">
+          <thead className="bg-[#2C2C2C] text-white">
             <tr>
-              <th className="px-4 py-3"><FaIdCard /> ID</th>
-              <th className="px-4 py-3"><FaIndustry /> Company</th>
-              <th className="px-4 py-3"><FaUserTie /> Contact Person</th>
-              <th className="px-4 py-3"><FaPhone /> Phone</th>
-              <th className="px-4 py-3"><FaEnvelope /> Email</th>
-              <th className="px-4 py-3"><FaMapMarkerAlt /> Address</th>
-              <th className="px-4 py-3 text-center">Actions</th>
+              <th className="p-3">ID</th>
+              <th className="p-3">Company</th>
+              <th className="p-3">Contact Person</th>
+              <th className="p-3">Phone</th>
+              <th className="p-3">Email</th>
+              <th className="p-3">Address</th>
+              <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {suppliers.map((supplier, index) => (
-              <tr key={index} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-2">{supplier.supplierId}</td>
-                <td className="px-4 py-2 font-semibold text-blue-800">{supplier.companyName}</td>
-                <td className="px-4 py-2">{supplier.contactPerson}</td>
-                <td className="px-4 py-2">{supplier.phoneNumber}</td>
-                <td className="px-4 py-2">{supplier.email}</td>
-                <td className="px-4 py-2">{supplier.address}</td>
-                <td className="px-4 py-2 text-center space-y-2">
-                  <button
-                    onClick={() => handleEditClick(supplier)} // Corrected here
-                    className="text-yellow-600 hover:text-yellow-800 block mb-2"
-                  >
-                    <FaEdit /> 
-                  </button>
-                  <button
-                    onClick={() => fetchSupplierItems(supplier.companyName)}
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    <FaEye/>
-                  </button>
+            {suppliers.map((s, i) => (
+              <tr key={i} className="border-t text-center hover:bg-[#F5F5F5]">
+                <td className="p-2">{s.supplierId}</td>
+                <td className="p-2 font-semibold text-[#B30000]">{s.companyName}</td>
+                <td className="p-2">{s.contactPerson}</td>
+                <td className="p-2">{s.phoneNumber}</td>
+                <td className="p-2">{s.email}</td>
+                <td className="p-2">{s.address}</td>
+                <td className="p-2 flex justify-center gap-3">
+                  <FaEdit className="text-yellow-600 cursor-pointer" onClick={() => handleEditClick(s)} />
+                  <FaEye className="text-blue-600 cursor-pointer" onClick={() => fetchSupplierItems(s.companyName)} />
+                  <FaTrash className="text-red-600 cursor-pointer" onClick={() => setConfirmDeleteId(s.supplierId)} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {suppliers.length === 0 && (
-          <div className="text-center p-4 text-gray-500">No suppliers found.</div>
-        )}
       </div>
 
-      {/* Modal to view items by supplier */}
+      {/* ➤ Edit Modal */}
+      {editModalOpen && selectedSupplier && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 w-full max-w-md rounded shadow-lg">
+            <h3 className="text-xl font-bold mb-4 text-[#B30000]">Edit Supplier</h3>
+            {["contactPerson", "phoneNumber", "email", "address"].map((field) => (
+              <input key={field} placeholder={field}
+                value={selectedSupplier[field] || ""}
+                onChange={(e) => setSelectedSupplier({ ...selectedSupplier, [field]: e.target.value })}
+                className="w-full p-2 border mb-3 rounded"
+              />
+            ))}
+            <div className="flex justify-end gap-2">
+              <button onClick={handleSaveUpdate} className="bg-[#B30000] text-white px-4 py-2 rounded">Save</button>
+              <button onClick={() => setEditModalOpen(false)} className="bg-gray-400 px-4 py-2 rounded text-white">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ➤ Add Modal */}
+      {addModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 w-full max-w-md rounded shadow-lg">
+            <h3 className="text-xl font-bold mb-4 text-[#B30000]">Add New Supplier</h3>
+            {Object.keys(newSupplier).map((key) => (
+              <input key={key} type="text"
+                value={newSupplier[key]}
+                onChange={(e) => setNewSupplier({ ...newSupplier, [key]: e.target.value })}
+                placeholder={key}
+                disabled={key === "supplierId"}
+                className={`w-full p-2 border mb-3 rounded ${key === "supplierId" ? "bg-gray-100 cursor-not-allowed" : ""}`}
+              />
+            ))}
+            <div className="flex justify-end gap-2">
+              <button onClick={handleAddSupplier} className="bg-[#B30000] text-white px-4 py-2 rounded">Add</button>
+              <button onClick={() => setAddModalOpen(false)} className="bg-gray-400 px-4 py-2 rounded text-white">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ➤ Delete Confirmation Modal */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow w-96 text-center">
+            <h3 className="text-lg font-bold text-[#B30000] mb-4">Confirm Delete</h3>
+            <p className="mb-6 text-[#2C2C2C]">Are you sure you want to delete this supplier?</p>
+            <div className="flex justify-center gap-4">
+              <button onClick={handleDeleteSupplier} className="bg-[#B30000] text-white px-4 py-2 rounded">Yes</button>
+              <button onClick={() => setConfirmDeleteId(null)} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Items Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-2/3 max-h-[80vh] overflow-y-auto shadow-lg">
-            <h3 className="text-xl font-bold mb-4 text-blue-700">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 w-3/4 max-h-[80vh] overflow-y-auto rounded shadow-lg">
+            <h3 className="text-xl font-bold mb-4 text-[#B30000]">
               Items from {selectedSupplier}
             </h3>
-
             {supplierItems.length > 0 ? (
-              <table className="w-full border-collapse border text-sm">
-                <thead className="bg-gray-200 text-gray-700">
+              <table className="w-full border text-sm">
+                <thead className="bg-gray-100">
                   <tr>
                     <th className="p-2 border">Item ID</th>
                     <th className="p-2 border">Item Name</th>
@@ -161,8 +220,8 @@ const SuppliersSection = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {supplierItems.map((item, index) => (
-                    <tr key={index} className="hover:bg-gray-100">
+                  {supplierItems.map((item, i) => (
+                    <tr key={i}>
                       <td className="p-2 border">{item.itemId}</td>
                       <td className="p-2 border">{item.itemName}</td>
                       <td className="p-2 border">{item.category}</td>
@@ -175,68 +234,10 @@ const SuppliersSection = () => {
             ) : (
               <p className="text-sm text-gray-500">No items found for this supplier.</p>
             )}
-
             <div className="mt-4 text-right">
-              <button
-                onClick={() => setShowModal(false)}
-                className="bg-blue-600 text-black px-4 py-2 rounded hover:bg-blue-700"
-              >
+              <button onClick={() => setShowModal(false)} className="bg-gray-600 text-white px-4 py-2 rounded">
                 Close
               </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Supplier Modal */}
-      {editModalOpen && selectedSupplier && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Edit Supplier</h2>
-
-            <input
-              type="text"
-              className="w-full mb-2 p-2 border"
-              value={selectedSupplier.contactPerson || ''}
-              onChange={(e) =>
-                setSelectedSupplier((prev) => ({ ...prev, contactPerson: e.target.value }))
-              }
-              placeholder="Contact Person"
-            />
-
-            <input
-              type="text"
-              className="w-full mb-2 p-2 border"
-              value={selectedSupplier.phoneNumber || ''}
-              onChange={(e) =>
-                setSelectedSupplier((prev) => ({ ...prev, phoneNumber: e.target.value }))
-              }
-              placeholder="Phone Number"
-            />
-
-            <input
-              type="email"
-              className="w-full mb-2 p-2 border"
-              value={selectedSupplier.email || ''}
-              onChange={(e) =>
-                setSelectedSupplier((prev) => ({ ...prev, email: e.target.value }))
-              }
-              placeholder="Email"
-            />
-
-            <input
-              type="text"
-              className="w-full mb-4 p-2 border"
-              value={selectedSupplier.address || ''}
-              onChange={(e) =>
-                setSelectedSupplier((prev) => ({ ...prev, address: e.target.value }))
-              }
-              placeholder="Address"
-            />
-
-            <div className="flex justify-end gap-2">
-              <button onClick={handleSaveUpdate} className="bg-green-600 text-black px-4 py-2 rounded">Save</button>
-              <button onClick={() => setEditModalOpen(false)} className="bg-gray-400 text-black px-4 py-2 rounded">Cancel</button>
             </div>
           </div>
         </div>

@@ -19,13 +19,13 @@ import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
 
-import invoiceRoute from "./Routers/InvoiceRoutes.js";
+//import invoiceRoute from "./Routers/InvoiceRoutes.js";
 import FeedbackRouter from"./Routers/FeedbackRouter.js";
 import router from "./Routers/PackageRoutes.js";
 
 import repairRoutes from "./Routers/repairPackageRoutes.js";
 import summaryRoutes from "./Routers/summary.js"; // Import summary routes
-//import accountantInvoiceRoutes from "./Routers/InvoiceRoutes.js";
+import accountantInvoiceRoutes from "./Routers/InvoiceRoutes.js";
 
 
 
@@ -83,6 +83,7 @@ app.use("/api/invoice", invoiceRoutes);
 app.use("/api/repair-packages", repairRoutes);
 app.use("/api", summaryRoutes); // Add summary routes
 //app.use("/api/invoices", accountantInvoiceRoutes);
+app.use("/api/accountant-invoices", accountantInvoiceRoutes);
 
 
 app.use("/api/Feedback",FeedbackRouter);
