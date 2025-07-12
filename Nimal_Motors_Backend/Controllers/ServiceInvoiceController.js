@@ -64,7 +64,7 @@ export const getInvoiceById = async (req, res) => {
   }
 };
 
-// Update invoice by ID
+//Update invoice by ID
 export const updateInvoice = async (req, res) => {
   try {
     const update = {...req.body };
@@ -131,11 +131,6 @@ export const rejectInvoice = async (req, res) => {
     res.status(200).json(invoice);
   } catch (error) {
     res.status(500).json({ message: "Rejection failed", error });
-  }
+  };
+
 };
-
-
-
-
-
-

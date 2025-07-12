@@ -8,7 +8,7 @@ import {
   deleteInvoice,
   approveInvoice,
   rejectInvoice,
-  //getAllApprovedInvoices
+ // getAllApprovedInvoices
 } from "../Controllers/ServiceInvoiceController.js";
 
 const router = express.Router();
