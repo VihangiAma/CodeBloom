@@ -99,6 +99,7 @@ const saveCompletedTask = async (doc, department) => {
 };
 
 // Export saveCompletedTask for use in other files' post-save hooks
-export { saveCompletedTask };
+export { saveCompletedTask, authenticatePremium };
+
 
 export default router;

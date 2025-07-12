@@ -75,13 +75,11 @@ export default function AdminProfile() {
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
+    oldPasswordVisible: false,
+    newPasswordVisible: false,
+    confirmPasswordVisible: false,
   });
   const [passwordError, setPasswordError] = useState("");
-  const [showPasswords, setShowPasswords] = useState({
-    oldPassword: false,
-    newPassword: false,
-    confirmPassword: false,
-  });
   const [formErrors, setFormErrors] = useState({});
 
   // ------------------ Handlers ------------------
@@ -156,6 +154,7 @@ export default function AdminProfile() {
   };
 
   const handleChangePassword = async () => {
+    setPasswordError("");
     if (changePassword.newPassword !== changePassword.confirmPassword) {
       setPasswordError("New passwords do not match.");
       return;
@@ -165,7 +164,7 @@ export default function AdminProfile() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:5001/api/user/change-password",
         {
           userId: profile.userId,
@@ -182,6 +181,9 @@ export default function AdminProfile() {
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
+        oldPasswordVisible: false,
+        newPasswordVisible: false,
+        confirmPasswordVisible: false,
       });
       setPasswordError("");
     } catch (err) {
@@ -190,12 +192,57 @@ export default function AdminProfile() {
     }
   };
 
-  const togglePasswordVisibility = (field) => {
-    setShowPasswords((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-  };
+  const renderPasswordInput = (field, label) => (
+    <div style={{ position: "relative" }}>
+      <input
+        type={changePassword[`${field}Visible`] ? "text" : "password"}
+        placeholder={label}
+        value={changePassword[field]}
+        onChange={(e) =>
+          setChangePassword((prev) => ({
+            ...prev,
+            [field]: e.target.value,
+          }))
+        }
+        style={{
+          width: "100%",
+          padding: "10px",
+          borderRadius: "6px",
+          backgroundColor: "#212121",
+          color: "white",
+          border: "1px solid #444",
+          fontFamily: "Roboto, sans-serif",
+          fontSize: "16px",
+          paddingRight: "40px",
+        }}
+      />
+      <button
+        type="button"
+        onClick={() =>
+          setChangePassword((prev) => ({
+            ...prev,
+            [`${field}Visible`]: !prev[`${field}Visible`],
+          }))
+        }
+        style={{
+          position: "absolute",
+          right: "10px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+        }}
+        aria-label={`Toggle ${label} visibility`}
+      >
+        {changePassword[`${field}Visible`] ? (
+          <FaEyeSlash color="white" />
+        ) : (
+          <FaEye color="white" />
+        )}
+      </button>
+    </div>
+  );
 
   // ------------------ Effects ------------------
   useEffect(() => {
@@ -216,130 +263,221 @@ export default function AdminProfile() {
       console.error("Token error", err);
       navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   // ------------------ UI Components ------------------
   const ProfileField = ({ label, value, name, onChange, error }) => (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <label style={{ fontWeight: '500', textTransform: 'capitalize', color: '#212121' }}>{label}:</label>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <label
+        style={{
+          fontWeight: "500",
+          marginBottom: "4px",
+          display: "block",
+          color: "#29527A",
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        {label}:
+      </label>
       <input
         name={name}
         value={value}
         onChange={onChange}
         style={{
-          backgroundColor: '#212121',
-          border: error ? '1px solid #B00020' : '1px solid #F5F5F5',
-          padding: '8px',
-          borderRadius: '4px',
-          color: '#F5F5F5'
+          backgroundColor: "#212121",
+          border: error ? "1px solid #B00020" : "1px solid #555",
+          padding: "8px",
+          borderRadius: "6px",
+          color: "white",
+          width: "100%",
+          fontFamily: "Roboto, sans-serif",
+          fontSize: "16px",
         }}
       />
-      {error && <p style={{ color: '#B00020', fontSize: '12px', marginTop: '4px' }}>{error}</p>}
+      {error && (
+        <p style={{ color: "#B00020", fontSize: "14px", marginTop: "4px" }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 
   const ReadOnlyField = ({ label, value }) => (
-    <p style={{ fontSize: '14px' }}>
-      <strong style={{ color: '#212121' }}>{label}:</strong> {value || "—"}
+    <p style={{ fontSize: "16px" }}>
+      <strong style={{ color: "#212121" }}>{label}:</strong> {value || "—"}
     </p>
   );
 
   // ------------------ Main Render ------------------
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#212121', color: '#F5F5F5', fontFamily: 'sans-serif' }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#FAFAFA",
+        fontFamily: "Roboto, sans-serif",
+        color: "#212121",
+      }}
+    >
       {/* Sidebar */}
-      <aside style={{ width: '256px', backgroundColor: '#212121', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#F5F5F5', marginBottom: '24px' }}>🚗 NIMAL MOTORS</h1>
-        <nav style={{ flex: '1' }}></nav>
-        <div style={{ marginTop: '8px', borderTop: '1px solid #F5F5F5', paddingTop: '24px' }}>
+      <aside
+        style={{
+          width: "260px",
+          backgroundColor: "#212121",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          color: "#CCCCCC",
+          fontFamily: "Montserrat, sans-serif",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "32px",
+            fontWeight: "800",
+            color: "#B00020",
+            fontFamily: "Poppins, sans-serif",
+            marginBottom: "32px",
+          }}
+        >
+          🚗 NIMAL MOTORS
+        </h1>
+        <div style={{ flex: 1 }} />
+        <div style={{ borderTop: "1px solid #555", paddingTop: "24px" }}>
           <button
             onClick={() => navigate("/admin-dashboard")}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '8px 12px',
-              width: '100%',
-              textAlign: 'left',
-              borderRadius: '6px',
-              color: '#336699',
-              backgroundColor: 'transparent',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#336699",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            <FaUserCircle style={{ fontSize: '18px' }} /> Dashboard
+            <FaUserCircle /> Dashboard
           </button>
           <button
             onClick={handleSignOut}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '8px 12px',
-              width: '100%',
-              textAlign: 'left',
-              borderRadius: '6px',
-              color: '#B00020',
-              backgroundColor: 'transparent',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s',
-              marginTop: '8px'
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#B00020",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#9B0A0A'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            <FaSignOutAlt style={{ fontSize: '18px' }} /> Sign Out
+            <FaSignOutAlt /> Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main style={{ flex: '1', padding: '24px', overflow: 'auto' }}>
-        {/* Cover */}
+      {/* Main */}
+      <main style={{ flex: 1, padding: "24px", overflow: "auto" }}>
+        {/* Profile Header */}
         <div
           style={{
-            borderRadius: '12px',
-            height: '192px',
+            borderRadius: "12px",
+            height: "192px",
             backgroundImage: `url("/bgimage.jpg")`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            position: 'relative'
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "relative",
           }}
         >
-          <div style={{ position: 'absolute', bottom: '-30px', left: '32px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div
+            style={{
+              position: "absolute",
+              bottom: "-30px",
+              left: "32px",
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
             <img
               src="/accprofile.jpg"
               alt="profile"
               style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                border: '4px solid #FAFAFA',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                border: "4px solid #FFFFFF",
+                boxShadow: "0 0 8px rgba(0,0,0,0.1)",
               }}
             />
-            <div>
-              <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#F5F5F5' }}>
+            <div style={{ textShadow: "0 2px 4px rgba(0,0,0,0.2)" }}>
+              <h2
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "700",
+                  color: "#FFFFFF",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
                 {profile.fullName}
               </h2>
-              <p style={{ fontSize: '14px', color: '#F5F5F5' }}>Admin – Nimal Motors</p>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#FFFFFF",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+              >
+                Admin – Nimal Motors
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Content Sections */}
-        <div style={{ marginTop: '32px', display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
+        {/* Sections */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "24px",
+            marginTop: "48px",
+          }}
+        >
           {/* About Me */}
-          <section style={{ backgroundColor: '#F5F5F5', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', color: '#212121' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>About Me</h3>
-            <p style={{ fontSize: '14px', lineHeight: '1.5' }}>
+          <section
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              About Me
+            </h3>
+            <p
+              style={{
+                fontSize: "16px",
+                lineHeight: 1.6,
+                margin: 0,
+              }}
+            >
               Hi, I’m {profile.fullName || "—"}. As the Admin at Nimal Motors I
               oversee the company’s key support functions—from user management
               and system access control to compliance reporting and process
@@ -348,10 +486,37 @@ export default function AdminProfile() {
           </section>
 
           {/* Profile Details */}
-          <section style={{ position: 'relative', backgroundColor: '#F5F5F5', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', color: '#212121' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Admin Profile</h3>
+          <section
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              position: "relative",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              Admin Profile
+            </h3>
             {isEditing ? (
-              <div style={{ marginTop: '12px', fontSize: '14px' }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  fontSize: "16px",
+                }}
+              >
                 {["fullName", "email", "username", "phoneNumber"].map((f) => (
                   <ProfileField
                     key={f}
@@ -362,22 +527,20 @@ export default function AdminProfile() {
                     error={formErrors[f]}
                   />
                 ))}
-                <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+                <div style={{ display: "flex", gap: "12px" }}>
                   <button
                     onClick={saveProfile}
                     style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#B00020',
-                      color: '#F5F5F5',
-                      borderRadius: '4px',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s'
+                      color: "#4CAF50",
+                      fontSize: "14px",
+                      fontFamily: "Roboto, sans-serif",
+                      cursor: "pointer",
+                      background: "none",
+                      border: "none",
+                      padding: "6px 12px",
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#9B0A0A'}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#B00020'}
                   >
-                    Save Changes
+                    Save
                   </button>
                   <button
                     onClick={() => {
@@ -385,192 +548,123 @@ export default function AdminProfile() {
                       setFormErrors({});
                     }}
                     style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#212121',
-                      color: '#F5F5F5',
-                      borderRadius: '4px',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s'
+                      color: "#F44336",
+                      fontSize: "14px",
+                      fontFamily: "Roboto, sans-serif",
+                      cursor: "pointer",
+                      background: "none",
+                      border: "none",
+                      padding: "6px 12px",
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div style={{ marginTop: '12px', fontSize: '14px' }}>
+              <div
+                style={{
+                  fontSize: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}
+              >
                 <ReadOnlyField label="Full Name" value={profile.fullName} />
+                <ReadOnlyField label="Mobile" value={profile.phoneNumber} />
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
-                <ReadOnlyField label="Phone Number" value={profile.phoneNumber} />
-                <button
-                  onClick={() => setIsEditing(true)}
+                <div
                   style={{
-                    marginTop: '16px',
-                    padding: '8px 16px',
-                    backgroundColor: '#336699',
-                    color: '#F5F5F5',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
+                    display: "flex",
+                    gap: "12px",
+                    marginTop: "12px",
+                    color: "#336699",
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
                 >
-                  Edit Profile
-                </button>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
-                  <FaFacebook style={{ color: '#336699', fontSize: '18px' }} />
-                  <FaTwitter style={{ color: '#336699', fontSize: '18px' }} />
-                  <FaInstagram style={{ color: '#336699', fontSize: '18px' }} />
+                  <FaFacebook color="#1877F2" />
+                  <FaTwitter color="#1DA1F2" />
+                  <FaInstagram color="#E1306C" />
                 </div>
               </div>
+            )}
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                style={{
+                  position: "absolute",
+                  top: "24px",
+                  right: "24px",
+                  backgroundColor: "#B00020",
+                  color: "#F5F5F5",
+                  border: "none",
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+                aria-label="Edit profile"
+              >
+                Edit
+              </button>
             )}
 
             {/* Change Password Form */}
             {isEditing && (
-              <section style={{ marginTop: '24px', backgroundColor: '#F5F5F5', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', color: '#212121' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Change Password</h3>
-                <div style={{ marginTop: '16px', fontSize: '14px' }}>
-                  <div style={{ position: 'relative' }}>
-                    <input
-                      type={showPasswords.oldPassword ? "text" : "password"}
-                      placeholder="Old Password"
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        backgroundColor: '#212121',
-                        border: '1px solid #F5F5F5',
-                        borderRadius: '4px',
-                        color: '#F5F5F5',
-                        fontSize: '14px'
-                      }}
-                      value={changePassword.oldPassword}
-                      onChange={(e) =>
-                        setChangePassword({
-                          ...changePassword,
-                          oldPassword: e.target.value,
-                        })
-                      }
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility("oldPassword")}
-                      style={{
-                        position: 'absolute',
-                        right: '8px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        color: '#F5F5F5',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {showPasswords.oldPassword ? <FaEyeSlash style={{ fontSize: '18px' }} /> : <FaEye style={{ fontSize: '18px' }} />}
-                    </button>
-                  </div>
-                  <div style={{ position: 'relative', marginTop: '16px' }}>
-                    <input
-                      type={showPasswords.newPassword ? "text" : "password"}
-                      placeholder="New Password"
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        backgroundColor: '#212121',
-                        border: '1px solid #F5F5F5',
-                        borderRadius: '4px',
-                        color: '#F5F5F5',
-                        fontSize: '14px'
-                      }}
-                      value={changePassword.newPassword}
-                      onChange={(e) =>
-                        setChangePassword({
-                          ...changePassword,
-                          newPassword: e.target.value,
-                        })
-                      }
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility("newPassword")}
-                      style={{
-                        position: 'absolute',
-                        right: '8px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        color: '#F5F5F5',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {showPasswords.newPassword ? <FaEyeSlash style={{ fontSize: '18px' }} /> : <FaEye style={{ fontSize: '18px' }} />}
-                    </button>
-                  </div>
-                  <div style={{ position: 'relative', marginTop: '16px' }}>
-                    <input
-                      type={showPasswords.confirmPassword ? "text" : "password"}
-                      placeholder="Confirm New Password"
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        backgroundColor: '#212121',
-                        border: '1px solid #F5F5F5',
-                        borderRadius: '4px',
-                        color: '#F5F5F5',
-                        fontSize: '14px'
-                      }}
-                      value={changePassword.confirmPassword}
-                      onChange={(e) =>
-                        setChangePassword({
-                          ...changePassword,
-                          confirmPassword: e.target.value,
-                        })
-                      }
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility("confirmPassword")}
-                      style={{
-                        position: 'absolute',
-                        right: '8px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        color: '#F5F5F5',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {showPasswords.confirmPassword ? <FaEyeSlash style={{ fontSize: '18px' }} /> : <FaEye style={{ fontSize: '18px' }} />}
-                    </button>
-                  </div>
+              <section
+                style={{
+                  marginTop: "32px",
+                  backgroundColor: "#F5F5F5",
+                  borderRadius: "12px",
+                  padding: "24px",
+                  color: "#212121",
+                  fontFamily: "Roboto, sans-serif",
+                  boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    fontFamily: "Montserrat, sans-serif",
+                    marginBottom: "16px",
+                    color: "#9B0A0A",
+                  }}
+                >
+                  Change Password
+                </h3>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}
+                >
+                  {renderPasswordInput("oldPassword", "Old Password")}
+                  {renderPasswordInput("newPassword", "New Password")}
+                  {renderPasswordInput("confirmPassword", "Confirm Password")}
+                  {passwordError && (
+                    <p style={{ color: "#B00020", fontSize: "14px" }}>
+                      {passwordError}
+                    </p>
+                  )}
                   <button
                     onClick={handleChangePassword}
                     style={{
-                      width: '100%',
-                      padding: '8px 16px',
-                      backgroundColor: '#336699',
-                      color: '#F5F5F5',
-                      borderRadius: '4px',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      marginTop: '16px',
-                      transition: 'background-color 0.2s'
+                      backgroundColor: "#336699",
+                      color: "#fff",
+                      padding: "10px 20px",
+                      borderRadius: "6px",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      alignSelf: "flex-start",
+                      fontFamily: "Roboto, sans-serif",
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
+                    aria-label="Update password"
                   >
-                    Change Password
+                    Update Password
                   </button>
-                  {passwordError && (
-                    <p style={{ color: '#B00020', fontSize: '12px', marginTop: '8px' }}>{passwordError}</p>
-                  )}
                 </div>
               </section>
             )}

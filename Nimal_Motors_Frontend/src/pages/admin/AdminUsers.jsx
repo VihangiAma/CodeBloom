@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaUser, FaTrash, FaArrowLeft, FaEdit, FaUserPlus } from "react-icons/fa";
+import { FaUser, FaTrash, FaArrowLeft, FaEdit, FaUserPlus, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -226,363 +226,261 @@ export default function AdminUsers() {
     }
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   useEffect(() => {
     setCurrentUserFromToken();
     fetchUsers();
   }, []);
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#212121', color: '#F5F5F5', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#F5F5F5', display: 'flex', alignItems: 'center' }}>
-          👥 All Registered Users
-        </h2>
-        <div style={{ display: 'flex', gap: '16px' }}>
-          <button
-            onClick={toggleAddUserForm}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#336699',
-              color: '#F5F5F5',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
-          >
-            <FaUserPlus /> Add User
-          </button>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#FAFAFA",
+        fontFamily: "Roboto, sans-serif",
+        color: "#212121",
+      }}
+    >
+      {/* Sidebar */}
+      <aside
+        style={{
+          width: "260px",
+          backgroundColor: "#212121",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          color: "#CCCCCC",
+          fontFamily: "Montserrat, sans-serif",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "32px",
+            fontWeight: "800",
+            color: "#B00020",
+            fontFamily: "Poppins, sans-serif",
+            marginBottom: "32px",
+          }}
+        >
+          🚗 NIMAL MOTORS
+        </h1>
+        <div style={{ flex: 1 }} />
+        <div style={{ borderTop: "1px solid #555", paddingTop: "24px" }}>
           <button
             onClick={() => navigate("/admin-dashboard")}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#336699',
-              color: '#F5F5F5',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#336699",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
           >
-            <FaArrowLeft /> Back to Dashboard
+            <FaUserCircle /> Dashboard
+          </button>
+          <button
+            onClick={handleSignOut}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#B00020",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
+            }}
+          >
+            <FaSignOutAlt /> Sign Out
           </button>
         </div>
-      </div>
+      </aside>
 
-      {successMessage && (
-        <div style={{ backgroundColor: '#336699', color: '#F5F5F5', padding: '8px', borderRadius: '4px', marginBottom: '16px', textAlign: 'center', fontSize: '14px' }}>
-          {successMessage}
-        </div>
-      )}
-
-      {showAddUserForm && (
-        <div style={{ backgroundColor: '#212121', padding: '24px', borderRadius: '8px', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', color: '#F5F5F5' }}>Add New User</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <input
-              type="text"
-              name="fullName"
-              value={newUser.fullName}
-              onChange={handleNewUserChange}
-              placeholder="Full Name"
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: '#F5F5F5',
-                color: '#212121',
-                fontSize: '14px',
-                border: '1px solid #212121'
-              }}
-            />
-            <input
-              type="email"
-              name="email"
-              value={newUser.email}
-              onChange={handleNewUserChange}
-              placeholder="Email"
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: '#F5F5F5',
-                color: '#212121',
-                fontSize: '14px',
-                border: '1px solid #212121'
-              }}
-            />
-            <input
-              type="text"
-              name="username"
-              value={newUser.username}
-              onChange={handleNewUserChange}
-              placeholder="Username"
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: '#F5F5F5',
-                color: '#212121',
-                fontSize: '14px',
-                border: '1px solid #212121'
-              }}
-            />
-            <input
-              type="text"
-              name="phoneNumber"
-              value={newUser.phoneNumber}
-              onChange={handleNewUserChange}
-              placeholder="Phone Number"
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: '#F5F5F5',
-                color: '#212121',
-                fontSize: '14px',
-                border: '1px solid #212121'
-              }}
-            />
-            <select
-              name="type"
-              value={newUser.type}
-              onChange={handleNewUserChange}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: '#F5F5F5',
-                color: '#212121',
-                fontSize: '14px',
-                border: '1px solid #212121'
-              }}
-            >
-              <option value="">Select Role</option>
-              <option value="admin">Admin</option>
-              <option value="mechanicalsupervisor">Mechanical Supervisor</option>
-              <option value="electricalsupervisor">Electrical Supervisor</option>
-              <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
-              <option value="servicesupervisor">Service Supervisor</option>
-              <option value="accountant">Accountant</option>
-              <option value="premiumCustomer">Premium Customer</option>
-            </select>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+      {/* Main */}
+      <main style={{ flex: 1, padding: "24px", overflow: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
+          <h2
+            style={{
+              fontSize: "24px",
+              fontWeight: "700",
+              color: "#212121",
+              fontFamily: "Poppins, sans-serif",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            👥 All Registered Users
+          </h2>
+          <div style={{ display: "flex", gap: "16px" }}>
             <button
               onClick={toggleAddUserForm}
               style={{
-                padding: '8px 16px',
-                borderRadius: '4px',
-                backgroundColor: '#212121',
-                color: '#F5F5F5',
-                fontSize: '14px',
-                cursor: 'pointer',
-                transition: 'background-color 0.2s'
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                backgroundColor: "#336699",
+                color: "#F5F5F5",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                fontSize: "14px",
+                cursor: "pointer",
+                fontFamily: "Roboto, sans-serif",
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
             >
-              Cancel
+              <FaUserPlus /> Add User
             </button>
-            <button
-              onClick={handleAddUser}
+            {/* <button
+              onClick={() => navigate("/admin-dashboard")}
               style={{
-                padding: '8px 16px',
-                borderRadius: '4px',
-                backgroundColor: '#336699',
-                color: '#F5F5F5',
-                fontSize: '14px',
-                cursor: 'pointer',
-                transition: 'background-color 0.2s'
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                backgroundColor: "#336699",
+                color: "#F5F5F5",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                fontSize: "14px",
+                cursor: "pointer",
+                fontFamily: "Roboto, sans-serif",
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
             >
-              Add User
-            </button>
+              <FaArrowLeft /> Back to Dashboard
+            </button> */}
           </div>
         </div>
-      )}
 
-      <div style={{ overflow: 'auto', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', border: '1px solid #212121' }}>
-        <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ backgroundColor: '#212121' }}>
-            <tr>
-              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>User ID</th>
-              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Full Name</th>
-              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Email</th>
-              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Phone</th>
-              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Username</th>
-              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Role</th>
-              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody style={{ backgroundColor: '#212121', borderTop: '1px solid #212121' }}>
-            {users.length > 0 ? (
-              users.map((user) => (
-                <tr
-                  key={user.userId}
-                  style={{ transition: 'background-color 0.2s' }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
-                >
-                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.userId}</td>
-                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.fullName}</td>
-                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.email}</td>
-                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.phoneNumber}</td>
-                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.username}</td>
-                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5', textTransform: 'capitalize' }}>{user.type}</td>
-                  <td style={{ padding: '16px 24px', display: 'flex', gap: '12px' }}>
-                    <button
-                      style={{
-                        backgroundColor: '#336699',
-                        color: '#F5F5F5',
-                        padding: '4px 12px',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.2s'
-                      }}
-                      onClick={() => openUpdateModal(user)}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
-                    >
-                      <FaEdit /> Update
-                    </button>
-                    <button
-                      style={{
-                        backgroundColor: '#B00020',
-                        color: '#F5F5F5',
-                        padding: '4px 12px',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        cursor: user.userId === currentUserId ? 'not-allowed' : 'pointer',
-                        opacity: user.userId === currentUserId ? '0.5' : '1',
-                        transition: 'background-color 0.2s'
-                      }}
-                      onClick={() => deleteUser(user.userId)}
-                      disabled={user.userId === currentUserId}
-                      title={user.userId === currentUserId ? "Cannot delete your own account" : "Delete user"}
-                      onMouseOver={(e) => {
-                        if (user.userId !== currentUserId) e.currentTarget.style.backgroundColor = '#9B0A0A';
-                      }}
-                      onMouseOut={(e) => {
-                        if (user.userId !== currentUserId) e.currentTarget.style.backgroundColor = '#B00020';
-                      }}
-                    >
-                      <FaTrash /> Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td style={{ textAlign: 'center', fontSize: '14px', padding: '24px', color: '#F5F5F5' }} colSpan="7">
-                  No users found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+        {successMessage && (
+          <div
+            style={{
+              backgroundColor: "#336699",
+              color: "#F5F5F5",
+              padding: "12px",
+              borderRadius: "6px",
+              marginBottom: "24px",
+              textAlign: "center",
+              fontSize: "16px",
+              fontFamily: "Roboto, sans-serif",
+            }}
+          >
+            {successMessage}
+          </div>
+        )}
 
-      {editUser && (
-        <div style={{ position: 'fixed', top: '0', left: '0', right: '0', bottom: '0', backgroundColor: 'rgba(0, 0, 0, 0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: '50' }}>
-          <div style={{ backgroundColor: '#212121', padding: '32px', borderRadius: '8px', width: '500px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', color: '#F5F5F5' }}>Edit User</h3>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'center' }}>
-              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Full Name</label>
+        {showAddUserForm && (
+          <section
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              marginBottom: "24px",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              Add New User
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <input
                 type="text"
                 name="fullName"
-                value={editUser.fullName}
-                onChange={handleEditChange}
+                value={newUser.fullName}
+                onChange={handleNewUserChange}
+                placeholder="Full Name"
                 style={{
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  backgroundColor: '#F5F5F5',
-                  color: '#212121',
-                  fontSize: '14px',
-                  border: '1px solid #212121'
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  backgroundColor: "#212121",
+                  color: "white",
+                  border: "1px solid #444",
+                  fontSize: "16px",
+                  fontFamily: "Roboto, sans-serif",
                 }}
               />
-
-              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Email</label>
               <input
                 type="email"
                 name="email"
-                value={editUser.email}
-                onChange={handleEditChange}
+                value={newUser.email}
+                onChange={handleNewUserChange}
+                placeholder="Email"
                 style={{
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  backgroundColor: '#F5F5F5',
-                  color: '#212121',
-                  fontSize: '14px',
-                  border: '1px solid #212121'
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  backgroundColor: "#212121",
+                  color: "white",
+                  border: "1px solid #444",
+                  fontSize: "16px",
+                  fontFamily: "Roboto, sans-serif",
                 }}
               />
-
-              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Phone Number</label>
-              <input
-                type="text"
-                name="phoneNumber"
-                value={editUser.phoneNumber}
-                onChange={handleEditChange}
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  backgroundColor: '#F5F5F5',
-                  color: '#212121',
-                  fontSize: '14px',
-                  border: '1px solid #212121'
-                }}
-              />
-
-              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Username</label>
               <input
                 type="text"
                 name="username"
-                value={editUser.username}
-                onChange={handleEditChange}
+                value={newUser.username}
+                onChange={handleNewUserChange}
+                placeholder="Username"
                 style={{
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  backgroundColor: '#F5F5F5',
-                  color: '#212121',
-                  fontSize: '14px',
-                  border: '1px solid #212121'
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  backgroundColor: "#212121",
+                  color: "white",
+                  border: "1px solid #444",
+                  fontSize: "16px",
+                  fontFamily: "Roboto, sans-serif",
                 }}
               />
-
-              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Role</label>
+              <input
+                type="text"
+                name="phoneNumber"
+                value={newUser.phoneNumber}
+                onChange={handleNewUserChange}
+                placeholder="Phone Number"
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  backgroundColor: "#212121",
+                  color: "white",
+                  border: "1px solid #444",
+                  fontSize: "16px",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+              />
               <select
                 name="type"
-                value={editUser.type}
-                onChange={handleEditChange}
+                value={newUser.type}
+                onChange={handleNewUserChange}
                 style={{
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  backgroundColor: '#F5F5F5',
-                  color: '#212121',
-                  fontSize: '14px',
-                  border: '1px solid #212121'
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  backgroundColor: "#212121",
+                  color: "white",
+                  border: "1px solid #444",
+                  fontSize: "16px",
+                  fontFamily: "Roboto, sans-serif",
                 }}
               >
                 <option value="">Select Role</option>
+                <option value="admin">Admin</option>
                 <option value="mechanicalsupervisor">Mechanical Supervisor</option>
                 <option value="electricalsupervisor">Electrical Supervisor</option>
                 <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
@@ -591,44 +489,383 @@ export default function AdminUsers() {
                 <option value="premiumCustomer">Premium Customer</option>
               </select>
             </div>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
               <button
-                onClick={() => setEditUser(null)}
+                onClick={toggleAddUserForm}
                 style={{
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                  backgroundColor: '#212121',
-                  color: '#F5F5F5',
-                  fontSize: '14px',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s'
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  backgroundColor: "#F44336",
+                  color: "#F5F5F5",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  fontFamily: "Roboto, sans-serif",
                 }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
               >
                 Cancel
               </button>
               <button
-                onClick={saveUpdatedUser}
+                onClick={handleAddUser}
                 style={{
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                  backgroundColor: '#336699',
-                  color: '#F5F5F5',
-                  fontSize: '14px',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s'
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  backgroundColor: "#336699",
+                  color: "#F5F5F5",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  fontFamily: "Roboto, sans-serif",
                 }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
               >
-                Save
+                Add User
               </button>
             </div>
+          </section>
+        )}
+
+        <section
+          style={{
+            backgroundColor: "#F5F5F5",
+            borderRadius: "12px",
+            padding: "24px",
+            boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "20px",
+              fontWeight: "600",
+              fontFamily: "Montserrat, sans-serif",
+              marginBottom: "16px",
+              color: "#9B0A0A",
+            }}
+          >
+            Registered Users
+          </h3>
+          <div style={{ overflow: "auto" }}>
+            <table style={{ minWidth: "100%", borderCollapse: "collapse" }}>
+              <thead
+                style={{
+                  backgroundColor: "#212121",
+                  color: "#F5F5F5",
+                }}
+              >
+                <tr>
+                  {["User ID", "Full Name", "Email", "Phone", "Username", "Role", "Actions"].map((header) => (
+                    <th
+                      key={header}
+                      style={{
+                        padding: "12px 24px",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody style={{ backgroundColor: "#F5F5F5", color: "#212121" }}>
+                {users.length > 0 ? (
+                  users.map((user) => (
+                    <tr
+                      key={user.userId}
+                      style={{ borderBottom: "1px solid #E0E0E0" }}
+                    >
+                      <td style={{ padding: "16px 24px", fontSize: "14px" }}>{user.userId}</td>
+                      <td style={{ padding: "16px 24px", fontSize: "14px" }}>{user.fullName}</td>
+                      <td style={{ padding: "16px 24px", fontSize: "14px" }}>{user.email}</td>
+                      <td style={{ padding: "16px 24px", fontSize: "14px" }}>{user.phoneNumber}</td>
+                      <td style={{ padding: "16px 24px", fontSize: "14px" }}>{user.username}</td>
+                      <td style={{ padding: "16px 24px", fontSize: "14px", textTransform: "capitalize" }}>
+                        {user.type}
+                      </td>
+                      <td style={{ padding: "16px 24px", display: "flex", gap: "12px" }}>
+                        <button
+                          style={{
+                            backgroundColor: "#336699",
+                            color: "#F5F5F5",
+                            padding: "6px 12px",
+                            borderRadius: "6px",
+                            fontSize: "14px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            cursor: "pointer",
+                            fontFamily: "Roboto, sans-serif",
+                          }}
+                          onClick={() => openUpdateModal(user)}
+                        >
+                          <FaEdit /> Update
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "#B00020",
+                            color: "#F5F5F5",
+                            padding: "6px 12px",
+                            borderRadius: "6px",
+                            fontSize: "14px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            cursor: user.userId === currentUserId ? "not-allowed" : "pointer",
+                            opacity: user.userId === currentUserId ? "0.5" : "1",
+                            fontFamily: "Roboto, sans-serif",
+                          }}
+                          onClick={() => deleteUser(user.userId)}
+                          disabled={user.userId === currentUserId}
+                          title={user.userId === currentUserId ? "Cannot delete your own account" : "Delete user"}
+                        >
+                          <FaTrash /> Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        fontSize: "16px",
+                        padding: "24px",
+                        color: "#212121",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                      colSpan="7"
+                    >
+                      No users found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
-        </div>
-      )}
+        </section>
+
+        {editUser && (
+          <div
+            style={{
+              position: "fixed",
+              top: "0",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: "50",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "#F5F5F5",
+                padding: "32px",
+                borderRadius: "12px",
+                width: "500px",
+                boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "600",
+                  fontFamily: "Montserrat, sans-serif",
+                  marginBottom: "16px",
+                  color: "#9B0A0A",
+                }}
+              >
+                Edit User
+              </h3>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px" }}>
+                <div>
+                  <label
+                    style={{
+                      fontWeight: "500",
+                      marginBottom: "4px",
+                      display: "block",
+                      color: "#29527A",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Full Name:
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={editUser.fullName}
+                    onChange={handleEditChange}
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "6px",
+                      backgroundColor: "#212121",
+                      color: "white",
+                      border: "1px solid #444",
+                      fontSize: "16px",
+                      fontFamily: "Roboto, sans-serif",
+                      width: "100%",
+                    }}
+                  />
+                </div>
+                <div>
+                  <label
+                    style={{
+                      fontWeight: "500",
+                      marginBottom: "4px",
+                      display: "block",
+                      color: "#29527A",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Email:
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={editUser.email}
+                    onChange={handleEditChange}
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "6px",
+                      backgroundColor: "#212121",
+                      color: "white",
+                      border: "1px solid #444",
+                      fontSize: "16px",
+                      fontFamily: "Roboto, sans-serif",
+                      width: "100%",
+                    }}
+                  />
+                </div>
+                <div>
+                  <label
+                    style={{
+                      fontWeight: "500",
+                      marginBottom: "4px",
+                      display: "block",
+                      color: "#29527A",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Phone Number:
+                  </label>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={editUser.phoneNumber}
+                    onChange={handleEditChange}
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "6px",
+                      backgroundColor: "#212121",
+                      color: "white",
+                      border: "1px solid #444",
+                      fontSize: "16px",
+                      fontFamily: "Roboto, sans-serif",
+                      width: "100%",
+                    }}
+                  />
+                </div>
+                <div>
+                  <label
+                    style={{
+                      fontWeight: "500",
+                      marginBottom: "4px",
+                      display: "block",
+                      color: "#29527A",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Username:
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={editUser.username}
+                    onChange={handleEditChange}
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "6px",
+                      backgroundColor: "#212121",
+                      color: "white",
+                      border: "1px solid #444",
+                      fontSize: "16px",
+                      fontFamily: "Roboto, sans-serif",
+                      width: "100%",
+                    }}
+                  />
+                </div>
+                <div>
+                  <label
+                    style={{
+                      fontWeight: "500",
+                      marginBottom: "4px",
+                      display: "block",
+                      color: "#29527A",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Role:
+                  </label>
+                  <select
+                    name="type"
+                    value={editUser.type}
+                    onChange={handleEditChange}
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "6px",
+                      backgroundColor: "#212121",
+                      color: "white",
+                      border: "1px solid #444",
+                      fontSize: "16px",
+                      fontFamily: "Roboto, sans-serif",
+                      width: "100%",
+                    }}
+                  >
+                    <option value="">Select Role</option>
+                    <option value="mechanicalsupervisor">Mechanical Supervisor</option>
+                    <option value="electricalsupervisor">Electrical Supervisor</option>
+                    <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
+                    <option value="servicesupervisor">Service Supervisor</option>
+                    <option value="accountant">Accountant</option>
+                    <option value="premiumCustomer">Premium Customer</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
+                <button
+                  onClick={() => setEditUser(null)}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    backgroundColor: "#F44336",
+                    color: "#F5F5F5",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    fontFamily: "Roboto, sans-serif",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveUpdatedUser}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    backgroundColor: "#336699",
+                    color: "#F5F5F5",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    fontFamily: "Roboto, sans-serif",
+                  }}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

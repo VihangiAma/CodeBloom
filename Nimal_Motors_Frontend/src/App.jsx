@@ -65,6 +65,14 @@ import SalesReportView from './assets/pages/SalesReportView';
 import ResetPassword from './pages/login/ResetPassword';
 
 
+import CompletedBodyshopHistory from './pages/premiumcustomer/CompletedBodyshopHistory';
+
+import ManageBodyshopBookings from './pages/Appointments/ManageBodyshopBookings';
+
+
+// Inside your route config:
+
+
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -152,11 +160,18 @@ function App() {
         <Route path="/sales-report" element={<SalesReport />} />
 
         <Route path="/view-sales-report" element={<SalesReportView />} />
+        <Route path="/test/bodyshop-bookings" element={<ManageBodyshopBookings />} /> 
+        <Route path="/bodyshop/completed" element={<CompletedBodyshopHistory />} />
+
+
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
+
+
+
   );
 }
 
