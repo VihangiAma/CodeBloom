@@ -52,7 +52,7 @@ const PORT = process.env.PORT || 5001;
 const corsOptions = {
   origin: "http://localhost:5173", // Allow frontend
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], 
   allowedHeaders: ["Content-Type", "Authorization"], // <-- Important: allow Authorization header
 };
 
