@@ -1,3 +1,5 @@
+// Add Customer Details in Service Section
+
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -114,10 +116,6 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     }
   };
 
-  // const handleCancel = () => {
-  //   Navigate("/supervisor/appointments");
-  // };
-
   return (
     <div className="max-w-xl mx-auto p-8 bg-white rounded-xl shadow-md border border-gray-200">
       <h2 className="text-2xl font-bold mb-6 text-center text-red-600">
@@ -217,13 +215,6 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           >
             Add Details
           </button>
-          {/* <button
-            type="button"
-            onClick={handleCancel}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-md transition"
-          >
-            Cancel
-          </button> */}
         </div>
       </form>
     </div>
