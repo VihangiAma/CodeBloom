@@ -228,14 +228,14 @@ const InvoiceForm = ({
     if (form.submittedBy?.trim()) {
       payload.submittedBy = form.submittedBy;
     }
-
+    console.log("Submitting invoice payload:", payload);
     fetch("http://localhost:5001/api/invoice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
       .then((r) => {
-        if (!r.ok) throw new Error("HTTP " + r.status);
+        // if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
       .then(() => {
