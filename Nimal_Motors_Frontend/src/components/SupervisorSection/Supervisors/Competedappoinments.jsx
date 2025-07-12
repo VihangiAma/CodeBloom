@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
+import { AiOutlineEdit } from "react-icons/ai";
 import axios from "axios";
 import InvoiceForm from "../InvoiceForm";
 
@@ -132,15 +133,19 @@ const Completedappoinments = () => {
                       onChange={() => toggleChecked(app._id)}
                     />
                   </td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200">
                     {app.displayID || app.serviceID}
                   </td>
-                  <td className="border px-3 py-2">{app.customerName}</td>
-                  <td className="border px-3 py-2">{app.vehicleNumber}</td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {app.customerName}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {app.vehicleNumber}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
                     {app.contact?.phone || "N/A"}
                   </td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200">
                     {new Date(app.serviceDate).toLocaleDateString()}
                   </td>
                   <td className="border px-3 py-2 bg-gray-200">
@@ -194,10 +199,10 @@ const Completedappoinments = () => {
             <thead className="bg-gray-100">
               <tr className="bg-red-300 text-sm">
                 <th className="border px-3 py-2 w-8">✔</th>
-                <th className="border px-3 py-2">Service&nbsp;</th>
-                <th className="border px-3 py-2">Customer</th>
-                <th className="border px-3 py-2">Vehicle&nbsp;No</th>
-                <th className="border px-3 py-2">Admin&nbsp;Remark</th>
+                <th className="border px-3 py-2 "> Service&nbsp;</th>
+                <th className="border px-3 py-2 "> Customer</th>
+                <th className="border px-3 py-2 ">Vehicle&nbsp;No</th>
+                <th className="border px-3 py-2 ">Admin&nbsp;Remark</th>
                 <th className="border px-3 py-2">Action</th>
               </tr>
             </thead>
@@ -211,10 +216,16 @@ const Completedappoinments = () => {
                       onChange={() => toggleChecked(inv._id)}
                     />
                   </td>
-                  <td className="border px-3 py-2">{inv.serviceID}</td>
-                  <td className="border px-3 py-2">{inv.customerName}</td>
-                  <td className="border px-3 py-2">{inv.vehicleNumber}</td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {inv.serviceID}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {inv.customerName}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {inv.vehicleNumber}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
                     {inv.adminRemarks || "—"}
                   </td>
                   <td className="border px-3 py-2 space-x-2 bg-gray-200">
@@ -226,7 +237,7 @@ const Completedappoinments = () => {
                       className="bg-green-500 text-white px-3 py-1 rounded"
                       title="Edit Invoice"
                     >
-                      <AiOutlinePlus />
+                      <AiOutlineEdit />
                     </button>
                     <button
                       onClick={() => handleDeleteInvoice(inv._id)}
