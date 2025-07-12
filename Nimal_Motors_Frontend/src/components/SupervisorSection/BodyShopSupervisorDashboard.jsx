@@ -199,7 +199,7 @@ const BodyShopSupervisorSection = () => {
 
       {/* Main Content */}
       <div className="flex-1">
-        <div className="bg-red-50 shadow flex justify-between items-center px-6 py-8">
+        <div className="bg-red shadow flex justify-between items-center px-6 py-8">
           <h2 className="text-2xl font-bold text-black-700">
             BodyShop Supervisor Section
           </h2>
