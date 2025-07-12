@@ -269,9 +269,9 @@ const AdminDashboard = () => {
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6 text-center">
-              <p className="text-gray-600 text-xl mb-4">
+              {/* <p className="text-gray-600 text-xl mb-4">
                 <AdminInvoiceView onClick={() => setActivePage("boking Management")} />
-              </p>
+              </p> */}
               <AdminInvoiceView />
               <button
                 onClick={() => setActivePage("dashboard")}
