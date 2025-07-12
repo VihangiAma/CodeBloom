@@ -142,16 +142,22 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                       onChange={() => toggleChecked(a._id)}
                     />
                   </td>
-                  <td className="border px-3 py-2">{a.displayID}</td>
-                  <td className="border px-3 py-2">{a.customerName}</td>
-                  <td className="border px-3 py-2">{a.vehicleNumber}</td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200 ">
+                    {a.displayID}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {a.customerName}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {a.vehicleNumber}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
                     {a.contact?.phone || a.contact?.email || "—"}
                   </td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200">
                     {new Date(a.serviceDate).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="px-4 py-2 border space-x-2">
+                  <td className="px-4 py-2 border space-x-2 bg-gray-200">
                     <button
                       onClick={() => {
                         setSelectedInvoice(a);
@@ -174,7 +180,6 @@ const CompletedServices = ({ sectionPrefix, section }) => {
             </tbody>
           </table>
 
-          {/* Invoice form */}
           {showInvoice && selectedInvoice && (
             <div className="mt-6 border p-4 bg-gray-50 rounded">
               <InvoiceForm
@@ -200,7 +205,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
-              <tr>
+              <tr className="bg-red-300 text-sm">
                 <th className="border px-3 py-2 w-8">✔</th>
                 <th className="border px-3 py-2">ServiceID</th>
                 <th className="border px-3 py-2">Customer</th>
@@ -212,20 +217,27 @@ const CompletedServices = ({ sectionPrefix, section }) => {
             <tbody>
               {pendingInvoices.map((inv) => (
                 <tr key={inv._id} className="hover:bg-gray-50">
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-400">
                     <input
                       type="checkbox"
                       checked={checkedIds.includes(inv._id)}
                       onChange={() => toggleChecked(inv._id)}
                     />
                   </td>
-                  <td className="border px-3 py-2">{inv.serviceID}</td>
-                  <td className="border px-3 py-2">{inv.customerName}</td>
-                  <td className="border px-3 py-2">{inv.vehicleNumber}</td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {" "}
+                    {inv.serviceID}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {inv.customerName}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
+                    {inv.vehicleNumber}
+                  </td>
+                  <td className="border px-3 py-2 bg-gray-200">
                     {inv.adminRemarks || "—"}
                   </td>
-                  <td className="border px-3 py-2 space-x-2">
+                  <td className="px-4 py-2 border space-x-2 bg-gray-200">
                     <button
                       onClick={() => {
                         setSelectedInvoice(inv);
