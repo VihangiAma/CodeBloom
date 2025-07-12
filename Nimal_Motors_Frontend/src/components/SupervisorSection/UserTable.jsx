@@ -56,7 +56,7 @@ const UserTable = () => {
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border border-gray-300">
           <thead className="bg-gray-100">
-            <tr>
+            <tr className="bg-red-300 text-sm">
               <th className="border px-4 py-2 text-left">Customer Name</th>
               <th className="border px-4 py-2 text-left">Display ID</th>
               <th className="border px-4 py-2 text-left">Contact</th>
