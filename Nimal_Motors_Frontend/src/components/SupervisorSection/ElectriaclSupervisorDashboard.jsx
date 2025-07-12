@@ -262,8 +262,8 @@ const ElectricalSupervisorSection = () => {
         {/* Header */}
         <div
           style={{
-            backgroundColor: "#FFF",
-            padding: "1rem 2rem",
+            backgroundColor: "#1f2937",
+            padding: "2rem 3rem",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -271,7 +271,7 @@ const ElectricalSupervisorSection = () => {
           }}
         >
           <h2
-            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#D32F2F" }}
+            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "white" }}
           >
             Electrical Supervisor Section
           </h2>
@@ -287,14 +287,14 @@ const ElectricalSupervisorSection = () => {
               title="Profile"
               onClick={() => navigate("/electrical-supervisor")}
             >
-              👤
+              🙍‍♂️
             </button>
             <button
               title="Logout"
               onClick={() => navigate("/login")}
-              style={{ color: "#D32F2F", fontWeight: "bold" }}
+              style={{ color: "red", fontWeight: "bold" }}
             >
-              Logout
+              LogOut
             </button>
           </div>
         </div>

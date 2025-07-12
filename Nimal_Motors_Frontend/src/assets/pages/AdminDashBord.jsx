@@ -41,6 +41,8 @@ const AdminDashboard = () => {
         return (
           <div className="p-8 min-h-[calc(100vh-8rem)]">
             <div className="bg-white rounded-lg shadow p-6 text-center">
+
+
               <AdminInvoiceView />
               <button
                 onClick={() => setActivePage("dashboard")}

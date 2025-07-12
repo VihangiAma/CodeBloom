@@ -1,6 +1,5 @@
+//Manage Mechanical,BodyShop,Eectrical Section Services.
 
-
-// ScheduleDetails.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
@@ -177,7 +176,7 @@ const ScheduleDetails = ({ section }) => {
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto border-separate border-spacing-0">
             <thead className="bg-gray-200">
-              <tr>
+              <tr className="bg-red-300 text-sm">
                 <th className="border px-4 py-2">Service ID</th>
                 <th className="border px-4 py-2">Customer Name</th>
                 <th className="border px-4 py-2">Vehicle Number</th>
@@ -191,8 +190,12 @@ const ScheduleDetails = ({ section }) => {
               {filteredAppointments.map((appointment) => (
                 <tr key={appointment._id} className="hover:bg-gray-100">
                   <td className="border px-4 py-2">{appointment.displayID}</td>
-                  <td className="border px-4 py-2">{appointment.customerName}</td>
-                  <td className="border px-4 py-2">{appointment.vehicleNumber}</td>
+                  <td className="border px-4 py-2">
+                    {appointment.customerName}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {appointment.vehicleNumber}
+                  </td>
                   <td className="border px-4 py-2">
                     {new Date(appointment.serviceDate).toLocaleDateString()}
                   </td>
@@ -208,9 +211,14 @@ const ScheduleDetails = ({ section }) => {
                       <select
                         value={appointment.status}
                         onChange={(e) =>
-                          handleStatusChange(appointment.serviceID, e.target.value)
+                          handleStatusChange(
+                            appointment.serviceID,
+                            e.target.value
+                          )
                         }
-                        className={`border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${getStatusColor(appointment.status)}`}
+                        className={`border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${getStatusColor(
+                          appointment.status
+                        )}`}
                       >
                         <option value="Pending">Pending</option>
                         <option value="In Progress">In Progress</option>
@@ -244,7 +252,9 @@ const ScheduleDetails = ({ section }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
             <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
-            <p className="mb-6">Are you sure you want to delete this appointment?</p>
+            <p className="mb-6">
+              Are you sure you want to delete this appointment?
+            </p>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowConfirmModal(false)}
@@ -267,4 +277,3 @@ const ScheduleDetails = ({ section }) => {
 };
 
 export default ScheduleDetails;
-

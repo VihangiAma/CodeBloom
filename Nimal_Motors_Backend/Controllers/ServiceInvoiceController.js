@@ -5,18 +5,19 @@ import ServiceInvoice from "../Models/ServiceInvoiceModel.js";
 // Create a new invoice
 export const createInvoice = async (req, res) => {
   try {
-      const invoiceData = {
+    console.log('📦 Incoming payload:', req.body);   // <‑‑ add
+    const invoiceData = {
       ...req.body,
-      status: "pending", 
+      status: 'pending',
       isApproved: false,
     };
     const invoice = new ServiceInvoice(invoiceData);
     await invoice.save();
     res.status(201).json(invoice);
-  }catch (err) {
-  console.error("Error saving invoice:", err);
-  res.status(400).json({ message: err.message });
-}
+  } catch (err) {
+    console.error('❌ Error saving invoice:', err);  // already prints stack
+    res.status(400).json({ message: err.message }); // this bubble up to the browser
+  }
 };
 
 // Get all invoices
@@ -114,22 +115,6 @@ export const rejectInvoice = async (req, res) => {
     res.status(200).json(invoice);
   } catch (error) {
     res.status(500).json({ message: "Rejection failed", error });
-  }
+  };
+
 };
-
-
-// // GET /api/service-invoice/approved
-//  export const getAllApprovedInvoices = async (req, res) => {
-//    try {
-//     const approvedInvoices = await ServiceInvoice.find({
-//       isApproved: true,
-//        status: "approved",
-//     }).sort({ createdAt: -1 }); // Optional: newest first
-
-//      res.status(200).json(approvedInvoices);
-//    } catch (error) {
-//      console.error("Error fetching approved invoices:", error);
-//     res.status(500).json({ message: "Failed to fetch approved invoices" });
-//    }
-//  };
-

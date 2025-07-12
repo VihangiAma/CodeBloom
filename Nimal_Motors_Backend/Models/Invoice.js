@@ -5,8 +5,9 @@ const accountantInvoiceSchema = new mongoose.Schema({
   invoiceNo: { type: String, required: true, unique: true },
   advance: { type: Number, required: true },
   balance: { type: Number, required: true },
-  remarks: { type: String },
+  //remarks: { type: String },
   invoiceDate: { type: Date, default: Date.now },
+  finalizedAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model("Invoice", accountantInvoiceSchema, "AccountantInvoices");

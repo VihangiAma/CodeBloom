@@ -322,6 +322,7 @@ function App() {
         {/*<Route path="/formal-invoice" element={<FormalInvoice />} />*/}
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
+        <><Route path ="admin-invoice-view" element={<AdminInvoiceView />} /></>
       </Routes>
     </Router>
   );

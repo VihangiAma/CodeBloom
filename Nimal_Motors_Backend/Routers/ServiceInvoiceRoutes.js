@@ -30,8 +30,6 @@ router.delete("/:id", deleteInvoice);
 router.patch("/:id/approve", approveInvoice);  
 router.patch("/:id/reject", rejectInvoice);  
 
-//router.get("/approved", getAllApprovedInvoices);
 
-//router.get("/approved", getAllApprovedInvoices); 
 
 export default router;

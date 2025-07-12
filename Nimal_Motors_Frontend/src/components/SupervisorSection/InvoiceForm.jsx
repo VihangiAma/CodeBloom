@@ -228,14 +228,14 @@ const InvoiceForm = ({
     if (form.submittedBy?.trim()) {
       payload.submittedBy = form.submittedBy;
     }
-
+    console.log("Submitting invoice payload:", payload);
     fetch("http://localhost:5001/api/invoice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
       .then((r) => {
-        if (!r.ok) throw new Error("HTTP " + r.status);
+        // if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
       .then(() => {
@@ -309,7 +309,7 @@ const InvoiceForm = ({
 
         <table className="w-full text-sm border">
           <thead className="bg-gray-100">
-            <tr>
+            <tr className="bg-red-300 text-sm">
               <th className="border p-2">Package</th>
               <th className="border p-2">Custom?</th>
               <th className="border p-2">Repairs</th>
@@ -431,7 +431,7 @@ const InvoiceForm = ({
 
         <table className="w-full text-sm border">
           <thead className="bg-gray-100">
-            <tr>
+            <tr className="bg-red-300 text-sm">
               <th className="border p-2">Category</th>
               <th className="border p-2">Custom?</th>
               <th className="border p-2">Item</th>
