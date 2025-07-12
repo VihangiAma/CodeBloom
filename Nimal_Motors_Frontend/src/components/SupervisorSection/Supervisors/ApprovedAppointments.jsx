@@ -72,9 +72,9 @@ const ApprovedAppointments = () => {
       <h2 className="text-3xl font-bold mb-6 text-center">
         Approved Appointments
       </h2>
-      <table className="min-w-full table-auto border mb-6">
+      <table className="min-w-full table-auto border mb-6  bg-red">
         <thead className="bg-gray-200">
-          <tr>
+          <tr className="bg-red-200">
             <th className="px-4 py-2 border">Service ID</th>
             <th className="px-4 py-2 border">Customer</th>
             <th className="px-4 py-2 border">Vehicle No</th>
@@ -98,7 +98,7 @@ const ApprovedAppointments = () => {
                 {new Date(appointment.serviceDate).toLocaleDateString()}
               </td>
               <td className="px-4 py-2 border">{appointment.time}</td>
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border bg-gray-200">
                 <select
                   value={appointment.status}
                   onChange={(e) => {
@@ -111,8 +111,8 @@ const ApprovedAppointments = () => {
                   }}
                   style={{
                     backgroundColor:
-                      appointment.status === "Complete" ? "#d1fae5" : "#fee2e2", // green or red background
-                    color: appointment.status === "Complete" ? "green" : "red", // green or red text
+                      appointment.status === "Complete" ? "#d1fae5" : "#fee2e2",
+                    color: appointment.status === "Complete" ? "green" : "red",
                     padding: "0.25rem 0.5rem",
                     borderRadius: "6px",
                     border: "1px solid #ccc",
