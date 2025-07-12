@@ -116,6 +116,7 @@ export const rejectInvoice = async (req, res) => {
     res.status(500).json({ message: "Rejection failed", error });
   }
 };
+
 // // GET /api/service-invoice/approved
 // export const getAllApprovedInvoices = async (req, res) => {
 //   try {
