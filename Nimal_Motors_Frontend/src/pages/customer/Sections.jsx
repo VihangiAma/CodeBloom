@@ -48,7 +48,7 @@ const SupervisorSection = () => {
     {
       id: 2,
       name: "Nimal Sirisena",
-      position: "Lead Supervisor",
+      position: "Bodyshop Supervisor",
       department: "Bodyshop Section",
       image: sup2,
       phone: "076 2233445",
@@ -56,7 +56,7 @@ const SupervisorSection = () => {
       location: "Paint & Body Shop",
       experience: "4+ years",
       teamSize: 5,
-      bio: "Nimal Sirisena oversees our bodyshop operations with expertise in collision repair, paint matching, and frame straightening. She ensures every vehicle leaves our shop looking like new with perfect paint finishes.",
+      bio: "Nimal Sirisena oversees our bodyshop operations with expertise in collision repair, paint matching, and frame straightening. he ensures every vehicle leaves our shop looking like new with perfect paint finishes.",
       responsibilities: [
         "Collision damage assessment",
         "Paint mixing and color matching",
