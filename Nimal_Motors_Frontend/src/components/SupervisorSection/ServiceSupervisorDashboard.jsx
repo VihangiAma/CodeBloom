@@ -201,7 +201,7 @@ const ServiceSupervisorDashboard = () => {
           }}
         >
           <h2
-            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#D32F2F" }}
+            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "black" }}
           >
             Service Supervisor Section
           </h2>
