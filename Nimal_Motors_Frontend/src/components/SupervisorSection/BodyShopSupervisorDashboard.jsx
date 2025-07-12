@@ -199,8 +199,8 @@ const BodyShopSupervisorSection = () => {
 
       {/* Main Content */}
       <div className="flex-1">
-        <div className="bg-white shadow flex justify-between items-center px-6 py-4">
-          <h2 className="text-2xl font-bold text-red-700">
+        <div className="bg-red-50 shadow flex justify-between items-center px-6 py-8">
+          <h2 className="text-2xl font-bold text-black-700">
             BodyShop Supervisor Section
           </h2>
           <div className="flex items-center space-x-4 text-xl text-gray-700">
@@ -221,7 +221,6 @@ const BodyShopSupervisorSection = () => {
           </div>
         </div>
 
-        {/* Page Content */}
         <div className="p-4">{renderContent()}</div>
       </div>
     </div>
