@@ -263,7 +263,7 @@ const ElectricalSupervisorSection = () => {
         <div
           style={{
             backgroundColor: "#FFF",
-            padding: "1rem 2rem",
+            padding: "2rem 3rem",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -271,7 +271,7 @@ const ElectricalSupervisorSection = () => {
           }}
         >
           <h2
-            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#D32F2F" }}
+            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "black" }}
           >
             Electrical Supervisor Section
           </h2>
