@@ -232,21 +232,47 @@ export default function AdminUsers() {
   }, []);
 
   return (
-    <div className="p-6 bg-gray-900 text-white min-h-screen">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-white flex items-center">
+    <div style={{ padding: '24px', backgroundColor: '#212121', color: '#F5F5F5', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+        <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#F5F5F5', display: 'flex', alignItems: 'center' }}>
           👥 All Registered Users
         </h2>
-        <div className="flex gap-4">
+        <div style={{ display: 'flex', gap: '16px' }}>
           <button
             onClick={toggleAddUserForm}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: '#336699',
+              color: '#F5F5F5',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
           >
             <FaUserPlus /> Add User
           </button>
           <button
             onClick={() => navigate("/admin-dashboard")}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: '#336699',
+              color: '#F5F5F5',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
           >
             <FaArrowLeft /> Back to Dashboard
           </button>
@@ -254,22 +280,29 @@ export default function AdminUsers() {
       </div>
 
       {successMessage && (
-        <div className="bg-green-600 text-white p-2 rounded mb-4 text-center">
+        <div style={{ backgroundColor: '#336699', color: '#F5F5F5', padding: '8px', borderRadius: '4px', marginBottom: '16px', textAlign: 'center', fontSize: '14px' }}>
           {successMessage}
         </div>
       )}
 
       {showAddUserForm && (
-        <div className="bg-gray-800 p-6 rounded-lg mb-6">
-          <h3 className="text-lg font-bold mb-4">Add New User</h3>
-          <div className="flex flex-col gap-4">
+        <div style={{ backgroundColor: '#212121', padding: '24px', borderRadius: '8px', marginBottom: '24px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', color: '#F5F5F5' }}>Add New User</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <input
               type="text"
               name="fullName"
               value={newUser.fullName}
               onChange={handleNewUserChange}
               placeholder="Full Name"
-              className="px-3 py-2 rounded bg-gray-700 text-white"
+              style={{
+                padding: '8px 12px',
+                borderRadius: '4px',
+                backgroundColor: '#F5F5F5',
+                color: '#212121',
+                fontSize: '14px',
+                border: '1px solid #212121'
+              }}
             />
             <input
               type="email"
@@ -277,7 +310,14 @@ export default function AdminUsers() {
               value={newUser.email}
               onChange={handleNewUserChange}
               placeholder="Email"
-              className="px-3 py-2 rounded bg-gray-700 text-white"
+              style={{
+                padding: '8px 12px',
+                borderRadius: '4px',
+                backgroundColor: '#F5F5F5',
+                color: '#212121',
+                fontSize: '14px',
+                border: '1px solid #212121'
+              }}
             />
             <input
               type="text"
@@ -285,7 +325,14 @@ export default function AdminUsers() {
               value={newUser.username}
               onChange={handleNewUserChange}
               placeholder="Username"
-              className="px-3 py-2 rounded bg-gray-700 text-white"
+              style={{
+                padding: '8px 12px',
+                borderRadius: '4px',
+                backgroundColor: '#F5F5F5',
+                color: '#212121',
+                fontSize: '14px',
+                border: '1px solid #212121'
+              }}
             />
             <input
               type="text"
@@ -293,13 +340,27 @@ export default function AdminUsers() {
               value={newUser.phoneNumber}
               onChange={handleNewUserChange}
               placeholder="Phone Number"
-              className="px-3 py-2 rounded bg-gray-700 text-white"
+              style={{
+                padding: '8px 12px',
+                borderRadius: '4px',
+                backgroundColor: '#F5F5F5',
+                color: '#212121',
+                fontSize: '14px',
+                border: '1px solid #212121'
+              }}
             />
             <select
               name="type"
               value={newUser.type}
               onChange={handleNewUserChange}
-              className="px-3 py-2 rounded bg-gray-700 text-white"
+              style={{
+                padding: '8px 12px',
+                borderRadius: '4px',
+                backgroundColor: '#F5F5F5',
+                color: '#212121',
+                fontSize: '14px',
+                border: '1px solid #212121'
+              }}
             >
               <option value="">Select Role</option>
               <option value="admin">Admin</option>
@@ -312,16 +373,36 @@ export default function AdminUsers() {
             </select>
           </div>
 
-          <div className="flex justify-end gap-3 mt-6">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
             <button
               onClick={toggleAddUserForm}
-              className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
+              style={{
+                padding: '8px 16px',
+                borderRadius: '4px',
+                backgroundColor: '#212121',
+                color: '#F5F5F5',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
             >
               Cancel
             </button>
             <button
               onClick={handleAddUser}
-              className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
+              style={{
+                padding: '8px 16px',
+                borderRadius: '4px',
+                backgroundColor: '#336699',
+                color: '#F5F5F5',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
             >
               Add User
             </button>
@@ -329,43 +410,77 @@ export default function AdminUsers() {
         </div>
       )}
 
-      <div className="overflow-auto rounded-lg shadow border border-gray-700">
-        <table className="min-w-full divide-y divide-gray-700">
-          <thead className="bg-gray-800">
+      <div style={{ overflow: 'auto', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', border: '1px solid #212121' }}>
+        <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+          <thead style={{ backgroundColor: '#212121' }}>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">User ID</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Full Name</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Phone</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Username</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300">Actions</th>
+              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>User ID</th>
+              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Full Name</th>
+              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Email</th>
+              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Phone</th>
+              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Username</th>
+              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Role</th>
+              <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#F5F5F5' }}>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-700 bg-gray-900">
+          <tbody style={{ backgroundColor: '#212121', borderTop: '1px solid #212121' }}>
             {users.length > 0 ? (
               users.map((user) => (
-                <tr key={user.userId} className="hover:bg-gray-800">
-                  <td className="px-6 py-4 text-sm">{user.userId}</td>
-                  <td className="px-6 py-4 text-sm">{user.fullName}</td>
-                  <td className="px-6 py-4 text-sm">{user.email}</td>
-                  <td className="px-6 py-4 text-sm">{user.phoneNumber}</td>
-                  <td className="px-6 py-4 text-sm">{user.username}</td>
-                  <td className="px-6 py-4 text-sm capitalize">{user.type}</td>
-                  <td className="px-6 py-4 flex gap-3">
+                <tr
+                  key={user.userId}
+                  style={{ transition: 'background-color 0.2s' }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
+                >
+                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.userId}</td>
+                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.fullName}</td>
+                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.email}</td>
+                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.phoneNumber}</td>
+                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5' }}>{user.username}</td>
+                  <td style={{ padding: '16px 24px', fontSize: '14px', color: '#F5F5F5', textTransform: 'capitalize' }}>{user.type}</td>
+                  <td style={{ padding: '16px 24px', display: 'flex', gap: '12px' }}>
                     <button
-                      className="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+                      style={{
+                        backgroundColor: '#336699',
+                        color: '#F5F5F5',
+                        padding: '4px 12px',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s'
+                      }}
                       onClick={() => openUpdateModal(user)}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
                     >
                       <FaEdit /> Update
                     </button>
                     <button
-                      className={`bg-red-600 text-white px-3 py-1 rounded text-xs flex items-center gap-1 ${
-                        user.userId === currentUserId ? "opacity-50 cursor-not-allowed" : "hover:bg-red-500"
-                      }`}
+                      style={{
+                        backgroundColor: '#B00020',
+                        color: '#F5F5F5',
+                        padding: '4px 12px',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        cursor: user.userId === currentUserId ? 'not-allowed' : 'pointer',
+                        opacity: user.userId === currentUserId ? '0.5' : '1',
+                        transition: 'background-color 0.2s'
+                      }}
                       onClick={() => deleteUser(user.userId)}
                       disabled={user.userId === currentUserId}
                       title={user.userId === currentUserId ? "Cannot delete your own account" : "Delete user"}
+                      onMouseOver={(e) => {
+                        if (user.userId !== currentUserId) e.currentTarget.style.backgroundColor = '#9B0A0A';
+                      }}
+                      onMouseOut={(e) => {
+                        if (user.userId !== currentUserId) e.currentTarget.style.backgroundColor = '#B00020';
+                      }}
                     >
                       <FaTrash /> Delete
                     </button>
@@ -374,7 +489,7 @@ export default function AdminUsers() {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center text-sm py-6 text-gray-400">
+                <td style={{ textAlign: 'center', fontSize: '14px', padding: '24px', color: '#F5F5F5' }} colSpan="7">
                   No users found.
                 </td>
               </tr>
@@ -384,56 +499,90 @@ export default function AdminUsers() {
       </div>
 
       {editUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-          <div className="bg-gray-800 p-8 rounded-lg w-[500px]">
-            <h3 className="text-lg font-bold mb-4 text-white">Edit User</h3>
+        <div style={{ position: 'fixed', top: '0', left: '0', right: '0', bottom: '0', backgroundColor: 'rgba(0, 0, 0, 0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: '50' }}>
+          <div style={{ backgroundColor: '#212121', padding: '32px', borderRadius: '8px', width: '500px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', color: '#F5F5F5' }}>Edit User</h3>
 
-            <div className="grid grid-cols-2 gap-4 items-center">
-              <label className="text-white">Full Name</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'center' }}>
+              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Full Name</label>
               <input
                 type="text"
                 name="fullName"
                 value={editUser.fullName}
                 onChange={handleEditChange}
-                className="px-3 py-2 rounded bg-gray-700 text-white"
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '4px',
+                  backgroundColor: '#F5F5F5',
+                  color: '#212121',
+                  fontSize: '14px',
+                  border: '1px solid #212121'
+                }}
               />
 
-              <label className="text-white">Email</label>
+              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Email</label>
               <input
                 type="email"
                 name="email"
                 value={editUser.email}
                 onChange={handleEditChange}
-                className="px-3 py-2 rounded bg-gray-700 text-white"
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '4px',
+                  backgroundColor: '#F5F5F5',
+                  color: '#212121',
+                  fontSize: '14px',
+                  border: '1px solid #212121'
+                }}
               />
 
-              <label className="text-white">Phone Number</label>
+              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Phone Number</label>
               <input
                 type="text"
                 name="phoneNumber"
                 value={editUser.phoneNumber}
                 onChange={handleEditChange}
-                className="px-3 py-2 rounded bg-gray-700 text-white"
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '4px',
+                  backgroundColor: '#F5F5F5',
+                  color: '#212121',
+                  fontSize: '14px',
+                  border: '1px solid #212121'
+                }}
               />
 
-              <label className="text-white">Username</label>
+              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Username</label>
               <input
                 type="text"
                 name="username"
                 value={editUser.username}
                 onChange={handleEditChange}
-                className="px-3 py-2 rounded bg-gray-700 text-white"
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '4px',
+                  backgroundColor: '#F5F5F5',
+                  color: '#212121',
+                  fontSize: '14px',
+                  border: '1px solid #212121'
+                }}
               />
 
-              <label className="text-white">Role</label>
+              <label style={{ color: '#F5F5F5', fontSize: '14px' }}>Role</label>
               <select
                 name="type"
                 value={editUser.type}
                 onChange={handleEditChange}
-                className="px-3 py-2 rounded bg-gray-700 text-white"
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '4px',
+                  backgroundColor: '#F5F5F5',
+                  color: '#212121',
+                  fontSize: '14px',
+                  border: '1px solid #212121'
+                }}
               >
                 <option value="">Select Role</option>
-                <option value="admin">Admin</option>
                 <option value="mechanicalsupervisor">Mechanical Supervisor</option>
                 <option value="electricalsupervisor">Electrical Supervisor</option>
                 <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
@@ -443,16 +592,36 @@ export default function AdminUsers() {
               </select>
             </div>
 
-            <div className="flex justify-end gap-3 mt-6">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
               <button
                 onClick={() => setEditUser(null)}
-                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white"
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  backgroundColor: '#212121',
+                  color: '#F5F5F5',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
               >
                 Cancel
               </button>
               <button
                 onClick={saveUpdatedUser}
-                className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white"
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  backgroundColor: '#336699',
+                  color: '#F5F5F5',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
               >
                 Save
               </button>

@@ -53,6 +53,7 @@ userRoutes.get("/mechanical/profile", getMechanicalSupProfile);
 userRoutes.post("/change-password", changePassword);
 
 
+// userRoutes.get('/premium-customer/history/:customerName', getPremiumCustomerHistory);
 
 userRoutes.get("/", getAllUsers);
 userRoutes.get("/:userId", getUserById);

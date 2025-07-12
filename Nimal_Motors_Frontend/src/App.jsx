@@ -26,6 +26,9 @@ import AccountantProfile from './pages/AccountantProfile';
 import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
 // import UserManagement from './pages/admin/UserManagement';
 import AdminUsers from './pages/admin/AdminUsers';
+import ServiceHistory from './pages/premiumcustomer/ServiceHistory';
+// New import for ServiceHistory
+
 
 // Supervisor Protected Pages
 import ProgressPage from './Components/SupervisorSection/ProgressPage';
@@ -106,6 +109,15 @@ function App() {
         <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
         <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
         <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        <Route path="/service-history" element={<PrivateRoute><ServiceHistory /></PrivateRoute>} />
+{/* <Route 
+  path="/premium-customer-dashboard" 
+  element={
+    <PrivateRoute>
+      <PremiumCustomerDashboard />
+    </PrivateRoute>
+  } 
+/>         */}
         <Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />
         
 

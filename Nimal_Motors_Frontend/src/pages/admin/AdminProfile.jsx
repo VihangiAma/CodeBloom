@@ -88,7 +88,6 @@ export default function AdminProfile() {
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
-    // Clear error for the field being edited
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -221,76 +220,127 @@ export default function AdminProfile() {
 
   // ------------------ UI Components ------------------
   const ProfileField = ({ label, value, name, onChange, error }) => (
-    <div className="flex flex-col">
-      <label className="font-medium capitalize">{label}:</label>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <label style={{ fontWeight: '500', textTransform: 'capitalize', color: '#212121' }}>{label}:</label>
       <input
         name={name}
         value={value}
         onChange={onChange}
-        className={`bg-gray-800 border ${error ? 'border-red-500' : 'border-gray-500'} p-2 rounded text-white`}
+        style={{
+          backgroundColor: '#212121',
+          border: error ? '1px solid #B00020' : '1px solid #F5F5F5',
+          padding: '8px',
+          borderRadius: '4px',
+          color: '#F5F5F5'
+        }}
       />
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p style={{ color: '#B00020', fontSize: '12px', marginTop: '4px' }}>{error}</p>}
     </div>
   );
 
   const ReadOnlyField = ({ label, value }) => (
-    <p>
-      <strong>{label}:</strong> {value || "—"}
+    <p style={{ fontSize: '14px' }}>
+      <strong style={{ color: '#212121' }}>{label}:</strong> {value || "—"}
     </p>
   );
 
   // ------------------ Main Render ------------------
   return (
-    <div className="flex h-screen bg-gray-900 text-white font-sans">
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#212121', color: '#F5F5F5', fontFamily: 'sans-serif' }}>
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">🚗 NIMAL MOTORS </h1>
-        <nav className="flex-1" />
-        <div className="space-y-2 border-t border-gray-600 pt-6">
+      <aside style={{ width: '256px', backgroundColor: '#212121', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#F5F5F5', marginBottom: '24px' }}>🚗 NIMAL MOTORS</h1>
+        <nav style={{ flex: '1' }}></nav>
+        <div style={{ marginTop: '8px', borderTop: '1px solid #F5F5F5', paddingTop: '24px' }}>
           <button
             onClick={() => navigate("/admin-dashboard")}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '8px 12px',
+              width: '100%',
+              textAlign: 'left',
+              borderRadius: '6px',
+              color: '#336699',
+              backgroundColor: 'transparent',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            <FaUserCircle className="text-lg" /> Dashboard
+            <FaUserCircle style={{ fontSize: '18px' }} /> Dashboard
           </button>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '8px 12px',
+              width: '100%',
+              textAlign: 'left',
+              borderRadius: '6px',
+              color: '#B00020',
+              backgroundColor: 'transparent',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s',
+              marginTop: '8px'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#9B0A0A'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            <FaSignOutAlt className="text-lg" /> Sign Out
+            <FaSignOutAlt style={{ fontSize: '18px' }} /> Sign Out
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-auto">
+      <main style={{ flex: '1', padding: '24px', overflow: 'auto' }}>
         {/* Cover */}
         <div
-          className="rounded-xl h-48 bg-cover bg-center relative"
-          style={{ backgroundImage: `url("/bgimage.jpg")` }}
+          style={{
+            borderRadius: '12px',
+            height: '192px',
+            backgroundImage: `url("/bgimage.jpg")`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            position: 'relative'
+          }}
         >
-          <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
+          <div style={{ position: 'absolute', bottom: '-30px', left: '32px', display: 'flex', alignItems: 'center', gap: '16px' }}>
             <img
               src="/accprofile.jpg"
               alt="profile"
-              className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+              style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                border: '4px solid #FAFAFA',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+              }}
             />
             <div>
-              <h2 className="text-2xl font-bold text-white">
+              <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#F5F5F5' }}>
                 {profile.fullName}
               </h2>
-              <p className="text-sm text-white">Admin – Nimal Motors</p>
+              <p style={{ fontSize: '14px', color: '#F5F5F5' }}>Admin – Nimal Motors</p>
             </div>
           </div>
         </div>
 
         {/* Content Sections */}
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div style={{ marginTop: '32px', display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
           {/* About Me */}
-          <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">About Me</h3>
-            <p className="text-sm leading-relaxed">
-              Hi, I’m {profile.fullName || "—"}. As the Admin at Nimal Motors I
+          <section style={{ backgroundColor: '#F5F5F5', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', color: '#212121' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>About Me</h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.5' }}>
+              Hi, I’m {profile.fullName || "—"}. As the Admin at Nimal Motors I
               oversee the company’s key support functions—from user management
               and system access control to compliance reporting and process
               optimisation...
@@ -298,10 +348,10 @@ export default function AdminProfile() {
           </section>
 
           {/* Profile Details */}
-          <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Admin Profile</h3>
+          <section style={{ position: 'relative', backgroundColor: '#F5F5F5', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', color: '#212121' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Admin Profile</h3>
             {isEditing ? (
-              <div className="space-y-3 text-sm">
+              <div style={{ marginTop: '12px', fontSize: '14px' }}>
                 {["fullName", "email", "username", "phoneNumber"].map((f) => (
                   <ProfileField
                     key={f}
@@ -312,10 +362,20 @@ export default function AdminProfile() {
                     error={formErrors[f]}
                   />
                 ))}
-                <div className="space-x-2 mt-4">
+                <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
                   <button
                     onClick={saveProfile}
-                    className="px-4 py-2 bg-yellow-500 text-black rounded"
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#B00020',
+                      color: '#F5F5F5',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#9B0A0A'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#B00020'}
                   >
                     Save Changes
                   </button>
@@ -324,42 +384,71 @@ export default function AdminProfile() {
                       setIsEditing(false);
                       setFormErrors({});
                     }}
-                    className="px-4 py-2 bg-gray-500 text-white rounded"
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#212121',
+                      color: '#F5F5F5',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#212121'}
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="space-y-3 text-sm">
+              <div style={{ marginTop: '12px', fontSize: '14px' }}>
                 <ReadOnlyField label="Full Name" value={profile.fullName} />
                 <ReadOnlyField label="Email" value={profile.email} />
                 <ReadOnlyField label="Username" value={profile.username} />
                 <ReadOnlyField label="Phone Number" value={profile.phoneNumber} />
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                  style={{
+                    marginTop: '16px',
+                    padding: '8px 16px',
+                    backgroundColor: '#336699',
+                    color: '#F5F5F5',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
                 >
                   Edit Profile
                 </button>
-                <div className="flex items-center space-x-3 mt-2">
-                  <FaFacebook className="text-blue-600" />
-                  <FaTwitter className="text-sky-500" />
-                  <FaInstagram className="text-pink-500" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
+                  <FaFacebook style={{ color: '#336699', fontSize: '18px' }} />
+                  <FaTwitter style={{ color: '#336699', fontSize: '18px' }} />
+                  <FaInstagram style={{ color: '#336699', fontSize: '18px' }} />
                 </div>
               </div>
             )}
 
             {/* Change Password Form */}
             {isEditing && (
-              <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-                <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-                <div className="space-y-4 text-sm">
-                  <div className="relative">
+              <section style={{ marginTop: '24px', backgroundColor: '#F5F5F5', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', color: '#212121' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Change Password</h3>
+                <div style={{ marginTop: '16px', fontSize: '14px' }}>
+                  <div style={{ position: 'relative' }}>
                     <input
                       type={showPasswords.oldPassword ? "text" : "password"}
                       placeholder="Old Password"
-                      className="w-full p-2 bg-gray-800 rounded text-white"
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        backgroundColor: '#212121',
+                        border: '1px solid #F5F5F5',
+                        borderRadius: '4px',
+                        color: '#F5F5F5',
+                        fontSize: '14px'
+                      }}
                       value={changePassword.oldPassword}
                       onChange={(e) =>
                         setChangePassword({
@@ -371,16 +460,33 @@ export default function AdminProfile() {
                     <button
                       type="button"
                       onClick={() => togglePasswordVisibility("oldPassword")}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      style={{
+                        position: 'absolute',
+                        right: '8px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#F5F5F5',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
                     >
-                      {showPasswords.oldPassword ? <FaEyeSlash /> : <FaEye />}
+                      {showPasswords.oldPassword ? <FaEyeSlash style={{ fontSize: '18px' }} /> : <FaEye style={{ fontSize: '18px' }} />}
                     </button>
                   </div>
-                  <div className="relative">
+                  <div style={{ position: 'relative', marginTop: '16px' }}>
                     <input
                       type={showPasswords.newPassword ? "text" : "password"}
                       placeholder="New Password"
-                      className="w-full p-2 bg-gray-800 rounded text-white"
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        backgroundColor: '#212121',
+                        border: '1px solid #F5F5F5',
+                        borderRadius: '4px',
+                        color: '#F5F5F5',
+                        fontSize: '14px'
+                      }}
                       value={changePassword.newPassword}
                       onChange={(e) =>
                         setChangePassword({
@@ -392,16 +498,33 @@ export default function AdminProfile() {
                     <button
                       type="button"
                       onClick={() => togglePasswordVisibility("newPassword")}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      style={{
+                        position: 'absolute',
+                        right: '8px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#F5F5F5',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
                     >
-                      {showPasswords.newPassword ? <FaEyeSlash /> : <FaEye />}
+                      {showPasswords.newPassword ? <FaEyeSlash style={{ fontSize: '18px' }} /> : <FaEye style={{ fontSize: '18px' }} />}
                     </button>
                   </div>
-                  <div className="relative">
+                  <div style={{ position: 'relative', marginTop: '16px' }}>
                     <input
                       type={showPasswords.confirmPassword ? "text" : "password"}
                       placeholder="Confirm New Password"
-                      className="w-full p-2 bg-gray-800 rounded text-white"
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        backgroundColor: '#212121',
+                        border: '1px solid #F5F5F5',
+                        borderRadius: '4px',
+                        color: '#F5F5F5',
+                        fontSize: '14px'
+                      }}
                       value={changePassword.confirmPassword}
                       onChange={(e) =>
                         setChangePassword({
@@ -413,19 +536,40 @@ export default function AdminProfile() {
                     <button
                       type="button"
                       onClick={() => togglePasswordVisibility("confirmPassword")}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      style={{
+                        position: 'absolute',
+                        right: '8px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#F5F5F5',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
                     >
-                      {showPasswords.confirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      {showPasswords.confirmPassword ? <FaEyeSlash style={{ fontSize: '18px' }} /> : <FaEye style={{ fontSize: '18px' }} />}
                     </button>
                   </div>
                   <button
                     onClick={handleChangePassword}
-                    className="w-full px-4 py-2 bg-green-500 text-white rounded mt-4"
+                    style={{
+                      width: '100%',
+                      padding: '8px 16px',
+                      backgroundColor: '#336699',
+                      color: '#F5F5F5',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      marginTop: '16px',
+                      transition: 'background-color 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#29527A'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#336699'}
                   >
                     Change Password
                   </button>
                   {passwordError && (
-                    <p className="text-red-500 text-xs mt-2">{passwordError}</p>
+                    <p style={{ color: '#B00020', fontSize: '12px', marginTop: '8px' }}>{passwordError}</p>
                   )}
                 </div>
               </section>

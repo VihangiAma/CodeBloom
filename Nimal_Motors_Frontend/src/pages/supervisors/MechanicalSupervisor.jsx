@@ -1,3 +1,4 @@
+// MechanicalSupervisor.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -24,7 +25,7 @@ export default function MechanicalSupervisor() {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // Added missing state
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
     newPassword: "",
@@ -131,7 +132,7 @@ export default function MechanicalSupervisor() {
   };
 
   const renderPasswordInput = (field, label) => (
-    <div className="relative">
+    <div style={{ position: "relative", marginBottom: "16px" }}>
       <input
         type={changePassword[`${field}Visible`] ? "text" : "password"}
         placeholder={label}
@@ -142,7 +143,17 @@ export default function MechanicalSupervisor() {
             [field]: e.target.value,
           }))
         }
-        className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
+        style={{
+          width: "100%",
+          padding: "10px",
+          borderRadius: "6px",
+          backgroundColor: "#212121",
+          color: "white",
+          border: "1px solid #444",
+          fontFamily: "Roboto, sans-serif",
+          fontSize: "16px",
+          paddingRight: "40px",
+        }}
       />
       <button
         type="button"
@@ -152,111 +163,285 @@ export default function MechanicalSupervisor() {
             [`${field}Visible`]: !prev[`${field}Visible`],
           }))
         }
-        className="absolute right-2 top-2"
+        style={{
+          position: "absolute",
+          right: "10px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+        }}
+        aria-label={`Toggle ${label} visibility`}
       >
         {changePassword[`${field}Visible`] ? (
-          <FaEyeSlash className="text-white" />
+          <FaEyeSlash color="white" />
         ) : (
-          <FaEye className="text-white" />
+          <FaEye color="white" />
         )}
       </button>
     </div>
   );
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white font-sans">
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#FAFAFA",
+        fontFamily: "Roboto, sans-serif",
+        color: "#212121",
+      }}
+    >
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+      <aside
+        style={{
+          width: "260px",
+          backgroundColor: "#212121",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          color: "#CCCCCC",
+          fontFamily: "Montserrat, sans-serif",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "32px",
+            fontWeight: "800",
+            color: "#B00020",
+            fontFamily: "Poppins, sans-serif",
+            marginBottom: "32px",
+          }}
+        >
           🚗 NIMAL MOTORS
         </h1>
 
-        <nav className="flex-1" />
+        <div style={{ flex: 1 }} />
 
-        <div className="space-y-2 border-t border-gray-600 pt-6">
+        <div
+          style={{
+            borderTop: "1px solid #555",
+            paddingTop: "24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
           <button
             onClick={() => navigate("/mechanical-supervisor-dashboard")}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#336699",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: "600",
+            }}
           >
-            <FaUserCircle className="text-lg" />
-            Dashboard
+            <FaUserCircle /> Dashboard
           </button>
 
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#B00020",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: "600",
+            }}
           >
-            <FaSignOutAlt className="text-lg" />
-            Sign Out
+            <FaSignOutAlt /> Sign Out
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-auto">
+      <main style={{ flex: 1, padding: "24px", overflowY: "auto" }}>
         {/* Profile Header */}
         <div
-          className="rounded-xl h-48 bg-cover bg-center relative"
-          style={{ backgroundImage: `url("/bgimage.jpg")` }}
+          style={{
+            borderRadius: "12px",
+            height: "192px",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundImage: "url('/bgimage.jpg')",
+            position: "relative",
+          }}
         >
-          <div className="absolute bottom-[-30px] left-8 flex items-center space-x-4">
+          <div
+            style={{
+              position: "absolute",
+              bottom: "-30px",
+              left: "32px",
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
             <img
               src="/accprofile.jpg"
               alt="profile"
-              className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+              style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                border: "4px solid white",
+                boxShadow: "0 0 6px rgba(0,0,0,0.2)",
+              }}
             />
-            <div className="text-white drop-shadow-lg">
-              <h2 className="text-2xl font-bold">{profile.fullName}</h2>
-              <p className="text-sm">Mechanical Supervisor – Nimal Motors</p>
+            <div
+              style={{
+                color: "white",
+                textShadow: "0 0 4px rgba(0,0,0,0.5)",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "28px",
+                  fontWeight: "700",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {profile.fullName}
+              </h2>
+              <p style={{ fontSize: "14px", fontFamily: "Roboto, sans-serif" }}>
+                Mechanical Supervisor – Nimal Motors
+              </p>
             </div>
           </div>
         </div>
 
         {/* About Me & Details */}
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div
+          style={{
+            marginTop: "48px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "24px",
+          }}
+        >
           {/* Left: About Me */}
-          <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">About Me</h3>
-            <p className="text-sm leading-relaxed">
-              Hi, I’m {profile.fullName || "—"}. As the Mechanical Supervisor at
-              Nimal Motors, I lead a team of technicians who handle everything
-              from routine maintenance to full engine and drivetrain rebuilds.
-              With more than a decade of hands‑on experience in automotive
-              mechanics, I manage the mechanical workshop workflow, perform
-              advanced diagnostics, and verify that every repair meets OEM
-              specifications and our own quality benchmarks. My passion lies in
-              combining precision workmanship with clear communication so
-              customers understand exactly how we’re bringing their vehicles
-              back to peak performance. When I’m not under the hood fine‑tuning
-              torque specs, you’ll find me mentoring junior techs, implementing
-              lean‑shop practices, or studying the latest power‑train
-              technologies to keep our services at the cutting edge.
+          <section
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              About Me
+            </h3>
+            <p style={{ fontSize: "16px", lineHeight: 1.6 }}>
+             
+
+Hi, I’m {profile.fullName || "—"}. As the Mechanical Supervisor at Nimal Motors, I oversee the team handling vehicle repairs and maintenance. With over 10 years of experience,
+ I ensure high-quality work and smooth workshop operations. 
+ I’m passionate about precision and helping customers get their vehicles running perfectly.
+  Outside work, I mentor technicians and keep up with the latest automotive technology.
+
             </p>
           </section>
 
           {/* Right: Detail Card */}
-          <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">
+          <section
+            style={{
+              position: "relative",
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
               Mechanical Supervisor Profile
             </h3>
 
             {isEditing ? (
-              <div className="space-y-3 text-sm">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  fontSize: "16px",
+                }}
+              >
                 {["fullName", "email", "username", "phoneNumber"].map((f) => (
-                  <div key={f} className="flex flex-col">
-                    <label className="font-medium capitalize">{f}:</label>
+                  <div key={f}>
+                    <label
+                      style={{
+                        fontWeight: "500",
+                        color: "#29527A",
+                        fontFamily: "Poppins, sans-serif",
+                        marginBottom: "4px",
+                        display: "block",
+                      }}
+                    >
+                      {f}:
+                    </label>
                     <input
                       name={f}
                       value={profile[f]}
                       onChange={handleProfileChange}
-                      className="bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                      style={{
+                        backgroundColor: "#212121",
+                        border: "1px solid #555",
+                        padding: "8px",
+                        borderRadius: "6px",
+                        color: "white",
+                        width: "100%",
+                        fontFamily: "Roboto, sans-serif",
+                        fontSize: "16px",
+                      }}
                     />
                   </div>
                 ))}
-                <div className="space-x-2 mt-2">
+                <div>
                   <button
                     onClick={saveProfile}
-                    className="text-green-400 text-sm hover:underline"
+                    style={{
+                      color: "#4CAF50",
+                      fontSize: "14px",
+                      marginRight: "12px",
+                      fontFamily: "Roboto, sans-serif",
+                      cursor: "pointer",
+                      background: "none",
+                      border: "none",
+                    }}
                   >
                     Save
                   </button>
@@ -265,14 +450,28 @@ export default function MechanicalSupervisor() {
                       setIsEditing(false);
                       setShowChangePasswordForm(false);
                     }}
-                    className="text-red-400 text-sm hover:underline"
+                    style={{
+                      color: "#F44336",
+                      fontSize: "14px",
+                      fontFamily: "Roboto, sans-serif",
+                      cursor: "pointer",
+                      background: "none",
+                      border: "none",
+                    }}
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="text-sm space-y-2">
+              <div
+                style={{
+                  fontSize: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}
+              >
                 <p>
                   <strong>Full Name:</strong> {profile.fullName || "—"}
                 </p>
@@ -285,10 +484,17 @@ export default function MechanicalSupervisor() {
                 <p>
                   <strong>Username:</strong> {profile.username || "—"}
                 </p>
-                <div className="flex items-center space-x-3 mt-2">
-                  <FaFacebook className="text-blue-600" />
-                  <FaTwitter className="text-sky-500" />
-                  <FaInstagram className="text-pink-500" />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    marginTop: "12px",
+                    color: "#336699",
+                  }}
+                >
+                  <FaFacebook color="#1877F2" />
+                  <FaTwitter color="#1DA1F2" />
+                  <FaInstagram color="#E1306C" />
                 </div>
               </div>
             )}
@@ -299,7 +505,20 @@ export default function MechanicalSupervisor() {
                   setIsEditing(true);
                   setShowChangePasswordForm(true);
                 }}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
+                style={{
+                  position: "absolute",
+                  top: "24px",
+                  right: "24px",
+                  backgroundColor: "#B00020",
+                  color: "#F5F5F5",
+                  border: "none",
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+                aria-label="Edit profile"
               >
                 Edit
               </button>
@@ -309,20 +528,50 @@ export default function MechanicalSupervisor() {
 
         {/* Change Password Section */}
         {isEditing && showChangePasswordForm && (
-          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-            <div className="space-y-4 text-sm">
+          <section
+            style={{
+              marginTop: "32px",
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              Change Password
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {renderPasswordInput("oldPassword", "Old Password")}
               {renderPasswordInput("newPassword", "New Password")}
               {renderPasswordInput("confirmPassword", "Confirm Password")}
 
               {passwordError && (
-                <p className="text-red-400 text-sm">{passwordError}</p>
+                <p style={{ color: "#B00020", fontSize: "14px" }}>{passwordError}</p>
               )}
 
               <button
                 onClick={handleChangePassword}
-                className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-white"
+                style={{
+                  backgroundColor: "#336699",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  alignSelf: "flex-start",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+                aria-label="Update password"
               >
                 Update Password
               </button>
