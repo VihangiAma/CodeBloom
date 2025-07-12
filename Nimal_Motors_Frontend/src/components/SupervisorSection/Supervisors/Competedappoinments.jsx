@@ -1,27 +1,32 @@
+//add invoice form to completed appointments
+
 import React, { useState, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import axios from "axios";
 import InvoiceForm from "../InvoiceForm";
 
+// Local storage key for checked IDs
+const STORAGE_KEY = "completedCheckedIds";
+const loadChecked = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+const saveChecked = (ids) =>
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+
 const Completedappoinments = () => {
-  /* ---------- state ---------- */
-  const [completed, setCompleted] = useState([]); // completed “service” appointments
-  const [pendingInvoices, setPendingInvoices] = useState([]); // invoices waiting for approval
+  const [completed, setCompleted] = useState([]);
+  const [pendingInvoices, setPendingInvoices] = useState([]);
   const [showInvoice, setShowInvoice] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-  /* ---------- constants ---------- */
-  // If your service invoices use a different prefix, change it here.
+  const [checkedIds, setCheckedIds] = useState(loadChecked);
+
   const SERVICE_PREFIX = "S";
 
-  /* ---------- effects ---------- */
   useEffect(() => {
     fetchCompletedServiceAppointments();
     fetchPendingInvoices();
   }, []);
 
-  /* ---------- data loaders ---------- */
   const fetchCompletedServiceAppointments = async () => {
     try {
       const res = await axios.get("http://localhost:5001/api/appointments/");
@@ -39,16 +44,26 @@ const Completedappoinments = () => {
       const res = await axios.get("http://localhost:5001/api/invoice", {
         params: { isApproved: false },
       });
-      const filtered = res.data.filter((inv) =>
-        inv.serviceID?.startsWith(SERVICE_PREFIX)
+      setPendingInvoices(
+        res.data.filter((inv) => inv.serviceID?.startsWith(SERVICE_PREFIX))
       );
-      setPendingInvoices(filtered);
     } catch (err) {
       console.error("Error fetching pending invoices:", err);
     }
   };
 
-  /* ---------- invoice create / update ---------- */
+  // Toggle checked state for an appointment or invoice
+  const toggleChecked = (id) => {
+    setCheckedIds((prev) => {
+      const updated = prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id];
+      saveChecked(updated);
+      return updated;
+    });
+  };
+
+  // Handle invoice submission (create or update)
   const handleSubmitInvoice = async (invoice) => {
     try {
       if (invoice._id) {
@@ -56,8 +71,10 @@ const Completedappoinments = () => {
           `http://localhost:5001/api/invoice/${invoice._id}`,
           invoice
         );
+        console.log("Invoice updated successfully");
       } else {
         await axios.post("http://localhost:5001/api/invoice", invoice);
+        console.log("Invoice created successfully");
       }
       setShowInvoice(false);
       setSelectedInvoice(null);
@@ -65,11 +82,10 @@ const Completedappoinments = () => {
       fetchPendingInvoices();
     } catch (err) {
       console.error("Error submitting invoice:", err);
-      alert("Failed to submit invoice.");
+      // alert("Failed to submit invoice.");
     }
   };
 
-  /* ---------- deletions ---------- */
   const handleDeleteInvoice = async (id) => {
     if (!window.confirm("Are you sure you want to delete this invoice?"))
       return;
@@ -82,10 +98,8 @@ const Completedappoinments = () => {
     }
   };
 
-  /* ---------- render ---------- */
   return (
     <div className="p-6 bg-white shadow rounded-lg">
-      {/* completed appointments (service section) */}
       <h2 className="text-2xl font-bold mb-4">
         Completed Service Appointments
       </h2>
@@ -98,7 +112,8 @@ const Completedappoinments = () => {
         <div className="overflow-x-auto mb-8">
           <table className="min-w-full table-auto border">
             <thead className="bg-gray-100">
-              <tr className="bg-gray-200 text-sm">
+              <tr className="bg-red-300 text-sm">
+                <th className="border px-3 py-2 w-8">✔</th>
                 <th className="border px-3 py-2">Service&nbsp;ID</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle&nbsp;No</th>
@@ -110,6 +125,13 @@ const Completedappoinments = () => {
             <tbody>
               {completed.map((app) => (
                 <tr key={app._id} className="text-center text-sm">
+                  <td className="border px-3 py-2 bg-gray-400">
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.includes(app._id)}
+                      onChange={() => toggleChecked(app._id)}
+                    />
+                  </td>
                   <td className="border px-3 py-2">
                     {app.displayID || app.serviceID}
                   </td>
@@ -121,7 +143,7 @@ const Completedappoinments = () => {
                   <td className="border px-3 py-2">
                     {new Date(app.serviceDate).toLocaleDateString()}
                   </td>
-                  <td className="border px-3 py-2">
+                  <td className="border px-3 py-2 bg-gray-200">
                     <button
                       onClick={() => {
                         setSelectedInvoice(app);
@@ -147,7 +169,6 @@ const Completedappoinments = () => {
         </div>
       )}
 
-      {/* invoice form modal / inline */}
       {showInvoice && selectedInvoice && (
         <div className="mb-10 border p-4 bg-gray-50 rounded">
           <InvoiceForm
@@ -161,7 +182,6 @@ const Completedappoinments = () => {
         </div>
       )}
 
-      {/* pending invoices (service section) */}
       <h2 className="text-xl font-semibold mb-4">
         Pending Invoices &ndash; Service Section
       </h2>
@@ -172,8 +192,9 @@ const Completedappoinments = () => {
         <div className="overflow-x-auto">
           <table className="min-w-full border text-sm">
             <thead className="bg-gray-100">
-              <tr>
-                <th className="border px-3 py-2">Invoice&nbsp;ID</th>
+              <tr className="bg-red-300 text-sm">
+                <th className="border px-3 py-2 w-8">✔</th>
+                <th className="border px-3 py-2">Service&nbsp;</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle&nbsp;No</th>
                 <th className="border px-3 py-2">Admin&nbsp;Remark</th>
@@ -183,13 +204,20 @@ const Completedappoinments = () => {
             <tbody>
               {pendingInvoices.map((inv) => (
                 <tr key={inv._id} className="hover:bg-gray-50 text-center">
+                  <td className="border px-3 py-2 bg-gray-400">
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.includes(inv._id)}
+                      onChange={() => toggleChecked(inv._id)}
+                    />
+                  </td>
                   <td className="border px-3 py-2">{inv.serviceID}</td>
                   <td className="border px-3 py-2">{inv.customerName}</td>
                   <td className="border px-3 py-2">{inv.vehicleNumber}</td>
                   <td className="border px-3 py-2">
                     {inv.adminRemarks || "—"}
                   </td>
-                  <td className="border px-3 py-2 space-x-2">
+                  <td className="border px-3 py-2 space-x-2 bg-gray-200">
                     <button
                       onClick={() => {
                         setSelectedInvoice(inv);

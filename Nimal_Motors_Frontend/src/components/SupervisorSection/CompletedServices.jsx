@@ -1,4 +1,5 @@
-// CompletedServices.jsx
+//Completed Services in Mechanical,BodyShop,Eectrical
+
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
@@ -7,22 +8,26 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InvoiceForm from "./InvoiceForm";
 
+const STORAGE_KEY = "completedCheckedIds";
+const loadChecked = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+const saveChecked = (ids) =>
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+
 const CompletedServices = ({ sectionPrefix, section }) => {
   const [completedAppointments, setCompletedAppointments] = useState([]);
   const [pendingInvoices, setPendingInvoices] = useState([]);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showInvoice, setShowInvoice] = useState(false);
 
+  const [checkedIds, setCheckedIds] = useState(loadChecked);
+
   const navigate = useNavigate();
 
-  /* ───────── Fetch whenever section changes ───────── */
   useEffect(() => {
     fetchCompletedAppointments();
     fetchPendingInvoices();
-    // eslint‑disable‑next‑line react-hooks/exhaustive-deps
   }, [section, sectionPrefix]);
 
-  /* ---- Completed appointments ---- */
   const fetchCompletedAppointments = async () => {
     try {
       const { data } = await axios.get(`http://localhost:5001/api/${section}`);
@@ -37,13 +42,12 @@ const CompletedServices = ({ sectionPrefix, section }) => {
     }
   };
 
-  /* ---- Pending invoices ---- */
+  //Pending invoice
   const fetchPendingInvoices = async () => {
     try {
-      const { data } = await axios.get(
-        "http://localhost:5001/api/invoice", // ← singular
-        { params: { isApproved: false } } // server filters
-      );
+      const { data } = await axios.get("http://localhost:5001/api/invoice", {
+        params: { isApproved: false },
+      });
       setPendingInvoices(
         data.filter((inv) => inv.serviceID?.startsWith(sectionPrefix))
       );
@@ -52,7 +56,17 @@ const CompletedServices = ({ sectionPrefix, section }) => {
     }
   };
 
-  /* ---- Create invoice ---- */
+  // Toggle checked state for an appointment or invoice
+  const toggleChecked = (id) => {
+    setCheckedIds((prev) => {
+      const updated = prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id];
+      saveChecked(updated);
+      return updated;
+    });
+  };
+
   const handleSubmitInvoice = async (invoiceData) => {
     try {
       if (invoiceData._id) {
@@ -75,7 +89,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
     }
   };
 
-  /* ---- Delete appointment ---- */
+  //Delete appointment
   const handleDeleteAppointment = async (id) => {
     try {
       await axios.delete(`http://localhost:5001/api/${section}/${id}`);
@@ -86,7 +100,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
     }
   };
 
-  /* ---- Delete invoice ---- */
+  //Delete invoice
   const handleDeleteInvoice = async (id) => {
     try {
       await axios.delete(`http://localhost:5001/api/invoice/${id}`);
@@ -96,10 +110,8 @@ const CompletedServices = ({ sectionPrefix, section }) => {
     }
   };
 
-  /* -------------------------------- Render -------------------------------- */
   return (
     <div className="p-4 bg-white shadow rounded-lg">
-      {/* ───── Top: Completed services ───── */}
       <h2 className="text-xl font-semibold mb-4 capitalize">
         {section} – Completed Services
       </h2>
@@ -110,7 +122,8 @@ const CompletedServices = ({ sectionPrefix, section }) => {
         <div className="overflow-x-auto mb-8">
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
-              <tr>
+              <tr className="bg-red-300 text-sm">
+                <th className="border px-3 py-2 w-8">✔</th>
                 <th className="border px-3 py-2">Service ID</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle No</th>
@@ -122,6 +135,13 @@ const CompletedServices = ({ sectionPrefix, section }) => {
             <tbody>
               {completedAppointments.map((a) => (
                 <tr key={a._id} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2 bg-gray-400">
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.includes(a._id)}
+                      onChange={() => toggleChecked(a._id)}
+                    />
+                  </td>
                   <td className="border px-3 py-2">{a.displayID}</td>
                   <td className="border px-3 py-2">{a.customerName}</td>
                   <td className="border px-3 py-2">{a.vehicleNumber}</td>
@@ -132,7 +152,6 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                     {new Date(a.serviceDate).toLocaleDateString("en-GB")}
                   </td>
                   <td className="px-4 py-2 border space-x-2">
-                    {/* Build invoice */}
                     <button
                       onClick={() => {
                         setSelectedInvoice(a);
@@ -142,7 +161,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                     >
                       <AiOutlinePlus />
                     </button>
-                    {/* Delete appointment */}
+
                     <button
                       onClick={() => handleDeleteAppointment(a._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded"
@@ -171,7 +190,6 @@ const CompletedServices = ({ sectionPrefix, section }) => {
         </div>
       )}
 
-      {/* ───── Bottom: Pending invoices ───── */}
       <h2 className="text-xl font-semibold mb-4 capitalize">
         {section} – Pending Invoices
       </h2>
@@ -183,7 +201,8 @@ const CompletedServices = ({ sectionPrefix, section }) => {
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border px-3 py-2">Invoice ID</th>
+                <th className="border px-3 py-2 w-8">✔</th>
+                <th className="border px-3 py-2">ServiceID</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle No</th>
                 <th className="border px-3 py-2">Admin Remark</th>
@@ -193,6 +212,13 @@ const CompletedServices = ({ sectionPrefix, section }) => {
             <tbody>
               {pendingInvoices.map((inv) => (
                 <tr key={inv._id} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.includes(inv._id)}
+                      onChange={() => toggleChecked(inv._id)}
+                    />
+                  </td>
                   <td className="border px-3 py-2">{inv.serviceID}</td>
                   <td className="border px-3 py-2">{inv.customerName}</td>
                   <td className="border px-3 py-2">{inv.vehicleNumber}</td>

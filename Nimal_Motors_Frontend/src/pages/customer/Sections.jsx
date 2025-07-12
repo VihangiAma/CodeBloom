@@ -156,7 +156,7 @@ const SupervisorSection = () => {
         
         {
           title: "Mechanical Repair Package",
-          price: "LKR 25,000",
+          
           items: [
             "Brake pad replacement",
             "Clutch plate & pressure plate replacement",
@@ -193,7 +193,7 @@ const SupervisorSection = () => {
        
         {
           title: "Dent Repair Package",
-          price: "LKR 12,000",
+          
           items: [
             "Up to 5 medium dents removal",
             "Paintless dent repair",
@@ -228,7 +228,7 @@ const SupervisorSection = () => {
       packages: [
         {
           title: "Battery Care Package",
-          price: "LKR 18,000",
+          
           items: [
             "HV battery repair & replace",
             "ECU / Meterboard Programming",

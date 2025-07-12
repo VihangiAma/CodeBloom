@@ -1,6 +1,6 @@
-import exppress from 'express';
+import express from 'express';
 import { CreateFeedback, getFeedback } from '../Controllers/FeedbackController.js';
-const FeedbackRouter = exppress.Router();
+const FeedbackRouter = express.Router();
 FeedbackRouter.post("/", CreateFeedback);
 FeedbackRouter.get("/", getFeedback);
 

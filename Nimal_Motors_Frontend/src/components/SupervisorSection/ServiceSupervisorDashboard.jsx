@@ -159,8 +159,8 @@ const ServiceSupervisorDashboard = () => {
                 { label: "Dashboard", value: "dashboard" },
                 { label: "Add Customer Details", value: "addservice" },
                 { label: "Manage Appointments", value: "appointments" },
-                { label: "View Invoices", value: "invoices" },
                 { label: "Approved Appointments", value: "approved" },
+                { label: "View Invoices", value: "invoices" },
               ].map((item) => (
                 <li key={item.value}>
                   <button
