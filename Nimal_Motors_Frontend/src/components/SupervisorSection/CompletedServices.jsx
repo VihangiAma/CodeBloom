@@ -7,11 +7,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InvoiceForm from "./InvoiceForm";
 
+const STORAGE_KEY = "completedCheckedIds";
+const loadChecked = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+const saveChecked = (ids) =>
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+
 const CompletedServices = ({ sectionPrefix, section }) => {
   const [completedAppointments, setCompletedAppointments] = useState([]);
   const [pendingInvoices, setPendingInvoices] = useState([]);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showInvoice, setShowInvoice] = useState(false);
+
+  const [checkedIds, setCheckedIds] = useState(loadChecked);
 
   const navigate = useNavigate();
 
@@ -50,6 +57,17 @@ const CompletedServices = ({ sectionPrefix, section }) => {
     } catch (err) {
       console.error("Error fetching pending invoices", err);
     }
+  };
+
+  /* ---- Handle checkbox changes ---- */
+  const toggleChecked = (id) => {
+    setCheckedIds((prev) => {
+      const updated = prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id];
+      saveChecked(updated); // persist immediately
+      return updated;
+    });
   };
 
   /* ---- Create invoice ---- */
@@ -111,6 +129,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
               <tr>
+                <th className="border px-3 py-2 w-8">✔</th>
                 <th className="border px-3 py-2">Service ID</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle No</th>
@@ -122,6 +141,13 @@ const CompletedServices = ({ sectionPrefix, section }) => {
             <tbody>
               {completedAppointments.map((a) => (
                 <tr key={a._id} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.includes(a._id)}
+                      onChange={() => toggleChecked(a._id)}
+                    />
+                  </td>
                   <td className="border px-3 py-2">{a.displayID}</td>
                   <td className="border px-3 py-2">{a.customerName}</td>
                   <td className="border px-3 py-2">{a.vehicleNumber}</td>
@@ -183,6 +209,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
           <table className="min-w-full text-sm border">
             <thead className="bg-gray-100">
               <tr>
+                <th className="border px-3 py-2 w-8">✔</th>
                 <th className="border px-3 py-2">ServiceID</th>
                 <th className="border px-3 py-2">Customer</th>
                 <th className="border px-3 py-2">Vehicle No</th>
@@ -193,6 +220,13 @@ const CompletedServices = ({ sectionPrefix, section }) => {
             <tbody>
               {pendingInvoices.map((inv) => (
                 <tr key={inv._id} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.includes(inv._id)}
+                      onChange={() => toggleChecked(inv._id)}
+                    />
+                  </td>
                   <td className="border px-3 py-2">{inv.serviceID}</td>
                   <td className="border px-3 py-2">{inv.customerName}</td>
                   <td className="border px-3 py-2">{inv.vehicleNumber}</td>
