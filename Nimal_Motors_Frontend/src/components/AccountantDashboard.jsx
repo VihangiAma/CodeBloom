@@ -220,25 +220,25 @@ const handleDelete = async (id) => {
   }
 };
 
-const refreshInvoices = async () => {
-  try {
-    const [invoicesRes, finalizedRes] = await Promise.all([
-      axios.get("http://localhost:5001/api/invoice"),
-      axios.get("http://localhost:5001/api/accountant-invoices"),
-    ]);
+// const refreshInvoices = async () => {
+//   try {
+//     const [invoicesRes, finalizedRes] = await Promise.all([
+//       axios.get("http://localhost:5001/api/invoice"),
+//       axios.get("http://localhost:5001/api/accountant-invoices"),
+//     ]);
 
-    const approved = invoicesRes.data.filter((inv) => inv.isApproved === true);
-    setFinalizedInvoices(finalizedRes.data);
+//     const approved = invoicesRes.data.filter((inv) => inv.isApproved === true);
+//     setFinalizedInvoices(finalizedRes.data);
 
-    const finalizedServiceIds = new Set(finalizedRes.data.map((i) => i.serviceInvoiceId?._id));
-    const unfinalized = approved.filter((inv) => !finalizedServiceIds.has(inv._id));
-    setApprovedInvoices(unfinalized);
-  } catch (err) {
-    console.error("Failed to refresh invoice data", err);
-  }
-};
+//     const finalizedServiceIds = new Set(finalizedRes.data.map((i) => i.serviceInvoiceId?._id));
+//     const unfinalized = approved.filter((inv) => !finalizedServiceIds.has(inv._id));
+//     setApprovedInvoices(unfinalized);
+//   } catch (err) {
+//     console.error("Failed to refresh invoice data", err);
+//   }
+// };
 
-// Call refreshInvoices() after invoice finalized
+// // Call refreshInvoices() after invoice finalized
 
 
 
@@ -247,6 +247,7 @@ const refreshInvoices = async () => {
 
 
   // Fetch approved repairs for invoice generation
+  
   useEffect(() => {
   axios
     .get("http://localhost:5001/api/invoice")
@@ -256,6 +257,8 @@ const refreshInvoices = async () => {
     })
     .catch((err) => console.error("Failed to fetch invoices", err));
 }, []);
+
+
 
 // Fetch finalized invoices
 useEffect(() => {
