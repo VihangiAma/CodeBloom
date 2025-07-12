@@ -1,5 +1,5 @@
 
-
+import Stock from '../Models/Stock.js';
 import ServiceInvoice from "../Models/ServiceInvoiceModel.js";
 
 // Create a new invoice
@@ -11,6 +11,22 @@ export const createInvoice = async (req, res) => {
       status: 'pending',
       isApproved: false,
     };
+     // ✅ Deduct stock for non-custom items
+    for (const item of invoiceData.items || []) {
+      const stockItem = await Stock.findOne({ itemName: item.itemName });
+
+      if (stockItem) {
+        if (stockItem.stockQuantity < item.qty) {
+          return res.status(400).json({
+            message: `Insufficient stock for ${item.itemName}`,
+          });
+        }
+
+        stockItem.stockQuantity -= item.qty;
+        await stockItem.save(); // ✅ Save updated stock
+      }
+    }
+
     const invoice = new ServiceInvoice(invoiceData);
     await invoice.save();
     res.status(201).json(invoice);
