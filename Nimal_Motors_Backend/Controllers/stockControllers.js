@@ -195,17 +195,34 @@ export const checkLowStock = async (req, res) => {
      }
    };
 
+
+   // Get next item ID
+// This function generates the next item ID based on the highest existing itemId
    export const getNextItemId = async (req, res) => {
   try {
-    // Find the item with the highest itemId (assumes format like 'ITM0010')
-    const lastItem = await Stock.findOne().sort({ itemId: -1 });
+    const result = await Stock.aggregate([
+      {
+        $project: {
+          itemId: 1,
+          numericId: {
+            $toInt: {
+              $replaceAll: {
+                input: "$itemId",
+                find: "ITM",
+                replacement: ""
+              }
+            }
+          }
+        }
+      },
+      { $sort: { numericId: -1 } },
+      { $limit: 1 }
+    ]);
 
-    let nextId = "ITM0001"; // Default starting ID
-
-    if (lastItem && lastItem.itemId) {
-      const num = parseInt(lastItem.itemId.replace(/[^\d]/g, ""), 10); // extract numeric part
-      const newNum = num + 1;
-      nextId = `ITM${String(newNum).padStart(4, "0")}`; // Format: ITM0001
+    let nextId = "ITM001"; // Default starting ID
+    if (result.length > 0) {
+      const newNum = result[0].numericId + 1;
+      nextId = `ITM${String(newNum).padStart(3, "0")}`;
     }
 
     res.status(200).json({ nextId });
@@ -214,6 +231,7 @@ export const checkLowStock = async (req, res) => {
     res.status(500).json({ message: "Failed to generate next item ID" });
   }
 };
+
 // GET item by barcode
 export const getItemByBarcode = async (req, res) => {
   try {

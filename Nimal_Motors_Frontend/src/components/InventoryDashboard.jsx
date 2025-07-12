@@ -38,6 +38,39 @@ const [quantityToAdd, setQuantityToAdd] = useState("");
 
   const navigate = useNavigate();
 
+  // 1. Define fetchInventory function that fetches inventory & updates states
+const fetchInventory = async () => {
+  try {
+    const response = await axios.get("http://localhost:5001/api/stock/items");
+    const data = response.data;
+
+    setInventory(data);
+
+    // Update categories
+    const uniqueCategories = [...new Set(data.map(item => item.category))];
+    setCategories(uniqueCategories);
+
+    setTotalStock(data.length);
+    setLowStockCount(data.filter(item => item.stockQuantity < 50).length);
+    // Count unique companies for suppliers (from companyName)
+    setTotalSuppliers(new Set(data.map(item => item.companyName)).size);
+
+    setRecentUpdates(data.slice(-3));
+  } catch (error) {
+    console.error("Error fetching inventory:", error);
+  }
+};
+
+// 2. Use useEffect to call fetchInventory initially and every 5 seconds
+useEffect(() => {
+  fetchInventory(); // initial fetch
+
+  const intervalId = setInterval(() => {
+    fetchInventory();
+  }, 5000); // fetch every 5 seconds
+  return () => clearInterval(intervalId); // cleanup on unmount
+}, []);
+
   // Load all inventory items and calculate summaries
   useEffect(() => {
     axios.get("http://localhost:5001/api/stock/items")
@@ -58,6 +91,7 @@ const [quantityToAdd, setQuantityToAdd] = useState("");
     item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (categoryFilter === "" || item.category === categoryFilter)
   );
+  
   
 
   // Load supplier list
