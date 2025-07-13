@@ -53,4 +53,116 @@ export const getRecentExpenses = async (req, res) => {
       res.status(500).json({ message: "Failed to fetch recent expenses" });
     }
   };
+
+
+  // Get total expenses grouped by month (last 6 months)
+export const getMonthlyExpenseSummary = async (req, res) => {
+  try {
+    const result = await Expense.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: new Date(new Date().setMonth(new Date().getMonth() - 5)),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$date" },
+          total: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: { "_id": 1 },
+      },
+    ]);
+
+    res.json(result);
+  } catch (err) {
+    console.error("Error fetching monthly expense summary", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+//get total expenses grouped by category
+export const getCategoryExpenseSummary = async (req, res) => {
+  try {
+    const summary = await Expense.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          total: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: { total: -1 }
+      }
+    ]);
+    res.json(summary);
+  } catch (err) {
+    console.error("Error fetching category summary", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//get total expenses grouped by supplier
+export const getSupplierExpenseSummary = async (req, res) => {
+  try {
+    const summary = await Expense.aggregate([
+      {
+        $group: {
+          _id: "$supplier",
+          total: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: { total: -1 },
+      },
+      {
+        $limit: 5
+      }
+    ]);
+    res.json(summary);
+  } catch (err) {
+    console.error("Error fetching supplier summary", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+export const updateExpense = async (req, res) => {
+  try {
+    const updated = await Expense.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ message: "Server error while updating expense" });
+  }
+};
+
+// @desc    Delete an expense
+// @route   DELETE /api/expenses/delete/:id
+// @access  Public (Add auth middleware if needed)
+export const deleteExpense = async (req, res) => {
+  try {
+    const deleted = await Expense.findByIdAndDelete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    res.status(200).json({ message: "Expense deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ message: "Server error while deleting expense" });
+  }
+};
+
+
   

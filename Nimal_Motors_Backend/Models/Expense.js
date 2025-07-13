@@ -5,6 +5,9 @@ const expenseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Details:{
+
+  },
   amount: {
     type: Number,
     required: true,

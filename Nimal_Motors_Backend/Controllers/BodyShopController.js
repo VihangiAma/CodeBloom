@@ -50,15 +50,45 @@ export const updateService = async (req, res) => {
   }
 };
 
-// Delete a BodyShop service
+// // Delete a BodyShop service
+// export const deleteService = async (req, res) => {
+//   try {
+//     const deletedService = await BodyShopSection.findOneAndDelete(
+//       { serviceID: Number(req.params.id) } // Use serviceID to find the document
+//     );
+//     if (!deletedService) return res.status(404).json({ message: "Service not found" });
+//     res.status(200).json({ message: "Service deleted" });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+// Delete a service entry (supports both _id and serviceID)
 export const deleteService = async (req, res) => {
   try {
-    const deletedService = await BodyShopSection.findOneAndDelete(
-      { serviceID: Number(req.params.id) } // Use serviceID to find the document
-    );
-    if (!deletedService) return res.status(404).json({ message: "Service not found" });
+    const param = req.params.id;
+
+    // First try to delete by MongoDB _id
+    let deletedService = null;
+    if (/^[0-9a-fA-F]{24}$/.test(param)) {
+      // It's likely a MongoDB ObjectId
+      deletedService = await BodyShopSection.findByIdAndDelete(param);
+    }
+
+    // If not found by _id, try deleting by serviceID
+    if (!deletedService && !isNaN(param)) {
+      deletedService = await BodyShopSection.findOneAndDelete({
+        serviceID: Number(param),
+      });
+    }
+
+    if (!deletedService) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
     res.status(200).json({ message: "Service deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+

@@ -1,8 +1,9 @@
-// Manage appointments for the service section
+// Manage Appointments for the Service Section
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { FaTrash } from "react-icons/fa";
 
 const AppointmentDetails = ({ goBack }) => {
   const [appointments, setAppointments] = useState([]);
@@ -88,15 +89,8 @@ const AppointmentDetails = ({ goBack }) => {
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      {/* <button
-        onClick={goBack}
-        className="mb-6 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center"
-      >
-        ← Back to Dashboard
-      </button> */}
-
       <h2 className="text-3xl font-bold mb-6 text-center">
-        Service Booking Details
+        Manage Appointments
       </h2>
 
       {errorMessage && (
@@ -134,7 +128,7 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
     ) : (
       <table className="min-w-full table-auto border mb-6">
         <thead>
-          <tr className="bg-gray-200">
+          <tr className="bg-red-300">
             <th className="px-4 py-2 border">Service ID</th>
             <th className="px-4 py-2 border">Customer</th>
             <th className="px-4 py-2 border">Contact No.</th>
@@ -157,22 +151,50 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
               <td className="px-4 py-2 border">{appointment.vehicleNumber}</td>
               <td className="px-4 py-2 border">{appointment.vehicleType}</td>
               <td className="px-4 py-2 border">
-                {new Date(appointment.date).toLocaleDateString()}
+                {new Date(appointment.serviceDate).toLocaleDateString()}
               </td>
               <td className="px-4 py-2 border">{appointment.time}</td>
 
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border bg-gray-200">
                 {onApprove && onReject && appointment.status === "Pending" ? (
                   <>
                     <button
                       onClick={() => onApprove(appointment.serviceID)}
-                      className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2"
+                      style={{
+                        backgroundColor: "#28a745",
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        marginRight: "8px",
+                        cursor: "pointer",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.backgroundColor = "#218838")
+                      }
+                      onMouseOut={(e) =>
+                        (e.target.style.backgroundColor = "#28a745")
+                      }
                     >
                       Approve
                     </button>
+
                     <button
                       onClick={() => onReject(appointment.serviceID)}
-                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                      style={{
+                        backgroundColor: "#dc3545",
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.backgroundColor = "#c82333")
+                      }
+                      onMouseOut={(e) =>
+                        (e.target.style.backgroundColor = "#dc3545")
+                      }
                     >
                       Reject
                     </button>
@@ -180,9 +202,9 @@ const Section = ({ title, appointments, onApprove, onReject, onDelete }) => (
                 ) : (
                   <button
                     onClick={() => onDelete(appointment.serviceID)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    className="bg-red-500 text-white px-3 py-1 rounded"
                   >
-                    Delete
+                    <FaTrash />
                   </button>
                 )}
               </td>

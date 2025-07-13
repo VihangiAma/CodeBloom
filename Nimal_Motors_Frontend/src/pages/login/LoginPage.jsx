@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import NavBar from "../../components/NavBar/NavBar";
+import Footer from "../../components/Footer/Footer";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -126,6 +128,15 @@ export default function Login() {
         className="absolute inset-0 bg-cover bg-center brightness-75"
         style={{ backgroundImage: `url("/newbg.png")` }}
       ></div>
+    <>
+      {/* <NavBar /> */}
+      <NavBar />
+      <div className="relative h-screen w-screen">
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center brightness-75"
+          style={{ backgroundImage: `url("/bgimage.jpg")` }}
+        ></div>
 
       {/* Centered Form */}
       <div className="relative z-10 flex items-center justify-center h-full px-4">
@@ -139,208 +150,106 @@ export default function Login() {
           >
             Login
           </h2>
+        {/* Centered Form */}
+        <div className="relative z-10 flex items-center justify-center h-full px-4">
+          <div className="bg-white/30 backdrop-blur-sm p-8 rounded-lg shadow-2xl w-full max-w-md border border-white/20 text-red">
+            <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
 
-          {message && (
-            <p
-              className={`mb-4 text-center ${
-                message.toLowerCase().includes("successful") ||
-                message.toLowerCase().includes("sent")
-                  ? "text-green-700"
-                  : "text-red-700"
-              }`}
-              style={{ fontSize: "14px" }}
-            >
-              {message}
-            </p>
-          )}
-
-          {isForgotPassword ? (
-            <form onSubmit={handleForgotPasswordSubmit}>
-              <div className="mb-5">
-                <label
-                  className="block mb-1 font-semibold"
-                  style={{ fontSize: "16px" }}
-                >
-                  Enter your email:
-                </label>
-                <input
-                  type="email"
-                  value={forgotPasswordEmail}
-                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  required
-                  style={{ fontSize: "16px", fontFamily: "'Roboto', sans-serif" }}
-                />
-              </div>
-
-              <button
-                type="submit"
-                style={{
-                  width: "100%",
-                  backgroundColor: "#B00020",
-                  color: "white",
-                  padding: "12px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  transition: "background-color 0.3s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#9B0A0A")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#B00020")
-                }
+            {message && (
+              <p
+                className={`mb-4 text-center ${message.includes("successful")
+                    ? "text-green-200"
+                    : "text-red-300"
+                  }`}
               >
-                Send Reset Link
-              </button>
+                {message}
+              </p>
+            )}
 
-              <div className="mt-5 text-center">
-                <p
-                  onClick={() => setIsForgotPassword(false)}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer"
-                  style={{ fontFamily: "'Open Sans', sans-serif" }}
-                >
-                  Back to Login
-                </p>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="mb-5">
-                <label
-                  className="block mb-1 font-semibold"
-                  style={{ fontSize: "16px" }}
-                >
-                  Email:
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  required
-                  style={{ fontSize: "16px", fontFamily: "'Roboto', sans-serif" }}
-                />
-                {errors.email && (
-                  <p className="text-red-600 text-sm mt-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                    {errors.email}
-                  </p>
-                )}
-              </div>
 
-              <div className="mb-5 relative">
-                <label
-                  className="block mb-1 font-semibold"
-                  style={{ fontSize: "16px" }}
-                >
-                  Password:
-                </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  required
-                  style={{ fontSize: "16px", fontFamily: "'Roboto', sans-serif" }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "#336699",
-                    padding: 0,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {showPassword ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="20"
-                      width="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#336699"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-4.477 0-8.268-2.943-9.542-7a10.94 10.94 0 0 1 1.96-3.3"/>
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                      <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="20"
-                      width="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#336699"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                </button>
-                {errors.password && (
-                  <p className="text-red-600 text-sm mt-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                    {errors.password}
-                  </p>
-                )}
-
-                <div className="text-right mt-1">
-                  <span
-                    onClick={() => setIsForgotPassword(true)}
-                    className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer"
-                    style={{ fontFamily: "'Open Sans', sans-serif" }}
-                  >
-                    Forgot Password?
-                  </span>
+            {isForgotPassword ? (
+              <form onSubmit={handleForgotPasswordSubmit}>
+                <div className="mb-4">
+                  <label className="block mb-1">Enter your email:</label>
+                  <input
+                    type="email"
+                    value={forgotPasswordEmail}
+                    onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                    className="w-full px-3 py-2 rounded text-black border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                style={{
-                  width: "100%",
-                  backgroundColor: "#B00020",
-                  color: "white",
-                  padding: "12px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  transition: "background-color 0.3s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#9B0A0A")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#B00020")
-                }
-              >
-                Login
-              </button>
-            </form>
-          )}
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
+                >
+                  Send Reset Link
+                </button>
+
+                <div className="mt-4 text-center">
+                  <p
+                    onClick={() => setIsForgotPassword(false)}
+                    className="text-sm text-blue-300 hover:text-blue-500 underline cursor-pointer"
+                  >
+                    Back to Login
+                  </p>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  <label className="block mb-1">Email:</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-3 py-2 rounded text-black border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                  {errors.email && (
+                    <p className="text-red-300 text-sm mt-1">{errors.email}</p>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-1">Password:</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-3 py-2 rounded text-black border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                  {errors.password && (
+                    <p className="text-red-300 text-sm mt-1">{errors.password}</p>
+                  )}
+
+                  {/* Forgot Password Link */}
+                  <div className="text-right mt-1">
+                    <span
+                      onClick={() => setIsForgotPassword(true)}
+                      className="text-sm text-blue-300 hover:text-blue-500 underline cursor-pointer"
+                    >
+                      Forgot Password?
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-black py-2 rounded font-semibold"
+                >
+                  Login
+                </button>
+              </form>
+            )}
+
+          </div>
         </div>
       </div>
-    </div>
+      {/* <Footer /> */}
+      <Footer />
+    </>
   );
 }

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate } from "react-router-dom";
 import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 import AddServiceForm from "./AddServiceForm";
 import ScheduleDetails from "./ScheduleDetails";
 import Progress from "./ProgressPage";
-import CompletedServices from './CompletedServices';
+import CompletedServices from "./CompletedServices";
 
 const BodyShopSupervisorSection = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const BodyShopSupervisorSection = () => {
   });
   const [showProgressFetcher, setShowProgressFetcher] = useState(true);
 
- useEffect(() => {
+  useEffect(() => {
     if (activePage === "dashboard") {
       setShowProgressFetcher(true);
     }
@@ -38,8 +38,8 @@ const BodyShopSupervisorSection = () => {
       text: "Do you want to add this service?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#D32F2F",
+      cancelButtonColor: "#1C1C1C",
       confirmButtonText: "Yes, add it!",
       cancelButtonText: "Cancel",
     });
@@ -51,7 +51,7 @@ const BodyShopSupervisorSection = () => {
           icon: "success",
           title: "Service Added!",
           text: "The new service has been successfully added.",
-          confirmButtonColor: "#3085d6",
+          confirmButtonColor: "#D32F2F",
         });
         setActivePage("dashboard");
       } catch (error) {
@@ -60,7 +60,7 @@ const BodyShopSupervisorSection = () => {
           icon: "error",
           title: "Failed!",
           text: "Could not add service. Please try again.",
-          confirmButtonColor: "#d33",
+          confirmButtonColor: "#D32F2F",
         });
       }
     }
@@ -86,17 +86,10 @@ const BodyShopSupervisorSection = () => {
             </motion.div>
           </div>
         );
-        case "invoices":
-          return (
-            <div className="text-gray-600 p-8 text-center text-xl">
-              <CompletedServices section="bodyshop" sectionPrefix="BS" />
-            </div>
-          );
-      case "report":
+      case "invoices":
         return (
           <div className="text-gray-600 p-8 text-center text-xl">
-            {activePage.charAt(0).toUpperCase() + activePage.slice(1)} page
-            coming soon...
+            <CompletedServices section="bodyshop" sectionPrefix="BS" />
           </div>
         );
 
@@ -105,77 +98,56 @@ const BodyShopSupervisorSection = () => {
           <>
             {/* Progress Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaListAlt className="text-blue-600 text-3xl" />
-                <div>
-                  <p className="text-sm">Total Appointments</p>
-                  <h2 className="text-xl font-semibold">{stats.total}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaCheckCircle className="text-green-600 text-3xl" />
-                <div>
-                  <p className="text-sm">Completed</p>
-                  <h2 className="text-xl font-semibold">{stats.completed}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaSpinner className="text-yellow-500 text-3xl animate-spin-slow" />
-                <div>
-                  <p className="text-sm">In Progress</p>
-                  <h2 className="text-xl font-semibold">{stats.inProgress}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaClock className="text-red-500 text-3xl" />
-                <div>
-                  <p className="text-sm">Pending</p>
-                  <h2 className="text-xl font-semibold">{stats.pending}</h2>
-                </div>
-              </div>
+              <StatCard
+                icon={<FaListAlt />}
+                label="Total Appointments"
+                value={stats.total}
+                color="#D32F2F"
+              />
+              <StatCard
+                icon={<FaCheckCircle />}
+                label="Completed"
+                value={stats.completed}
+                color="green"
+              />
+              <StatCard
+                icon={<FaSpinner className="animate-spin-slow" />}
+                label="In Progress"
+                value={stats.inProgress}
+                color="orange"
+              />
+              <StatCard
+                icon={<FaClock />}
+                label="Pending"
+                value={stats.pending}
+                color="gray"
+              />
             </div>
 
             {/* Dashboard Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
               <DashboardCard
                 title="Add Service"
-                description="Add a new mechanical service."
-                color="bg-blue-500"
+                description="Add a new bodyshop service."
                 emoji="➕"
                 onClick={() => setActivePage("addservice")}
               />
               <DashboardCard
                 title="Manage Appointments"
                 description="View and manage customer bookings."
-                color="bg-green-500"
                 emoji="📅"
                 onClick={() => setActivePage("schedules")}
               />
               <DashboardCard
                 title="Invoices"
                 description="View invoices."
-                color="bg-yellow-500"
                 emoji="🧾"
                 onClick={() => setActivePage("invoices")}
               />
-              <DashboardCard
-                title="View Reports"
-                description="Generate and review service reports."
-                color="bg-purple-500"
-                emoji="📋"
-                onClick={() => setActivePage("report")}
-              />
             </div>
 
-            {/* Progress Updater */}
             {showProgressFetcher && (
-              <Progress
-                section="bodyshop"
-                onStatsUpdate={handleStatsUpdate}
-              />
+              <Progress section="bodyshop" onStatsUpdate={handleStatsUpdate} />
             )}
           </>
         );
@@ -185,104 +157,70 @@ const BodyShopSupervisorSection = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
+      <div className="w-64 bg-black text-white flex flex-col justify-between">
         <div>
-        {/* Company Name and Logo */}
-        <div className="flex items-center p-6 space-x-3">
-          {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
-          <h1 className="text-xl font-bold">Nimal Motors</h1>
-        </div>
-        {/* Navigation Menu */}
-        <div className="p-6">
-          <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
-          <ul className="space-y-3">
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "dashboard" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("dashboard")}
-              >
-                Dashboard
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "addservice" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("addservice")}
-              >
-                Add Service
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "schedules" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("schedules")}
-              >
-                Manage Appointments
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "invoices" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("invoices")}
-              >
-                Invoices
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                  activePage === "report" && "bg-gray-700"
-                }`}
-                onClick={() => setActivePage("report")}
-              >
-                View Reports
-              </button>
-            </li>
-          </ul>
+          <div className="p-6">
+            <h1 className="text-2xl font-extrabold text-red-600 mb-6">
+              🚗 NIMAL MOTORS
+            </h1>
+            <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
+            <ul className="space-y-3">
+              {[
+                { label: "Dashboard", value: "dashboard" },
+                { label: "Add Service", value: "addservice" },
+                { label: "Manage Appointments", value: "schedules" },
+                { label: "Invoices", value: "invoices" },
+              ].map((item) => (
+                <li key={item.value}>
+                  <button
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "0.75rem 1rem",
+                      backgroundColor:
+                        activePage === item.value ? "#D32F2F" : "transparent",
+                      border: item.special ? "2px solid #FF5C5C" : "none",
+                      color: item.special ? "#B00020" : "#FFF",
+                      borderRadius: "0.5rem",
+                      marginBottom: "0.5rem",
+                      fontWeight: item.special ? "bold" : "normal",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setActivePage(item.value)}
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
-      </div>
+
       {/* Main Content */}
       <div className="flex-1">
-        {/* Header */}
-        <div className="bg-white shadow flex justify-between items-center px-6 py-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            BodyShop Service Section
+        <div className="bg-gray-800 shadow flex justify-between items-center px-6 py-8">
+          <h2 className="text-2xl font-bold text-white">
+            BodyShop Supervisor Section
           </h2>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 text-xl text-gray-700">
             <button
-              className="hover:text-blue-600 text-gray-700 text-xl"
-              title="Notifications"
-              onClick={() => navigate("/notification")} // Replace with actual route
-            >
-              🔔
-            </button>
-            <button
-              className="hover:text-blue-600 text-gray-700 text-xl"
+              className="hover:text-red-600"
               title="Profile"
-              onClick={() => navigate("/bodyshop-supervisor")} // Replace with actual route
+              onClick={() => navigate("/bodyshop-supervisor")}
             >
-              👤
+              🙍‍♂️
             </button>
             <button
-              className="hover:text-red-600 text-gray-700 text-xl"
-              title="Logout"
-              onClick={() => navigate("/login")} // Replace with actual route
+              title="Log Out"
+              onClick={() => navigate("/login")}
+              style={{ color: "red", fontWeight: "bold" }}
             >
               LogOut
             </button>
           </div>
         </div>
 
-        {/* Page Content */}
         <div className="p-4">{renderContent()}</div>
       </div>
     </div>
@@ -291,11 +229,25 @@ const BodyShopSupervisorSection = () => {
 
 export default BodyShopSupervisorSection;
 
-const DashboardCard = ({ title, description, emoji, color, onClick }) => {
+// Stat Card Component
+const StatCard = ({ icon, label, value, color }) => (
+  <div className="bg-white p-4 rounded shadow flex items-center gap-4">
+    <div className="text-3xl" style={{ color }}>
+      {icon}
+    </div>
+    <div>
+      <p className="text-sm text-gray-600">{label}</p>
+      <h2 className="text-xl font-semibold">{value}</h2>
+    </div>
+  </div>
+);
+
+// Dashboard Card Component
+const DashboardCard = ({ title, description, emoji, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
+      className="cursor-pointer bg-red-600 text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between"
     >
       <div className="text-5xl mb-4">{emoji}</div>
       <h2 className="text-2xl font-bold mb-2">{title}</h2>

@@ -4,42 +4,35 @@ import AppointmentDetails from "./Supervisors/AppointmentDetails";
 import ApprovedAppointments from "./Supervisors/ApprovedAppointments";
 import Completedappoinments from "./Supervisors/Competedappoinments";
 import AddCustomer from "./Supervisors/AddCustomer";
-//import { FaListAlt, FaCheckCircle, FaSpinner, FaClock } from "react-icons/fa";
 
-const DashboardCard = ({ title, description, emoji, color, onClick }) => (
+const DashboardCard = ({ title, description, emoji, onClick }) => (
   <div
     onClick={onClick}
-    className={`cursor-pointer ${color} text-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition duration-300 flex flex-col justify-between`}
+    style={{
+      backgroundColor: "#D32F2F",
+      color: "white",
+      borderRadius: "1rem",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+      padding: "2rem",
+      cursor: "pointer",
+      transition: "transform 0.3s",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
   >
-    <div className="text-5xl mb-4">{emoji}</div>
-    <h2 className="text-2xl font-bold mb-2">{title}</h2>
-    <p className="opacity-90">{description}</p>
+    <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>{emoji}</div>
+    <h2
+      style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "0.5rem" }}
+    >
+      {title}
+    </h2>
+    <p style={{ opacity: 0.9 }}>{description}</p>
   </div>
 );
 
 const ServiceSupervisorDashboard = () => {
   const navigate = useNavigate();
-
   const [activePage, setActivePage] = useState("dashboard");
-  // const [stats, setStats] = useState({
-  //   total: 0,
-  //   completed: 0,
-  //   pending: 0,
-  //   inProgress: 0,
-  // });
-  // const [showProgressFetcher, setShowProgressFetcher] = useState(true);
-
-  // useEffect(() => {
-  //   if (activePage === "dashboard") {
-  //     setShowProgressFetcher(true);
-  //   }
-  // }, [activePage]);
-
-  // const handleStatsUpdate = (data) => {
-  //   setStats(data);
-  //   setShowProgressFetcher(false);
-  // };
-
 
   const renderContent = () => {
     switch (activePage) {
@@ -57,7 +50,6 @@ const ServiceSupervisorDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-
       case "invoices":
         return (
           <Completedappoinments
@@ -65,19 +57,17 @@ const ServiceSupervisorDashboard = () => {
             goBack={() => setActivePage("dashboard")}
           />
         );
-      
 
-      case "report":
-        return (
-          <div className="text-gray-600 p-8 text-center text-xl">
-            {activePage === "report"
-              ? "Report page coming soon..."
-              : "Invoices page coming soon..."}
-          </div>
-        );
       case "addservice":
         return (
-          <div className="text-gray-600 p-8 text-center text-xl">
+          <div
+            style={{
+              color: "#444",
+              padding: "2rem",
+              textAlign: "center",
+              fontSize: "1.2rem",
+            }}
+          >
             <AddCustomer
               goBack={() => setActivePage("dashboard")}
               sectionPrefix="service"
@@ -87,205 +77,158 @@ const ServiceSupervisorDashboard = () => {
         );
       default:
         return (
-          <>
-          {/* Progress Summary Cards */}
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-4">
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaListAlt className="text-blue-600 text-3xl" />
-                <div>
-                  <p className="text-sm">Total Appointments</p>
-                  <h2 className="text-xl font-semibold">{stats.total}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaCheckCircle className="text-green-600 text-3xl" />
-                <div>
-                  <p className="text-sm">Completed</p>
-                  <h2 className="text-xl font-semibold">{stats.completed}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaSpinner className="text-yellow-500 text-3xl animate-spin-slow" />
-                <div>
-                  <p className="text-sm">In Progress</p>
-                  <h2 className="text-xl font-semibold">{stats.inProgress}</h2>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded shadow flex items-center gap-4">
-                <FaClock className="text-red-500 text-3xl" />
-                <div>
-                  <p className="text-sm">Pending</p>
-                  <h2 className="text-xl font-semibold">{stats.pending}</h2>
-                </div>
-              </div>
-            </div> */}
-          {/* Dashboard Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: "2rem",
+              padding: "2rem",
+            }}
+          >
             <DashboardCard
               title="Add Customer"
               description="Add a new customer details."
-              color="bg-blue-500"
               emoji="➕"
               onClick={() => setActivePage("addservice")}
             />
             <DashboardCard
               title="Manage Appointments"
               description="View and manage customer bookings."
-              color="bg-green-500"
               emoji="📅"
               onClick={() => setActivePage("appointments")}
             />
             <DashboardCard
-              title="View Reports"
-              description="Generate and review service reports."
-              color="bg-purple-500"
-              emoji="📋"
-              onClick={() => setActivePage("report")}
-            />
-            <DashboardCard
               title="View Invoice"
               description="View invoices of vehicles."
-              color="bg-yellow-500"
               emoji="💰"
               onClick={() => setActivePage("invoices")}
             />
             <DashboardCard
               title="Approved Appointments"
               description="Track approved appointments."
-              color="bg-indigo-500"
               emoji="✅"
               onClick={() => setActivePage("approved")}
             />
           </div>
-          {/* Progress Updater */}
-          {/* {showProgressFetcher && (
-              <Progress
-                section="appointments"
-                onStatsUpdate={handleStatsUpdate}
-              />
-            )} */}
-          </>
         );
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#F3F4F6",
+      }}
+    >
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white flex flex-col justify-between">
+      <div
+        style={{
+          width: "260px",
+          backgroundColor: "#1C1C1C",
+          color: "#FFF",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          {/* Company Name */}
-          <div className="flex items-center p-6 space-x-3">
-            {/* <img src="/path/to/logo.jpg" alt="Company Logo" className="h-12 w-12 object-contain" /> */}
-            <h1 className="text-xl font-bold">Nimal Motors</h1>
+          <div
+            style={{
+              padding: "1.5rem",
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              color: "#D32F2F",
+            }}
+          >
+            🚗 NIMAL MOTORS
           </div>
-
-          {/* Navigation */}
-          <div className="p-6">
-            <h2 className="text-xl font-bold mb-6">Supervisor Section</h2>
-            <ul className="space-y-3">
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "dashboard" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("dashboard")}
-                >
-                  Dashboard
-                </button>
-              </li>
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "addservice" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("addservice")}
-                >
-                  Add Service
-                </button>
-              </li>
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "appointments" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("appointments")}
-                >
-                  Manage Appointments
-                </button>
-              </li>
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "report" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("report")}
-                >
-                  View Reports
-                </button>
-              </li>
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "invoices" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("invoices")}
-                >
-                  View Invoices
-                </button>
-              </li>
-              <li>
-                <button
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-700 ${
-                    activePage === "approved" && "bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage("approved")}
-                >
-                  Approved Appointments
-                </button>
-              </li>
+          <div style={{ padding: "1.5rem" }}>
+            <h2
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+                marginBottom: "1rem",
+              }}
+            >
+              Supervisor Section
+            </h2>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {[
+                { label: "Dashboard", value: "dashboard" },
+                { label: "Add Customer Details", value: "addservice" },
+                { label: "Manage Appointments", value: "appointments" },
+                { label: "Approved Appointments", value: "approved" },
+                { label: "View Invoices", value: "invoices" },
+              ].map((item) => (
+                <li key={item.value}>
+                  <button
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "0.75rem 1rem",
+                      backgroundColor:
+                        activePage === item.value ? "#D32F2F" : "transparent",
+                      border: item.special ? "2px solid #FF5C5C" : "none",
+                      color: item.special ? "#B00020" : "#FFF",
+                      borderRadius: "0.5rem",
+                      marginBottom: "0.5rem",
+                      fontWeight: item.special ? "bold" : "normal",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setActivePage(item.value)}
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1">
-        {/* Header */}
-        <div className="bg-white shadow flex justify-between items-center px-6 py-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Service Service Section
+      <div style={{ flex: 1 }}>
+        <div
+          style={{
+            backgroundColor: "#1f2937",
+            padding: "2rem 3rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottom: "1px solid #DDD",
+          }}
+        >
+          <h2
+            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "white" }}
+          >
+            Service Supervisor Section
           </h2>
-          <div className="flex items-center space-x-4">
+          <div
+            style={{
+              display: "flex",
+              gap: "1.5rem",
+              fontSize: "1.25rem",
+              color: "#333",
+            }}
+          >
             <button
-              className="hover:text-blue-600 text-gray-700 text-xl"
-              title="Notifications"
-              onClick={() => navigate("/notification")}
-            >
-              🔔
-            </button>
-            <button
-              className="hover:text-blue-600 text-gray-700 text-xl"
               title="Profile"
               onClick={() => navigate("/service-supervisor")}
             >
-              👤
+              🙍‍♂️
             </button>
             <button
-              className="hover:text-red-600 text-gray-700 text-xl"
               title="Logout"
               onClick={() => navigate("/login")}
+              style={{ color: "red", fontWeight: "bold" }}
             >
-              LogOut
+              Logout
             </button>
           </div>
         </div>
-
-        {/* Page Content */}
-        <div className="p-6">{renderContent()}</div>
+        <div>{renderContent()}</div>
       </div>
     </div>
   );

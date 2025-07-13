@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,8 +15,15 @@ const ExpensesPage = () => {
     supplier: "",
     description: "",
   });
-  const navigate = useNavigate();
 
+  const [editData, setEditData] = useState(null); // For editing
+  const [editMode, setEditMode] = useState(false); // Modal toggle
+  const [deleteId, setDeleteId] = useState(null); // For deletion
+
+  const navigate = useNavigate();
+  const isSpareParts = formData.category === "Spare Parts";
+
+  // Fetch all expenses
   const fetchExpenses = () => {
     axios
       .get("http://localhost:5001/api/expenses")
@@ -36,6 +43,7 @@ const ExpensesPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Add new expense
   const handleAddExpense = async (e) => {
     e.preventDefault();
     const { category, amount, date, supplier } = formData;
@@ -45,13 +53,8 @@ const ExpensesPage = () => {
       return;
     }
 
-    if (category === "Spare Parts" && !supplier) {
-      toast.error("Supplier is required for Spare Parts expenses.");
-      return;
-    }
-
-    if (isNaN(amount) || Number(amount) <= 0) {
-      toast.error("Amount must be a valid positive number.");
+    if (isSpareParts && !supplier) {
+      toast.error("Supplier is required for Spare Parts.");
       return;
     }
 
@@ -67,143 +70,249 @@ const ExpensesPage = () => {
       });
       fetchExpenses();
     } catch (err) {
-      console.error("Failed to add expense:", err);
       toast.error("Failed to add expense.");
     }
   };
 
-  const isSpareParts = formData.category === "Spare Parts";
+  const handleEdit = (exp) => {
+    setEditData({ ...exp });
+    setEditMode(true);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await axios.put(`http://localhost:5001/api/expenses/update/${editData._id}`, editData);
+      toast.success("Expense updated!");
+      setEditMode(false);
+      fetchExpenses();
+    } catch (err) {
+      toast.error("Failed to update expense.");
+    }
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5001/api/expenses/delete/${deleteId}`);
+      toast.success("Expense deleted.");
+      setDeleteId(null);
+      fetchExpenses();
+    } catch (err) {
+      toast.error("Failed to delete expense.");
+    }
+  };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen w-350">
-      <h1 className="text-3xl font-bold text-red-500 mb-6">Manage Expenses / Purchases</h1>
-      <button
-        onClick={() => navigate("/accountant-dashboard")}
-        className="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-700"
-      >
-        ← Back to Dashboard
-      </button>
+    <div className="min-h-screen bg-[#F5F5F5] p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-[#B30000]">Manage Expenses / Purchases</h1>
+        <button onClick={() => navigate("/accountant-dashboard")} className="bg-[#2C2C2C] text-white px-4 py-2 rounded hover:bg-[#5A5A5A] shadow-sm">
+          ← Back to Dashboard
+        </button>
+      </div>
 
-      {/* Add Expense Form */}
-      <form onSubmit={handleAddExpense} className="bg-gray-300 p-6 rounded shadow-md mb-8 w-200">
-        <h2 className="text-xl font-semibold mb-4">Add New Expense</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-medium">Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Form Section */}
+        <form onSubmit={handleAddExpense} className="bg-[#FFFFFF] p-6 rounded shadow space-y-4">
+          <h2 className="text-xl font-semibold text-[#000000]">Add New Expense</h2>
+          <select name="category" value={formData.category} onChange={handleChange} required className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]">
+            <option value="">Select Category</option>
+            <option value="Spare Parts">Spare Parts</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Others">Others</option>
+          </select>
+
+          <input type="number" name="amount" value={formData.amount} onChange={handleChange} placeholder="Amount (Rs.)" className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]" required />
+
+          <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]" max={new Date().toISOString().slice(0, 10)} required />
+
+          <select name="supplier" value={formData.supplier} onChange={handleChange} className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]" disabled={!isSpareParts} required={isSpareParts}>
+            <option value="">Select Supplier</option>
+            {suppliers.map((s) => (
+              <option key={s._id} value={s.companyName}>{s.companyName}</option>
+            ))}
+          </select>
+
+          <textarea name="description" value={formData.description} onChange={handleChange} rows="3" placeholder="Description" className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"></textarea>
+
+          <button type="submit" className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] shadow-sm">
+            <FaPlus className="inline mr-2" /> Add Expense
+          </button>
+        </form>
+
+        {/* Expense Table */}
+        <div className="bg-[#FFFFFF] p-6 rounded shadow">
+          <h2 className="text-xl font-semibold mb-4 text-[#000000]">Expense History</h2>
+          <table className="w-full border border-[#2C2C2C] text-sm">
+            <thead className="bg-[#B30000] text-white">
+              <tr>
+                <th className="p-2">Date</th>
+                <th className="p-2">Category</th>
+                <th className="p-2">Amount</th>
+                <th className="p-2">Supplier</th>
+                <th className="p-2">Description</th>
+                <th className="p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenses.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center p-4 text-[#2C2C2C]">No records found.</td>
+                </tr>
+              ) : (
+                expenses.map((exp, i) => (
+                  <tr key={i} className="text-center border-t border-[#2C2C2C] hover:bg-[#F5F5F5]">
+                    <td className="p-2 text-[#000000]">{exp.date?.slice(0, 10)}</td>
+                    <td className="p-2 text-[#000000]">{exp.category}</td>
+                    <td className="p-2 text-[#000000]">Rs. {exp.amount}</td>
+                    <td className="p-2 text-[#000000]">{exp.supplier}</td>
+                    <td className="p-2 text-[#000000]">{exp.description}</td>
+                    <td className="p-2 space-x-2">
+                      <button onClick={() => handleEdit(exp)} className="text-[#B30000] hover:text-[#D63333]"><FaEdit /></button>
+                      <button onClick={() => setDeleteId(exp._id)} className="text-[#B30000] hover:text-[#D63333]"><FaTrash /></button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Edit Modal */}
+      {editMode && editData && (
+        <div className="fixed inset-0 bg-[#000000] bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-[#FFFFFF] rounded-lg shadow-lg p-6 w-full max-w-lg">
+            <h2 className="text-2xl font-bold text-[#B30000] mb-4">Edit Expense</h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await axios.put(`http://localhost:5001/api/expenses/update/${editData._id}`, editData);
+                  toast.success("Expense updated successfully!");
+                  fetchExpenses();
+                  setEditMode(false);
+                } catch (err) {
+                  console.error("Update failed:", err);
+                  toast.error("Failed to update expense.");
+                }
+              }}
+              className="space-y-4"
             >
-              <option value="">Select</option>
-              <option value="Spare Parts">Spare Parts</option>
-              <option value="Electricity">Electricity</option>
-              <option value="Maintenance">Maintenance</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
+              {/* Category */}
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-[#000000]">Category</label>
+                <select
+                  value={editData.category}
+                  onChange={(e) => setEditData({ ...editData, category: e.target.value })}
+                  className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="Spare Parts">Spare Parts</option>
+                  <option value="Electricity">Electricity</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Amount (Rs.)</label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required
-            />
-          </div>
+              {/* Amount */}
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-[#000000]">Amount (Rs.)</label>
+                <input
+                  type="number"
+                  value={editData.amount}
+                  onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
+                  className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
+                  required
+                />
+              </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              max={new Date().toISOString().slice(0, 10)}
-              required
-            />
-          </div>
+              {/* Date */}
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-[#000000]">Date</label>
+                <input
+                  type="date"
+                  value={editData.date?.slice(0, 10)}
+                  onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+                  className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
+                  max={new Date().toISOString().slice(0, 10)}
+                  required
+                />
+              </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Supplier</label>
-            <select
-              name="supplier"
-              value={formData.supplier}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              disabled={!isSpareParts}
-              required={isSpareParts}
-            >
-              <option value="">Select Supplier</option>
-              {suppliers.map((s) => (
-                <option key={s._id} value={s.companyName}>
-                  {s.companyName}
-                </option>
-              ))}
-            </select>
-          </div>
+              {/* Supplier */}
+              {editData.category === "Spare Parts" && (
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-[#000000]">Supplier</label>
+                  <select
+                    value={editData.supplier}
+                    onChange={(e) => setEditData({ ...editData, supplier: e.target.value })}
+                    className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
+                    required
+                  >
+                    <option value="">Select Supplier</option>
+                    {suppliers.map((s) => (
+                      <option key={s._id} value={s.companyName}>{s.companyName}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
-          <div className="md:col-span-2">
-            <label className="block mb-1 font-medium">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              rows={3}
-              placeholder="Optional note"
-            ></textarea>
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-[#000000]">Description</label>
+                <textarea
+                  value={editData.description}
+                  onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+                  className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
+                  rows={3}
+                ></textarea>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="submit"
+                  className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] shadow-sm"
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditMode(false)}
+                  className="bg-[#2C2C2C] text-white px-4 py-2 rounded hover:bg-[#5A5A5A] shadow-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
+      )}
 
-        <button
-          type="submit"
-          className="mt-4 bg-blue-800 hover:bg-blue-900 text-black px-4 py-2 rounded"
-        >
-          <FaPlus className="inline mr-1" /> Add Expense
-        </button>
-      </form>
-
-      {/* Expenses Table */}
-      <div className="bg-white p-6 rounded shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Expense History</h2>
-        <table className="w-full table-auto border">
-          <thead className="bg-red-600 text-white">
-            <tr>
-              <th className="p-2">Date</th>
-              <th className="p-2">Category</th>
-              <th className="p-2">Amount</th>
-              <th className="p-2">Supplier</th>
-              <th className="p-2">Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="p-4 text-center text-gray-500">
-                  No expenses recorded yet.
-                </td>
-              </tr>
-            ) : (
-              expenses.map((exp, idx) => (
-                <tr key={idx} className="text-center border-t">
-                  <td className="p-2">{exp.date?.slice(0, 10)}</td>
-                  <td className="p-2">{exp.category}</td>
-                  <td className="p-2">Rs. {exp.amount}</td>
-                  <td className="p-2">{exp.supplier}</td>
-                  <td className="p-2">{exp.description}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* Delete Modal */}
+      {deleteId && (
+        <div className="fixed inset-0 bg-[#000000] bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-[#FFFFFF] p-6 rounded-lg shadow-md w-full max-w-sm">
+            <h3 className="text-xl font-semibold text-[#B30000] mb-2">Confirm Deletion</h3>
+            <p className="text-[#2C2C2C] mb-4">Are you sure you want to delete this expense? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={confirmDelete}
+                className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] shadow-sm"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={() => setDeleteId(null)}
+                className="bg-[#2C2C2C] text-white px-4 py-2 rounded hover:bg-[#5A5A5A] shadow-sm"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
