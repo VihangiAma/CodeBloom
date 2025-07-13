@@ -5,13 +5,9 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   return (
-    <header className="flex justify-between items-center w-full p-4 bg-white">
+    <header className="flex justify-between items-center w-full p-4 hero relative bg-gradient-to-r from-blue-00 to-blue-500   ">
       {/* Logo */}
-      <img
-        src={logoImage}
-        alt="Logo"
-        className="w-16 md:w-20 object-contain"
-      />
+      <img src={logoImage} alt="Logo" className="w-16 md:w-20 object-contain" />
 
       {/* Navigation Links */}
       <div className="nav-links flex justify-center">
@@ -20,7 +16,7 @@ export default function NavBar() {
             to="/"
             className={({ isActive }) =>
               `cursor-pointer transition-colors duration-200 ${
-                isActive ? "text-red-500" : "hover:text-red-400"
+                isActive ? "text-red-700" : "hover:text-red-400"
               }`
             }
           >
@@ -63,11 +59,14 @@ export default function NavBar() {
       <div className="flex items-center gap-8">
         <button
           className="cursor-pointer bg-red-500 px-4 py-2 rounded-md text-white uppercase tracking-wide font-medium text-xs md:text-sm hover:bg-red-400 transition-colors duration-200"
-          onClick={() => navigate("/appointment", { replace: true })}
+          onClick={() => navigate("/book-appointment", { replace: true })}
         >
           Book Now
         </button>
-        <i className="fa-solid fa-circle-user text-2xl md:text-4xl text-gray-800 hover:text-red-400 transition-colors duration-200" onClick={() => navigate("/login", { replace: true })}></i>
+        <i
+          className="fa-solid fa-circle-user text-2xl md:text-4xl text-gray-800 hover:text-red-400 transition-colors duration-200"
+          onClick={() => navigate("/login", { replace: true })}
+        ></i>
       </div>
     </header>
   );

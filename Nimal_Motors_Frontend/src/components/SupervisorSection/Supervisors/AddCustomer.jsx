@@ -1,11 +1,12 @@
-//Add service section customers manualy
+// Add Customer Details in Service Section
 
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Navigate } from "react-router-dom";
 
 const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     customerName: "",
     address: "",
     contact: {
@@ -16,8 +17,9 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     vehicleType: "",
     serviceDate: "",
     time: "",
-    // status: "Not Complete yet", // Default status
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
 
   const timeSlots = [
     "8.00 am-10.00 am",
@@ -51,7 +53,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     if (!nameRegex.test(formData.customerName.trim())) {
       Swal.fire(
         "Invalid Input",
-        "Invalid Customer Name. Only letters and spaces allowed.",
+        "Only letters and spaces allowed in name.",
         "warning"
       );
       return false;
@@ -65,7 +67,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
       return false;
     }
     if (!phoneRegex.test(formData.contact.phone.trim())) {
-      Swal.fire("Invalid Input", "Check the phone number. ", "warning");
+      Swal.fire("Invalid Input", "Invalid phone number.", "warning");
       return false;
     }
     if (
@@ -78,21 +80,17 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
     if (!vehicleNumberRegex.test(formData.vehicleNumber.trim())) {
       Swal.fire(
         "Invalid Input",
-        "Vehicle Number must be like ABC-1234.",
+        "Vehicle Number format must be like ABC-1234.",
         "warning"
       );
       return false;
     }
-    if (!formData.vehicleType) {
-      Swal.fire("Invalid Input", "Please select a vehicle type.", "warning");
-      return false;
-    }
-    if (!formData.serviceDate) {
-      Swal.fire("Invalid Input", "Date is required.", "warning");
-      return false;
-    }
-    if (!formData.time) {
-      Swal.fire("Invalid Input", "Time slot must be selected.", "warning");
+    if (!formData.vehicleType || !formData.serviceDate || !formData.time) {
+      Swal.fire(
+        "Missing Field",
+        "Please fill in all required fields.",
+        "warning"
+      );
       return false;
     }
 
@@ -101,59 +99,30 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     try {
       await axios.post("http://localhost:5001/api/appointments", formData);
-
-      Swal.fire({
-        icon: "success",
-        title: "Customer Added",
-        text: "Customer appointment has been saved.",
-      });
-
-      setFormData({
-        customerName: "",
-        address: "",
-        contact: {
-          phone: "",
-          email: "",
-        },
-        vehicleNumber: "",
-        vehicleType: "",
-        serviceDate: "",
-        time: "",
-        status: "Not Complete yet",
-      });
+      Swal.fire("Success", "Customer appointment saved.", "success");
+      setFormData(initialFormState);
     } catch (error) {
-      console.error(error);
       let errorMessage = "Something went wrong. Please try again.";
-      if (error.response?.data?.error) {
-        const serverError = error.response.data.error;
-        if (serverError.toLowerCase().includes("already booked")) {
-          errorMessage =
-            "This time slot is already booked. Please choose another time.";
-        } else {
-          errorMessage = serverError;
-        }
+      if (
+        error.response?.data?.error?.toLowerCase().includes("already booked")
+      ) {
+        errorMessage = "This time slot is already booked.";
       }
-
-      Swal.fire({
-        icon: "error",
-        title: "Booking Failed",
-        text: errorMessage,
-      });
+      Swal.fire("Booking Failed", errorMessage, "error");
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Add Customer Deatils
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-xl shadow-md border border-gray-200">
+      <h2 className="text-2xl font-bold mb-6 text-center text-red-600">
+        Add Customer Details
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5 text-gray-800">
         <input
           type="text"
           name="customerName"
@@ -161,7 +130,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.customerName}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -170,16 +139,16 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.address}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
           name="phone"
-          placeholder="Phone (10 digits)"
+          placeholder="Phone Number"
           value={formData.contact.phone}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="email"
@@ -187,7 +156,7 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           placeholder="Email (optional)"
           value={formData.contact.email}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -196,15 +165,14 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           value={formData.vehicleNumber}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="vehicleType"
           value={formData.vehicleType}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
             Select Vehicle Type
@@ -215,22 +183,20 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
             </option>
           ))}
         </select>
-
         <input
           type="date"
-          name="date"
-          value={formData.date}
+          name="serviceDate"
+          value={formData.serviceDate}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="time"
           value={formData.time}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
             Select Time Slot
@@ -242,12 +208,14 @@ const AddCustomer = ({ onSubmit, existingBooking, isEditMode, onDelete }) => {
           ))}
         </select>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
-        >
-          Add Customer Details
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-md transition"
+          >
+            Add Details
+          </button>
+        </div>
       </form>
     </div>
   );

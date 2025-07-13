@@ -54,3 +54,20 @@ export const updateSupplierContact = async (req, res) => {
   }
 };
 
+// DELETE supplier by supplierId
+export const deleteSupplier = async (req, res) => {
+  const { supplierId } = req.params;
+
+  try {
+    const deleted = await Supplier.findOneAndDelete({ supplierId });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+
+    res.status(200).json({ message: "Supplier deleted successfully" });
+  } catch (error) {
+    console.error("Delete supplier error:", error);
+    res.status(500).json({ message: "Failed to delete supplier", error });
+  }
+};

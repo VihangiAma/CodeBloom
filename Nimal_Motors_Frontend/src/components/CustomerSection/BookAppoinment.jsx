@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const BookAppointment = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    //using the useState hook to manage the form inputs
     customerName: "",
     address: "",
     contact: {
@@ -27,7 +29,6 @@ const BookAppointment = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "phone" || name === "email") {
       setFormData({
         ...formData,
@@ -37,10 +38,7 @@ const BookAppointment = () => {
         },
       });
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      setFormData({ ...formData, [name]: value });
     }
   };
 
@@ -53,7 +51,7 @@ const BookAppointment = () => {
     if (!nameRegex.test(formData.customerName.trim())) {
       Swal.fire(
         "Invalid Input",
-        "Invalid Customer Name. Only letters and spaces allowed.",
+        "Only letters and spaces allowed for name.",
         "warning"
       );
       return false;
@@ -67,7 +65,7 @@ const BookAppointment = () => {
       return false;
     }
     if (!phoneRegex.test(formData.contact.phone.trim())) {
-      Swal.fire("Invalid Input", "Check the phone number. ", "warning");
+      Swal.fire("Invalid Input", "Phone number must be 10 digits.", "warning");
       return false;
     }
     if (
@@ -85,16 +83,12 @@ const BookAppointment = () => {
       );
       return false;
     }
-    if (!formData.vehicleType) {
-      Swal.fire("Invalid Input", "Please select a vehicle type.", "warning");
-      return false;
-    }
-    if (!formData.serviceDate) {
-      Swal.fire("Invalid Input", "Date is required.", "warning");
-      return false;
-    }
-    if (!formData.time) {
-      Swal.fire("Invalid Input", "Time slot must be selected.", "warning");
+    if (!formData.vehicleType || !formData.serviceDate || !formData.time) {
+      Swal.fire(
+        "Missing Field",
+        "Please fill in all required fields.",
+        "warning"
+      );
       return false;
     }
 
@@ -108,12 +102,11 @@ const BookAppointment = () => {
 
     try {
       await axios.post("http://localhost:5001/api/appointments", formData);
-
-      Swal.fire({
-        icon: "success",
-        title: "Appointment Booked!",
-        text: "Your appointment has been placed successfully.",
-      });
+      Swal.fire(
+        "Success",
+        "Your appointment has been placed successfully.",
+        "success"
+      );
 
       setFormData({
         customerName: "",
@@ -134,27 +127,26 @@ const BookAppointment = () => {
         const serverError = error.response.data.error;
         if (serverError.toLowerCase().includes("already booked")) {
           errorMessage =
-            "This time slot is already booked. Please choose another time.";
+            "This time slot is already booked. Please choose another.";
         } else {
           errorMessage = serverError;
         }
       }
-
-      Swal.fire({
-        icon: "error",
-        title: "Booking Failed",
-        text: errorMessage,
-      });
+      Swal.fire("Booking Failed", errorMessage, "error");
     }
   };
 
+  const handleCancel = () => {
+    navigate("/");
+  };
+
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl ">
-      <h2 className="text-2xl font-bold mb-6 text-center">
+    <div className="max-w-xl mx-auto mt-10 p-8 bg-white border border-gray-200 rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center text-red-600">
         Book an Appointment
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5 text-gray-800">
         <input
           type="text"
           name="customerName"
@@ -162,7 +154,7 @@ const BookAppointment = () => {
           value={formData.customerName}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -171,16 +163,16 @@ const BookAppointment = () => {
           value={formData.address}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
           name="phone"
-          placeholder="Phone (10 digits)"
-          value={formData.phone}
+          placeholder="Phone Number"
+          value={formData.contact.phone}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="email"
@@ -188,7 +180,7 @@ const BookAppointment = () => {
           placeholder="Email (optional)"
           value={formData.contact.email}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
         <input
           type="text"
@@ -197,15 +189,14 @@ const BookAppointment = () => {
           value={formData.vehicleNumber}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="vehicleType"
           value={formData.vehicleType}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
             Select Vehicle Type
@@ -216,22 +207,20 @@ const BookAppointment = () => {
             </option>
           ))}
         </select>
-
         <input
           type="date"
-          name="date"
+          name="serviceDate"
           value={formData.serviceDate}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         />
-
         <select
           name="time"
           value={formData.time}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500"
         >
           <option value="" disabled>
             Select Time Slot
@@ -243,12 +232,22 @@ const BookAppointment = () => {
           ))}
         </select>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-        >
-          Book Appointment
-        </button>
+        <div className="flex justify-between gap-4">
+          <button
+            type="submit"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-md transition"
+          >
+            Book Appointment
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-md transition"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

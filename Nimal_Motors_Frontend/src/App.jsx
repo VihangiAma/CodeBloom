@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+//import './styles/Global.css';
 
 // Public Pages
 
@@ -17,7 +18,7 @@ import Appointment from "./pages/Appointment";
 
 // import RegisterPage from './pages/register/RegisterPage';
 
-import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
+// import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
 
 import PremiumServiceForm from "./pages/premiumcustomer/PremiumServiceForm";
 
@@ -35,15 +36,15 @@ import AccountantProfile from "./pages/AccountantProfile";
 import PremiumCustomerProfile from "./pages/premiumcustomer/PremiumCustomerProfile";
 import UserManagement from "./pages/admin/UserManagement";
 import AdminUsers from "./pages/admin/AdminUsers";
+import OperationDashboard from "./assets/pages/OperationDashbord";
 
 // Supervisor Protected Pages
 
 import ProgressPage from "./Components/SupervisorSection/ProgressPage";
-import ReportPage from "./Components/SupervisorSection/ReportPage";
 
 import AppointmentDetails from "./Components/SupervisorSection/Supervisors/AppointmentDetails";
 import CompletedServices from "./components/SupervisorSection/CompletedServices";
-import NotificationBar from "./components/SupervisorSection/Notification";
+
 import ApprovedAppointments from "./components/SupervisorSection/Supervisors/ApprovedAppointments";
 
 import Completedappoinments from "./components/SupervisorSection/Supervisors/Competedappoinments";
@@ -51,6 +52,7 @@ import AdminInvoiceView from "./pages/admin/AdminInvoiceView";
 import AddServiceForm from "./components/SupervisorSection/AddServiceForm";
 import UserTable from "./components/SupervisorSection/UserTable";
 import InvoiceForm from "./components/SupervisorSection/InvoiceForm";
+import RepairPackage from "./Components/SupervisorSection/RepairPackagesPage";
 
 // Section-specific Dashboards
 
@@ -98,9 +100,10 @@ function App() {
         <Route path="/sections" element={<Sections />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/appointment" element={<Appointment />} />
-        <Route path="/supervisor-login" element={<SupervisorLoginForm />} />
+        {/* <Route path="/supervisor-login" element={<SupervisorLoginForm />} /> */}
         {/* Customer Public */}
         <Route path="/book-appointment" element={<BookAppointment />} />
+        <Route path="/repair-packages" element={<RepairPackage />} />
         {/* Protected User Routes */}
         <Route
           path="/profile"
@@ -217,26 +220,10 @@ function App() {
           }
         />
         <Route
-          path="/report"
-          element={
-            <SupervisorPrivateRoute>
-              <ReportPage />
-            </SupervisorPrivateRoute>
-          }
-        />
-        <Route
           path="/completed-services"
           element={
             <SupervisorPrivateRoute>
               <CompletedServices />
-            </SupervisorPrivateRoute>
-          }
-        />
-        <Route
-          path="/notification"
-          element={
-            <SupervisorPrivateRoute>
-              <NotificationBar />
             </SupervisorPrivateRoute>
           }
         />
@@ -325,17 +312,17 @@ function App() {
         />
         <Route path="/view-sales-report" element={<SalesReportView />} />
         <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
-        <Route
-          path="/generate-invoice/:repairId"
-          element={<GenerateInvoicePage />}
-        />
+       <Route path="/generate-invoice/:id" element={<GenerateInvoicePage />} />
+
         <Route
           path="/chatbot/:section"
           element={<ChatBot section="Service" />}
         />
+        <Route path ="/operation-dashboard" element={<OperationDashboard />} />
         {/*<Route path="/formal-invoice" element={<FormalInvoice />} />*/}
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
+        <><Route path ="admin-invoice-view" element={<AdminInvoiceView />} /></>
       </Routes>
     </Router>
   );

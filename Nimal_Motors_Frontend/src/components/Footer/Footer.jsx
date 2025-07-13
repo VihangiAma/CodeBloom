@@ -2,16 +2,46 @@ import { useState } from "react";
 
 export default function Footer() {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    feedback: "",
+    Name: "",
+    Email: "",
+    description: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form submission logic here (e.g., send to backend or MongoDB)
-    console.log("Form submitted:", formData);
-    setFormData({ name: "", email: "", feedback: "" });
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('http://localhost:5001/api/Feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSubmitStatus({ success: true, message: 'Thank you for your feedback!' });
+        setFormData({ Name: "", Email: "", description: "" });
+      } else {
+        const errorData = await response.json();
+        setSubmitStatus({ 
+          success: false, 
+          message: errorData.message || 'Failed to submit feedback' 
+        });
+      }
+    } catch (error) {
+      setSubmitStatus({ 
+        success: false, 
+        message: 'Network error. Please try again.' 
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -19,10 +49,10 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gray-800 text-gray-200 py-12 px-4 sm:px-6 lg:px-8 shadow-inner">
-      <div className="footer-container max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+    <footer className="bg-gray-900 text-gray-200 py-12 px-4 sm:px-6 lg:px-8 shadow-inner">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
         {/* Opening Hours */}
-        <div className="footer-section">
+        <div>
           <h3 className="text-lg font-semibold text-gray-100 mb-4">Opening Hours</h3>
           <p className="text-sm">Monday - Friday: 8:00 AM - 6:00 PM</p>
           <p className="text-sm">Saturday: 8:00 AM - 4:00 PM</p>
@@ -30,14 +60,14 @@ export default function Footer() {
         </div>
 
         {/* Address */}
-        <div className="footer-section">
+        <div>
           <h3 className="text-lg font-semibold text-gray-100 mb-4">Address</h3>
           <p className="text-sm">No 321/2 Galle Rd,</p>
           <p className="text-sm">Aluthgama 12080, Sri Lanka</p>
         </div>
 
         {/* Contact */}
-        <div className="footer-section" id="contact">
+        <div id="contact">
           <h3 className="text-lg font-semibold text-gray-100 mb-4">Contact</h3>
           <p className="text-sm flex items-center gap-2">
             <i className="fas fa-phone text-blue-400"></i>
@@ -57,9 +87,9 @@ export default function Footer() {
         </div>
 
         {/* Follow Us */}
-        <div className="footer-section">
+        <div>
           <h3 className="text-lg font-semibold text-gray-100 mb-4">Follow Us</h3>
-          <div className="social-icons flex gap-4">
+          <div className="flex gap-4">
             <a
               href="https://facebook.com"
               target="_blank"
@@ -96,46 +126,55 @@ export default function Footer() {
         </div>
 
         {/* Feedback Form */}
-        <div className="footer-section">
+        <div>
           <h3 className="text-lg font-semibold text-gray-100 mb-4">Feedback</h3>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <input
               type="text"
-              name="name"
+              name="Name"
               placeholder="Your Name"
-              value={formData.name}
+              value={formData.Name}
               onChange={handleChange}
               required
               className="border border-gray-600 bg-gray-700 text-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <input
               type="email"
-              name="email"
+              name="Email"
               placeholder="Your Email"
-              value={formData.email}
+              value={formData.Email}
               onChange={handleChange}
               required
               className="border border-gray-600 bg-gray-700 text-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <textarea
-              name="feedback"
+              name="description"
               placeholder="Your Feedback"
-              value={formData.feedback}
+              value={formData.description}
               onChange={handleChange}
               required
               className="border border-gray-600 bg-gray-700 text-gray-200 rounded-md px-3 py-2 text-sm h-24 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
             ></textarea>
             <button
               type="submit"
-              className="bg-red-600 text-white px-4 py-2 rounded-md text-sm uppercase tracking-wide font-medium hover:bg-red-500 transition-colors duration-200"
+              disabled={isSubmitting}
+              className={`${
+                isSubmitting ? 'bg-gray-500' : 'bg-red-600 hover:bg-red-500'
+              } text-white px-4 py-2 rounded-md text-sm uppercase tracking-wide font-medium transition-colors duration-200`}
             >
-              Submit
+              {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
+            {submitStatus && (
+              <p className={`text-sm ${
+                submitStatus.success ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {submitStatus.message}
+              </p>
+            )}
           </form>
         </div>
       </div>
 
-      {/* Copyright */}
       <div className="mt-8 pt-8 border-t border-gray-600 text-center">
         <p className="text-sm text-gray-400">© 2025 Nimal Motors. All Rights Reserved.</p>
       </div>

@@ -1,16 +1,19 @@
 import express from "express";
 import {
-  createInvoice,
-  getAllInvoices,
-  getInvoiceById,
-  deleteInvoice,
+  createAccountantInvoice,
+  getAllAccountantInvoices,
+  getAccountantInvoiceById,
 } from "../Controllers/InvoiceController.js";
 
 const router = express.Router();
 
-router.post("/add", createInvoice);
-router.get("/", getAllInvoices);
-router.get("/:id", getInvoiceById);
-router.delete("/:id", deleteInvoice);
+// POST: Create a new finalized invoice
+router.post("/", createAccountantInvoice);
+
+// GET: Get all finalized invoices
+router.get("/", getAllAccountantInvoices);
+
+// GET: Get single invoice by ID
+router.get("/:id", getAccountantInvoiceById);
 
 export default router;

@@ -1,79 +1,56 @@
 import Invoice from "../Models/Invoice.js";
 
-// Add a new invoice
-export const createInvoice = async (req, res) => {
+// Create new finalized invoice
+export const createAccountantInvoice = async (req, res) => {
   try {
-    const {
-      invoiceNo,
-      customerName,
-      vehicleNo,
-      presentMeter,
-      invoiceDate,
-      items,
-      totalAmount,
-      advance,
-      balance,
-      relatedRepairId,
-    } = req.body;
+    const { serviceInvoiceId, invoiceNo, advance, balance } = req.body;
 
-    // Basic validation
-    if (!invoiceNo || !customerName || !vehicleNo || !items || !totalAmount || balance == null) {
-      return res.status(400).json({ message: "Required fields missing." });
+    if (!serviceInvoiceId || !invoiceNo || advance === undefined || balance === undefined) {
+      return res.status(400).json({ message: "All required fields must be provided." });
+    }
+
+    // Check for duplicate invoice number
+    const exists = await Invoice.findOne({ invoiceNo });
+    if (exists) {
+      return res.status(409).json({ message: "Invoice number already exists." });
     }
 
     const newInvoice = new Invoice({
+      serviceInvoiceId,
       invoiceNo,
-      customerName,
-      vehicleNo,
-      presentMeter,
-      invoiceDate,
-      items,
-      totalAmount,
       advance,
       balance,
-      relatedRepairId,
     });
 
     await newInvoice.save();
-    res.status(201).json({ message: "Invoice created successfully", invoice: newInvoice });
+    res.status(201).json(newInvoice);
   } catch (error) {
-    console.error("Error creating invoice:", error);
-    res.status(500).json({ message: "Server error creating invoice" });
+    console.error("Error creating accountant invoice:", error);
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
-// Get all invoices
-export const getAllInvoices = async (req, res) => {
+// Get all accountant invoices
+export const getAllAccountantInvoices = async (req, res) => {
   try {
-    const invoices = await Invoice.find().sort({ invoiceDate: -1 });
-    res.json(invoices);
+    const invoices = await Invoice.find().populate("serviceInvoiceId");
+    res.status(200).json(invoices);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving invoices" });
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
-// Get a single invoice by ID
-export const getInvoiceById = async (req, res) => {
+// Get single invoice by ID
+export const getAccountantInvoiceById = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id).populate("relatedRepairId");
+    const invoice = await Invoice.findById(req.params.id).populate("serviceInvoiceId");
     if (!invoice) {
       return res.status(404).json({ message: "Invoice not found" });
     }
-    res.json(invoice);
+    res.status(200).json(invoice);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching invoice" });
-  }
-};
-
-// Delete an invoice
-export const deleteInvoice = async (req, res) => {
-  try {
-    const deleted = await Invoice.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: "Invoice not found" });
-    }
-    res.json({ message: "Invoice deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting invoice" });
+    console.error("Error fetching invoice by ID:", error);
+    res.status(500).json({ message: "Server error", error });
   }
 };

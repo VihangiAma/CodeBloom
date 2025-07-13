@@ -35,30 +35,42 @@ export const getStockItemById = async (req, res) => {
     }
 };
 
-// Add a new stock item
-export const addStockItem = async (req, res) => {
-    const { category, stockQuantity, companyName, itemId, pricePerUnit, itemName,barcode } = req.body;
+export const addNewStockItem = async (req, res) => {
+  try {
+    const {
+      category,
+      stockQuantity,
+      companyName,
+      itemId,
+      pricePerUnit,
+      itemName,
+      barcode,
+      threshold
+    } = req.body;
 
-    if (!category || !stockQuantity || !companyName || !itemId || !pricePerUnit || !itemName || !barcode) {
-        return res.status(400).json({ message: "All fields are required." });
+    const existing = await Stock.findOne({ itemId });
+    if (existing) {
+      return res.status(400).json({ message: "Item with this ID already exists." });
     }
 
-    try {
-        const newStockItem = new Stock({
-            category,
-            stockQuantity,
-            companyName,
-            itemId,
-            pricePerUnit,
-            itemName,
-            barcode
-        });
+    const newItem = new Stock({
+      category,
+      stockQuantity,
+      companyName,
+      itemId,
+      pricePerUnit,
+      itemName,
+      barcode,
+      threshold
+    });
 
-        await newStockItem.save();
-        res.status(201).json({ message: "Stock item added successfully.", newStockItem });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    await newItem.save();
+    res.status(201).json({ message: "New stock item added", item: newItem });
+
+  } catch (error) {
+    console.error("Error adding stock item:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
 };
 
 
@@ -129,59 +141,131 @@ export const checkLowStock = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
-  // Controller function
-  export const getStockItemByBarcode = async (req, res) => {
+  // // Controller function
+  // export const getStockItemByBarcode = async (req, res) => {
+  //   try {
+  //     const { barcodeInput } = req.params;
+  //     const item = await Stock.findOne({ barcodeInput });
+  
+  //     if (!item) return res.status(404).json({ message: "Item not found" });
+  
+  //     res.status(200).json(item);
+  //   } catch (err) {
+  //     res.status(500).json({ error: err.message });
+  //   }
+  // };
+  
+  // // Add quantity to existing stock item
+  // export const updateStockByBarcode = async (req, res) => {
+  //   const { barcodeInput } = req.params;
+  //   const { quantityToAdd } = req.body;
+  
+  //   if (!quantityToAdd || quantityToAdd <= 0) {
+  //     return res.status(400).json({ message: "Invalid quantity provided." });
+  //   }
+  
+  //   try {
+  //     const item = await Stock.findOne({ barcodeInput });
+  
+  //     if (!item) {
+  //       return res.status(404).json({ message: "Item with this barcode not found." });
+  //     }
+  
+  //     item.stockQuantity += Number(quantityToAdd);
+  //     item.lastUpdated = new Date();
+  
+  //     const updatedItem = await item.save();
+  
+  //     res.status(200).json({
+  //       message: "Stock successfully updated via barcode.",
+  //       updatedItem,
+  //     });
+  //   } catch (err) {
+  //     console.error("Barcode update error:", err);
+  //     res.status(500).json({ message: "Internal server error." });
+  //   }
+  // };
+   export const getItemsBySupplier = async (req, res) => {
     try {
-      const { barcodeInput } = req.params;
-      const item = await Stock.findOne({ barcodeInput });
-  
-      if (!item) return res.status(404).json({ message: "Item not found" });
-  
-      res.status(200).json(item);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
-  
-  // Add quantity to existing stock item
-  export const updateStockByBarcode = async (req, res) => {
-    const { barcodeInput } = req.params;
-    const { quantityToAdd } = req.body;
-  
-    if (!quantityToAdd || quantityToAdd <= 0) {
-      return res.status(400).json({ message: "Invalid quantity provided." });
-    }
-  
-    try {
-      const item = await Stock.findOne({ barcodeInput });
-  
-      if (!item) {
-        return res.status(404).json({ message: "Item with this barcode not found." });
-      }
-  
-      item.stockQuantity += Number(quantityToAdd);
-      item.lastUpdated = new Date();
-  
-      const updatedItem = await item.save();
-  
-      res.status(200).json({
-        message: "Stock successfully updated via barcode.",
-        updatedItem,
-      });
-    } catch (err) {
-      console.error("Barcode update error:", err);
-      res.status(500).json({ message: "Internal server error." });
-    }
-  };
-  export const getItemsBySupplier = async (req, res) => {
-    try {
-      const { companyName } = req.params;
+     const { companyName } = req.params;
       const items = await Stock.find({ companyName });
-      res.status(200).json(items);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch items for this supplier" });
+       res.status(200).json(items);
+     } catch (error) {
+       res.status(500).json({ message: "Failed to fetch items for this supplier" });
+     }
+   };
+
+
+   // Get next item ID
+// This function generates the next item ID based on the highest existing itemId
+   export const getNextItemId = async (req, res) => {
+  try {
+    const result = await Stock.aggregate([
+      {
+        $project: {
+          itemId: 1,
+          numericId: {
+            $toInt: {
+              $replaceAll: {
+                input: "$itemId",
+                find: "ITM",
+                replacement: ""
+              }
+            }
+          }
+        }
+      },
+      { $sort: { numericId: -1 } },
+      { $limit: 1 }
+    ]);
+
+    let nextId = "ITM001"; // Default starting ID
+    if (result.length > 0) {
+      const newNum = result[0].numericId + 1;
+      nextId = `ITM${String(newNum).padStart(3, "0")}`;
     }
-  };
+
+    res.status(200).json({ nextId });
+  } catch (error) {
+    console.error("Error generating next item ID:", error);
+    res.status(500).json({ message: "Failed to generate next item ID" });
+  }
+};
+
+// GET item by barcode
+export const getItemByBarcode = async (req, res) => {
+  try {
+    const item = await Stock.findOne({ barcode: req.params.barcode });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.json(item);
+  } catch (err) {
+    console.error("Barcode lookup error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// PUT - Add stock quantity via barcode
+export const addStockByBarcode = async (req, res) => {
+  const { quantityToAdd } = req.body;
+
+  try {
+    const item = await Stock.findOne({ barcode: req.params.barcode });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    item.stockQuantity += parseInt(quantityToAdd);
+    await item.save();
+
+    res.json({ message: "Stock updated successfully", item });
+  } catch (err) {
+    console.error("Stock update error:", err);
+    res.status(500).json({ message: "Failed to update stock" });
+  }
+};
+
   
   
   

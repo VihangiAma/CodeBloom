@@ -1,346 +1,594 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+// import React, { useEffect, useState } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import { jsPDF } from "jspdf";
+// import "jspdf-autotable";
+// import logoImage from "../assets/images/logo.jpg";
+// import carImage from "../assets/images/car.jpeg";
+
+// const GenerateInvoicePage = () => {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+
+//   const [invoice, setInvoice] = useState(null);
+//   const [invoiceNo, setInvoiceNo] = useState("");
+//   const [advance, setAdvance] = useState(0);
+//   const [balance, setBalance] = useState(0);
+//   const [remarks, setRemarks] = useState("");
+
+//   useEffect(() => {
+//     axios
+//       .get(`http://localhost:5001/api/invoice/${id}`)
+//       .then((res) => setInvoice(res.data))
+//       .catch((err) => {
+//         console.error("Failed to fetch invoice", err);
+//         toast.error("Failed to load invoice details.");
+//       });
+//   }, [id]);
+
+//   const generatePDF = () => {
+//     if (!invoice) return;
+
+//     const doc = new jsPDF();
+
+//     //doc.addImage(logoImage, "PNG", 10, 10, 25, 25);
+//     //doc.addImage(carImage, "JPEG", 170, 10, 25, 25);
+
+//     doc.setFontSize(20).setTextColor("#B30000").text("Nimal Motors", 105, 20, { align: "center" });
+//     doc.setFontSize(10).setTextColor("#000000");
+//     doc.text("No 52/2, Galle Road, Aluthgama", 105, 27, { align: "center" });
+//     doc.text("Tel: 034-2238057 / 077-77738057", 105, 32, { align: "center" });
+//     doc.text("Repairs, Cut & Polish Service Center", 105, 37, { align: "center" });
+
+//     doc.setFontSize(14).setTextColor("#B30000").text("INVOICE", 180, 45, { align: "right" });
+//     doc.setFontSize(10).setTextColor("#000000");
+//     doc.text(`Invoice No: ${invoiceNo}`, 180, 50, { align: "right" });
+//     doc.text(`Date: ${new Date().toLocaleDateString()}`, 180, 55, { align: "right" });
+
+//     doc.setFontSize(11).setTextColor("#B30000").text("Customer Information", 14, 65);
+//     doc.setFontSize(10).setTextColor("#000000");
+//     doc.text(`Name: ${invoice.customerName}`, 14, 72);
+//     doc.text(`Vehicle No: ${invoice.vehicleNumber}`, 14, 77);
+//     doc.text(`Service ID: ${invoice.serviceID}`, 14, 82);
+//     doc.text(`Date: ${new Date(invoice.serviceDate).toLocaleDateString()}`, 14, 87);
+//     doc.text(`Present Meter: ${invoice.presentMeter} km`, 14, 92);
+
+//     let y = 100;
+
+//     doc.setFontSize(11).setTextColor("#B30000").text("Repair Details", 14, y);
+//     y += 4;
+
+//     invoice.repairs.forEach((pkg) => {
+//       y += 6;
+//       doc.setFont("helvetica", "bold").setTextColor("#2C2C2C").text(`Package: ${pkg.package}`, 14, y);
+//       y += 4;
+
+//       doc.autoTable({
+//         startY: y,
+//         head: [["Repair", "Cost (Rs.)"]],
+//         body: pkg.repairs.map((r) => [r.label, r.price.toFixed(2)]),
+//         styles: { fontSize: 9 },
+//         theme: "striped",
+//         margin: { left: 14 },
+//         headStyles: { fillColor: [179, 0, 0], textColor: 255 },
+//       });
+
+//       y = doc.autoTable.previous.finalY + 5;
+//       doc.setFont("helvetica", "bold").text(`Package Total: Rs. ${pkg.price.toFixed(2)}`, 160, y);
+//     });
+
+//     y += 10;
+
+//     doc.setFont("helvetica", "bold").setTextColor("#B30000").text("Parts", 14, y);
+//     y += 4;
+
+//     doc.autoTable({
+//       startY: y,
+//       head: [["Item", "Qty", "Unit Price (Rs.)", "Total (Rs.)"]],
+//       body: invoice.items.map((item) => [
+//         item.itemName,
+//         item.qty,
+//         item.price.toFixed(2),
+//         (item.qty * item.price).toFixed(2),
+//       ]),
+//       styles: { fontSize: 9 },
+//       theme: "striped",
+//       margin: { left: 14 },
+//       headStyles: { fillColor: [179, 0, 0], textColor: 255 },
+//     });
+
+//     y = doc.autoTable.previous.finalY + 8;
+
+//     doc.setFont("helvetica", "bold").setFontSize(11).setTextColor("#000000");
+//     doc.text(`Total Cost: Rs. ${invoice.totalCost.toFixed(2)}`, 180, y, { align: "right" });
+//     y += 6;
+//     doc.text(`Advance: Rs. ${advance.toFixed(2)}`, 180, y, { align: "right" });
+//     y += 6;
+//     doc.text(`Balance: Rs. ${balance.toFixed(2)}`, 180, y, { align: "right" });
+
+//     y += 10;
+//     doc.setFont("helvetica", "normal").setFontSize(10).setTextColor("#000000");
+//     doc.text("Remarks:", 14, y);
+//     doc.setFont("helvetica", "italic").text(remarks || "-", 30, y);
+//     doc.text("Note:The above cost are calculated according to the workshop cost accumulation and labor charges.", 14, y + 5, { maxWidth: 180 });
+//     doc.text("Thank you for your Business.", 105, y + 15, { align: "center" });
+
+//     doc.save(`Invoice_${invoiceNo}.pdf`);
+//   };
+
+//   if (!invoice) return <p className="p-6">Loading...</p>;
+
+//   return (
+//     <div className="p-6 min-h-screen bg-[#F5F5F5]">
+//       <div className="bg-white shadow rounded-lg max-w-4xl mx-auto p-6">
+//         <h2 className="text-2xl font-bold text-[#B30000] mb-6 text-center">
+//           Finalize & Download Invoice
+//         </h2>
+
+//         {/* === Invoice Details from Admin === */}
+//         <div className="mb-6 border rounded p-4 bg-gray-50">
+//           <h3 className="text-lg font-semibold text-[#B30000] mb-3">Invoice Summary</h3>
+//           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+//             <div><strong>Customer Name:</strong> {invoice.customerName}</div>
+//             <div><strong>Vehicle Number:</strong> {invoice.vehicleNumber}</div>
+//             <div><strong>Service ID:</strong> {invoice.serviceID}</div>
+//             <div><strong>Service Date:</strong> {new Date(invoice.serviceDate).toLocaleDateString()}</div>
+//             <div><strong>Present Meter:</strong> {invoice.presentMeter} km</div>
+//             <div><strong>Total Cost:</strong> Rs. {invoice.totalCost.toFixed(2)}</div>
+//           </div>
+
+//           <div className="mt-4">
+//             <h4 className="text-sm font-semibold text-[#2C2C2C] mb-1">Repairs:</h4>
+//             {invoice.repairs.map((pkg, index) => (
+//               <div key={index} className="mb-2">
+//                 <p className="font-semibold text-[#B30000]">{pkg.package}</p>
+//                 <ul className="list-disc pl-6 text-sm text-gray-700">
+//                   {pkg.repairs.map((r, i) => (
+//                     <li key={i}>{r.label} - Rs. {r.price.toFixed(2)}</li>
+//                   ))}
+//                 </ul>
+//               </div>
+//             ))}
+//           </div>
+
+//           <div className="mt-3">
+//             <h4 className="text-sm font-semibold text-[#2C2C2C] mb-1">Parts:</h4>
+//             {invoice.items.length === 0 ? (
+//               <p className="text-gray-500 italic">No items added.</p>
+//             ) : (
+//               <ul className="list-disc pl-6 text-sm text-gray-700">
+//                 {invoice.items.map((item, idx) => (
+//                   <li key={idx}>{item.itemName} – Qty: {item.qty}, Price: Rs. {item.price.toFixed(2)}</li>
+//                 ))}
+//               </ul>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* === Accountant Fillable Form === */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+//           <div>
+//             <label className="block text-sm font-semibold mb-1">Invoice No:</label>
+//             <input type="text" value={invoiceNo} onChange={(e) => setInvoiceNo(e.target.value)} className="w-full border rounded px-3 py-2" />
+//           </div>
+//           <div>
+//             <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>
+//             <input type="number" value={advance} onChange={(e) => setAdvance(parseFloat(e.target.value) || 0)} className="w-full border rounded px-3 py-2" />
+//           </div>
+//           <div>
+//             <label className="block text-sm font-semibold mb-1">Balance (Rs.):</label>
+//             <input type="number" value={balance} onChange={(e) => setBalance(parseFloat(e.target.value) || 0)} className="w-full border rounded px-3 py-2" />
+//           </div>
+//           <div className="md:col-span-2">
+//             <label className="block text-sm font-semibold mb-1">Remarks:</label>
+//             <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} rows={3} className="w-full border rounded px-3 py-2" />
+//           </div>
+//         </div>
+
+//         <div className="text-right">
+//           <button onClick={generatePDF} className="bg-[#B30000] hover:bg-[#D63333] text-white px-6 py-2 rounded">
+//             Download Invoice
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default GenerateInvoicePage;
+
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { FaFileInvoice, FaArrowLeft, FaDownload } from "react-icons/fa";
-import { jsPDF } from "jspdf";
-//import InvoiceTemplate from "./InvoiceTemplate";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable"; // ✅ Correct autoTable import
+
+// Base64 placeholder logos (or replace with working imports)
 import logoImage from "../assets/images/logo.jpg";
 import carImage from "../assets/images/car.jpeg";
 
 const GenerateInvoicePage = () => {
-  const { repairId } = useParams();
-  const navigate = useNavigate();
-  const [repairDetails, setRepairDetails] = useState(null);
-  const [invoiceData, setInvoiceData] = useState({
-    invoiceNo: `INVOICE-${Date.now()}`,
-    customerName: "",
-    vehicleNo: "",
-    presentMeter: "",
-    invoiceDate: new Date().toISOString().slice(0, 10),
-    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
-    items: [{ description: "", qty: 1, amount: 0 }],
-    advanceAmount: 0,
-    totalAmount: 0,
-    notes: "The above cost are calculated according to the workshop cost accumulation and labor charges",
-  });
+  const { id } = useParams();
+  const [invoice, setInvoice] = useState(null);
+  const [invoiceNo, setInvoiceNo] = useState("");
+  const [advance, setAdvance] = useState("");
+  const [balance, setBalance] = useState("");
+  const [remarks, setRemarks] = useState("");
 
+  // Fetch invoice from backend
   useEffect(() => {
-    axios.get(`http://localhost:5001/api/repairs/${repairId}`)
-      .then((res) => {
-        const repair = res.data;
-        const calculatedTotal = repair.items?.reduce((acc, item) => acc + (parseFloat(item.amount) || 0) * (parseInt(item.qty) || 1), 0) || 0;
-        setRepairDetails(repair);
-        setInvoiceData((prev) => ({
-          ...prev,
-          customerName: repair.customerName || "",
-          vehicleNo: repair.vehicleNo || "",
-          presentMeter: repair.presentMeter || "",
-          items: repair.items || [{ description: "", qty: 1, amount: 0 }],
-          totalAmount: calculatedTotal,
-        }));
-      })
+    axios
+      .get(`http://localhost:5001/api/invoice/${id}`)
+      .then((res) => setInvoice(res.data))
       .catch((err) => {
-        console.error("Error loading repair", err);
-        toast.error("Failed to load repair details.");
+        console.error("Failed to fetch invoice", err);
+        toast.error("Failed to load invoice details.");
       });
-  }, [repairId]);
+  }, [id]);
 
+  // Calculate balance based on advance and total cost
   useEffect(() => {
-    const total = invoiceData.items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0) * (parseInt(item.qty) || 1), 0) - (parseFloat(invoiceData.advanceAmount) || 0);
-    setInvoiceData((prev) => ({ ...prev, totalAmount: total.toFixed(2) }));
-  }, [invoiceData.items, invoiceData.advanceAmount]);
+  if (invoice && !isNaN(advance)) {
+    const calculatedBalance = invoice.totalCost - advance;
+    setBalance(calculatedBalance >= 0 ? calculatedBalance : 0);
+  }
+}, [advance, invoice]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInvoiceData((prev) => ({ ...prev, [name]: value }));
-  };
+// useEffect(() => {
+//   // Fetch the current invoice
+//   axios
+//     .get(`http://localhost:5001/api/invoice/${id}`)
+//     .then((res) => setInvoice(res.data))
+//     .catch((err) => {
+//       console.error("Failed to fetch invoice", err);
+//       toast.error("Failed to load invoice details.");
+//     });
 
-  const handleLineItemChange = (index, field, value) => {
-    const newItems = [...invoiceData.items];
-    newItems[index][field] = value;
-    setInvoiceData((prev) => ({ ...prev, items: newItems }));
-  };
+//   // Fetch all existing invoices to auto-generate the invoice number
+//   axios
+//     .get("http://localhost:5001/api/accountant-invoices") // Replace with your actual accountant-side invoice endpoint
+//     .then((res) => {
+//       const existingInvoices = res.data;
+//       const numbers = existingInvoices
+//         .map(inv => inv.invoiceNo)
+//         .filter(num => /^INV-\d+$/.test(num))
+//         .map(num => parseInt(num.split("-")[1]));
+//       const nextNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+//       const nextInvoiceNo = `INV-${String(nextNumber).padStart(4, "0")}`;
+//       setInvoiceNo(nextInvoiceNo);
+//     })
+//     .catch(err => {
+//       console.error("Failed to generate invoice number", err);
+//       toast.error("Failed to auto-generate invoice number.");
+//     });
+// }, [id]);
 
-  const addLineItem = () => {
-    setInvoiceData((prev) => ({
-      ...prev,
-      items: [...prev.items, { description: "", qty: 1, amount: 0 }],
-    }));
-  };
 
-  const removeLineItem = (index) => {
-    const newItems = invoiceData.items.filter((_, i) => i !== index);
-    setInvoiceData((prev) => ({ ...prev, items: newItems }));
-  };
+//
+const formatCurrency = (amount) =>
+  `Rs. ${Number(amount).toLocaleString("en-LK", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+
+    // Generate PDF
+  const generatePDF = async () => {
+  if (!invoice) return;
+
+  if (!invoice || !invoice.repairs || !invoice.items) {
+  toast.error("Invoice data is incomplete.");
+  return;
+}
+
+
+  if (!invoiceNo.trim()) {
+    toast.error("Please enter the Invoice Number before downloading.");
+    return;
+  }
+  if (advance > invoice.totalCost) {
+    toast.error("Advance payment cannot exceed total cost.");
+    return;
+  }
+  if (isNaN(advance) || isNaN(balance)) {
+  toast.error("Advance and balance must be valid numbers.");
+  return;
+}
+
+  //const doc = new jsPDF();
+
     try {
-      await axios.post("http://localhost:5001/api/invoices/create", {
-        repairId,
-        ...invoiceData,
-      });
-      toast.success("Invoice saved successfully!");
-    } catch (err) {
-      console.error("Failed to save invoice", err);
-      toast.error("Failed to save invoice.");
-    }
-  };
+  const doc = new jsPDF();
 
-  const generatePDF = () => {
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-    doc.addImage(logoImage, "PNG", 10, 10, 20, 20);
-    doc.setFontSize(18);
-    doc.setTextColor("#B30000");
-    doc.text("Nimal Motors", 105, 20, { align: "center" });
-    doc.setFontSize(10);
-    doc.setTextColor("#000000");
-    doc.text("No 52/2, Galle Road, Aluthgama", 105, 30, { align: "center" });
-    doc.text("Tel: 034-2238057/7777738057", 105, 35, { align: "center" });
-    doc.text("Email: nimalmotors@gmail.com", 105, 40, { align: "center" });
-    doc.text("Repairs, Cut & Polish Service Center", 105, 45, { align: "center" });
-    doc.addImage(carImage, "JPEG", 170, 10, 20, 20);
+  // Header
+  doc.addImage(logoImage, "JPG", 10, 10, 25, 25);
+  doc.setFontSize(20).setTextColor("#B30000").text("Nimal Motors", 105, 20, { align: "center" });
+  doc.setFontSize(10).setTextColor("#000000");
+  doc.text("No 52/2, Galle Road, Aluthgama", 105, 27, { align: "center" });
+  doc.text("Tel: 034-2238057 / 077-77738057", 105, 32, { align: "center" });
+  doc.text("Repairs, Cut & Polish Service Center", 105, 37, { align: "center" });
+  doc.addImage(carImage, "JPEG", 170, 10, 25, 25);
 
-    doc.setFontSize(16);
-    doc.setTextColor("#B30000");
-    doc.text("INVOICE", 180, 20, { align: "right" });
-    doc.setFontSize(10);
-    doc.setTextColor("#000000");
-    doc.text(`Invoice No: ${invoiceData.invoiceNo}`, 180, 30, { align: "right" });
-    doc.text(`Date: ${invoiceData.invoiceDate}`, 180, 35, { align: "right" });
-    doc.text(`Month: ${new Date(invoiceData.invoiceDate).toLocaleString('default', { month: 'long' })} ${new Date(invoiceData.invoiceDate).getFullYear()}`, 180, 40, { align: "right" });
+  // Invoice Info
+  doc.setFontSize(14).setTextColor("#B30000").text("INVOICE", 200, 50, { align: "right" });
+  doc.setFontSize(10).setTextColor("#000000");
+  doc.text(`Invoice No: ${invoiceNo || "-"}`, 200, 55, { align: "right" });
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 200, 60, { align: "right" });
 
-    doc.setFontSize(12);
-    doc.setTextColor("#B30000");
-    doc.text("Bill To:", 10, 60);
-    doc.setTextColor("#000000");
-    doc.text(invoiceData.customerName, 10, 70);
-    doc.text(`Vehicle Number: ${invoiceData.vehicleNo}`, 10, 75);
-    doc.text(`Present Meter: ${invoiceData.presentMeter}km`, 10, 80);
+  let y = 70;
 
-    const startY = 90;
-    doc.setFillColor("#B30000");
-    doc.rect(10, startY - 5, 190, 10, "F");
-    doc.setTextColor("#FFFFFF");
-    doc.text("Sr No", 12, startY);
-    doc.text("Description", 30, startY);
-    doc.text("Qty", 120, startY);
-    doc.text("Amount", 160, startY);
+  // Customer Info Section – Two Columns Layout
+doc.setFontSize(11).setTextColor("#B30000").text("Customer Information", 14, y);
+y += 7;
 
-    let yPos = startY + 5;
-    invoiceData.items.forEach((item, index) => {
-      doc.setTextColor("#000000");
-      doc.text((index + 1).toString(), 12, yPos + 5);
-      doc.text(item.description || "N/A", 30, yPos + 5, { maxWidth: 90 });
-      doc.text(item.qty.toString(), 120, yPos + 5);
-      doc.text((parseFloat(item.amount) * parseInt(item.qty)).toFixed(2), 160, yPos + 5, { align: "right" });
-      yPos += 10;
+doc.setFontSize(10).setTextColor("#000000");
+
+const leftX = 14;
+const rightX = 110; // adjust for 2-column layout
+
+doc.text(`Name: ${invoice.customerName}`, leftX, y);
+doc.text(`Service ID: ${invoice.serviceID}`, rightX, y);
+y += 6;
+
+doc.text(`Vehicle No: ${invoice.vehicleNumber}`, leftX, y);
+doc.text(`Date: ${new Date(invoice.serviceDate).toLocaleDateString()}`, rightX, y);
+y += 6;
+
+doc.text(`Present Meter: ${invoice.presentMeter} km`, leftX, y);
+y += 10;
+
+
+  // Repair Details
+  doc.setFontSize(11).setTextColor("#B30000").text("Repair Details", 14, y);
+  y += 6;
+
+  invoice.repairs.forEach((pkg) => {
+    doc.setFont("helvetica", "bold").setTextColor("#2C2C2C").text(`Package: ${pkg.package}`, 14, y);
+    y += 6;
+
+    autoTable(doc, {
+      startY: y,
+      head: [["Repair", "Cost (Rs.)"]],
+      body: pkg.repairs.map((r) => [r.label, r.price.toFixed(2)]),
+      styles: { fontSize: 9, halign: "left" },
+      headStyles: { fillColor: [179, 0, 0], textColor: 255 },
+      margin: { left: 14, right: 14 },
+      theme: "striped",
     });
 
-    doc.setFont("helvetica", "bold");
-    doc.text("Total Amount", 120, yPos + 5);
-    doc.text(`Rs. ${invoiceData.totalAmount}`, 160, yPos + 5, { align: "right" });
-    doc.text("Advance Amount", 120, yPos + 15);
-    doc.text(`Rs. ${invoiceData.advanceAmount}`, 160, yPos + 15, { align: "right" });
-    doc.text("Balance", 120, yPos + 25);
-    doc.text(`Rs. ${(invoiceData.totalAmount - invoiceData.advanceAmount).toFixed(2)}`, 160, yPos + 25, { align: "right" });
+    y = doc.lastAutoTable.finalY + 4;
+    doc.setFont("helvetica", "bold").setTextColor("#000000").text(`Package Total: Rs. ${pkg.price.toFixed(2)}`, 180, y, { align: "right" });
+    y += 8;
+  });
 
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor("#000000");
-    doc.text(invoiceData.notes, 10, yPos + 40, { maxWidth: 190 });
-    doc.text("Thank you for your Business", 10, yPos + 50, { maxWidth: 190, align: "center" });
+  // Used Parts
+  doc.setFont("helvetica", "bold").setTextColor("#B30000").text(" Parts", 14, y);
+  y += 6;
 
-    doc.save(`Invoice_${invoiceData.invoiceNo}.pdf`);
-  };
+  autoTable(doc, {
+    startY: y,
+    head: [["Item", "Qty", "Unit Price (Rs.)", "Total (Rs.)"]],
+    body: invoice.items.map((item) => [
+      item.itemName,
+      item.qty,
+      item.price.toFixed(2),
+      (item.qty * item.price).toFixed(2),
+    ]),
+    styles: { fontSize: 9, halign: "left" },
+    headStyles: { fillColor: [179, 0, 0], textColor: 255 },
+    margin: { left: 14, right: 14 },
+    theme: "striped",
+  });
+
+  y = doc.lastAutoTable.finalY + 10;
+
+  // Summary Section
+  doc.setFont("helvetica", "bold").setFontSize(11).setTextColor("#000000");
+  doc.text(`Total Cost: Rs. ${invoice.totalCost.toFixed(2)}`, 200, y, { align: "right" }); y += 6;
+
+  const parsedAdvance = parseFloat(advance) || 0;
+  const parsedBalance = parseFloat(balance) || 0;
+  doc.text(`Advance: Rs. ${parsedAdvance.toFixed(2)}`, 200, y, { align: "right" }); y += 6;
+  doc.text(`Balance: Rs. ${parsedBalance.toFixed(2)}`, 200, y, { align: "right" }); y += 8;
+
+  y += 10;
+
+// Footer Note and Signature Section
+
+// Signature (Right side)
+const signatureY = y + 10;
+doc.setFont("helvetica", "normal").setFontSize(10).setTextColor("#000000");
+doc.text("__________________________", 150, signatureY);
+doc.text("Checked By", 160, signatureY + 5, { align: "center" });
+
+
+// Footer notes (Left side, slightly lower)
+let footerY = signatureY + 15;
+doc.setFont("helvetica", "normal").setFontSize(9).setTextColor("#000000");
+doc.text(
+  "Note: The above cost are calculated according to the workshop cost accumulation and labor charges.",
+  14,
+  footerY,
+  { maxWidth: 170 }
+);
+footerY += 6;
+
+doc.text(
+  "Thank you for your business.",
+  14,
+  footerY,
+  { maxWidth: 170 }
+);
+
+
+
+  // Save
+  doc.save(`Invoice_${invoiceNo || "unknown"}.pdf`);
+} catch (err) {
+  console.error("PDF Generation Error:", err);
+  toast.error("Failed to generate PDF.");
+}
+
+await axios.post("http://localhost:5001/api/accountant-invoices", {
+  //serviceInvoiceId: invoice._id,
+  invoiceNo,
+  advance,
+  balance,
+});
+
+try{ 
+toast.success("Invoice saved successfully!");
+} catch (err) {
+    console.error("PDF Generation or Saving Failed:", err);
+    toast.error("Failed to generate or save invoice.");
+  }
+};
+
+  
+
+  if (!invoice) return <p className="p-6">Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-[#B30000]">Generate Invoice</h1>
-        <button
-          onClick={() => navigate("/accountant-dashboard")}
-          className="bg-[#2C2C2C] text-white px-4 py-2 rounded hover:bg-[#5A5A5A] shadow-sm flex items-center gap-2"
-        >
-          <FaArrowLeft /> Back to Dashboard
-        </button>
+    <div className="p-6 min-h-screen bg-[#F5F5F5]">
+      <div className="bg-white shadow rounded-lg max-w-4xl mx-auto p-6">
+        <h2 className="text-2xl font-bold text-[#B30000] mb-6 text-center">Finalize & Download Invoice</h2>
+
+        {/* === Admin-Side Invoice Summary === */}
+        <div className="mb-6 border rounded p-4 bg-gray-50">
+          <h3 className="text-lg font-semibold text-[#B30000] mb-3">Invoice Summary</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div><strong>Customer Name:</strong> {invoice.customerName}</div>
+            <div><strong>Vehicle Number:</strong> {invoice.vehicleNumber}</div>
+            <div><strong>Service ID:</strong> {invoice.serviceID}</div>
+            <div><strong>Service Date:</strong> {new Date(invoice.serviceDate).toLocaleDateString()}</div>
+            <div><strong>Present Meter:</strong> {invoice.presentMeter} km</div>
+            <div><strong>Total Cost:</strong> Rs. {invoice.totalCost.toFixed(2)}</div>
+          </div>
+          {/* === Repair Details from Admin === */}
+{invoice.repairs && invoice.repairs.length > 0 && (
+  <div className="mt-4">
+    <h4 className="text-sm font-semibold text-[#2C2C2C] mb-1">Repairs:</h4>
+    {invoice.repairs.map((pkg, index) => (
+      <div key={index} className="mb-3">
+        <p className="font-semibold text-[#B30000]">Package: {pkg.package}</p>
+        <ul className="list-disc pl-6 text-sm text-gray-700">
+          {pkg.repairs.map((r, i) => (
+            <li key={i}>
+              {r.label} - Rs. {r.price?.toFixed(2) || "0.00"}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-1 text-sm font-medium text-right text-gray-800">
+          Package Total: Rs. {pkg.price?.toFixed(2) || "0.00"}
+        </p>
       </div>
-      {repairDetails ? (
-        <div className="bg-[#FFFFFF] p-6 rounded shadow-md max-w-2xl mx-auto">
-          <h2 className="text-xl font-semibold mb-4 text-[#000000] flex items-center gap-2">
-            <FaFileInvoice /> Invoice Details
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Invoice Number</label>
-              <input
-                type="text"
-                name="invoiceNo"
-                value={invoiceData.invoiceNo}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Customer Name</label>
-              <input
-                type="text"
-                name="customerName"
-                value={invoiceData.customerName}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                disabled
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Vehicle Number</label>
-              <input
-                type="text"
-                name="vehicleNo"
-                value={invoiceData.vehicleNo}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                disabled
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Present Meter (km)</label>
-              <input
-                type="text"
-                name="presentMeter"
-                value={invoiceData.presentMeter}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Invoice Date</label>
-              <input
-                type="date"
-                name="invoiceDate"
-                value={invoiceData.invoiceDate}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                max={new Date().toISOString().slice(0, 10)}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Due Date</label>
-              <input
-                type="date"
-                name="dueDate"
-                value={invoiceData.dueDate}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                min={invoiceData.invoiceDate}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Advance Amount (Rs.)</label>
-              <input
-                type="number"
-                name="advanceAmount"
-                value={invoiceData.advanceAmount}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                min="0"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Line Items</label>
-              {invoiceData.items.map((item, index) => (
-                <div key={index} className="flex gap-2 mb-2">
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={item.description}
-                    onChange={(e) => handleLineItemChange(index, "description", e.target.value)}
-                    className="w-1/2 p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Qty"
-                    value={item.qty}
-                    onChange={(e) => handleLineItemChange(index, "qty", e.target.value)}
-                    className="w-1/4 p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                    min="1"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Amount (Rs.)"
-                    value={item.amount}
-                    onChange={(e) => handleLineItemChange(index, "amount", e.target.value)}
-                    className="w-1/4 p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                    min="0"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeLineItem(index)}
-                    className="bg-[#B30000] text-white px-2 py-1 rounded hover:bg-[#D63333] shadow-sm"
-                    disabled={invoiceData.items.length === 1}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={addLineItem}
-                className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] shadow-sm"
-              >
-                Add Line Item
-              </button>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Total Amount (Rs.)</label>
-              <input
-                type="text"
-                name="totalAmount"
-                value={invoiceData.totalAmount}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] bg-[#F5F5F5]"
-                disabled
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#000000] mb-1">Notes</label>
-              <textarea
-                name="notes"
-                value={invoiceData.notes}
-                onChange={handleChange}
-                className="w-full p-2 border border-[#2C2C2C] rounded text-[#000000] focus:ring-[#B30000] focus:border-[#B30000]"
-                rows="2"
-              ></textarea>
-            </div>
-            <div className="flex justify-end gap-3">
-              <button
-                type="submit"
-                className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] shadow-sm"
-              >
-                Save Invoice
-              </button>
-              <button
-                type="button"
-                onClick={generatePDF}
-                className="bg-[#B30000] text-white px-4 py-2 rounded hover:bg-[#D63333] shadow-sm flex items-center gap-2"
-              >
-                <FaDownload /> Generate PDF
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate("/accountant-dashboard")}
-                className="bg-[#2C2C2C] text-white px-4 py-2 rounded hover:bg-[#5A5A5A] shadow-sm"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
+    ))}
+  </div>
+)}
+
+{/* === Items / Parts Used === */}
+{invoice.items && invoice.items.length > 0 && (
+  <div className="mt-3">
+    <h4 className="text-sm font-semibold text-[#2C2C2C] mb-1">Parts:</h4>
+    <table className="w-full text-sm border border-gray-300">
+      <thead className="bg-gray-200">
+        <tr>
+          <th className="px-2 py-1 border">Item</th>
+          <th className="px-2 py-1 border">Qty</th>
+          <th className="px-2 py-1 border">Unit Price</th>
+          <th className="px-2 py-1 border">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {invoice.items.map((item, idx) => (
+          <tr key={idx} className="border-t">
+            <td className="px-2 py-1">{item.itemName}</td>
+            <td className="px-2 py-1 text-center">{item.qty}</td>
+            <td className="px-2 py-1 text-right">Rs. {item.price.toFixed(2)}</td>
+            <td className="px-2 py-1 text-right">
+              Rs. {(item.qty * item.price).toFixed(2)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
         </div>
-      ) : (
-        <p className="text-[#2C2C2C] text-sm">Loading repair details...</p>
-      )}
+
+        {/* === Form Section === */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block text-sm font-semibold mb-1">Invoice No:</label>
+            <input
+              type="text"
+              value={invoiceNo}
+              onChange={(e) => setInvoiceNo(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+  <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>
+  <input
+  type="number"
+  value={advance}
+  onChange={(e) => {
+    const value = e.target.value;
+    setAdvance(value);
+    if (!isNaN(parseFloat(value))) {
+      const balanceCalc = (invoice?.totalCost || 0) - parseFloat(value);
+      setBalance(balanceCalc >= 0 ? balanceCalc.toFixed(2) : 0);
+    } else {
+      setBalance(invoice?.totalCost?.toFixed(2) || 0);
+    }
+  }}
+  className="w-full border rounded px-3 py-2"
+/>
+
+{advance > invoice?.totalCost && (
+  <p className="text-red-600 text-sm mt-1">
+    ⚠️ Advance cannot exceed total cost (Rs. {invoice.totalCost.toFixed(2)})
+  </p>
+)}
+
+
+</div>
+
+<div>
+  <label className="block text-sm font-semibold mb-1">Balance (Rs.):</label>
+  <input
+  type="text"
+  value={formatCurrency(balance)}
+  readOnly
+  className="w-full border rounded px-3 py-2 bg-gray-100 text-gray-700"
+/>
+
+</div>
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-semibold mb-1">Remarks:</label>
+            <textarea
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              rows={3}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div className="text-right">
+          <button
+            onClick={generatePDF}
+            className="bg-[#B30000] hover:bg-[#D63333] text-white px-6 py-2 rounded"
+          >
+            Download Invoice
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
