@@ -10,6 +10,7 @@ import {
   FaClipboardList,
   FaHome,
   FaChartLine,
+  FaUser,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -205,20 +206,47 @@ const handleView = (invoice) => {
   setShowModal(true);
 };
 
+
 // Delete Invoice
 const handleDelete = async (id) => {
-  const confirm = window.confirm("Are you sure you want to delete this invoice?");
-  if (!confirm) return;
-
   try {
     await axios.delete(`http://localhost:5001/api/accountant-invoices/${id}`);
-    setFinalizedInvoices(prev => prev.filter(inv => inv._id !== id));
-    alert("Invoice deleted successfully.");
+    toast.success("Invoice deleted.");
+    refreshInvoices(); // make sure this function exists and works
   } catch (error) {
-    console.error("Delete error:", error);
-    alert("Failed to delete invoice.");
+    console.error("Delete failed", error);
+    toast.error("Delete failed.");
   }
 };
+
+
+
+// Refresh invoices function
+const refreshInvoices = async () => {
+  try {
+    const [invoicesRes, finalizedRes] = await Promise.all([
+      axios.get("http://localhost:5001/api/invoice"),
+      axios.get("http://localhost:5001/api/accountant-invoices"),
+    ]);
+
+    // ✅ Only get invoices that are approved and not finalized
+    const approved = invoicesRes.data.filter(
+      (inv) => inv.status === "approved" && inv.isApproved === true
+    );
+
+    setApprovedInvoices(approved);
+    setFinalizedInvoices(finalizedRes.data);
+  } catch (err) {
+    console.error("Failed to refresh invoice data", err);
+    toast.error("Failed to refresh invoice list.");
+  }
+};
+
+// Initial fetch of invoices
+useEffect(() => {
+  refreshInvoices(); // Simple now!
+}, []);
+
 
 // const refreshInvoices = async () => {
 //   try {
@@ -271,6 +299,7 @@ useEffect(() => {
 }, []);
 
 
+
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -279,7 +308,10 @@ useEffect(() => {
         axios.get("http://localhost:5001/api/accountant-invoices"),
       ]);
 
-      const approved = invoicesRes.data.filter((inv) => inv.isApproved === true);
+      const approved = invoicesRes.data.filter(
+  (inv) => inv.status === "approved" && inv.isApproved === true
+);
+
       setFinalizedInvoices(finalizedRes.data);
 
       // Get list of already finalized serviceInvoiceIds
@@ -371,14 +403,15 @@ useEffect(() => {
           Accountant Dashboard
         </h2>
         {/* Back Button */}
-        <div className="-mt-2 text-right">
-          <button
-            onClick={() => navigate("/accountant")}
-            className="bg-[#2C2C2C] text-white px-4 py-2 rounded hover:bg-[#5A5A5A] shadow-sm"
-          >
-            ← Back to Profile
-          </button>
-        </div>
+        <div className="flex justify-end mb-4">
+  <button
+    onClick={() => navigate("/accountant")}
+    className="bg-[#2C2C2C] text-white px-4 py-2 rounded hover:bg-[#5A5A5A] shadow-sm flex items-center gap-2"
+  >
+    <FaUser className="text-white" />
+    Back to Profile
+  </button>
+</div>
 
 
         {/* Summary Cards */}

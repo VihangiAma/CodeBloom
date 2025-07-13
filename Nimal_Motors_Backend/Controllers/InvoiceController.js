@@ -1,6 +1,7 @@
 import Invoice from "../Models/Invoice.js";
 
-// Create new finalized invoice
+import ServiceInvoice from "../Models/ServiceInvoiceModel.js"; // ✅ Import supervisor model
+
 export const createAccountantInvoice = async (req, res) => {
   try {
     const { serviceInvoiceId, invoiceNo, advance, balance } = req.body;
@@ -15,20 +16,29 @@ export const createAccountantInvoice = async (req, res) => {
       return res.status(409).json({ message: "Invoice number already exists." });
     }
 
+    // Save accountant-side invoice
     const newInvoice = new Invoice({
       serviceInvoiceId,
       invoiceNo,
       advance,
       balance,
+      finalizedAt: new Date(),
     });
 
     await newInvoice.save();
+
+    // ✅ Update related supervisor-side invoice status
+    await ServiceInvoice.findByIdAndUpdate(serviceInvoiceId, {
+      status: "finalized",
+    });
+
     res.status(201).json(newInvoice);
   } catch (error) {
     console.error("Error creating accountant invoice:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
+
 
 // Get all accountant invoices
 export const getAllAccountantInvoices = async (req, res) => {
@@ -52,5 +62,19 @@ export const getAccountantInvoiceById = async (req, res) => {
   } catch (error) {
     console.error("Error fetching invoice by ID:", error);
     res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Delete an invoice by ID
+export const deleteAccountantInvoice = async (req, res) => {
+  try {
+    const deleted = await Invoice.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Invoice not found." });
+    }
+    res.status(200).json({ message: "Invoice deleted successfully." });
+  } catch (err) {
+    console.error("Delete error:", err.message);
+    res.status(500).json({ message: "Failed to delete invoice", error: err.message });
   }
 };
