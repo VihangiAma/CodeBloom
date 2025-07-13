@@ -202,7 +202,7 @@ export default function AdminUsers() {
 
       const { password, ...userData } = newUser;
 
-      const res = await axios.post("http://localhost:5001/api/user/admin/add-user", userData, {
+      const res = await axios.post("http://localhost:5001/api/user/add-by-admin", userData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -480,7 +480,6 @@ export default function AdminUsers() {
                 }}
               >
                 <option value="">Select Role</option>
-                <option value="admin">Admin</option>
                 <option value="mechanicalsupervisor">Mechanical Supervisor</option>
                 <option value="electricalsupervisor">Electrical Supervisor</option>
                 <option value="bodyshopsupervisor">Bodyshop Supervisor</option>

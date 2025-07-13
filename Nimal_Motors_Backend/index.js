@@ -86,17 +86,14 @@ app.use("/api/history", PremiumCompletedHistoryRoutes);
 
 app.use("/api/bodyshopbooking", premiumBodyshopBookingRoutes);
 app.use("/api/mechanicalbooking", premiumMechanicalBookingRoutes);
-
 app.use("/api/electricalcalbooking", premiumElectricalcalBookingRoute);
-
-
-
 app.use("/api", BodyshopAppointmentRoutes);
 app.use("/api/mechanical", mechanicalRoutes);
-
-
 app.use("/api/combinedbookings", premiumCombinedRoutes);
 
+
+
+app.use('/api/users', userRoutes);
 
 // ✅ Error Handling Middleware
 app.use((err, req, res, next) => {

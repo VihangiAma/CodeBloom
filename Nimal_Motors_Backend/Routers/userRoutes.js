@@ -16,12 +16,13 @@ import {
   getElectricalSupProfile,
   getMechanicalSupProfile,
   getServiceSupProfile,
-  addUserByAdmin,
+
   changePassword,
   updateOwnProfile,
   getBasicUserProfile,
   forgotPasswordHandler,
   resetPasswordHandler,
+  addingUserByAdmin,
 
 } from "../Controllers/UserController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
@@ -36,10 +37,10 @@ userRoutes.get("/profile/basic", authenticateToken, getBasicUserProfile);
 // ✅ PUBLIC ROUTES
 //userRoutes.post("/register", postUser);
 userRoutes.post("/login", LogInUser);
-userRoutes.post("/admin/add-user", addUserByAdmin);
+// userRoutes.post("/admin/add-user", addUserByAdmin);
 userRoutes.post("/forgot-password",forgotPasswordHandler);
 userRoutes.post("/reset-password", resetPasswordHandler);
-
+userRoutes.post('/add-by-admin', addingUserByAdmin);
 
 
 
@@ -52,6 +53,7 @@ userRoutes.get("/bodyshop/profile", getBodyshopSupProfile);
 userRoutes.get("/electrical/profile", getElectricalSupProfile);
 userRoutes.get("/service/profile", getServiceSupProfile);
 userRoutes.get("/mechanical/profile", getMechanicalSupProfile);
+
 
 userRoutes.post("/change-password", changePassword);
 
