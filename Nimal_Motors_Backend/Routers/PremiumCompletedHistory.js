@@ -10,23 +10,6 @@ import Appointment from "../Models/Appointment.js";
 
 const router = express.Router();
 
-// router.get("/premiumcompleted", verifyToken, async (req, res) => {
-//   const { fullName } = req.user;
-
-//   try {
-//     const mechanical = await MechanicalSection.find({ customerName: fullName, status: "Completed" });
-//     const electrical = await ElectricalSection.find({ customerName: fullName, status: "Completed" });
-//     const bodyshop = await BodyShopSection.find({ customerName: fullName, status: "Completed" });
-//     const appointments = await Appointment.find({ customerName: fullName, status: "Completed" });
-
-//     res.json({ mechanical, electrical, bodyshop, appointments });
-//   } catch (err) {
-//     res.status(500).json({ error: "Failed to fetch completed services" });
-//   }
-// });
-
-// 
-
 router.get("/premiumcompleted", verifyToken, async (req, res) => {
   const { email } = req.user; // get email from token
 

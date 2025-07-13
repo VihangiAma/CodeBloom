@@ -696,7 +696,7 @@ export const forgotPasswordHandler = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await Users.findOne({ email });
+    const user = await Users.findOne({ email: email.toLowerCase() });
 
     if (!user) {
       return res.status(404).json({ message: "Email not found" });
@@ -717,19 +717,20 @@ export const forgotPasswordHandler = async (req, res) => {
     // ✅ Compose message
     const mailOptions = {
       from: '"Nimal Motors" <subhajayoda@gmail.com>', // sender
-      to: 'subhagamage100@gmail.com', // receiver
+      to:user.email, // receiver
       subject: "Password Reset - Nimal Motors",
       text: `Hello ${user.fullName},
 
 We received a request to reset your password.
 
 Please click the link below or copy it into your browser to reset your password:
-http://localhost:5173/change-password?userId=${user.userId}
+http://localhost:5173/reset-password?userId=${user.userId}
 
 If you didn’t request this, please ignore this email.
 
 Thanks,
 Nimal Motors Team`,
+
     };
 
     // ✅ Send email
@@ -739,6 +740,41 @@ Nimal Motors Team`,
   } catch (error) {
     console.error("Email error:", error);
     res.status(500).json({ message: "Failed to send email" });
+  }
+};
+
+
+// Controller Function to Handle Password Reset (no token required)
+export const resetPasswordHandler = async (req, res) => {
+  const { userId, newPassword } = req.body;
+
+  try {
+    // Validate input
+    if (!userId || !newPassword) {
+      return res.status(400).json({ message: "Missing userId or newPassword." });
+    }
+
+    // Find the user by userId
+    const user = await Users.findOne({ userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.mustChangePassword = false; // Reset the temporary flag if used
+
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful." });
+  } catch (error) {
+    console.error("Error in resetPasswordHandler:", error);
+    res.status(500).json({
+      message: "Server error while resetting password.",
+      error: error.message,
+    });
   }
 };
 

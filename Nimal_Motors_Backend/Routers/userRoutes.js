@@ -20,7 +20,8 @@ import {
   changePassword,
   updateOwnProfile,
   getBasicUserProfile,
-  forgotPasswordHandler
+  forgotPasswordHandler,
+  resetPasswordHandler,
 
 } from "../Controllers/UserController.js";
 import { authenticateToken } from "../MiddleWare/authMiddleware.js";
@@ -37,6 +38,8 @@ userRoutes.get("/profile/basic", authenticateToken, getBasicUserProfile);
 userRoutes.post("/login", LogInUser);
 userRoutes.post("/admin/add-user", addUserByAdmin);
 userRoutes.post("/forgot-password",forgotPasswordHandler);
+userRoutes.post("/reset-password", resetPasswordHandler);
+
 
 
 

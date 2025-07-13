@@ -539,7 +539,6 @@ export default function AdminUsers() {
               color: "#9B0A0A",
             }}
           >
-            Registered Users
           </h3>
           <div style={{ overflow: "auto" }}>
             <table style={{ minWidth: "100%", borderCollapse: "collapse" }}>

@@ -91,6 +91,7 @@ function App() {
 
         <Route path="/profile/basic" element={<PremiumServiceForm />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/change-password" element={<ResetPassword />} />
 
 
 

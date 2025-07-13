@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const CompletedServiceHistory = () => {
   const [data, setData] = useState(null);
-  const [user, setUser] = useState({ fullName: "", email: "" });
+  const [user, setUser] = useState({ fullName: '', email: '' });
 
-  // Decode user info from JWT token for report header
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = JSON.parse(atob(token.split(".")[1]));
+        const decoded = JSON.parse(atob(token.split('.')[1]));
         setUser({
-          fullName: decoded.fullName || "Nimal Motors Customer",
-          email: decoded.email || "No Email",
+          fullName: decoded.fullName || 'Nimal Motors Customer',
+          email: decoded.email || 'No Email',
         });
       } catch (err) {
-        console.error("Error decoding token", err);
+        console.error('Token decode error:', err);
       }
     }
   }, []);
@@ -26,13 +25,13 @@ const CompletedServiceHistory = () => {
   useEffect(() => {
     const fetchCompleted = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5001/api/history/premiumcompleted", {
+        const token = localStorage.getItem('token');
+        const res = await axios.get('http://localhost:5001/api/history/premiumcompleted', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setData(res.data);
       } catch (err) {
-        console.error("Failed to load history", err);
+        console.error('Failed to load completed service history', err);
       }
     };
 
@@ -47,95 +46,116 @@ const CompletedServiceHistory = () => {
       !data.bodyshop ||
       !data.appointments
     ) {
-      alert("No completed service history available to export.");
+      alert('No completed service history available to export.');
       return;
     }
 
     const allData = [
-      ...data.mechanical.map((d) => ({ section: "Mechanical", ...d })),
-      ...data.electrical.map((d) => ({ section: "Electrical", ...d })),
-      ...data.bodyshop.map((d) => ({ section: "Bodyshop", ...d })),
-      ...data.appointments.map((d) => ({ section: "Appointment", ...d })),
+      ...data.mechanical.map((d) => ({ section: 'Mechanical', ...d })),
+      ...data.electrical.map((d) => ({ section: 'Electrical', ...d })),
+      ...data.bodyshop.map((d) => ({ section: 'Bodyshop', ...d })),
+      ...data.appointments.map((d) => ({ section: 'Appointment', ...d })),
     ];
 
     if (allData.length === 0) {
-      alert("No completed services found to export.");
+      alert('No completed services found to export.');
       return;
     }
 
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-    // Header
-    doc.setFontSize(18);
-    doc.setTextColor("#B00020");
-    doc.setFont("helvetica", "bold");
-    doc.text("Nimal Motors Aluthgama", 14, 20);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('NIMAL MOTORS', 105, 15, { align: 'center' });
 
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('No:321/2A, Galle Road, Aluthgama', 105, 20, { align: 'center' });
+    doc.text('Tel: 055-2298868 / 077-8888888', 105, 25, { align: 'center' });
+    doc.text('Email: nimalmotors.nm@gmail.com', 105, 30, { align: 'center' });
+    doc.text('All Vehicle Repairs, Cut & Polish & Service Center', 105, 35, { align: 'center' });
+    doc.text('Reg No: 168507', 105, 40, { align: 'center' });
+
+    doc.setDrawColor(200);
+    doc.setLineWidth(0.5);
+    doc.line(20, 45, 190, 45);
+
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.setTextColor("#212121");
-    doc.text("Completed Service History Report", 14, 30);
+    doc.text('Completed Service History Report', 105, 55, { align: 'center' });
 
-    // Customer info
-    doc.setFontSize(11);
-    doc.setTextColor("#444444");
-    doc.text(`Customer Name: ${user.fullName}`, 14, 40);
-    doc.text(`Email: ${user.email}`, 14, 47);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(80);
+    doc.text(`Customer Name: ${user.fullName}`, 20, 65);
+    doc.text(`Email: ${user.email}`, 20, 71);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 77);
 
-    // Table
     autoTable(doc, {
-      startY: 55,
-      head: [["Section", "Vehicle No", "Date", "Status"]],
+      startY: 85,
+      head: [['Section', 'Vehicle No', 'Service Date', 'Status']],
       body: allData.map((d) => [
         d.section,
-        d.vehicleNumber || "N/A",
+        d.vehicleNumber || 'N/A',
         d.serviceDate
           ? new Date(d.serviceDate).toLocaleDateString()
           : d.date
           ? new Date(d.date).toLocaleDateString()
-          : "N/A",
-        d.status || "Completed",
+          : 'N/A',
+        d.status || 'Completed',
       ]),
       styles: {
-        fontSize: 10,
+        fontSize: 9,
         cellPadding: 3,
-        overflow: "linebreak",
+        valign: 'middle',
       },
       headStyles: {
-        fillColor: "#B00020",
-        textColor: "#FFFFFF",
-        fontStyle: "bold",
+        fillColor: [176, 0, 32],
+        textColor: 255,
+        fontStyle: 'bold',
       },
       alternateRowStyles: {
-        fillColor: "#f9f9f9",
+        fillColor: [245, 245, 245],
       },
-      margin: { left: 14, right: 14 },
     });
 
-    // Footer with page number
     const pageCount = doc.internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
-      doc.setFontSize(9);
-      doc.setTextColor("#999999");
+      doc.setFontSize(8);
+      doc.setTextColor(120);
       doc.text(
-        `Page ${i} of ${pageCount}`,
-        doc.internal.pageSize.getWidth() - 40,
-        doc.internal.pageSize.getHeight() - 10
+        `Page ${i} of ${pageCount} | Nimal Motors Aluthgama`,
+        105,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: 'center' }
       );
     }
 
-    doc.save("Completed_Service_History.pdf");
+    doc.save(`Completed_Service_Report_${user.fullName.replace(/\s+/g, '_')}.pdf`);
   };
 
-  if (!data) return <p>Loading service history...</p>;
+  if (!data) return null;
 
   return (
-    <div className="p-4">
+    <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-end' }}>
       <button
         onClick={downloadPDF}
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        style={{
+          backgroundColor: 'red',
+          color: 'white',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '5px',
+          fontSize: '14px',
+          cursor: 'pointer',
+          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+          transition: 'background-color 0.3s ease',
+        }}
+        onMouseOver={(e) => (e.target.style.backgroundColor = '#8f2222ff')}
+        onMouseOut={(e) => (e.target.style.backgroundColor = '#8f2222ff')}
       >
-        Download Completed Service History (PDF)
+        Download PDF Report
       </button>
     </div>
   );
