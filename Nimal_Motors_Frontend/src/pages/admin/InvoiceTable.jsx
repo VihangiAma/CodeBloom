@@ -59,7 +59,6 @@ const InvoiceTable = ({ rows, title, onView, onDeleteSelected }) => {
               <th className="p-2 border">Description</th>
               <th className="p-2 border">Total</th>
               <th className="p-2 border">Remarks</th>
-              {/* <th className="p-2 border">Status</th> */}
               <th className="p-2 border">Action</th>
             </tr>
           </thead>
@@ -88,13 +87,7 @@ const InvoiceTable = ({ rows, title, onView, onDeleteSelected }) => {
                     Rs. {inv.totalCost?.toFixed(2)}
                   </td>
                   <td className="p-2 border">{inv.adminRemarks || "—"}</td>
-                  {/* <td className="p-2 border text-center">
-                    {inv.adminRemarks ? (
-                      <FaCheckCircle className="text-green-500" />
-                    ) : (
-                      <FaTimesCircle className="text-red-500" />
-                    )}
-                  </td> */}
+
                   <td className="p-2 border text-center">
                     <button
                       className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
