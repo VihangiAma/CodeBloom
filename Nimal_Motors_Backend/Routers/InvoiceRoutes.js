@@ -3,6 +3,7 @@ import {
   createAccountantInvoice,
   getAllAccountantInvoices,
   getAccountantInvoiceById,
+  deleteAccountantInvoice,
 } from "../Controllers/InvoiceController.js";
 
 const router = express.Router();
@@ -15,5 +16,9 @@ router.get("/", getAllAccountantInvoices);
 
 // GET: Get single invoice by ID
 router.get("/:id", getAccountantInvoiceById);
+
+// DELETE: Delete an invoice by ID
+router.delete("/:id", deleteAccountantInvoice); 
+
 
 export default router;
