@@ -248,7 +248,8 @@ const AdminInvoiceView = () => {
     [invoices]
   );
   const resubmitted = useMemo(
-    () => invoices.filter((i) => i.status === "resubmitted"),
+    () =>
+      invoices.filter((i) => i.status === "approved" && i.adminRemarks !== ""),
     [invoices]
   );
 
@@ -297,12 +298,12 @@ const AdminInvoiceView = () => {
         onDeleteSelected={deleteMany}
       />
 
-      {/* <InvoiceTable
+      <InvoiceTable
         title="4. Resubmitted – after fixes"
         rows={resubmitted}
         onView={handleViewInvoice}
         onDeleteSelected={deleteMany}
-      /> */}
+      />
     </div>
   );
 };
