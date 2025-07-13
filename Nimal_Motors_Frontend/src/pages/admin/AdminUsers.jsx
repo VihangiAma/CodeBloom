@@ -807,28 +807,32 @@ export default function AdminUsers() {
                     Role:
                   </label>
                   <select
-                    name="type"
-                    value={editUser.type}
-                    onChange={handleEditChange}
-                    style={{
-                      padding: "8px 12px",
-                      borderRadius: "6px",
-                      backgroundColor: "#212121",
-                      color: "white",
-                      border: "1px solid #444",
-                      fontSize: "16px",
-                      fontFamily: "Roboto, sans-serif",
-                      width: "100%",
-                    }}
-                  >
-                    <option value="">Select Role</option>
-                    <option value="mechanicalsupervisor">Mechanical Supervisor</option>
-                    <option value="electricalsupervisor">Electrical Supervisor</option>
-                    <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
-                    <option value="servicesupervisor">Service Supervisor</option>
-                    <option value="accountant">Accountant</option>
-                    <option value="premiumCustomer">Premium Customer</option>
-                  </select>
+  name="type"
+  value={editUser.type}
+  onChange={handleEditChange}
+  disabled={editUser.userId === currentUserId}
+  style={{
+    padding: "8px 12px",
+    borderRadius: "6px",
+    backgroundColor: editUser.userId === currentUserId ? "#999" : "#212121",
+    color: "white",
+    border: "1px solid #444",
+    fontSize: "16px",
+    fontFamily: "Roboto, sans-serif",
+    width: "100%",
+    opacity: editUser.userId === currentUserId ? 0.6 : 1,
+    cursor: editUser.userId === currentUserId ? "not-allowed" : "pointer",
+  }}
+>
+  <option value="">Select Role</option>
+  <option value="mechanicalsupervisor">Mechanical Supervisor</option>
+  <option value="electricalsupervisor">Electrical Supervisor</option>
+  <option value="bodyshopsupervisor">Bodyshop Supervisor</option>
+  <option value="servicesupervisor">Service Supervisor</option>
+  <option value="accountant">Accountant</option>
+  <option value="premiumCustomer">Premium Customer</option>
+</select>
+
                 </div>
               </div>
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>

@@ -1,26 +1,26 @@
+// models/PremiumElectricalBooking.js
 import mongoose from "mongoose";
 
 const premiumElectricalBookingSchema = new mongoose.Schema({
   customerId: {
-    type: mongoose.Schema.Types.ObjectId, // Fixed from String
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  customerName: { type: String, required: true },
-  vehicleType: { type: String, required: true },
-  vehicleNumber: { type: String, required: true },
-  serviceDate: { type: Date, required: true },
-  presentMeter: { type: Number, required: true },
+  customerName: String,
+  vehicleType: String,
+  vehicleNumber: String,
+  serviceDate: Date,
+  issueDescription: String,
   status: {
     type: String,
     enum: ["Pending", "In Progress", "Completed"],
     default: "Pending",
   },
-  serviceID: { type: String, unique: true },
-  contact: {
-    phone: { type: String, required: true },
-    email: { type: String },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
-}, { timestamps: true });
+});
 
 export default mongoose.model("PremiumElectricalBooking", premiumElectricalBookingSchema);
