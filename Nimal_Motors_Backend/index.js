@@ -22,6 +22,8 @@ import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
 import historyRoutes from "./Routers/history.js";
+import PremiumCompletedHistoryRoutes from "./Routers/PremiumCompletedHistory.js";
+
 
 
 import premiumBodyshopBookingRoutes from "./Routers/PremiumBodyshopRoute.js";
@@ -78,11 +80,13 @@ app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/service-invoices", invoiceRoutes); 
 app.use("/api/history", historyRoutes);
+app.use("/api/history", PremiumCompletedHistoryRoutes);
 
 //bookingroutesP
 
 app.use("/api/bodyshopbooking", premiumBodyshopBookingRoutes);
 app.use("/api/mechanicalbooking", premiumMechanicalBookingRoutes);
+
 app.use("/api/electricalcalbooking", premiumElectricalcalBookingRoute);
 
 
