@@ -6,6 +6,10 @@ import PremiumServiceElectrical from "./PremiumServiceElecrical";
 import PremiumServiceMechanical from "./PremiumServiceMechanical";
 import PremiumServiceAppointment from "./PremiumServiceAppointment";
 import CombinedBookingsTable from "./PremiumServiceAllHistory";
+import PremiumCustomerBookings from "./PremiumCustomerBookings";
+
+// In return statement:
+<PremiumCustomerBookings />
 
 const DashboardCard = ({ title, description, emoji, onClick }) => (
   <div
@@ -188,7 +192,7 @@ const PremiumCustomerDashboard = () => {
             >
                Service History
             </h2>
-            <CombinedBookingsTable />
+            <PremiumCustomerBookings />
           </div>
         );
 

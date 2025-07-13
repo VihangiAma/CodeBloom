@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const PremiumServiceAppointment = ({ existingBooking, isEditMode, onDelete }) => {
+const PremiumServiceAppointment = () => {
   const [formData, setFormData] = useState({
     customerName: "",
     address: "",
@@ -38,41 +38,20 @@ const PremiumServiceAppointment = ({ existingBooking, isEditMode, onDelete }) =>
         const u = res.data.user;
         setUser(u);
 
-        if (!isEditMode) {
-          setFormData((prev) => ({
-            ...prev,
-            customerName: u.fullName || "",
-            contact: {
-              phone: u.phoneNumber || "",
-              email: u.email || "",
-            },
-          }));
-        }
+        setFormData((prev) => ({
+          ...prev,
+          customerName: u.fullName || "",
+          contact: {
+            phone: u.phoneNumber || "",
+            email: u.email || "",
+          },
+        }));
       })
       .catch((err) => {
         console.error("Failed to fetch user profile:", err);
         alert("Authorization failed. Please log in again.");
       });
-  }, [isEditMode]);
-
-  useEffect(() => {
-    if (isEditMode && existingBooking) {
-      setFormData({
-        customerName: existingBooking.customerName || "",
-        address: existingBooking.address || "",
-        contact: {
-          phone: existingBooking.contact?.phone || "",
-          email: existingBooking.contact?.email || "",
-        },
-        vehicleNumber: existingBooking.vehicleNumber || "",
-        vehicleType: existingBooking.vehicleType || "",
-        date: existingBooking.date
-          ? new Date(existingBooking.date).toISOString().split("T")[0]
-          : "",
-        time: existingBooking.time || "",
-      });
-    }
-  }, [isEditMode, existingBooking]);
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -142,30 +121,21 @@ const PremiumServiceAppointment = ({ existingBooking, isEditMode, onDelete }) =>
     const payload = { ...formData };
 
     try {
-      if (isEditMode) {
-        await axios.put(
-          `http://localhost:5001/api/premiumappointment/${existingBooking._id || existingBooking.appointmentId}`,
-          payload,
-          config
-        );
-        alert("Appointment updated ✅");
-      } else {
-        await axios.post("http://localhost:5001/api/premiumappointment", payload, config);
-        alert("Appointment booked ✅");
+      await axios.post("http://localhost:5001/api/appointments", payload, config);
+      alert("Appointment booked ✅");
 
-        setFormData({
-          customerName: user?.fullName || "",
-          address: "",
-          contact: {
-            phone: user?.phoneNumber || "",
-            email: user?.email || "",
-          },
-          vehicleNumber: "",
-          vehicleType: "",
-          date: "",
-          time: "",
-        });
-      }
+      setFormData({
+        customerName: user?.fullName || "",
+        address: "",
+        contact: {
+          phone: user?.phoneNumber || "",
+          email: user?.email || "",
+        },
+        vehicleNumber: "",
+        vehicleType: "",
+        date: "",
+        time: "",
+      });
     } catch (err) {
       console.error("Submit failed:", err);
       let msg = "Booking submission failed. Please try again.";
@@ -180,28 +150,10 @@ const PremiumServiceAppointment = ({ existingBooking, isEditMode, onDelete }) =>
     }
   };
 
-  const handleDelete = () => {
-    if (onDelete && window.confirm("Delete this appointment?")) {
-      onDelete(existingBooking._id || existingBooking.appointmentId);
-    }
-  };
-
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-center">
-        {isEditMode ? "Update Appointment" : "Book an Appointment"}
-      </h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Book an Appointment</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {isEditMode && (
-          <div>
-            <label className="block mb-1 font-semibold">Appointment ID</label>
-            <input
-              value={existingBooking._id || existingBooking.appointmentId}
-              disabled
-              className="w-full bg-gray-100 p-2 border rounded-md"
-            />
-          </div>
-        )}
         <div>
           <label className="block font-semibold">Customer Name</label>
           <input
@@ -308,17 +260,8 @@ const PremiumServiceAppointment = ({ existingBooking, isEditMode, onDelete }) =>
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          {isEditMode ? "Update Appointment" : "Book Appointment"}
+          Book Appointment
         </button>
-        {isEditMode && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="w-full bg-red-600 text-white py-2 mt-2 rounded hover:bg-red-700"
-          >
-            Delete Appointment
-          </button>
-        )}
       </form>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const PremiumServiceMechanical = ({ existingBooking, isEditMode, onDelete }) => {
+const PremiumServiceMechanical = () => {
   const [formData, setFormData] = useState({
     customerName: "",
     vehicleType: "",
@@ -29,42 +29,20 @@ const PremiumServiceMechanical = ({ existingBooking, isEditMode, onDelete }) => 
       .then((res) => {
         const u = res.data.user;
         setUser(u);
-
-        if (!isEditMode) {
-          setFormData((prev) => ({
-            ...prev,
-            customerName: u.fullName || "",
-            contact: {
-              phone: u.phoneNumber || "",
-              email: u.email || "",
-            },
-          }));
-        }
+        setFormData((prev) => ({
+          ...prev,
+          customerName: u.fullName || "",
+          contact: {
+            phone: u.phoneNumber || "",
+            email: u.email || "",
+          },
+        }));
       })
       .catch((err) => {
         console.error("Failed to fetch user profile:", err);
         alert("Authorization failed. Please log in again.");
       });
-  }, [isEditMode]);
-
-  useEffect(() => {
-    if (isEditMode && existingBooking) {
-      setFormData({
-        customerName: existingBooking.customerName,
-        vehicleType: existingBooking.vehicleType || "",
-        vehicleNumber: existingBooking.vehicleNumber,
-        serviceDate: existingBooking.serviceDate
-          ? new Date(existingBooking.serviceDate).toISOString().split("T")[0]
-          : "",
-        presentMeter: existingBooking.presentMeter || 10000,
-        status: existingBooking.status || "Pending",
-        contact: {
-          phone: existingBooking.contact?.phone || "",
-          email: existingBooking.contact?.email || "",
-        },
-      });
-    }
-  }, [isEditMode, existingBooking]);
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -104,65 +82,40 @@ const PremiumServiceMechanical = ({ existingBooking, isEditMode, onDelete }) => 
     if (!token) return alert("Authentication token missing");
 
     const config = { headers: { Authorization: `Bearer ${token}` } };
-    const payload = { ...formData };
+    const payload = {
+      ...formData,
+      section: "mechanical",
+    };
 
     try {
-      if (isEditMode) {
-        await axios.put(
-          `http://localhost:5001/api/mechanicalbooking/premium/${existingBooking.serviceID}`,
-          payload,
-          config
-        );
-        alert("Booking updated ✅");
-      } else {
-        await axios.post(
-          "http://localhost:5001/api/mechanicalbooking/premium",
-          payload,
-          config
-        );
-        alert("Booking submitted ✅");
-
-        setFormData({
-          customerName: user?.fullName || "",
-          vehicleType: "",
-          vehicleNumber: "",
-          serviceDate: "",
-          presentMeter: 10000,
-          status: "Pending",
-          contact: {
-            phone: user?.phoneNumber || "",
-            email: user?.email || "",
-          },
-        });
-      }
+      const res = await axios.post(
+        "http://localhost:5001/api/mechanical",
+        payload,
+        config
+      );
+      alert(`Booking submitted ✅: ${res.data?.booking?.serviceID || "Success"}`);
+      setFormData({
+        customerName: user?.fullName || "",
+        vehicleType: "",
+        vehicleNumber: "",
+        serviceDate: "",
+        presentMeter: 10000,
+        status: "Pending",
+        contact: {
+          phone: user?.phoneNumber || "",
+          email: user?.email || "",
+        },
+      });
     } catch (err) {
       console.error("Submit failed:", err);
       alert("Booking submission failed. Check console for details.");
     }
   };
 
-  const handleDelete = () => {
-    if (onDelete && window.confirm("Delete this booking?")) {
-      onDelete(existingBooking.serviceID);
-    }
-  };
-
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-center">
-        {isEditMode ? "Update Mechanical Booking" : "New Mechanical Booking"}
-      </h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">New Mechanical Booking</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {isEditMode && (
-          <div>
-            <label className="block mb-1 font-semibold">Service ID</label>
-            <input
-              value={existingBooking.serviceID}
-              disabled
-              className="w-full bg-gray-100 p-2 border rounded-md"
-            />
-          </div>
-        )}
         <div>
           <label className="block font-semibold">Customer Name</label>
           <input
@@ -259,17 +212,8 @@ const PremiumServiceMechanical = ({ existingBooking, isEditMode, onDelete }) => 
           type="submit"
           className="w-full bg-yellow-600 text-white py-2 rounded hover:bg-yellow-700"
         >
-          {isEditMode ? "Update Booking" : "Submit Booking"}
+          Submit Booking
         </button>
-        {isEditMode && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="w-full bg-red-600 text-white py-2 mt-2 rounded hover:bg-red-700"
-          >
-            Delete Booking
-          </button>
-        )}
       </form>
     </div>
   );
