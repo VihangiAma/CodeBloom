@@ -8,6 +8,7 @@ import {
   deleteInvoice,
   approveInvoice,
   rejectInvoice,
+  deleteManyInvoices,
  // getAllApprovedInvoices
 } from "../Controllers/ServiceInvoiceController.js";
 
@@ -28,7 +29,8 @@ router.delete("/:id", deleteInvoice);
 
 // Admin approval actions
 router.patch("/:id/approve", approveInvoice);  
-router.patch("/:id/reject", rejectInvoice);  
+router.patch("/:id/reject", rejectInvoice);
+router.delete("/bulk", deleteManyInvoices);  
 
 
 
