@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaBoxes, FaChartPie, FaCog, FaUser, FaExclamationTriangle, FaTruck, FaHistory, FaEdit, FaTrash } from "react-icons/fa";
+import { FaBoxes, FaChartPie, FaCog, FaUser, FaExclamationTriangle, FaTruck, FaHistory, FaEdit, FaTrash,FaTachometerAlt } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -341,7 +341,7 @@ const handleAddStock = async () => {
                   className="flex items-center gap-2 cursor-pointer text-[#000000] hover:text-[#B30000] transition"
                   title="Go to Accountant Dashboard"
                 >
-                  <FaUser className="text-2xl" />
+                  <FaTachometerAlt className="text-2xl" />
                   {/*<span className="hidden sm:inline font-medium">Accountant</span>*/}
                 </div>
               </div>
