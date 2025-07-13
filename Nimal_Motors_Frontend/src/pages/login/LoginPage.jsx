@@ -128,7 +128,7 @@ export default function Login() {
         className="absolute inset-0 bg-cover bg-center brightness-75"
         style={{ backgroundImage: `url("/newbg.png")` }}
       ></div>
-    <>
+    
       {/* <NavBar /> */}
       <NavBar />
       <div className="relative h-screen w-screen">
@@ -250,6 +250,11 @@ export default function Login() {
       </div>
       {/* <Footer /> */}
       <Footer />
-    </>
+      </div>
+
+    </div>
+  </div>  
+    
+
   );
 }
