@@ -13,6 +13,8 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { confirmAction } from "../../../Nimal_Motors_Backend/utils/confirmDialog";
 
 import logoImage from "../assets/images/logo.jpg";
 import {
@@ -54,6 +56,8 @@ const AccountantDashboard = () => {
   const [finalizedInvoices, setFinalizedInvoices] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 const [sortBy, setSortBy] = useState("date-desc");
+const totalInvoicesCount = approvedRepairs.length + finalizedInvoices.length;
+
 
 
 // Filter and sort finalized invoices based on search term and sort criteria
@@ -207,17 +211,29 @@ const handleView = (invoice) => {
 };
 
 
-// Delete Invoice
-const handleDelete = async (id) => {
-  try {
-    await axios.delete(`http://localhost:5001/api/accountant-invoices/${id}`);
-    toast.success("Invoice deleted.");
-    refreshInvoices(); // make sure this function exists and works
-  } catch (error) {
-    console.error("Delete failed", error);
-    toast.error("Delete failed.");
+
+
+const handleDelete = async (invoiceId) => {
+  const confirmed = await confirmAction({
+    title: "Are you sure?",
+    text: "This invoice will be permanently deleted.",
+    confirmText: "Yes, delete it!",
+  });
+
+  if (confirmed) {
+    try {
+      await axios.delete(`http://localhost:5001/api/accountant-invoices/${invoiceId}`);
+      setFinalizedInvoices((prev) => prev.filter((inv) => inv._id !== invoiceId));
+
+      toast.success("Invoice deleted successfully.");
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Failed to delete invoice. Please try again.");
+    }
   }
 };
+
+
 
 
 
@@ -442,7 +458,7 @@ useEffect(() => {
             <div>
               <p className="text-sm text-[#000000]">Invoices</p>
               <h2 className="text-xl font-semibold text-[#000000]">
-                {summary.invoices}
+                {totalInvoicesCount}
               </h2>
             </div>
           </div>

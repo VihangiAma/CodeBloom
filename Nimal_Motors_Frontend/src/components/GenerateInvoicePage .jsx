@@ -20,7 +20,8 @@ const GenerateInvoicePage = () => {
   const { id } = useParams();
   const [invoice, setInvoice] = useState(null);
   const [invoiceNo, setInvoiceNo] = useState("");
-  const [advance, setAdvance] = useState("");
+  const [advance, setAdvance] = useState('');
+
   const [balance, setBalance] = useState("");
   //const [remarks, setRemarks] = useState("");
 
@@ -109,8 +110,9 @@ const formatCurrency = (amount) =>
 
   //const doc = new jsPDF();
 
-  const serviceInvoiceId = invoice.serviceInvoiceId?._id;
-  
+  //const serviceInvoiceId = invoice.serviceInvoiceId?._id;
+  const serviceInvoiceId = invoice._id; // supervisor invoice id
+
 
 
     try {
@@ -150,7 +152,7 @@ doc.text(`Service ID: ${invoice.serviceID}`, rightX, y);
 y += 6;
 
 doc.text(`Vehicle No: ${invoice.vehicleNumber}`, leftX, y);
-doc.text(`Date: ${new Date(invoice.serviceDate).toLocaleDateString()}`, rightX, y);
+doc.text(`Service Date: ${new Date(invoice.serviceDate).toLocaleDateString()}`, rightX, y);
 y += 6;
 
 doc.text(`Present Meter: ${invoice.presentMeter} km`, leftX, y);
@@ -241,33 +243,38 @@ doc.text(
 
 
 
-  /// 1. Generate PDF
-    doc.save(`Invoice_${invoiceNo || "unknown"}.pdf`);
+  // Save PDF as Blob or download
+    doc.save(`${invoiceNo || "invoice"}.pdf`);
 
-    // 2. Save invoice to backend
-    try {
-  await axios.post("http://localhost:5001/api/accountant-invoices",{
-    serviceInvoiceId,
-    invoiceNo,
-    advance,
-    balance,
-    //finalizedAt: new Date(),
-  });
-  toast.success("Invoice saved successfully!");
-  navigate("/accountant-dashboard");
-} catch (err) {
-  console.error("PDF Generation or Saving Failed:", err);
-  if (err.response?.status === 409) {
-    toast.error("Invoice number already exists.");
-  } else {
-    toast.error("Failed to generate or save invoice.");
-  }
-}
+     // === 2. Save finalized invoice to accountant DB ===
+
+    await axios.post("http://localhost:5001/api/accountant-invoices", {
+      serviceInvoiceId,
+      invoiceNo,
+      advance: parsedAdvance,
+      balance: parsedBalance,
+      
+      // customerName: invoice.customerName,
+      // vehicleNumber: invoice.vehicleNumber,
+      // serviceDate: invoice.serviceDate,
+      // totalCost: invoice.totalCost,
+      // items: invoice.items,
+      // repairs: invoice.repairs,
+    });
+
+
+  // === 3. Update supervisor-side invoice status ===
+    await axios.put(`http://localhost:5001/api/service-invoices/${invoice._id}/finalize`, {
+      status: "Finalized",
+      isApproved: false,
+    });
+
+    // === 4. Redirect back to accountant dashboard ===
+    navigate("/accountant-dashboard");
   } catch (error) {
-    console.error("PDF Generation Error:", error);
-    //toast.error("Failed to generate PDF. Please try again.");
+    console.error("Error during invoice finalization:", error);
+    alert("Failed to generate or finalize invoice. Please try again.");
   }
-
 };
 
   
@@ -403,14 +410,21 @@ doc.text(
           </div>*/}
         </div>
 
-        <div className="text-right">
-          <button
-            onClick={generatePDF}
-            className="bg-[#B30000] hover:bg-[#D63333] text-white px-6 py-2 rounded"
-          >
-            Download Invoice
-          </button>
-        </div>
+        <div className="flex justify-end gap-4">
+  <button
+    onClick={() => navigate("/accountant-dashboard")}
+    className="bg-gray-300 hover:bg-gray-400 text-[#2C2C2C] px-6 py-2 rounded"
+  >
+    Cancel
+  </button>
+  <button
+    onClick={generatePDF}
+    className="bg-[#B30000] hover:bg-[#D63333] text-white px-6 py-2 rounded"
+  >
+    Download Invoice
+  </button>
+</div>
+
       </div>
     </div>
   );
