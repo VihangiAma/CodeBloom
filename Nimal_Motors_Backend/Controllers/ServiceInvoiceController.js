@@ -134,3 +134,19 @@ export const rejectInvoice = async (req, res) => {
   };
 
 };
+
+
+export const deleteManyInvoices = async (req, res) => {
+  // client posts { ids: ["60fa…", "60fb…"] }
+  const { ids = [] } = req.body;
+  if (!ids.length) return res.status(400).json({ message: "No ids supplied" });
+
+  try {
+    const { deletedCount } = await ServiceInvoice.deleteMany({
+      _id: { $in: ids },
+    });
+    res.json({ message: `Deleted ${deletedCount} invoices` });
+  } catch (err) {
+    res.status(500).json({ message: "Bulk delete failed", err });
+  }
+};
