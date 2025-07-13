@@ -25,6 +25,20 @@ import PremiumServiceForm from "./pages/premiumcustomer/PremiumServiceForm";
 //  import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
+import ProfilePage from './pages/AccountantProfile';
+import AdminDashboard from './assets/pages/AdminDashBord';
+import AdminProfile from './pages/admin/AdminProfile';
+import MechanicalSupervisor from './pages/supervisors/MechanicalSupervisor';
+import BodyshopSupervisor from './pages/supervisors/BodyshopSupervisor';
+import ServiceSupervisor from './pages/supervisors/ServiceSupervisor';
+import ElectricalSupervisor from './pages/supervisors/ElectricalSupervisor';
+import AccountantProfile from './pages/AccountantProfile';
+import PremiumCustomerProfile from './pages/premiumcustomer/PremiumCustomerProfile';
+// import UserManagement from './pages/admin/UserManagement';
+import AdminUsers from './pages/admin/AdminUsers';
+import ServiceHistory from './pages/premiumcustomer/ServiceHistory';
+// New import for ServiceHistory
+
 import ProfilePage from "./pages/AccountantProfile";
 import AdminDashboard from "./assets/pages/AdminDashBord";
 import AdminProfile from "./pages/admin/AdminProfile";
@@ -69,6 +83,22 @@ import BookAppointment from "./Components/CustomerSection/BookAppoinment";
 import ChatBot from "./components/ChatSection/Chatbot";
 
 // Inventory and Sales Pages
+import InventoryDashboard from './components/InventoryDashboard';
+import AccountantDashboard  from './components/AccountantDashboard'; 
+import ExpensesPage from './components/ExpensesPage';   
+import HomePage from './assets/pages/HomePage';
+import SalesReport from './assets/pages/SalesReport';
+import SalesReportView from './assets/pages/SalesReportView';
+import ResetPassword from './pages/login/ResetPassword';
+
+
+import CompletedBodyshopHistory from './pages/premiumcustomer/CompletedBodyshopHistory';
+
+import ManageBodyshopBookings from './pages/Appointments/ManageBodyshopBookings';
+
+
+// Inside your route config:
+
 import InventoryDashboard from "./components/InventoryDashboard";
 import AccountantDashboard from "./components/AccountantDashboard";
 import ExpensesPage from "./components/ExpensesPage";
@@ -93,6 +123,11 @@ function App() {
     <Router>
       <Routes>
         <Route path="/profile/basic" element={<PremiumServiceForm />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/change-password" element={<ResetPassword />} />
+
+
+
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
@@ -105,6 +140,30 @@ function App() {
         <Route path="/book-appointment" element={<BookAppointment />} />
         <Route path="/repair-packages" element={<RepairPackage />} />
         {/* Protected User Routes */}
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
+        <Route path="/admin-profile" element={<PrivateRoute><AdminProfile /></PrivateRoute>} />
+        <Route path="/admin/users" element={<PrivateRoute><AdminUsers /></PrivateRoute>} />
+        {/* <Route path="/user-management" element={<PrivateRoute><UserManagement /></PrivateRoute>} /> */}
+        <Route path="/mechanical-supervisor" element={<PrivateRoute><MechanicalSupervisor /></PrivateRoute>} />
+        <Route path="/bodyshop-supervisor" element={<PrivateRoute><BodyshopSupervisor /></PrivateRoute>} />
+        <Route path="/service-supervisor" element={<PrivateRoute><ServiceSupervisor /></PrivateRoute>} />
+        <Route path="/electrical-supervisor" element={<PrivateRoute><ElectricalSupervisor /></PrivateRoute>} />
+        <Route path="/accountant" element={<PrivateRoute><AccountantProfile /></PrivateRoute>} />
+        <Route path="/premium-customer" element={<PrivateRoute><PremiumCustomerProfile /></PrivateRoute>} />
+        <Route path="/premium-customer-dashboard" element={<PrivateRoute><PremiumCustomerDashboard /></PrivateRoute>} />
+        <Route path="/service-history" element={<PrivateRoute><ServiceHistory /></PrivateRoute>} />
+{/* <Route 
+  path="/premium-customer-dashboard" 
+  element={
+    <PrivateRoute>
+      <PremiumCustomerDashboard />
+    </PrivateRoute>
+  } 
+/>         */}
+        <Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />
+        
+
         <Route
           path="/profile"
           element={
@@ -311,6 +370,10 @@ function App() {
           element={<ChatBot section="Service" />}
         />
         <Route path="/view-sales-report" element={<SalesReportView />} />
+        <Route path="/test/bodyshop-bookings" element={<ManageBodyshopBookings />} /> 
+        <Route path="/bodyshop/completed" element={<CompletedBodyshopHistory />} />
+
+
         <Route path="/generate-invoice" element={<GenerateInvoicePage />} />
        <Route path="/generate-invoice/:id" element={<GenerateInvoicePage />} />
 
@@ -325,6 +388,9 @@ function App() {
         <><Route path ="admin-invoice-view" element={<AdminInvoiceView />} /></>
       </Routes>
     </Router>
+
+
+
   );
 }
 

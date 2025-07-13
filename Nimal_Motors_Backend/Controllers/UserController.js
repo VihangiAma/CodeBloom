@@ -1,12 +1,14 @@
 import Users from '../Models/userModel.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import nodemailer from "nodemailer";
+
+
 
 export async function postUser(req, res) {
     try {
       const { fullName, email, phoneNumber, username, password, type } = req.body;
   
-      // Check for missing fields
       if (!fullName || !email || !username || !password || !type) {
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -185,22 +187,26 @@ export async function LogInUser(req, res) {
 
         const token = jwt.sign(
             {
-               userId: user.userId,
+                userId: user.userId,
                 email: user.email,
-                type: user.type
+                type: user.type,
+                mustChangePassword: user.mustChangePassword // Include flag in token
             },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
         res.status(200).json({
-            message: "Login successful",
+            message: user.mustChangePassword 
+                ? "Login successful. Please change your temporary password." 
+                : "Login successful",
             token,
             user: {
-               userId: user.userId,
+                userId: user.userId,
                 email: user.email,
                 fullName: user.fullName,
-                type: user.type
+                type: user.type,
+                mustChangePassword: user.mustChangePassword // Include flag in response
             }
         });
 
@@ -211,7 +217,7 @@ export async function LogInUser(req, res) {
             error: error.message
         });
     }
-}
+};
 
 export async function updatePassword(req, res) {
     const { userId } = req.params;
@@ -541,79 +547,81 @@ export const getServiceSupProfile = async (req, res) => {
 
 
 
-export const addUserByAdmin = async (req, res) => {
-    try {
-      const { fullName, email, phoneNumber, username, type } = req.body;
-  
-      if (!fullName || !email || !phoneNumber || !username || !type) {
-        return res.status(400).json({ message: "Required fields are missing." });
-      }
-  
-      const existingUser = await Users.findOne({
-        $or: [{ email }, { username }]
-      });
-  
-      if (existingUser) {
-        return res
-          .status(409)
-          .json({ message: "Email or username already exists." });
-      }
-  
-      // ✨ Generate strong temporary password
-      const generateStrongTempPassword = (length = 10) => {
-        const lower = 'abcdefghijklmnopqrstuvwxyz';
-        const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const numbers = '0123456789';
-        const symbols = '!@#$%^&*()_+{}[]<>?';
-        const allChars = lower + upper + numbers + symbols;
-  
-        let password = '';
-        password += lower.charAt(Math.floor(Math.random() * lower.length));
-        password += upper.charAt(Math.floor(Math.random() * upper.length));
-        password += numbers.charAt(Math.floor(Math.random() * numbers.length));
-        password += symbols.charAt(Math.floor(Math.random() * symbols.length));
-  
-        for (let i = 4; i < length; i++) {
-          password += allChars.charAt(Math.floor(Math.random() * allChars.length));
-        }
-  
-        return password.split('').sort(() => 0.5 - Math.random()).join('');
-      };
-  
-      const tempPassword = generateStrongTempPassword(); // 🔥
-      const hashedPassword = await bcrypt.hash(tempPassword, 10);
-  
-      const newUser = new Users({
-        fullName,
-        email: email.toLowerCase(),
-        phoneNumber,
-        username,
-        type,
-        password: hashedPassword
-      });
-  
-      await newUser.save();
-  
-      res.status(201).json({
-        message: "User created successfully with a temporary password.",
-        tempPassword, // 👀 Show once
-        user: {
-          userId: newUser.userId,
-          fullName: newUser.fullName,
-          email: newUser.email,
-          phoneNumber: newUser.phoneNumber,
-          username: newUser.username,
-          type: newUser.type
-        }
-      });
-    } catch (error) {
-      console.error("Error in addUserByAdmin:", error);
-      res.status(500).json({ message: "Internal server error.", error: error.message });
-    }
-  };
-  
 
+// // Updated addUserByAdmin to set mustChangePassword flag
+// export const addUserByAdmin = async (req, res) => {
+//     try {
+//       const { fullName, email, phoneNumber, username, type } = req.body;
+  
+//       if (!fullName || !email || !phoneNumber || !username || !type) {
+//         return res.status(400).json({ message: "Required fields are missing." });
+//       }
+  
+//       const existingUser = await Users.findOne({
+//         $or: [{ email }, { username }]
+//       });
+  
+//       if (existingUser) {
+//         return res
+//           .status(409)
+//           .json({ message: "Email or username already exists." });
+//       }
+  
+//       // Generate strong temporary password
+//       const generateStrongTempPassword = (length = 10) => {
+//         const lower = 'abcdefghijklmnopqrstuvwxyz';
+//         const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+//         const numbers = '0123456789';
+//         const symbols = '!@#$%^&*()_+{}[]<>?';
+//         const allChars = lower + upper + numbers + symbols;
+  
+//         let password = '';
+//         password += lower.charAt(Math.floor(Math.random() * lower.length));
+//         password += upper.charAt(Math.floor(Math.random() * upper.length));
+//         password += numbers.charAt(Math.floor(Math.random() * numbers.length));
+//         password += symbols.charAt(Math.floor(Math.random() * symbols.length));
+  
+//         for (let i = 4; i < length; i++) {
+//           password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+//         }
+  
+//         return password.split('').sort(() => 0.5 - Math.random()).join('');
+//       };
+  
+//       const tempPassword = generateStrongTempPassword();
+//       const hashedPassword = await bcrypt.hash(tempPassword, 10);
+  
+//       const newUser = new Users({
+//         fullName,
+//         email: email.toLowerCase(),
+//         phoneNumber,
+//         username,
+//         type,
+//         password: hashedPassword,
+//         mustChangePassword: true // Set flag to indicate temporary password
+//       });
+  
+//       await newUser.save();
+  
+//       res.status(201).json({
+//         message: "User created successfully with a temporary password.",
+//         tempPassword,
+//         user: {
+//           userId: newUser.userId,
+//           fullName: newUser.fullName,
+//           email: newUser.email,
+//           phoneNumber: newUser.phoneNumber,
+//           username: newUser.username,
+//           type: newUser.type
+//         }
+//       });
+//     } catch (error) {
+//       console.error("Error in addUserByAdmin:", error);
+//       res.status(500).json({ message: "Internal server error.", error: error.message });
+//     }
+// };
 
+// Updated changePassword to reset mustChangePassword flag
 export const changePassword = async (req, res) => {
     const { userId, oldPassword, newPassword } = req.body;
 
@@ -634,6 +642,7 @@ export const changePassword = async (req, res) => {
         // Hash the new password and update the user's password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         user.password = hashedPassword;
+        user.mustChangePassword = false; // Reset the flag
         await user.save();
 
         // Respond with success message
@@ -660,7 +669,6 @@ export async function updateOwnProfile(req, res) {
         if (phoneNumber) updates.phoneNumber = phoneNumber;
         if (username) updates.username = username;
 
-        // ✅ Use correct field name again here
         const updatedUser = await Users.findOneAndUpdate(
             { userId: req.user.userId },
             updates,
@@ -683,6 +691,175 @@ export async function updateOwnProfile(req, res) {
 
 
 
+
+export const forgotPasswordHandler = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await Users.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+        const resetLink = `http://localhost:5173/reset-password?userId=${user.userId}`;
+
+
+    // ✅ Create test transport or use real credentials (e.g., Gmail)
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // or "hotmail", "outlook", etc.
+      auth: {
+        user: "sithuprabodha7@gmail.com",      
+        pass: "spsv dfkw bctb cohw",    
+      },
+    });
+
+    // ✅ Compose message
+    const mailOptions = {
+      from: '"Nimal Motors" <subhajayoda@gmail.com>', // sender
+      to:user.email, // receiver
+      subject: "Password Reset - Nimal Motors",
+      text: `Hello ${user.fullName},
+
+We received a request to reset your password.
+
+Please click the link below or copy it into your browser to reset your password:
+http://localhost:5173/reset-password?userId=${user.userId}
+
+If you didn’t request this, please ignore this email.
+
+Thanks,
+Nimal Motors Team`,
+
+    };
+
+    // ✅ Send email
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Reset instructions sent to email." });
+  } catch (error) {
+    console.error("Email error:", error);
+    res.status(500).json({ message: "Failed to send email" });
+  }
+};
+
+
+// Controller Function to Handle Password Reset (no token required)
+export const resetPasswordHandler = async (req, res) => {
+  const { userId, newPassword } = req.body;
+
+  try {
+    // Validate input
+    if (!userId || !newPassword) {
+      return res.status(400).json({ message: "Missing userId or newPassword." });
+    }
+
+    // Find the user by userId
+    const user = await Users.findOne({ userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.mustChangePassword = false; // Reset the temporary flag if used
+
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful." });
+  } catch (error) {
+    console.error("Error in resetPasswordHandler:", error);
+    res.status(500).json({
+      message: "Server error while resetting password.",
+      error: error.message,
+    });
+  }
+};
+
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'sithuprabodha7@gmail.com',      
+    pass: 'spsv dfkw bctb cohw',         
+  },
+});
+
+
+function generateRandomPassword(length = 10) {
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$!";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
+export const addingUserByAdmin = async (req, res) => {
+  try {
+    const { fullName, email, phoneNumber, username, type } = req.body;
+
+    // ✅ Validation
+    if (!fullName || !email || !username || !type || !phoneNumber) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    // ✅ Check for duplicate email or username
+    const existingUser = await Users.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email or username already exists." });
+    }
+
+    // ✅ Generate & hash temp password
+    const tempPassword = generateRandomPassword(10);
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    const newUser = new Users({
+      fullName,
+      email: email.toLowerCase(),
+      username,
+      phoneNumber,
+      type,
+      password: hashedPassword,
+      mustChangePassword: true, // flag for forced password change
+    });
+
+    await newUser.save();
+
+    // ✅ Email setup
+    const mailOptions = {
+      from: '"Nimal Motors" <sithuprabodha7@gmail.com>',
+      to: email,
+      subject: 'Welcome to Nimal Motors - Your Temporary Password',
+      html: `
+        <p>Hello ${fullName},</p>
+        <p>You have been registered to the Nimal Motors Garage Management System.</p>
+        <p><strong>Username:</strong> ${email}</p>
+        <p><strong>Temporary Password:</strong> ${tempPassword}</p>
+        <p>Please <a href="http://localhost:5173/login">log in</a> and change your password </p>
+        <br/>
+        <p>Thank you,<br/>Nimal Motors Admin Team</p>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    // ✅ Send success response WITHOUT temp password in JSON
+    res.status(201).json({
+      message: "User added and temporary password sent via email.",
+      // tempPassword removed here intentionally for security
+    });
+
+  } catch (error) {
+    console.error("Error adding user by admin:", error);
+    res.status(500).json({ message: "Failed to add user." });
+  }
+};
+
+
+
 export function isAdminValid(req) {
     return req.user && req.user.type === "admin";
 }
@@ -690,3 +867,4 @@ export function isAdminValid(req) {
 export function isCustomerValid(req) {
     return req.user && req.user.type === "customer";
 }
+

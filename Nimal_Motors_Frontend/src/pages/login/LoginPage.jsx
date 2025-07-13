@@ -9,8 +9,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState(""); // For Forgot Password
-  const [isForgotPassword, setIsForgotPassword] = useState(false); // To toggle the forgot password view
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -43,30 +44,45 @@ export default function Login() {
         { email, password }
       );
 
-      const { token, user } = response.data;
+      const { token, user, message } = response.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      setMessage("Login successful!");
+      setMessage(message); // Display backend message (e.g., "Please change your temporary password")
 
-      // Navigation based on role
-      if (user.type === "admin") {
-        navigate("/admin-profile");
-      } else if (user.type === "accountant") {
-        navigate("/accountant");
-      } else if (user.type === "electricalsupervisor") {
-        navigate("/electrical-supervisor");
-      } else if (user.type === "servicesupervisor") {
-        navigate("/service-supervisor");
-      } else if (user.type === "mechanicalsupervisor") {
-        navigate("/mechanical-supervisor");
-      } else if (user.type === "bodyshopsupervisor") {
-        navigate("/bodyshop-supervisor");
-      } else if (user.type === "premiumCustomer") {
-        navigate("/premium-customer");
+      const mustChangePassword = user.mustChangePassword ?? false;
+
+      if (mustChangePassword) {
+        navigate("/change-password", { state: { userId: user.userId } });
       } else {
-        navigate("/not-found");
+        // Role-based navigation
+        switch (user.type) {
+          case "admin":
+            navigate("/admin-profile");
+            break;
+          case "accountant":
+            navigate("/accountant");
+            break;
+          case "electricalsupervisor":
+            navigate("/electrical-supervisor");
+            break;
+          case "servicesupervisor":
+            navigate("/service-supervisor");
+            break;
+          case "mechanicalsupervisor":
+            navigate("/mechanical-supervisor");
+            break;
+          case "bodyshopsupervisor":
+            navigate("/bodyshop-supervisor");
+            break;
+          case "premiumCustomer":
+            navigate("/premium-customer");
+            break;
+          default:
+            navigate("/not-found");
+            break;
+        }
       }
     } catch (error) {
       console.error(
@@ -88,12 +104,11 @@ export default function Login() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:5001/api/user/forgot-password",
-        { email: forgotPasswordEmail }
-      );
+      await axios.post("http://localhost:5001/api/user/forgot-password", {
+        email: forgotPasswordEmail,
+      });
       setMessage("Password reset email sent! Check your inbox.");
-      setIsForgotPassword(false); // Hide the forgot password form after successful request
+      setIsForgotPassword(false);
     } catch (error) {
       console.error(
         "Forgot password failed:",
@@ -104,6 +119,15 @@ export default function Login() {
   };
 
   return (
+    <div
+      className="relative h-screen w-screen"
+      style={{ fontFamily: "'Roboto', sans-serif", backgroundColor: "#715555ff" }}
+    >
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center brightness-75"
+        style={{ backgroundImage: `url("/newbg.png")` }}
+      ></div>
     <>
       {/* <NavBar /> */}
       <NavBar />
@@ -114,6 +138,18 @@ export default function Login() {
           style={{ backgroundImage: `url("/bgimage.jpg")` }}
         ></div>
 
+      {/* Centered Form */}
+      <div className="relative z-10 flex items-center justify-center h-full px-4">
+        <div
+          className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md border border-gray-300"
+          style={{ color: "#212121" }}
+        >
+          <h2
+            className="text-center font-bold mb-6"
+            style={{ fontFamily: "'Poppins', sans-serif", fontSize: "32px", color: "#9B0A0A" }}
+          >
+            Login
+          </h2>
         {/* Centered Form */}
         <div className="relative z-10 flex items-center justify-center h-full px-4">
           <div className="bg-white/30 backdrop-blur-sm p-8 rounded-lg shadow-2xl w-full max-w-md border border-white/20 text-red">

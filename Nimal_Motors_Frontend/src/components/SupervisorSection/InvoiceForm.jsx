@@ -139,57 +139,6 @@ const InvoiceForm = ({
   const removeRepair = (idx) =>
     setRepairs((p) => p.filter((_, i) => i !== idx));
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const mappedRepairs = repairs.map((r) => ({
-  //     package: r.package || "Custom",
-  //     repairs: r.repairs.map((rep) => ({
-  //       label: rep.label,
-  //       price: num(rep.price),
-  //     })),
-  //     price: calcPackagePrice(r.repairs),
-  //   }));
-
-  //   const mappedItems = items.map((it) => ({
-  //     itemName: it.item,
-  //     qty: num(it.qty),
-  //     price: num(it.pricePerUnit),
-  //   }));
-
-  //   const payload = {
-  //     serviceID: form.serviceID,
-  //     customerName: form.customerName,
-  //     vehicleNumber: form.vehicleNumber,
-  //     presentMeter: num(form.presentMeter),
-  //     serviceDate: new Date(form.serviceDate),
-  //     description: form.description,
-  //     repairs: mappedRepairs,
-  //     items: mappedItems,
-  //     totalCost: num(totalCost),
-  //     adminRemarks: form.adminRemarks || "",
-  //     section,
-  //   };
-
-  //   if (form.submittedBy?.trim()) {
-  //     payload.submittedBy = form.submittedBy;
-  //   }
-
-  //   fetch("http://localhost:5001/api/invoice", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(payload),
-  //   })
-  //     .then((r) => {
-  //       if (!r.ok) throw new Error("HTTP " + r.status);
-  //       return r.json();
-  //     })
-  //     .then(() => {
-  //       alert("Invoice saved");
-  //       onSubmit();
-  //     })
-  //     .catch((err) => alert("Save failed: " + err));
-  // };
   const handleSubmit = (e) => {
     e.preventDefault();
 

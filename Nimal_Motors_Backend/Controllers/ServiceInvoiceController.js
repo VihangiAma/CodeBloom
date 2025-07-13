@@ -134,3 +134,24 @@ export const rejectInvoice = async (req, res) => {
   };
 
 };
+
+
+
+export const bulkDeleteInvoices = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "No invoice IDs provided." });
+    }
+
+    const result = await ServiceInvoice.deleteMany({ _id: { $in: ids } });
+
+    res.status(200).json({
+      message: `Deleted ${result.deletedCount} invoice(s)`,
+    });
+  } catch (error) {
+    console.error("Bulk delete error:", error);
+    res.status(500).json({ message: "Bulk delete failed", error });
+  }
+};
