@@ -1,8 +1,7 @@
 import PremiumElectricalBooking from "../Models/PremiumElectricalBooking.js";
 
-let sequence = 1000; // Consider using mongoose-sequence or UUID in production
+let sequence = 1000; // Consider mongoose-sequence or UUID in production
 
-// Create a new Premium Electrical Booking
 export const createPremiumElectricalBooking = async (req, res) => {
   try {
     if (req.user.type !== "premiumCustomer") {
@@ -28,7 +27,6 @@ export const createPremiumElectricalBooking = async (req, res) => {
   }
 };
 
-// Get all completed Premium Electrical Bookings for the logged-in customer
 export const getCompletedPremiumElectricalBookings = async (req, res) => {
   try {
     const customerId = req.user.userId;
@@ -43,7 +41,6 @@ export const getCompletedPremiumElectricalBookings = async (req, res) => {
   }
 };
 
-// Update a Premium Electrical Booking by serviceID
 export const updatePremiumElectricalBooking = async (req, res) => {
   try {
     const { serviceID } = req.params;
@@ -70,7 +67,6 @@ export const updatePremiumElectricalBooking = async (req, res) => {
   }
 };
 
-// Delete a Premium Electrical Booking by serviceID
 export const deletePremiumElectricalBooking = async (req, res) => {
   try {
     const { serviceID } = req.params;

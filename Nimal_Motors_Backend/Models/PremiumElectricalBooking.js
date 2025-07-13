@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 
 const premiumElectricalBookingSchema = new mongoose.Schema({
   customerId: {
-  type: String, 
-  required: true
-},
+    type: mongoose.Schema.Types.ObjectId, // Fixed from String
+    ref: "User",
+    required: true,
+  },
   customerName: { type: String, required: true },
   vehicleType: { type: String, required: true },
   vehicleNumber: { type: String, required: true },

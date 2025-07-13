@@ -119,12 +119,12 @@ export default function Login() {
   return (
     <div
       className="relative h-screen w-screen"
-      style={{ fontFamily: "'Roboto', sans-serif", backgroundColor: "#F5F5F5" }}
+      style={{ fontFamily: "'Roboto', sans-serif", backgroundColor: "#715555ff" }}
     >
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center brightness-75"
-        style={{ backgroundImage: `url("/bgimage.jpg")` }}
+        style={{ backgroundImage: `url("/newbg.png")` }}
       ></div>
 
       {/* Centered Form */}

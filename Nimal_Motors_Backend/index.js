@@ -31,6 +31,7 @@ import premiumCombinedRoutes from "./Routers/premiumCombinedRoute.js";
 
 
 import BodyshopAppointmentRoutes from "./Routers/BodyshopAppointmentRoute.js";
+import mechanicalRoutes from "./Routers/MechanicalAppointmentRoute.js";
 
 // Connect to DB
 import connectDB from "./Models/db.js";
@@ -86,6 +87,7 @@ app.use("/api/electricalcalbooking", premiumElectricalcalBookingRoute);
 
 
 app.use("/api", BodyshopAppointmentRoutes);
+app.use("/api/mechanical", mechanicalRoutes);
 
 
 app.use("/api/combinedbookings", premiumCombinedRoutes);

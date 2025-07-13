@@ -50,9 +50,9 @@ const PremiumServiceElectrical = ({ existingBooking, isEditMode, onDelete }) => 
   useEffect(() => {
     if (isEditMode && existingBooking) {
       setFormData({
-        customerName: existingBooking.customerName,
+        customerName: existingBooking.customerName || "",
         vehicleType: existingBooking.vehicleType || "",
-        vehicleNumber: existingBooking.vehicleNumber,
+        vehicleNumber: existingBooking.vehicleNumber || "",
         serviceDate: existingBooking.serviceDate
           ? new Date(existingBooking.serviceDate).toISOString().split("T")[0]
           : "",
@@ -68,14 +68,14 @@ const PremiumServiceElectrical = ({ existingBooking, isEditMode, onDelete }) => 
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.customerName.trim()) newErrors.customerName = "Required";
-    if (!formData.vehicleType.trim()) newErrors.vehicleType = "Required";
-    if (!formData.vehicleNumber.trim()) newErrors.vehicleNumber = "Required";
-    if (!formData.serviceDate) newErrors.serviceDate = "Required";
+    if (!formData.customerName.trim()) newErrors.customerName = "Customer name is required";
+    if (!formData.vehicleType.trim()) newErrors.vehicleType = "Vehicle type is required";
+    if (!formData.vehicleNumber.trim()) newErrors.vehicleNumber = "Vehicle number is required";
+    if (!formData.serviceDate) newErrors.serviceDate = "Service date is required";
     if (new Date(formData.serviceDate) < new Date().setHours(0, 0, 0, 0))
-      newErrors.serviceDate = "Date cannot be in the past";
-    if (formData.presentMeter <= 0) newErrors.presentMeter = "Invalid value";
-    if (!formData.contact.phone.trim()) newErrors.contactPhone = "Required";
+      newErrors.serviceDate = "Service date cannot be in the past";
+    if (formData.presentMeter <= 0) newErrors.presentMeter = "Meter reading must be positive";
+    if (!formData.contact.phone.trim()) newErrors.contactPhone = "Phone number is required";
     return newErrors;
   };
 
@@ -101,26 +101,29 @@ const PremiumServiceElectrical = ({ existingBooking, isEditMode, onDelete }) => 
     }
 
     const token = localStorage.getItem("token");
-    if (!token) return alert("Authentication token missing");
+    if (!token) {
+      alert("Authentication token missing. Please log in.");
+      return;
+    }
 
     const config = { headers: { Authorization: `Bearer ${token}` } };
     const payload = { ...formData };
 
     try {
       if (isEditMode) {
-        await axios.put(
+        const response = await axios.put(
           `http://localhost:5001/api/electricalbooking/premium/${existingBooking.serviceID}`,
           payload,
           config
         );
-        alert("Booking updated ✅");
+        alert(`Booking updated successfully: ${response.data.serviceID}`);
       } else {
-        await axios.post(
+        const response = await axios.post(
           "http://localhost:5001/api/electricalbooking/premium",
           payload,
           config
         );
-        alert("Booking submitted ✅");
+        alert(`Booking submitted successfully: ${response.data.booking.serviceID}`);
 
         setFormData({
           customerName: user?.fullName || "",
@@ -135,14 +138,15 @@ const PremiumServiceElectrical = ({ existingBooking, isEditMode, onDelete }) => 
           },
         });
       }
+      setErrors({});
     } catch (err) {
-      console.error("Submit failed:", err);
-      alert("Booking submission failed. Check console for details.");
+      console.error("Submit failed:", err.response?.data || err.message);
+      alert(`Booking submission failed: ${err.response?.data?.message || "Check console for details"}`);
     }
   };
 
   const handleDelete = () => {
-    if (onDelete && window.confirm("Delete this booking?")) {
+    if (onDelete && window.confirm("Are you sure you want to delete this booking?")) {
       onDelete(existingBooking.serviceID);
     }
   };
@@ -157,7 +161,7 @@ const PremiumServiceElectrical = ({ existingBooking, isEditMode, onDelete }) => 
           <div>
             <label className="block mb-1 font-semibold">Service ID</label>
             <input
-              value={existingBooking.serviceID}
+              value={existingBooking.serviceID || ""}
               disabled
               className="w-full bg-gray-100 p-2 border rounded-md"
             />
