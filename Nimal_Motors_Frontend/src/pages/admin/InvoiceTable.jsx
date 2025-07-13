@@ -1,6 +1,5 @@
 // components/InvoiceTable.jsx
 import React, { useState } from "react";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const InvoiceTable = ({ rows, title, onView, onDeleteSelected }) => {
   const [checked, setChecked] = useState({});
