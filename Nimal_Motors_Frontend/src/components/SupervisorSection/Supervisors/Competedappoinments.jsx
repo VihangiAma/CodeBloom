@@ -87,6 +87,20 @@ const Completedappoinments = () => {
     }
   };
 
+  // Handle appointment deletion
+  const handleDeleteAppointment = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this appointment?"))
+      return;
+    try {
+      await axios.delete(`http://localhost:5001/api/appointments/${id}`);
+      setCompleted((prev) => prev.filter((app) => app._id !== id));
+    } catch (err) {
+      console.error("Error deleting appointment:", err);
+      alert("Failed to delete appointment.");
+    }
+  };
+
+  // Handle invoice deletion
   const handleDeleteInvoice = async (id) => {
     if (!window.confirm("Are you sure you want to delete this invoice?"))
       return;
@@ -160,7 +174,7 @@ const Completedappoinments = () => {
                       <AiOutlinePlus />
                     </button>
                     <button
-                      onClick={() => handleDeleteInvoice(app._id)}
+                      onClick={() => handleDeleteAppointment(app._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded ml-2"
                       title="Delete Appointment"
                     >
