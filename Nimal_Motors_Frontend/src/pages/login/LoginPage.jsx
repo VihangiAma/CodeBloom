@@ -11,6 +11,7 @@ export default function Login() {
   const [message, setMessage] = useState("");
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // 👁️ toggle
 
   const navigate = useNavigate();
 
@@ -40,14 +41,10 @@ export default function Login() {
     try {
       const response = await axios.post(
         "http://localhost:5001/api/user/login",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
 
       const { token, user, message } = response.data;
-
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setMessage(message);
@@ -85,10 +82,7 @@ export default function Login() {
         }
       }
     } catch (error) {
-      console.error(
-        "Login failed:",
-        error.response?.data?.message || error.message
-      );
+      console.error("Login failed:", error.response?.data?.message || error.message);
       setMessage(
         "Login failed: " + (error.response?.data?.message || "Server error")
       );
@@ -120,7 +114,7 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-screen flex flex-col"
+      className="flex flex-col min-h-screen relative"
       style={{
         fontFamily: "'Roboto', sans-serif",
         backgroundImage: `url("/bgimage.jpg")`,
@@ -128,16 +122,19 @@ export default function Login() {
         backgroundPosition: "center",
       }}
     >
-{/* Background image */}
-<div
-  className="absolute inset-0 bg-cover bg-center brightness-75"
-  style={{ backgroundImage: `url("/newbg.png")` }}
-></div>
+      {/* Background image overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center brightness-75 z-0"
+        style={{ backgroundImage: `url("/newbg.png")` }}
+      ></div>
 
-<NavBar />
+      <div className="relative z-10">
+        <NavBar />
+      </div>
 
-      <div className="flex-grow flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-        <div className="bg-white/80 p-8 rounded-xl shadow-lg w-full max-w-md">
+      {/* Main Content */}
+      <div className="flex-grow flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 relative z-10">
+        <div className="bg-white/90 p-8 rounded-xl shadow-lg w-full max-w-md">
           <h2 className="text-3xl font-bold text-center text-red-800 mb-6">
             Login
           </h2>
@@ -201,15 +198,22 @@ export default function Login() {
                 )}
               </div>
 
-              <div className="mb-4">
+              <div className="mb-4 relative">
                 <label className="block mb-1 text-gray-800">Password:</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
                   required
                 />
+                {/* Toggle eye icon */}
+                <span
+                  className="absolute right-3 top-9 cursor-pointer text-xl"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </span>
                 {errors.password && (
                   <p className="text-sm text-red-500">{errors.password}</p>
                 )}
@@ -225,7 +229,7 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+                className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700"
               >
                 Login
               </button>
@@ -234,7 +238,10 @@ export default function Login() {
         </div>
       </div>
 
-      <Footer />
+      {/* Footer fixed and visible */}
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 }
