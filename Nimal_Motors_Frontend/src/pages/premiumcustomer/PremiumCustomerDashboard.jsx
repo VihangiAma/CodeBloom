@@ -62,6 +62,7 @@ const PremiumCustomerDashboard = () => {
     }
   }, []);
 
+  // Render the form based on selected category
   const renderAddServiceForm = () => {
     switch (selectedCategory) {
       case "electrical":
@@ -77,62 +78,83 @@ const PremiumCustomerDashboard = () => {
     }
   };
 
+  // Render the service category selection screen
   const renderAddServiceCategory = () => (
     <div
       style={{
-        padding: "24px",
-        backgroundColor: "#F5F5F5",
-        borderRadius: "12px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        fontFamily: "Roboto, sans-serif",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // full height for vertical centering
+        backgroundColor: "#FAFAFA",
       }}
     >
-      <h2
-        style={{
-          fontSize: "24px",
-          fontWeight: "700",
-          marginBottom: "24px",
-          color: "#212121",
-          fontFamily: "Poppins, sans-serif",
-        }}
-      >
-        Select Service Category
-      </h2>
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: "24px",
+          padding: "24px",
+          backgroundColor: "#F5F5F5",
+          borderRadius: "12px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          fontFamily: "Roboto, sans-serif",
+          width: "100%",
+          maxWidth: "480px",
         }}
       >
-        <DashboardCard
-          title="Electrical"
-          description="Add an electrical service request"
-          emoji="⚡"
-          onClick={() => setSelectedCategory("electrical")}
-        />
-        <DashboardCard
-          title="Mechanical"
-          description="Add a mechanical service request"
-          emoji="🔧"
-          onClick={() => setSelectedCategory("mechanical")}
-        />
-        <DashboardCard
-          title="Bodyshop"
-          description="Add a bodyshop service request"
-          emoji="🚗"
-          onClick={() => setSelectedCategory("bodyshop")}
-        />
-        <DashboardCard
-          title="Appointment"
-          description="General appointment booking"
-          emoji="📅"
-          onClick={() => setSelectedCategory("appointment")}
-        />
+        <h2
+          style={{
+            fontSize: "24px",
+            fontWeight: "700",
+            marginBottom: "24px",
+            color: "#212121",
+            fontFamily: "Poppins, sans-serif",
+            textAlign: "center",
+          }}
+        >
+          Select Service Category
+        </h2>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          {[
+            { category: "electrical", label: "⚡ Electrical" },
+            { category: "mechanical", label: "🔧 Mechanical" },
+            { category: "bodyshop", label: "🚗 Bodyshop" },
+            { category: "appointment", label: "📅 Service" },
+          ].map(({ category, label }) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              style={{
+                padding: "12px 20px",
+                fontSize: "16px",
+                fontWeight: "600",
+                backgroundColor: "#B00020",
+                color: "#FAFAFA",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease-in-out",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#9B0A0A")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#B00020")
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
 
+  // Main render content based on activePage
   const renderContent = () => {
     switch (activePage) {
       case "addservice":
@@ -146,8 +168,13 @@ const PremiumCustomerDashboard = () => {
           >
             <button
               onClick={() => {
-                setActivePage("dashboard");
-                setSelectedCategory(null);
+                if (selectedCategory) {
+                  // If viewing a form, go back to category selection
+                  setSelectedCategory(null);
+                } else {
+                  // If already in category selection, go back to dashboard
+                  setActivePage("dashboard");
+                }
               }}
               style={{
                 padding: "10px 20px",
@@ -161,7 +188,7 @@ const PremiumCustomerDashboard = () => {
                 border: "none",
               }}
             >
-              ⬅ Back to Dashboard
+              {selectedCategory ? "⬅ Back to Categories" : "⬅ Back to Dashboard"}
             </button>
             {renderAddServiceForm()}
           </div>
@@ -301,126 +328,10 @@ const PremiumCustomerDashboard = () => {
                 onClick={() => navigate("/premium-customer")}
               />
             </div>
-
-            {/* <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                gap: "24px",
-                flexWrap: "wrap",
-                marginTop: "16px",
-              }}
-            >
-              <DashboardCard
-                title="Add Service"
-                description="Add a new service request."
-                emoji="➕"
-                onClick={() => setActivePage("addservice")}
-              />
-              <DashboardCard
-                title="Service History"
-                description="Review your past services and part replacements."
-                emoji="🛠️"
-                onClick={() => setActivePage("servicehistory")}
-              />
-              <DashboardCard
-                title="My Profile"
-                description="Manage your personal information."
-                emoji="👤"
-                onClick={() => navigate("/premium-customer")}
-              />
-            </div> */}
           </div>
         );
     }
   };
-
-  // return (
-  //   <div
-  //     style={{
-  //       display: "flex",
-  //       minHeight: "100vh",
-  //       backgroundColor: "#FAFAFA",
-  //     }}
-  //   >
-  //     {/* Sidebar */}
-  //     <div
-  //       style={{
-  //         width: "220px",
-  //         backgroundColor: "#000000",
-  //         padding: "24px",
-  //         color: "#FFFFFF",
-  //         display: "flex",
-  //         flexDirection: "column",
-  //         justifyContent: "space-between",
-  //         fontFamily: "Montserrat, sans-serif",
-  //       }}
-  //     >
-  //       <div>
-  //         <h2
-  //           style={{
-  //             fontSize: "20px",
-  //             fontWeight: "700",
-  //             marginBottom: "32px",
-  //           }}
-  //         >
-  //           ☰ Premium Menu
-  //         </h2>
-  //         {[
-  //           { label: "Dashboard", page: "dashboard" },
-  //           { label: "Add Service", page: "addservice" },
-  //           { label: "Service History", page: "servicehistory" },
-  //           {
-  //             label: "Back to Profile",
-  //             action: () => navigate("/premium-customer"),
-  //           },
-  //         ].map(({ label, page, action }, i) => (
-  //           <div
-  //             key={i}
-  //             onClick={() => (page ? setActivePage(page) : action())}
-  //             style={{
-  //               padding: "12px 16px",
-  //               borderRadius: "6px",
-  //               fontSize: "14px",
-  //               fontWeight: "500",
-  //               backgroundColor:
-  //                 page && activePage === page ? "#B00020" : "transparent",
-  //               color: "#FAFAFA",
-  //               cursor: "pointer",
-  //               marginBottom: "12px",
-  //             }}
-  //             onMouseOver={(e) =>
-  //               (e.currentTarget.style.backgroundColor =
-  //                 page && activePage !== page
-  //                   ? "#333333"
-  //                   : e.currentTarget.style.backgroundColor)
-  //             }
-  //             onMouseOut={(e) =>
-  //               (e.currentTarget.style.backgroundColor =
-  //                 page && activePage === page ? "#B00020" : "transparent")
-  //             }
-  //           >
-  //             {label}
-  //           </div>
-  //         ))}
-  //       </div>
-  //       <div
-  //         style={{
-  //           fontSize: "12px",
-  //           opacity: "0.6",
-  //           textAlign: "center",
-  //           marginTop: "40px",
-  //         }}
-  //       >
-  //         © 2025 Nimal Motors
-  //       </div>
-  //     </div>
-
-  //     {/* Main Content */}
-  //     {renderContent()}
-  //   </div>
-  // );
 
   return (
     <div
@@ -454,25 +365,21 @@ const PremiumCustomerDashboard = () => {
           >
             ☰ Premium Menu
           </h2>
-          {[
+          {[ // Removed "Back to Profile" from sidebar items here
             { label: "Dashboard", page: "dashboard" },
             { label: "Add Service", page: "addservice" },
             { label: "Service History", page: "servicehistory" },
-            {
-              label: "Back to Profile",
-              action: () => navigate("/premium-customer"),
-            },
-          ].map(({ label, page, action }, i) => (
+          ].map(({ label, page }, i) => (
             <div
               key={i}
-              onClick={() => (page ? setActivePage(page) : action())}
+              onClick={() => setActivePage(page)}
               style={{
                 padding: "12px 16px",
                 borderRadius: "6px",
                 fontSize: "14px",
                 fontWeight: "500",
                 backgroundColor:
-                  page && activePage === page ? "#B00020" : "transparent",
+                  activePage === page ? "#B00020" : "transparent",
                 color: "#FAFAFA",
                 cursor: "pointer",
                 marginBottom: "12px",
@@ -480,13 +387,11 @@ const PremiumCustomerDashboard = () => {
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
-                  page && activePage !== page
-                    ? "#333333"
-                    : e.currentTarget.style.backgroundColor)
+                  activePage !== page ? "#333333" : e.currentTarget.style.backgroundColor)
               }
               onMouseLeave={(e) =>
                 (e.currentTarget.style.backgroundColor =
-                  page && activePage === page ? "#B00020" : "transparent")
+                  activePage === page ? "#B00020" : "transparent")
               }
             >
               {label}
@@ -513,8 +418,60 @@ const PremiumCustomerDashboard = () => {
           overflowY: "auto",
           backgroundColor: "#FAFAFA",
           padding: "32px",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
+        {/* 
+          Added Header section with Profile and Logout buttons here 
+        */}
+        <div
+          className="bg-gray-800 shadow flex justify-between items-center px-6 py-8"
+          style={{ marginBottom: "24px", borderRadius: "12px" }}
+        >
+          <h2
+            className="text-2xl font-bold text-white"
+            style={{ margin: 0 }}
+          >
+            Premium Customer Dashboard
+          </h2>
+          <div
+            className="flex items-center space-x-4 text-xl text-gray-700"
+            style={{ color: "#FAFAFA" }}
+          >
+            {/* Profile button */}
+            <button
+              className="hover:text-red-600"
+              title="Profile"
+              onClick={() => navigate("/premium-customer")}
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "24px",
+              }}
+            >
+              👤
+            </button>
+
+            {/* Log Out button */}
+            <button
+              title="Log Out"
+              onClick={() => navigate("/login")}
+              style={{
+                color: "red",
+                fontWeight: "bold",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "16px",
+              }}
+            >
+              LogOut
+            </button>
+          </div>
+        </div>
+
         {renderContent()}
       </div>
     </div>

@@ -546,6 +546,7 @@ export const getServiceSupProfile = async (req, res) => {
 
 
 
+
 // Updated changePassword to reset mustChangePassword flag
 export const changePassword = async (req, res) => {
     const { userId, oldPassword, newPassword } = req.body;
@@ -641,7 +642,7 @@ export const forgotPasswordHandler = async (req, res) => {
 
     // ✅ Compose message
     const mailOptions = {
-      from: '"Nimal Motors" <subhajayoda@gmail.com>', // sender
+      from: '"Nimal Motors" <sithuprabodha@gmail.com>', // sender
       to:user.email, // receiver
       subject: "Password Reset - Nimal Motors",
       text: `Hello ${user.fullName},
