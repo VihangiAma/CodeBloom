@@ -193,9 +193,7 @@ const Completedappoinments = () => {
                       <AiOutlinePlus />
                     </button>
                     <button
-
-      onClick={() => handleDeleteAppointment(app.serviceID)}
-
+                      onClick={() => handleDeleteAppointment(app.serviceID)}
                       className="bg-red-500 text-white px-3 py-1 rounded ml-2"
                       title="Delete Appointment"
                     >
