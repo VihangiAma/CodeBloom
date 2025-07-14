@@ -160,71 +160,73 @@ export default function AdminUsers() {
     }));
   };
 
-  const handleAddUser = async () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\d{10}$/;
+const handleAddUser = () => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\d{10}$/;
 
-    if (!newUser.fullName || newUser.fullName.length < 2) {
-      alert("Full Name is required and must be at least 2 characters.");
-      return;
-    }
-    if (newUser.fullName.length > 50) {
-      alert("Full Name must not exceed 50 characters.");
-      return;
-    }
-    if (!newUser.email || !emailRegex.test(newUser.email)) {
-      alert("A valid email is required (e.g., user@example.com).");
-      return;
-    }
-    if (!newUser.username || newUser.username.length < 3) {
-      alert("Username is required and must be at least 3 characters.");
-      return;
-    }
-    if (newUser.username.length > 30) {
-      alert("Username must not exceed 30 characters.");
-      return;
-    }
-    if (!newUser.phoneNumber || !phoneRegex.test(newUser.phoneNumber)) {
-      alert("Phone number is required and must be exactly 10 digits (e.g., 1234567890).");
-      return;
-    }
-    if (!newUser.type) {
-      alert("Role is required.");
-      return;
-    }
+  // Form Validation
+  if (!newUser.fullName || newUser.fullName.length < 2) {
+    alert("Full Name is required and must be at least 2 characters.");
+    return;
+  }
+  if (newUser.fullName.length > 50) {
+    alert("Full Name must not exceed 50 characters.");
+    return;
+  }
+  if (!newUser.email || !emailRegex.test(newUser.email)) {
+    alert("A valid email is required (e.g., user@example.com).");
+    return;
+  }
+  if (!newUser.username || newUser.username.length < 3) {
+    alert("Username is required and must be at least 3 characters.");
+    return;
+  }
+  if (newUser.username.length > 30) {
+    alert("Username must not exceed 30 characters.");
+    return;
+  }
+  if (!newUser.phoneNumber || !phoneRegex.test(newUser.phoneNumber)) {
+    alert("Phone number is required and must be exactly 10 digits (e.g., 1234567890).");
+    return;
+  }
+  if (!newUser.type) {
+    alert("Role is required.");
+    return;
+  }
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Authentication token missing. Please log in again.");
-        return;
-      }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Authentication token missing. Please log in again.");
+    return;
+  }
 
-      const { password, ...userData } = newUser;
+  const { password, ...userData } = newUser;
 
-      const res = await axios.post("http://localhost:5001/api/user/add-by-admin", userData, {
-        headers: { Authorization: `Bearer ${token}` },
+  axios.post("http://localhost:5001/api/user/add-by-admin", userData, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  .then((res) => {
+    if (res.status === 201 || res.status === 200) {
+      alert("User added successfully! A temporary password has been sent to the user's email.");
+      setNewUser({
+        fullName: "",
+        email: "",
+        username: "",
+        phoneNumber: "",
+        type: "",
+        password: ""
       });
-
-      if (res.status === 200 || res.status === 201) {
-        alert(`User added successfully! Temporary Password: ${res.data.tempPassword}`);
-        setNewUser({
-          fullName: "",
-          email: "",
-          username: "",
-          phoneNumber: "",
-          type: "",
-          password: ""
-        });
-        setShowAddUserForm(false);
-        fetchUsers();
-      }
-    } catch (err) {
-      console.error("Error adding new user", err.response ? err.response.data : err.message);
-      const errorMessage = err.response?.data?.message || "Failed to add user due to an unknown error.";
-      alert(`Failed to add user: ${errorMessage}`);
+      setShowAddUserForm(false);
+      fetchUsers();
     }
-  };
+  })
+  .catch((err) => {
+    const errorMessage = err.response?.data?.message || "Failed to add user due to unknown error.";
+    alert(`Failed to add user: ${errorMessage}`);
+  });
+};
+
+
 
   const handleSignOut = () => {
     localStorage.removeItem("token");
