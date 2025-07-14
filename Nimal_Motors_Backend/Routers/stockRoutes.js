@@ -1,5 +1,5 @@
 import express from "express";
-import { getStockItems, addNewStockItem, updateStockItem, deleteStockItem,checkLowStock,getItemsBySupplier,getNextItemId,getItemByBarcode,addStockByBarcode } from "../Controllers/stockControllers.js";
+import { getStockItems, addNewStockItem, updateStockItem, deleteStockItem,checkLowStock,getItemsBySupplier,getNextItemId,getItemByBarcode,addStockByBarcode,checkBarcodeExists } from "../Controllers/stockControllers.js";
 
 const router = express.Router();
 
@@ -21,6 +21,9 @@ router.get("/by-supplier/:companyName", getItemsBySupplier);
 router.get('/next-id', getNextItemId);
 router.get("/barcode/:barcode", getItemByBarcode);
 router.put("/barcode/:barcode/add-stock", addStockByBarcode);
+// ✅ Check barcode uniqueness
+router.get("/check-barcode/:barcode", checkBarcodeExists);
+
 
 
 export default router;

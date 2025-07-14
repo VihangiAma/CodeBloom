@@ -45,12 +45,19 @@ export const addNewStockItem = async (req, res) => {
       pricePerUnit,
       itemName,
       barcode,
-      threshold
+      threshold,
     } = req.body;
 
-    const existing = await Stock.findOne({ itemId });
-    if (existing) {
+    // Check for existing item by itemId
+    const existingItem = await Stock.findOne({ itemId });
+    if (existingItem) {
       return res.status(400).json({ message: "Item with this ID already exists." });
+    }
+
+    // ✅ Check for existing item by barcode
+    const existingBarcode = await Stock.findOne({ barcode });
+    if (existingBarcode) {
+      return res.status(400).json({ message: "This barcode is already in use." });
     }
 
     const newItem = new Stock({
@@ -61,7 +68,7 @@ export const addNewStockItem = async (req, res) => {
       pricePerUnit,
       itemName,
       barcode,
-      threshold
+      threshold,
     });
 
     await newItem.save();
@@ -265,6 +272,19 @@ export const addStockByBarcode = async (req, res) => {
     res.status(500).json({ message: "Failed to update stock" });
   }
 };
+
+// ✅ Check if a barcode already exists
+export const checkBarcodeExists = async (req, res) => {
+  try {
+    const { barcode } = req.params;
+    const exists = await Stock.exists({ barcode });
+    res.json({ exists: !!exists });
+  } catch (err) {
+    console.error("Error checking barcode:", err);
+    res.status(500).json({ message: "Error checking barcode", error: err.message });
+  }
+};
+
 
   
   
