@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+/* ---------- utils ---------- */
 const num = (v) => (isNaN(+v) ? 0 : +v);
 
+/* ---------- component ---------- */
 const InvoiceForm = ({
   userRole = "staff",
   initialData = {},
@@ -156,10 +158,13 @@ const InvoiceForm = ({
     }));
 
     // ✅ Generate serviceID if it's missing (especially on new form)
-    const generatedServiceID = form.serviceID || `INV-${Date.now()}`;
+    const generate4DigitID = () => {
+      const randomNum = Math.floor(1000 + Math.random() * 9000); // always 4 digits
+      return `SS${randomNum}`;
+    };
 
     const payload = {
-      serviceID: generatedServiceID,
+      serviceID: generate4DigitID(),
       customerName: form.customerName,
       vehicleNumber: form.vehicleNumber,
       presentMeter: num(form.presentMeter),
@@ -258,7 +263,7 @@ const InvoiceForm = ({
           <thead className="bg-gray-100">
             <tr className="bg-red-300 text-sm">
               <th className="border p-2">Package</th>
-              <th className="border p-2">Custom</th>
+              <th className="border p-2">Custom?</th>
               <th className="border p-2">Repairs</th>
               <th className="border p-2">Remove</th>
             </tr>
@@ -380,7 +385,7 @@ const InvoiceForm = ({
           <thead className="bg-gray-100">
             <tr className="bg-red-300 text-sm">
               <th className="border p-2">Category</th>
-              <th className="border p-2">Custom?</th>
+              <th className="border p-2">Custom</th>
               <th className="border p-2">Item</th>
               <th className="border p-2">Qty</th>
               <th className="border p-2">Unit (Rs.)</th>
@@ -391,7 +396,7 @@ const InvoiceForm = ({
             {items.map((row, idx) => (
               <tr key={idx}>
                 <td className="border p-1">
-                  {/* {row.custom ? (
+                  {row.custom ? (
                     <input
                       value={row.category}
                       onChange={(e) =>
@@ -414,21 +419,7 @@ const InvoiceForm = ({
                         </option>
                       ))}
                     </select>
-                  )} */}
-                  <select
-                    value={row.category}
-                    onChange={(e) =>
-                      updateItem(idx, "category", e.target.value)
-                    }
-                    className="w-full border p-1 rounded"
-                  >
-                    <option value="">Select</option>
-                    {[...new Set(stock.map((s) => s.category))].map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
+                  )}
                 </td>
                 <td className="border p-1 text-center">
                   <input
