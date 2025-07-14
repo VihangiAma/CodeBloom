@@ -21,4 +21,3 @@ const repairPackageSchema = new mongoose.Schema({
 });
 
 export default mongoose.model("RepairPackage", repairPackageSchema);
-
