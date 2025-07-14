@@ -81,6 +81,8 @@ import ManageBodyshopBookings from "./pages/Appointments/ManageBodyshopBookings"
 import GenerateInvoicePage from "./components/GenerateInvoicePage ";
 import AdvancePaymentsPage from "./components/AdvancePayementPage";
 
+import OperationDashboard from "./assets/pages/OperationDashbord";
+
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -430,6 +432,8 @@ function App() {
         <>
           <Route path="admin-invoice-view" element={<AdminInvoiceView />} />
           <Route path="/advance-payments" element={<AdvancePaymentsPage />} />
+
+          <Route  path="/operation-dashboard" element={<OperationDashboard />} />
         </>
       </Routes>
     </Router>
