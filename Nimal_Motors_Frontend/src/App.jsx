@@ -16,13 +16,7 @@ import Sections from "./pages/customer/Sections";
 import Packages from "./pages/customer/Packages";
 import Appointment from "./pages/Appointment";
 
-// import RegisterPage from './pages/register/RegisterPage';
-
-// import SupervisorLoginForm from "./Components/SupervisorSection/SupervisorLoginForm";
-
 import PremiumServiceForm from "./pages/premiumcustomer/PremiumServiceForm";
-
-//  import SupervisorLoginForm from './Components/SupervisorSection/SupervisorLoginForm';
 
 // Protected Pages (User)
 import ProfilePage from "./pages/AccountantProfile";
@@ -38,19 +32,6 @@ import PremiumCustomerProfile from "./pages/premiumcustomer/PremiumCustomerProfi
 import AdminUsers from "./pages/admin/AdminUsers";
 import ServiceHistory from "./pages/premiumcustomer/ServiceHistory";
 // New import for ServiceHistory
-
-// import ProfilePage from "./pages/AccountantProfile";
-// import AdminDashboard from "./assets/pages/AdminDashBord";
-// import AdminProfile from "./pages/admin/AdminProfile";
-// import MechanicalSupervisor from "./pages/supervisors/MechanicalSupervisor";
-// import BodyshopSupervisor from "./pages/supervisors/BodyshopSupervisor";
-// import ServiceSupervisor from "./pages/supervisors/ServiceSupervisor";
-// import ElectricalSupervisor from "./pages/supervisors/ElectricalSupervisor";
-// import AccountantProfile from "./pages/AccountantProfile";
-// import PremiumCustomerProfile from "./pages/premiumcustomer/PremiumCustomerProfile";
-
-// import AdminUsers from "./pages/admin/AdminUsers";
-// import OperationDashboard from "./assets/pages/OperationDashbord";
 
 // Supervisor Protected Pages
 
@@ -97,13 +78,10 @@ import ManageBodyshopBookings from "./pages/Appointments/ManageBodyshopBookings"
 
 // Inside your route config:
 
-// import InventoryDashboard from "./components/InventoryDashboard";
-// import AccountantDashboard from "./components/AccountantDashboard";
-// import ExpensesPage from "./components/ExpensesPage";
-// import HomePage from "./assets/pages/HomePage";
-// import SalesReport from "./assets/pages/SalesReport";
-// import SalesReportView from "./assets/pages/SalesReportView";
 import GenerateInvoicePage from "./components/GenerateInvoicePage ";
+import AdvancePaymentsPage from "./components/AdvancePayementPage";
+
+import OperationDashboard from "./assets/pages/OperationDashbord";
 
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
@@ -231,14 +209,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* <Route 
-  path="/premium-customer-dashboard" 
-  element={
-    <PrivateRoute>
-      <PremiumCustomerDashboard />
-    </PrivateRoute>
-  } 
-/>         */}
         <Route
           path="/admin-invoice-view"
           element={
@@ -279,14 +249,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* <Route
-          path="/user-management"
-          element={
-            <PrivateRoute>
-              <UserManagement />
-            </PrivateRoute>
-          }
-        /> */}
         <Route
           path="/mechanical-supervisor"
           element={
@@ -343,7 +305,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/*<Route path="/admin-invoice-view" element={<PrivateRoute><AdminInvoiceView /></PrivateRoute>} />*/}
         {/* Supervisor Protected Routes */}
         <Route
           path="/appointments"
@@ -467,12 +428,12 @@ function App() {
           path="/chatbot/:section"
           element={<ChatBot section="Service" />}
         />
-        {/* <Route path="/operation-dashboard" element={<OperationDashboard />} /> */}
-        {/*<Route path="/formal-invoice" element={<FormalInvoice />} />*/}
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
         <>
           <Route path="admin-invoice-view" element={<AdminInvoiceView />} />
+          <Route path="/advance-payments" element={<AdvancePaymentsPage />} />
+
+          <Route  path="/operation-dashboard" element={<OperationDashboard />} />
         </>
       </Routes>
     </Router>

@@ -20,7 +20,8 @@ const GenerateInvoicePage = () => {
   const { id } = useParams();
   const [invoice, setInvoice] = useState(null);
   const [invoiceNo, setInvoiceNo] = useState("");
-  const [advance, setAdvance] = useState("");
+  const [advance, setAdvance] = useState('');
+
   const [balance, setBalance] = useState("");
   //const [remarks, setRemarks] = useState("");
 
@@ -35,13 +36,64 @@ const GenerateInvoicePage = () => {
       });
   }, [id]);
 
+  
+  // 🔁 Auto-fill advance from section model (based on serviceID prefix)
+  useEffect(() => {
+    if (!invoice || !invoice.serviceID) return;
+
+    const serviceID = invoice.serviceID;
+    let section = "";
+
+    if (serviceID.startsWith("BS")) section = "bodyshop";
+    else if (serviceID.startsWith("MS")) section = "mechanical"; // corrected prefix from MS to ME
+    else if (serviceID.startsWith("ES")) section = "electrical";
+    else return;
+
+    axios
+      .get(`http://localhost:5001/api/${section}/by-service-id/${serviceID}`)
+      .then((res) => {
+        const { advancePaid } = res.data;
+        setAdvance(!isNaN(advancePaid) ? Number(advancePaid) : 0);
+      })
+      .catch((err) => {
+        console.error("Advance fetch failed", err);
+        setAdvance(0);
+      });
+  }, [invoice]);
+
   // Calculate balance based on advance and total cost
   useEffect(() => {
-  if (invoice && !isNaN(advance)) {
-    const calculatedBalance = invoice.totalCost - advance;
-    setBalance(calculatedBalance >= 0 ? calculatedBalance : 0);
-  }
-}, [advance, invoice]);
+    if (invoice) {
+      const calculatedBalance = invoice.totalCost - advance;
+      setBalance(calculatedBalance >= 0 ? calculatedBalance : 0);
+    }
+  }, [advance, invoice]);
+
+  // Handler for advance input changes
+  const handleAdvanceChange = (e) => {
+    let value = e.target.value;
+
+    // Allow empty input to reset advance to 0
+    if (value === "") {
+      setAdvance(0);
+      setBalance(invoice?.totalCost || 0);
+      return;
+    }
+
+    const parsedValue = parseFloat(value);
+    if (isNaN(parsedValue) || parsedValue < 0) return; // prevent invalid input
+
+    setAdvance(parsedValue);
+
+    if (invoice) {
+      const newBalance = invoice.totalCost - parsedValue;
+      setBalance(newBalance >= 0 ? newBalance : 0);
+    }
+  };
+
+
+
+
 
 
 // useEffect(() => {
@@ -109,8 +161,9 @@ const formatCurrency = (amount) =>
 
   //const doc = new jsPDF();
 
-  const serviceInvoiceId = invoice.serviceInvoiceId?._id;
-  
+  //const serviceInvoiceId = invoice.serviceInvoiceId?._id;
+  const serviceInvoiceId = invoice._id; // supervisor invoice id
+
 
 
     try {
@@ -150,7 +203,7 @@ doc.text(`Service ID: ${invoice.serviceID}`, rightX, y);
 y += 6;
 
 doc.text(`Vehicle No: ${invoice.vehicleNumber}`, leftX, y);
-doc.text(`Date: ${new Date(invoice.serviceDate).toLocaleDateString()}`, rightX, y);
+doc.text(`Service Date: ${new Date(invoice.serviceDate).toLocaleDateString()}`, rightX, y);
 y += 6;
 
 doc.text(`Present Meter: ${invoice.presentMeter} km`, leftX, y);
@@ -241,33 +294,38 @@ doc.text(
 
 
 
-  /// 1. Generate PDF
-    doc.save(`Invoice_${invoiceNo || "unknown"}.pdf`);
+  // Save PDF as Blob or download
+    doc.save(`${invoiceNo || "invoice"}.pdf`);
 
-    // 2. Save invoice to backend
-    try {
-  await axios.post("http://localhost:5001/api/accountant-invoices",{
-    serviceInvoiceId,
-    invoiceNo,
-    advance,
-    balance,
-    //finalizedAt: new Date(),
-  });
-  toast.success("Invoice saved successfully!");
-  navigate("/accountant-dashboard");
-} catch (err) {
-  console.error("PDF Generation or Saving Failed:", err);
-  if (err.response?.status === 409) {
-    toast.error("Invoice number already exists.");
-  } else {
-    toast.error("Failed to generate or save invoice.");
-  }
-}
+     // === 2. Save finalized invoice to accountant DB ===
+
+    await axios.post("http://localhost:5001/api/accountant-invoices", {
+      serviceInvoiceId,
+      invoiceNo,
+      advance: parsedAdvance,
+      balance: parsedBalance,
+      
+      // customerName: invoice.customerName,
+      // vehicleNumber: invoice.vehicleNumber,
+      // serviceDate: invoice.serviceDate,
+      // totalCost: invoice.totalCost,
+      // items: invoice.items,
+      // repairs: invoice.repairs,
+    });
+
+
+  // === 3. Update supervisor-side invoice status ===
+    await axios.put(`http://localhost:5001/api/service-invoices/${invoice._id}/finalize`, {
+      status: "Finalized",
+      isApproved: false,
+    });
+
+    // === 4. Redirect back to accountant dashboard ===
+    navigate("/accountant-dashboard");
   } catch (error) {
-    console.error("PDF Generation Error:", error);
-    //toast.error("Failed to generate PDF. Please try again.");
+    console.error("Error during invoice finalization:", error);
+    alert("Failed to generate or finalize invoice. Please try again.");
   }
-
 };
 
   
@@ -355,32 +413,20 @@ doc.text(
             />
           </div>
           <div>
-  <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>
-  <input
-  type="number"
-  value={advance}
-  onChange={(e) => {
-    const value = e.target.value;
-    setAdvance(value);
-    if (!isNaN(parseFloat(value))) {
-      const balanceCalc = (invoice?.totalCost || 0) - parseFloat(value);
-      setBalance(balanceCalc >= 0 ? balanceCalc.toFixed(2) : 0);
-    } else {
-      setBalance(invoice?.totalCost?.toFixed(2) || 0);
-    }
-  }}
-  className="w-full border rounded px-3 py-2"
-/>
-
-{advance > invoice?.totalCost && (
-  <p className="text-red-600 text-sm mt-1">
-    ⚠️ Advance cannot exceed total cost (Rs. {invoice.totalCost.toFixed(2)})
-  </p>
-)}
-
-
-</div>
-
+            <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>
+            <input
+              type="number"
+              min={0}
+              value={advance}
+              onChange={handleAdvanceChange}
+              className="w-full border rounded px-3 py-2"
+            />
+            {advance > invoice?.totalCost && (
+              <p className="text-red-600 text-sm mt-1">
+                ⚠️ Advance cannot exceed total cost (Rs. {invoice.totalCost.toFixed(2)})
+              </p>
+            )}
+          </div>
 <div>
   <label className="block text-sm font-semibold mb-1">Balance (Rs.):</label>
   <input
@@ -403,14 +449,21 @@ doc.text(
           </div>*/}
         </div>
 
-        <div className="text-right">
-          <button
-            onClick={generatePDF}
-            className="bg-[#B30000] hover:bg-[#D63333] text-white px-6 py-2 rounded"
-          >
-            Download Invoice
-          </button>
-        </div>
+        <div className="flex justify-end gap-4">
+  <button
+    onClick={() => navigate("/accountant-dashboard")}
+    className="bg-gray-300 hover:bg-gray-400 text-[#2C2C2C] px-6 py-2 rounded"
+  >
+    Cancel
+  </button>
+  <button
+    onClick={generatePDF}
+    className="bg-[#B30000] hover:bg-[#D63333] text-white px-6 py-2 rounded"
+  >
+    Download Invoice
+  </button>
+</div>
+
       </div>
     </div>
   );

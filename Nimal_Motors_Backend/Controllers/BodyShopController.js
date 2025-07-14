@@ -1,4 +1,5 @@
 import BodyShopSection from "../Models/BodyShopSection.js";
+import MechanicalSection from "../Models/MechanicalSection.js";
 
 export const createService = async (req, res) => {
   try {
@@ -92,3 +93,31 @@ export const deleteService = async (req, res) => {
   }
 };
 
+
+// Update advance payment for a BodyShop service
+export const updateAdvance = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { advancePaid } = req.body;
+    const updated = await BodyShopSection.findByIdAndUpdate(id, { advancePaid }, { new: true });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update advance" });
+  }
+};
+
+export const getBodyShopByServiceID = async (req, res) => {
+  try {
+    const { serviceID } = req.params;
+    const service = await BodyShopSection.findOne({ displayID: serviceID });
+
+    if (!service) {
+      return res.status(404).json({ message: "BodyShop service not found" });
+    }
+
+    res.json(service);
+  } catch (error) {
+    console.error("Error fetching bodyshop service by ID:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

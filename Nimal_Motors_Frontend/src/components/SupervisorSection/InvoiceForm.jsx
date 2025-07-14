@@ -158,10 +158,13 @@ const InvoiceForm = ({
     }));
 
     // ✅ Generate serviceID if it's missing (especially on new form)
-    const generatedServiceID = form.serviceID || `INV-${Date.now()}`;
+    const generate4DigitID = () => {
+      const randomNum = Math.floor(1000 + Math.random() * 9000); // always 4 digits
+      return `SS${randomNum}`;
+    };
 
     const payload = {
-      serviceID: generatedServiceID,
+      serviceID: generate4DigitID(),
       customerName: form.customerName,
       vehicleNumber: form.vehicleNumber,
       presentMeter: num(form.presentMeter),
@@ -382,7 +385,7 @@ const InvoiceForm = ({
           <thead className="bg-gray-100">
             <tr className="bg-red-300 text-sm">
               <th className="border p-2">Category</th>
-              <th className="border p-2">Custom?</th>
+              <th className="border p-2">Custom</th>
               <th className="border p-2">Item</th>
               <th className="border p-2">Qty</th>
               <th className="border p-2">Unit (Rs.)</th>

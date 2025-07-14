@@ -96,3 +96,30 @@ export const deleteService = async (req, res) => {
   }
 };
 
+export const updateAdvance = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { advancePaid } = req.body;
+    const updated = await ElectricalSection.findByIdAndUpdate(id, { advancePaid }, { new: true });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update advance" });
+  }
+};
+
+export const getElectricalByServiceID = async (req, res) => {
+  try {
+    const { serviceID } = req.params;
+    const service = await ElectricalSection.findOne({ displayID: serviceID });
+
+    if (!service) {
+      return res.status(404).json({ message: "Electrical service not found" });
+    }
+
+    res.json(service);
+  } catch (error) {
+    console.error("Error fetching electrical service by ID:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
