@@ -18,7 +18,6 @@ const Completedappoinments = () => {
   const [pendingInvoices, setPendingInvoices] = useState([]);
   const [showInvoice, setShowInvoice] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
-
   const [checkedIds, setCheckedIds] = useState(loadChecked);
 
   const SERVICE_PREFIX = "S";
@@ -27,6 +26,13 @@ const Completedappoinments = () => {
     fetchCompletedServiceAppointments();
     fetchPendingInvoices();
   }, []);
+
+  // const intervalId = setInterval(() => {
+  //   fetchCompletedServiceAppointments();
+  // }, 5000); // Fetch every 5 seconds
+  // useEffect(() => {
+  //   return () => clearInterval(intervalId); // Cleanup on unmount
+  // }, []);
 
   const fetchCompletedServiceAppointments = async () => {
     try {
@@ -113,6 +119,19 @@ const Completedappoinments = () => {
     }
   };
 
+  const handleDeleteAppointment = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this appointment?"))
+      return;
+    try {
+      await axios.delete(`http://localhost:5001/api/appointments/${id}`);
+      setCompleted((prev) => prev.filter((app) => app._id !== id));
+      fetchCompletedServiceAppointments();
+    } catch (err) {
+      console.error("Error deleting appointment:", err);
+      alert("Failed to delete appointment.");
+    }
+  };
+
   return (
     <div className="p-6 bg-white shadow rounded-lg">
       <h2 className="text-2xl font-bold mb-4">
@@ -174,7 +193,9 @@ const Completedappoinments = () => {
                       <AiOutlinePlus />
                     </button>
                     <button
-                      onClick={() => handleDeleteAppointment(app._id)}
+
+      onClick={() => handleDeleteAppointment(app.serviceID)}
+
                       className="bg-red-500 text-white px-3 py-1 rounded ml-2"
                       title="Delete Appointment"
                     >

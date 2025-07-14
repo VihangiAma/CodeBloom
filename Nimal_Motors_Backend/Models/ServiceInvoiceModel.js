@@ -37,7 +37,7 @@ const serviceInvoiceSchema = new mongoose.Schema({
   isApproved: { type: Boolean, default: false },
   status: {
     type: String,
-    enum: ["pending", "approved", "rejected", "resubmitted"],
+    enum: ["pending", "approved", "rejected", "resubmitted", "finalized"],
     default: "pending",
   },
   submittedBy: { type: String },

@@ -139,57 +139,6 @@ const InvoiceForm = ({
   const removeRepair = (idx) =>
     setRepairs((p) => p.filter((_, i) => i !== idx));
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const mappedRepairs = repairs.map((r) => ({
-  //     package: r.package || "Custom",
-  //     repairs: r.repairs.map((rep) => ({
-  //       label: rep.label,
-  //       price: num(rep.price),
-  //     })),
-  //     price: calcPackagePrice(r.repairs),
-  //   }));
-
-  //   const mappedItems = items.map((it) => ({
-  //     itemName: it.item,
-  //     qty: num(it.qty),
-  //     price: num(it.pricePerUnit),
-  //   }));
-
-  //   const payload = {
-  //     serviceID: form.serviceID,
-  //     customerName: form.customerName,
-  //     vehicleNumber: form.vehicleNumber,
-  //     presentMeter: num(form.presentMeter),
-  //     serviceDate: new Date(form.serviceDate),
-  //     description: form.description,
-  //     repairs: mappedRepairs,
-  //     items: mappedItems,
-  //     totalCost: num(totalCost),
-  //     adminRemarks: form.adminRemarks || "",
-  //     section,
-  //   };
-
-  //   if (form.submittedBy?.trim()) {
-  //     payload.submittedBy = form.submittedBy;
-  //   }
-
-  //   fetch("http://localhost:5001/api/invoice", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(payload),
-  //   })
-  //     .then((r) => {
-  //       if (!r.ok) throw new Error("HTTP " + r.status);
-  //       return r.json();
-  //     })
-  //     .then(() => {
-  //       alert("Invoice saved");
-  //       onSubmit();
-  //     })
-  //     .catch((err) => alert("Save failed: " + err));
-  // };
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -209,10 +158,13 @@ const InvoiceForm = ({
     }));
 
     // ✅ Generate serviceID if it's missing (especially on new form)
-    const generatedServiceID = form.serviceID || `INV-${Date.now()}`;
+    const generate4DigitID = () => {
+      const randomNum = Math.floor(1000 + Math.random() * 9000); // always 4 digits
+      return `SS${randomNum}`;
+    };
 
     const payload = {
-      serviceID: generatedServiceID,
+      serviceID: generate4DigitID(),
       customerName: form.customerName,
       vehicleNumber: form.vehicleNumber,
       presentMeter: num(form.presentMeter),
@@ -433,7 +385,7 @@ const InvoiceForm = ({
           <thead className="bg-gray-100">
             <tr className="bg-red-300 text-sm">
               <th className="border p-2">Category</th>
-              <th className="border p-2">Custom?</th>
+              <th className="border p-2">Custom</th>
               <th className="border p-2">Item</th>
               <th className="border p-2">Qty</th>
               <th className="border p-2">Unit (Rs.)</th>
