@@ -26,6 +26,17 @@ const CompletedServices = ({ sectionPrefix, section }) => {
   useEffect(() => {
     fetchCompletedAppointments();
     fetchPendingInvoices();
+
+    const intervalId = setInterval(() => {
+      fetchCompletedAppointments();
+      fetchPendingInvoices();
+    }, 5000); // Refresh every 5 seconds
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, []);
+
+  useEffect(() => {
+    fetchCompletedAppointments();
+    fetchPendingInvoices();
   }, [section, sectionPrefix]);
 
   const fetchCompletedAppointments = async () => {
