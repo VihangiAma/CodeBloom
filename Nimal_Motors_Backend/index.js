@@ -18,6 +18,20 @@ import ElectricalRouter from "./Routers/ElectricalRouter.js";
 import BodyShopRouter from "./Routers/BodyShopRouter.js";
 import expenseRoutes from "./Routers/ExpenseRoutes.js";
 import invoiceRoutes from "./Routers/ServiceInvoiceRoutes.js";
+import historyRoutes from "./Routers/history.js";
+import PremiumCompletedHistoryRoutes from "./Routers/PremiumCompletedHistory.js";
+
+
+
+import premiumBodyshopBookingRoutes from "./Routers/PremiumBodyshopRoute.js";
+import premiumMechanicalBookingRoutes from "./Routers/PremiumMechanicalRoute.js";
+import premiumElectricalcalBookingRoute from "./Routers/PremiumElectricRoute.js"
+
+import premiumCombinedRoutes from "./Routers/premiumCombinedRoute.js";
+
+
+import BodyshopAppointmentRoutes from "./Routers/BodyshopAppointmentRoute.js";
+import mechanicalRoutes from "./Routers/MechanicalAppointmentRoute.js";
 
 //import invoiceRoute from "./Routers/InvoiceRoutes.js";
 import FeedbackRouter from"./Routers/FeedbackRouter.js";
@@ -28,7 +42,7 @@ import summaryRoutes from "./Routers/summary.js"; // Import summary routes
 import accountantInvoiceRoutes from "./Routers/InvoiceRoutes.js";
 
 
-
+import serviceInvoiceRoutes from "./Routers/ServiceInvoiceRoutes.js"; // Import service invoice routes
 
 
 
@@ -77,6 +91,22 @@ app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/service-invoices", serviceInvoiceRoutes); 
+app.use("/api/history", historyRoutes);
+app.use("/api/history", PremiumCompletedHistoryRoutes);
+
+//bookingroutesP
+
+app.use("/api/bodyshopbooking", premiumBodyshopBookingRoutes);
+app.use("/api/mechanicalbooking", premiumMechanicalBookingRoutes);
+app.use("/api/electricalcalbooking", premiumElectricalcalBookingRoute);
+app.use("/api", BodyshopAppointmentRoutes);
+app.use("/api/mechanical", mechanicalRoutes);
+app.use("/api/combinedbookings", premiumCombinedRoutes);
+
+
+
+app.use('/api/users', userRoutes);
 app.use("/api/invoice", invoiceRoutes);
 
 

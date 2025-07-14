@@ -98,16 +98,16 @@ const ServiceSupervisorDashboard = () => {
               onClick={() => setActivePage("appointments")}
             />
             <DashboardCard
-              title="View Invoice"
-              description="View invoices of vehicles."
-              emoji="💰"
-              onClick={() => setActivePage("invoices")}
-            />
-            <DashboardCard
               title="Approved Appointments"
               description="Track approved appointments."
               emoji="✅"
               onClick={() => setActivePage("approved")}
+            />
+            <DashboardCard
+              title="View Invoice"
+              description="View invoices of vehicles."
+              emoji="💰"
+              onClick={() => setActivePage("invoices")}
             />
           </div>
         );

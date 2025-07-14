@@ -8,7 +8,6 @@ import {
   FaInstagram,
   FaEye,
   FaEyeSlash,
-  
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -126,7 +125,7 @@ export default function PremiumCustomerProfile() {
   };
 
   const renderPasswordInput = (field, label) => (
-    <div className="relative">
+    <div style={{ position: "relative" }}>
       <input
         type={changePassword[`${field}Visible`] ? "text" : "password"}
         placeholder={label}
@@ -137,7 +136,17 @@ export default function PremiumCustomerProfile() {
             [field]: e.target.value,
           }))
         }
-        className="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 pr-10"
+        style={{
+          width: "100%",
+          padding: "10px",
+          borderRadius: "6px",
+          backgroundColor: "#212121",
+          color: "white",
+          border: "1px solid #444",
+          fontFamily: "Roboto, sans-serif",
+          fontSize: "16px",
+          paddingRight: "40px",
+        }}
       />
       <button
         type="button"
@@ -147,52 +156,101 @@ export default function PremiumCustomerProfile() {
             [`${field}Visible`]: !prev[`${field}Visible`],
           }))
         }
-        className="absolute right-2 top-2"
+        style={{
+          position: "absolute",
+          right: "10px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+        }}
+        aria-label={`Toggle ${label} visibility`}
       >
         {changePassword[`${field}Visible`] ? (
-          <FaEyeSlash className="text-white" />
+          <FaEyeSlash color="white" />
         ) : (
-          <FaEye className="text-white" />
+          <FaEye color="white" />
         )}
       </button>
     </div>
   );
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white font-sans">
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#FAFAFA",
+        fontFamily: "Roboto, sans-serif",
+        color: "#212121",
+      }}
+    >
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 shadow-lg p-6 flex flex-col justify-between">
-        <h1 className="text-2xl font-extrabold text-gray-300 mb-6">
+      <aside
+        style={{
+          width: "260px",
+          backgroundColor: "#212121",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          color: "#CCCCCC",
+          fontFamily: "Montserrat, sans-serif",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "32px",
+            fontWeight: "800",
+            color: "#B00020",
+            fontFamily: "Poppins, sans-serif",
+            marginBottom: "32px",
+          }}
+        >
           🚗 NIMAL MOTORS
         </h1>
-
-        <nav className="flex-1" />
-
-        <div className="space-y-2 border-t border-gray-600 pt-6">
-
-          
-        
-
+        <div style={{ flex: 1 }} />
+        <div style={{ borderTop: "1px solid #555", paddingTop: "24px" }}>
           <button
             onClick={() => navigate("/premium-customer-dashboard")}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-blue-400 hover:bg-gray-700 transition font-semibold"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#336699",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
+            }}
           >
-            <FaUserCircle className="text-lg" />
-            Dashboard
+            <FaUserCircle /> Dashboard
           </button>
-
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-md text-red-400 hover:bg-gray-700 transition"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#B00020",
+              fontSize: "16px",
+              padding: "8px 0",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Roboto, sans-serif",
+            }}
           >
-            <FaSignOutAlt className="text-lg" />
-            Sign Out
+            <FaSignOutAlt /> Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 p-6 overflow-auto">
+      {/* Main */}
+       <main className="flex-1 p-6 overflow-auto">
         {/* Profile Header */}
         <div
           className="rounded-xl h-48 bg-cover bg-center relative"
@@ -207,61 +265,160 @@ export default function PremiumCustomerProfile() {
             <div className="text-white drop-shadow-lg">
               <h2 className="text-2xl font-bold">{profile.fullName}</h2>
               <p className="text-sm">
-                Premium Customer – Nimal Motors
+             Premium Customer – Nimal Motors
               </p>
             </div>
           </div>
         </div>
-        {/* about‑me & details */}
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* left: about me */}
-          <section className="bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">About Me</h3>
-            <p className="text-sm leading-relaxed">
-            Hi, I’m {profile.fullName || "—"}. As a valued premium customer of Nimal Motors, I appreciate exceptional service, reliability, 
-            and attention to detail when it comes to maintaining my vehicle. With a keen eye for quality and a 
-            passion for automotive excellence, I rely on Nimal Motors for expert care—from routine servicing to advanced repairs. 
-            I value clear communication, timely updates, and sustainable practices that align with my expectations of a modern, 
-            customer-focused garage. Whether it's booking appointments or tracking service history, 
-            I enjoy the convenience and trust that come with being part of the premium customer community.
 
+        {/* Sections */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "24px",
+          }}
+        >
+          {/* About Me */}
+          <section
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              About Me
+            </h3>
+            <p
+              style={{
+                fontSize: "16px",
+                lineHeight: 1.6,
+                margin: 0,
+              }}
+            >
+              Hi, I’m {profile.fullName || "—"}. As a valued premium customer of
+              Nimal Motors, I appreciate exceptional service, reliability, and
+              attention to detail when it comes to maintaining my vehicle. I
+              rely on Nimal Motors for expert care—from routine servicing to
+              advanced repairs. I value clear communication, timely updates,
+              and sustainable practices that align with my expectations of a
+              modern, customer-focused garage.
             </p>
           </section>
 
-          {/* right: detail card */}
-          <section className="relative bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Premium Customer Profile</h3>
-
+          {/* Profile Info */}
+          <section
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              position: "relative",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              Premium Customer Profile
+            </h3>
             {isEditing ? (
-              <div className="space-y-3 text-sm">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  fontSize: "16px",
+                }}
+              >
                 {["fullName", "email", "username", "phoneNumber"].map((f) => (
-                  <div key={f} className="flex flex-col">
-                    <label className="font-medium capitalize">{f}:</label>
+                  <div key={f}>
+                    <label
+                      style={{
+                        fontWeight: "500",
+                        marginBottom: "4px",
+                        display: "block",
+                        color: "#29527A",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {f}:
+                    </label>
                     <input
                       name={f}
                       value={profile[f]}
                       onChange={handleProfileChange}
-                      className="bg-gray-800 border border-gray-500 p-2 rounded text-white"
+                      style={{
+                        backgroundColor: "#212121",
+                        border: "1px solid #555",
+                        padding: "8px",
+                        borderRadius: "6px",
+                        color: "white",
+                        width: "100%",
+                        fontFamily: "Roboto, sans-serif",
+                        fontSize: "16px",
+                      }}
                     />
                   </div>
                 ))}
-                <div className="space-x-2 mt-2">
+                <div>
                   <button
                     onClick={saveProfile}
-                    className="text-green-400 text-sm hover:underline"
+                    style={{
+                      color: "#4CAF50",
+                      fontSize: "14px",
+                      marginRight: "12px",
+                      fontFamily: "Roboto, sans-serif",
+                      cursor: "pointer",
+                      background: "none",
+                      border: "none",
+                    }}
                   >
                     Save
                   </button>
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="text-red-400 text-sm hover:underline"
+                    style={{
+                      color: "#F44336",
+                      fontSize: "14px",
+                      fontFamily: "Roboto, sans-serif",
+                      cursor: "pointer",
+                      background: "none",
+                      border: "none",
+                    }}
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="text-sm space-y-2">
+              <div
+                style={{
+                  fontSize: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}
+              >
                 <p>
                   <strong>Full Name:</strong> {profile.fullName || "—"}
                 </p>
@@ -274,19 +431,37 @@ export default function PremiumCustomerProfile() {
                 <p>
                   <strong>Username:</strong> {profile.username || "—"}
                 </p>
-                <div className="flex items-center space-x-3 mt-2">
-                  <FaFacebook className="text-blue-600" />
-                  <FaTwitter className="text-sky-500" />
-                  <FaInstagram className="text-pink-500" />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    marginTop: "12px",
+                    color: "#336699",
+                  }}
+                >
+                  <FaFacebook color="#1877F2" />
+                  <FaTwitter color="#1DA1F2" />
+                  <FaInstagram color="#E1306C" />
                 </div>
               </div>
             )}
-
-            {/* edit button */}
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="absolute top-6 right-6 bg-yellow-700 hover:bg-yellow-600 text-sm px-4 py-1 rounded"
+                style={{
+                  position: "absolute",
+                  top: "24px",
+                  right: "24px",
+                  backgroundColor: "#B00020",
+                  color: "#F5F5F5",
+                  border: "none",
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+                aria-label="Edit profile"
               >
                 Edit
               </button>
@@ -294,22 +469,58 @@ export default function PremiumCustomerProfile() {
           </section>
         </div>
 
-        {/* Change Password Section */}
+        {/* Change Password */}
         {isEditing && (
-          <section className="mt-6 bg-gray-700 rounded-xl shadow-md p-6 text-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-            <div className="space-y-4 text-sm">
+          <section
+            style={{
+              marginTop: "32px",
+              backgroundColor: "#F5F5F5",
+              borderRadius: "12px",
+              padding: "24px",
+              color: "#212121",
+              fontFamily: "Roboto, sans-serif",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                fontFamily: "Montserrat, sans-serif",
+                marginBottom: "16px",
+                color: "#9B0A0A",
+              }}
+            >
+              Change Password
+            </h3>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+              }}
+            >
               {renderPasswordInput("oldPassword", "Old Password")}
               {renderPasswordInput("newPassword", "New Password")}
               {renderPasswordInput("confirmPassword", "Confirm Password")}
-
               {passwordError && (
-                <p className="text-red-400 text-sm">{passwordError}</p>
+                <p style={{ color: "#B00020", fontSize: "14px" }}>
+                  {passwordError}
+                </p>
               )}
-
               <button
                 onClick={handleChangePassword}
-                className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-white"
+                style={{
+                  backgroundColor: "#336699",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  alignSelf: "flex-start",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+                aria-label="Update password"
               >
                 Update Password
               </button>

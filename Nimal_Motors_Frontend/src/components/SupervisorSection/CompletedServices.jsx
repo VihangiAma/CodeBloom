@@ -26,6 +26,17 @@ const CompletedServices = ({ sectionPrefix, section }) => {
   useEffect(() => {
     fetchCompletedAppointments();
     fetchPendingInvoices();
+
+    const intervalId = setInterval(() => {
+      fetchCompletedAppointments();
+      fetchPendingInvoices();
+    }, 5000); // Refresh every 5 seconds
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, []);
+
+  useEffect(() => {
+    fetchCompletedAppointments();
+    fetchPendingInvoices();
   }, [section, sectionPrefix]);
 
   const fetchCompletedAppointments = async () => {
@@ -113,7 +124,7 @@ const CompletedServices = ({ sectionPrefix, section }) => {
   return (
     <div className="p-4 bg-white shadow rounded-lg">
       <h2 className="text-xl font-semibold mb-4 capitalize">
-        {section} – Completed Services
+        {section} Completed Services
       </h2>
 
       {completedAppointments.length === 0 ? (
@@ -209,8 +220,8 @@ const CompletedServices = ({ sectionPrefix, section }) => {
                 <th className="border px-3 py-2 w-8">✔</th>
                 <th className="border px-3 py-2">ServiceID</th>
                 <th className="border px-3 py-2">Customer</th>
-                <th className="border px-3 py-2">Vehicle No</th>
-                <th className="border px-3 py-2">Admin Remark</th>
+                <th className="border px-3 py-2">Vehicle No</th>
+                <th className="border px-3 py-2">Admin Remark</th>
                 <th className="border px-3 py-2">Actions</th>
               </tr>
             </thead>
