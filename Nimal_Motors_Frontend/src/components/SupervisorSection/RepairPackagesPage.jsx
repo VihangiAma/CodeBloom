@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash } from "react-icons/fa";
 
-
 const RepairPackagesPage = () => {
   const [packages, setPackages] = useState([]);
   const [newPackageName, setNewPackageName] = useState("");
@@ -87,58 +86,68 @@ const RepairPackagesPage = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-[#FFE5E5]">
             <tr>
-              <th className="p-3 text-left text-sm font-bold text-[#2C2C2C]">Package</th>
-              <th className="p-3 text-left text-sm font-bold text-[#2C2C2C]">Repair</th>
-              <th className="p-3 text-center text-sm font-bold text-[#2C2C2C]">Action</th>
+              <th className="p-3 text-left text-sm font-bold text-[#2C2C2C]">
+                Package
+              </th>
+              <th className="p-3 text-left text-sm font-bold text-[#2C2C2C]">
+                Repair
+              </th>
+              <th className="p-3 text-center text-sm font-bold text-[#2C2C2C]">
+                Action
+              </th>
             </tr>
           </thead>
-         <tbody className="bg-white divide-y divide-gray-100">
-  {packages.map((pkg) => (
-    <React.Fragment key={pkg._id}>
-      {/* Package Row Header */}
-      <tr className="bg-gray-100">
-        <td className="p-3 font-semibold text-[#212121]" colSpan={3}>
-          <div className="flex justify-between items-center">
-            <span className="text-lg">{pkg.packageName}</span>
-            <button
-              onClick={() => handleDeletePackage(pkg._id)}
-              className="text-[#B30000] hover:text-[#D63333]"
-              title="Delete Package"
-            >
-              <FaTrash />
-            </button>
-          </div>
-        </td>
-      </tr>
+          <tbody className="bg-white divide-y divide-gray-100">
+            {packages.map((pkg) => (
+              <React.Fragment key={pkg._id}>
+                {/* Package Row Header */}
+                <tr className="bg-gray-100">
+                  <td className="p-3 font-semibold text-[#212121]" colSpan={3}>
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg">{pkg.packageName}</span>
+                      <button
+                        onClick={() => handleDeletePackage(pkg._id)}
+                        className="text-[#B30000] hover:text-[#D63333]"
+                        title="Delete Package"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
 
-      {/* Repairs under the package */}
-      {pkg.repairs.length > 0 ? (
-        pkg.repairs.map((repair, idx) => (
-          <tr key={`${pkg._id}-${idx}`} className="hover:bg-[#FAFAFA]">
-            <td className="p-3 pl-6 text-[#2C2C2C]">{/* Indent */}</td>
-            <td className="p-3 text-[#212121]">{repair}</td>
-            <td className="p-3 text-center">
-              <button
-                onClick={() => handleDeleteRepair(pkg, idx)}
-                className="text-[#B30000] hover:text-[#D63333]"
-                title="Delete Repair"
-              >
-                <FaTrash />
-              </button>
-            </td>
-          </tr>
-        ))
-      ) : (
-        <tr className="text-gray-500 italic">
-          <td className="p-3 pl-6"></td>
-          <td className="p-3">(No repairs listed)</td>
-          <td className="p-3 text-center">—</td>
-        </tr>
-      )}
-    </React.Fragment>
-  ))}
-</tbody>
-
+                {/* Repairs under the package */}
+                {pkg.repairs.length > 0 ? (
+                  pkg.repairs.map((repair, idx) => (
+                    <tr
+                      key={`${pkg._id}-${idx}`}
+                      className="hover:bg-[#FAFAFA]"
+                    >
+                      <td className="p-3 pl-6 text-[#2C2C2C]">
+                        {/* Indent */}
+                      </td>
+                      <td className="p-3 text-[#212121]">{repair}</td>
+                      <td className="p-3 text-center">
+                        <button
+                          onClick={() => handleDeleteRepair(pkg, idx)}
+                          className="text-[#B30000] hover:text-[#D63333]"
+                          title="Delete Repair"
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr className="text-gray-500 italic">
+                    <td className="p-3 pl-6"></td>
+                    <td className="p-3">(No repairs listed)</td>
+                    <td className="p-3 text-center">—</td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
         </table>
       </div>
 
@@ -175,7 +184,9 @@ const RepairPackagesPage = () => {
       {/* Select package to add repair */}
       {!selectedPackageId && (
         <div className="mt-6">
-          <label className="mr-2 text-sm font-medium text-[#2C2C2C]">Add repair to:</label>
+          <label className="mr-2 text-sm font-medium text-[#2C2C2C]">
+            Add repair to:
+          </label>
           <select
             value=""
             onChange={(e) => setSelectedPackageId(e.target.value)}
@@ -195,7 +206,9 @@ const RepairPackagesPage = () => {
 
       {/* Add Package Section */}
       <div className="mt-10 border-t pt-6">
-        <h3 className="text-lg font-semibold text-[#2C2C2C] mb-3">Add New Package</h3>
+        <h3 className="text-lg font-semibold text-[#2C2C2C] mb-3">
+          Add New Package
+        </h3>
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             value={newPackageName}

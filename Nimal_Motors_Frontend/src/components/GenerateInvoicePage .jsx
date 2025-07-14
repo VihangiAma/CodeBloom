@@ -25,16 +25,37 @@ const GenerateInvoicePage = () => {
   const [balance, setBalance] = useState("");
   //const [remarks, setRemarks] = useState("");
 
-  // Fetch invoice from backend
   useEffect(() => {
-    axios
-      .get(`http://localhost:5001/api/invoice/${id}`)
-      .then((res) => setInvoice(res.data))
-      .catch((err) => {
-        console.error("Failed to fetch invoice", err);
-        toast.error("Failed to load invoice details.");
-      });
-  }, [id]);
+  // 1. Fetch supervisor invoice
+  axios
+    .get(`http://localhost:5001/api/invoice/${id}`)
+    .then((res) => setInvoice(res.data))
+    .catch((err) => {
+      console.error("Failed to fetch invoice", err);
+      toast.error("Failed to load invoice details.");
+    });
+
+  // 2. Fetch existing accountant invoices
+  axios
+    .get("http://localhost:5001/api/accountant-invoices")
+    .then((res) => {
+      const existingInvoices = res.data;
+
+      const numbers = existingInvoices
+        .map(inv => inv.invoiceNo)
+        .filter(num => /^INV\d+$/.test(num)) // match INV01, INV02, etc.
+        .map(num => parseInt(num.replace("INV", "")));
+
+      const nextNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+      const nextInvoiceNo = `INV${String(nextNumber).padStart(2, "0")}`; // INV01, INV02, etc.
+      setInvoiceNo(nextInvoiceNo);
+    })
+    .catch(err => {
+      console.error("Failed to auto-generate invoice number", err);
+      toast.error("Failed to generate invoice number.");
+    });
+}, [id]);
+
 
   
   // 🔁 Auto-fill advance from section model (based on serviceID prefix)
@@ -406,11 +427,12 @@ doc.text(
           <div>
             <label className="block text-sm font-semibold mb-1">Invoice No:</label>
             <input
-              type="text"
-              value={invoiceNo}
-              onChange={(e) => setInvoiceNo(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
+  type="text"
+  value={invoiceNo}
+  readOnly
+  className="w-full border rounded px-3 py-2 bg-gray-100 text-gray-700"
+/>
+
           </div>
           <div>
             <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>

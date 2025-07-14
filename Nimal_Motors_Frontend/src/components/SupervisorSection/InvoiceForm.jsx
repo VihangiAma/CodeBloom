@@ -73,20 +73,24 @@ const InvoiceForm = ({
     ]);
 
   const updateItem = (idx, field, value) =>
-    setItems((prev) =>
-      prev.map((row, i) =>
-        i === idx
-          ? (() => {
-              const r = { ...row, [field]: value };
-              if (field === "item" && !r.custom) {
-                const found = stock.find((st) => st.itemName === value);
-                r.pricePerUnit = found ? found.pricePerUnit : 0;
+  setItems((prev) =>
+    prev.map((row, i) =>
+      i === idx
+        ? (() => {
+            const r = { ...row, [field]: value };
+            if (field === "item" && !r.custom) {
+              const found = stock.find((st) => st.itemName === value);
+              if (found) {
+                r.pricePerUnit = found.pricePerUnit;
+                r.currentStockQty = found.stockQuantity; // 🔴 Add this
               }
-              return r;
-            })()
-          : row
-      )
-    );
+            }
+            return r;
+          })()
+        : row
+    )
+  );
+
 
   const removeItem = (idx) => setItems((p) => p.filter((_, i) => i !== idx));
 
@@ -142,6 +146,8 @@ const InvoiceForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
+
+
     const mappedRepairs = repairs.map((r) => ({
       package: r.package || "Custom",
       repairs: r.repairs.map((rep) => ({
@@ -195,6 +201,16 @@ const InvoiceForm = ({
         onSubmit();
       })
       .catch((err) => alert("Save failed: " + err));
+
+      const hasQuantityIssue = items.some(
+  (i) => !i.custom && i.qty > (i.currentStockQty || 0)
+);
+
+if (hasQuantityIssue) {
+  alert("One or more items exceed available stock quantity!");
+  return;
+}
+
   };
 
   return (
@@ -259,25 +275,25 @@ const InvoiceForm = ({
           </button>
         </div>
 
-        <table className="w-full text-sm border">
-          <thead className="bg-gray-100">
-            <tr className="bg-red-300 text-sm">
-              <th className="border p-2">Package</th>
-              <th className="border p-2">Custom?</th>
-              <th className="border p-2">Repairs</th>
-              <th className="border p-2">Remove</th>
+        <table className="w-full text-sm border border-gray-300 shadow-md rounded-md overflow-hidden">
+          <thead className="bg-gradient-to-r from-red-400 to-red-500 text-white">
+            <tr className="text-sm text-left">
+              <th className="p-3 border-r border-red-200">Package</th>
+              <th className="p-3 border-r border-red-200">Repairs</th>
+              <th className="p-3 text-center">Remove</th>
             </tr>
           </thead>
           <tbody>
             {repairs.map((row, idx) => (
-              <tr key={idx}>
-                <td className="border p-1">
+              <tr key={idx} className="hover:bg-gray-50">
+                {/* Package Dropdown */}
+                <td className="border-t p-2 w-70">
                   <select
                     value={row.package}
                     onChange={(e) =>
                       updateRepairRow(idx, "package", e.target.value)
                     }
-                    className="w-full border p-1 rounded"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-400"
                   >
                     <option value="">Select</option>
                     {[...new Set(repairPackages.map((p) => p.packageName))].map(
@@ -289,14 +305,9 @@ const InvoiceForm = ({
                     )}
                   </select>
                 </td>
-                <td className="border p-1 text-center">
-                  <input
-                    type="checkbox"
-                    checked={row.custom}
-                    onChange={() => updateRepairRow(idx, "custom", !row.custom)}
-                  />
-                </td>
-                <td className="border p-1">
+
+                {/* Repairs Column */}
+                <td className="border-t p-2">
                   {row.custom ? (
                     <textarea
                       value={row.repairs.map((r) => r.label).join("\n")}
@@ -310,11 +321,11 @@ const InvoiceForm = ({
                             .map((label) => ({ label: label.trim(), price: 0 }))
                         )
                       }
-                      className="w-full border p-1 rounded"
+                      className="w-full border border-gray-300 p-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-red-400"
                       rows={Math.max(3, row.repairs.length)}
                     />
                   ) : (
-                    <div className="max-h-40 overflow-y-auto space-y-1 px-1">
+                    <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
                       {repairPackages
                         .filter((p) => p.packageName === row.package)
                         .flatMap((p) => p.repairs)
@@ -323,15 +334,23 @@ const InvoiceForm = ({
                             (r) => r.label === repairLabel
                           );
                           return (
-                            <div key={i} className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={!!selected}
-                                onChange={() =>
-                                  toggleRepairCheckbox(idx, repairLabel)
-                                }
-                              />
-                              <span className="w-32">{repairLabel}</span>
+                            <div
+                              key={i}
+                              className="flex items-center justify-between gap-3"
+                            >
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={!!selected}
+                                  onChange={() =>
+                                    toggleRepairCheckbox(idx, repairLabel)
+                                  }
+                                  className="accent-red-500"
+                                />
+                                <span className="truncate w-80">
+                                  {repairLabel}
+                                </span>
+                              </div>
                               {selected && (
                                 <input
                                   type="number"
@@ -343,7 +362,7 @@ const InvoiceForm = ({
                                       e.target.value
                                     )
                                   }
-                                  className="w-20 border p-1 rounded"
+                                  className="w-24 border border-gray-300 p-1 rounded focus:outline-none focus:ring-2 focus:ring-red-400 text-right"
                                   placeholder="Rs."
                                 />
                               )}
@@ -353,11 +372,14 @@ const InvoiceForm = ({
                     </div>
                   )}
                 </td>
-                <td className="border p-1 text-center">
+
+                {/* Remove Button */}
+                <td className="border-t p-2 text-center">
                   <button
                     type="button"
                     onClick={() => removeRepair(idx)}
-                    className="text-red-600"
+                    className="text-red-600 hover:text-red-800 text-lg"
+                    title="Remove row"
                   >
                     ✕
                   </button>
@@ -381,28 +403,31 @@ const InvoiceForm = ({
           </button>
         </div>
 
-        <table className="w-full text-sm border">
-          <thead className="bg-gray-100">
-            <tr className="bg-red-300 text-sm">
-              <th className="border p-2">Category</th>
-              <th className="border p-2">Custom</th>
-              <th className="border p-2">Item</th>
-              <th className="border p-2">Qty</th>
-              <th className="border p-2">Unit (Rs.)</th>
-              <th className="border p-2"></th>
+        <table className="w-full text-sm border border-gray-300 shadow-md rounded-md overflow-hidden">
+          <thead className="bg-gradient-to-r from-red-400 to-red-500 text-white">
+            <tr className="text-left">
+              <th className="p-3 border-r border-red-300">Category</th>
+              <th className="p-3 border-r border-red-300">Item</th>
+              <th className="p-3 border-r border-red-300 text-center">Qty</th>
+              <th className="p-3 border-r border-red-300 text-center">
+                Unit (Rs.)
+              </th>
+              <th className="p-3 text-center">Remove</th>
             </tr>
           </thead>
           <tbody>
             {items.map((row, idx) => (
-              <tr key={idx}>
-                <td className="border p-1">
+              <tr key={idx} className="hover:bg-gray-50">
+                {/* Category */}
+                <td className="border-t p-2">
                   {row.custom ? (
                     <input
                       value={row.category}
                       onChange={(e) =>
                         updateItem(idx, "category", e.target.value)
                       }
-                      className="w-full border p-1 rounded"
+                      className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-400"
+                      placeholder="Enter category"
                     />
                   ) : (
                     <select
@@ -410,7 +435,7 @@ const InvoiceForm = ({
                       onChange={(e) =>
                         updateItem(idx, "category", e.target.value)
                       }
-                      className="w-full border p-1 rounded"
+                      className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-400"
                     >
                       <option value="">Select</option>
                       {[...new Set(stock.map((s) => s.category))].map((c) => (
@@ -421,25 +446,21 @@ const InvoiceForm = ({
                     </select>
                   )}
                 </td>
-                <td className="border p-1 text-center">
-                  <input
-                    type="checkbox"
-                    checked={row.custom}
-                    onChange={() => updateItem(idx, "custom", !row.custom)}
-                  />
-                </td>
-                <td className="border p-1">
+
+                {/* Item */}
+                <td className="border-t p-2">
                   {row.custom ? (
                     <input
                       value={row.item}
                       onChange={(e) => updateItem(idx, "item", e.target.value)}
-                      className="w-full border p-1 rounded"
+                      className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-400"
+                      placeholder="Enter item"
                     />
                   ) : (
                     <select
                       value={row.item}
                       onChange={(e) => updateItem(idx, "item", e.target.value)}
-                      className="w-full border p-1 rounded"
+                      className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-400"
                     >
                       <option value="">Select</option>
                       {stock
@@ -451,33 +472,54 @@ const InvoiceForm = ({
                         ))}
                     </select>
                   )}
-                </td>
-                <td className="border p-1">
-                  <input
-                    type="number"
-                    min="1"
-                    value={row.qty}
-                    onChange={(e) =>
-                      updateItem(idx, "qty", num(e.target.value))
-                    }
-                    className="w-20 border p-1 rounded"
-                  />
-                </td>
-                <td className="border p-1">
-                  <input
-                    type="number"
-                    value={row.pricePerUnit}
-                    onChange={(e) =>
-                      updateItem(idx, "pricePerUnit", num(e.target.value))
-                    }
-                    className="w-24 border p-1 rounded"
-                  />
-                </td>
-                <td className="border p-1 text-center">
+</td>
+{/* Quantity */}
+<td className="border-t p-2 text-center">
+  <input
+    type="number"
+    min="1"
+    value={row.qty}
+    onChange={(e) =>
+      updateItem(idx, "qty", num(e.target.value))
+    }
+    className={`w-20 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-400 text-center ${
+      !row.custom && row.qty > row.currentStockQty
+        ? "border-red-600"
+        : ""
+    }`}
+  />
+  {!row.custom && row.item && (
+    <div className="text-xs text-gray-600 mt-1">
+      Available: {row.currentStockQty ?? "?"}
+    </div>
+  )}
+  {!row.custom && row.qty > row.currentStockQty && (
+    <div className="text-xs text-red-600 mt-1">
+      Quantity exceeds stock!
+    </div>
+  )}
+</td>
+
+{/* Price per unit */}
+<td className="border-t p-2 text-center">
+  <input
+    type="number"
+    value={row.pricePerUnit}
+    onChange={(e) =>
+      updateItem(idx, "pricePerUnit", num(e.target.value))
+    }
+    className="w-24 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-400 text-center"
+    placeholder="Rs."
+  />
+</td>
+
+                {/* Remove */}
+                <td className="border-t p-2 text-center">
                   <button
                     type="button"
                     onClick={() => removeItem(idx)}
-                    className="text-red-600"
+                    className="text-red-600 hover:text-red-800 text-lg"
+                    title="Remove item"
                   >
                     ✕
                   </button>
