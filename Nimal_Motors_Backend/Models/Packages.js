@@ -10,21 +10,15 @@ const PackageSchema = mongoose.Schema({
         required: true,
     },
     PackageItems: {
-        type: [String],  // Changed from String to Array of Strings
+        type: String,  // Changed from String to Array of Strings
         required: true,
     },
     PackageFeatured: {
         type: Boolean,
         default: false,
     },
-    PackageImage: {
-        type: String,
-        default: "https://example.com/default-image.jpg",
-    },
-    PackageDescription: {  // Added missing field
-        type: String,
-        default: ""
-    }
+   
+    
 });
 
 const Package = mongoose.model("Package", PackageSchema);
