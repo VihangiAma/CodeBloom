@@ -27,6 +27,13 @@ const Completedappoinments = () => {
     fetchPendingInvoices();
   }, []);
 
+  // const intervalId = setInterval(() => {
+  //   fetchCompletedServiceAppointments();
+  // }, 5000); // Fetch every 5 seconds
+  // useEffect(() => {
+  //   return () => clearInterval(intervalId); // Cleanup on unmount
+  // }, []);
+
   const fetchCompletedServiceAppointments = async () => {
     try {
       const res = await axios.get("http://localhost:5001/api/appointments/");
