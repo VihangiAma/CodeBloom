@@ -36,13 +36,64 @@ const GenerateInvoicePage = () => {
       });
   }, [id]);
 
+  
+  // 🔁 Auto-fill advance from section model (based on serviceID prefix)
+  useEffect(() => {
+    if (!invoice || !invoice.serviceID) return;
+
+    const serviceID = invoice.serviceID;
+    let section = "";
+
+    if (serviceID.startsWith("BS")) section = "bodyshop";
+    else if (serviceID.startsWith("MS")) section = "mechanical"; // corrected prefix from MS to ME
+    else if (serviceID.startsWith("ES")) section = "electrical";
+    else return;
+
+    axios
+      .get(`http://localhost:5001/api/${section}/by-service-id/${serviceID}`)
+      .then((res) => {
+        const { advancePaid } = res.data;
+        setAdvance(!isNaN(advancePaid) ? Number(advancePaid) : 0);
+      })
+      .catch((err) => {
+        console.error("Advance fetch failed", err);
+        setAdvance(0);
+      });
+  }, [invoice]);
+
   // Calculate balance based on advance and total cost
   useEffect(() => {
-  if (invoice && !isNaN(advance)) {
-    const calculatedBalance = invoice.totalCost - advance;
-    setBalance(calculatedBalance >= 0 ? calculatedBalance : 0);
-  }
-}, [advance, invoice]);
+    if (invoice) {
+      const calculatedBalance = invoice.totalCost - advance;
+      setBalance(calculatedBalance >= 0 ? calculatedBalance : 0);
+    }
+  }, [advance, invoice]);
+
+  // Handler for advance input changes
+  const handleAdvanceChange = (e) => {
+    let value = e.target.value;
+
+    // Allow empty input to reset advance to 0
+    if (value === "") {
+      setAdvance(0);
+      setBalance(invoice?.totalCost || 0);
+      return;
+    }
+
+    const parsedValue = parseFloat(value);
+    if (isNaN(parsedValue) || parsedValue < 0) return; // prevent invalid input
+
+    setAdvance(parsedValue);
+
+    if (invoice) {
+      const newBalance = invoice.totalCost - parsedValue;
+      setBalance(newBalance >= 0 ? newBalance : 0);
+    }
+  };
+
+
+
+
 
 
 // useEffect(() => {
@@ -362,32 +413,20 @@ doc.text(
             />
           </div>
           <div>
-  <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>
-  <input
-  type="number"
-  value={advance}
-  onChange={(e) => {
-    const value = e.target.value;
-    setAdvance(value);
-    if (!isNaN(parseFloat(value))) {
-      const balanceCalc = (invoice?.totalCost || 0) - parseFloat(value);
-      setBalance(balanceCalc >= 0 ? balanceCalc.toFixed(2) : 0);
-    } else {
-      setBalance(invoice?.totalCost?.toFixed(2) || 0);
-    }
-  }}
-  className="w-full border rounded px-3 py-2"
-/>
-
-{advance > invoice?.totalCost && (
-  <p className="text-red-600 text-sm mt-1">
-    ⚠️ Advance cannot exceed total cost (Rs. {invoice.totalCost.toFixed(2)})
-  </p>
-)}
-
-
-</div>
-
+            <label className="block text-sm font-semibold mb-1">Advance Payment (Rs.):</label>
+            <input
+              type="number"
+              min={0}
+              value={advance}
+              onChange={handleAdvanceChange}
+              className="w-full border rounded px-3 py-2"
+            />
+            {advance > invoice?.totalCost && (
+              <p className="text-red-600 text-sm mt-1">
+                ⚠️ Advance cannot exceed total cost (Rs. {invoice.totalCost.toFixed(2)})
+              </p>
+            )}
+          </div>
 <div>
   <label className="block text-sm font-semibold mb-1">Balance (Rs.):</label>
   <input

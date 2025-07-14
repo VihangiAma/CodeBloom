@@ -23,7 +23,8 @@ const electricalSchema = new mongoose.Schema({
     type: String,
     enum: ["Pending", "In Progress", "Completed"],
     default: "Pending"
-  }
+  },
+  advancePaid: { type: Number, default: 0 },
 });
 
 electricalSchema.plugin(AutoIncrement, { inc_field: "serviceID", id: "electrical_seq" });

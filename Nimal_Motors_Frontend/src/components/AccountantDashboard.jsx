@@ -411,6 +411,13 @@ useEffect(() => {
           >
             <FaFileInvoice /> Repair Packages
           </button>
+          <button
+  onClick={() => navigate("/advance-payments")}
+  className="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#5A5A5A] text-white"
+>
+  <FaMoneyBillWave /> Manage Advance Payments
+</button>
+
         </nav>
       </aside>
 
