@@ -644,7 +644,7 @@ export const forgotPasswordHandler = async (req, res) => {
 
     // ✅ Compose message
     const mailOptions = {
-      from: '"Nimal Motors" <subhajayoda@gmail.com>', // sender
+      from: '"Nimal Motors" <sithuprabodha@gmail.com>', // sender
       to:user.email, // receiver
       subject: "Password Reset - Nimal Motors",
       text: `Hello ${user.fullName},
