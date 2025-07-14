@@ -37,8 +37,9 @@ const stockSchema = new mongoose.Schema({
     
     barcode: {
         type: String,
-        unique: true,  // ✅ Barcode must be unique ideally
-        sparse: true,  // ✅ Allows some items without barcode
+    required: true,
+    unique: true, // ✅ Enforce uniqueness at DB level
+    trim: true, // ✅ Remove leading/trailing whitespace
       },
 });
 
