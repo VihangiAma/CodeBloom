@@ -547,8 +547,6 @@ export const getServiceSupProfile = async (req, res) => {
 
 
 
-
-
 // Updated changePassword to reset mustChangePassword flag
 export const changePassword = async (req, res) => {
     const { userId, oldPassword, newPassword } = req.body;

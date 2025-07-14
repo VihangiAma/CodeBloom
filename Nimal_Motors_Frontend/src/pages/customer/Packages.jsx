@@ -12,16 +12,14 @@ export default function Packages() {
     const fetchPackages = async () => {
       try {
         const response = await axios.get('http://localhost:5001/api/Package');
-        // Log the response to see the actual data structure
         console.log('API Response:', response.data);
-        
-        // Handle different response formats
+
         const packagesData = response.data.packages || response.data;
-        
+
         if (!Array.isArray(packagesData)) {
           throw new Error('Invalid data format received from API');
         }
-        
+
         setPackages(packagesData);
         setLoading(false);
       } catch (err) {
@@ -72,10 +70,8 @@ export default function Packages() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
-      {/* Header */}
       <NavBar />
 
-      {/* Hero */}
       <section className="hero relative bg-gradient-to-r from-red-300 to-red-500 py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[url('/pattern.svg')] bg-repeat"></div>
@@ -90,7 +86,6 @@ export default function Packages() {
         </div>
       </section>
 
-      {/* Packages */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -112,94 +107,52 @@ export default function Packages() {
                 <div
                   key={pkg._id || index}
                   className={`relative rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${
-                    pkg.PackageFeatured || pkg.featured
-                      ? "border-2 border-blue-500 transform scale-105 z-10"
-                      : "border border-gray-200"
+                    pkg.PackageFeatured ? "border-2 border-blue-500 transform scale-105 z-10" : "border border-gray-200"
                   }`}
                 >
-                  {(pkg.PackageFeatured || pkg.featured) && (
+                  {pkg.PackageFeatured && (
                     <div className="absolute top-0 right-0 bg-blue-500 text-white px-4 py-1 text-sm font-bold rounded-bl-lg">
                       MOST POPULAR
                     </div>
                   )}
-                  <div
-                    className={`p-1 ${
-                      pkg.PackageFeatured || pkg.featured ? "bg-blue-500" : "bg-gray-800"
-                    }`}
-                  ></div>
+                  <div className={`p-1 ${pkg.PackageFeatured ? "bg-blue-500" : "bg-gray-800"}`}></div>
                   <div className="p-6 bg-white">
                     <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                      {pkg.PackageName || pkg.name || `Package ${index + 1}`}
+                      {pkg.PackageName || `Package ${index + 1}`}
                     </h3>
                     <p className="text-gray-600 mb-4">
-                      {pkg.PackageDescription || pkg.description || 'Comprehensive vehicle service package'}
+                      Comprehensive vehicle service package
                     </p>
                     <div className="mb-6">
                       <span className="text-3xl font-bold text-blue-600">
-                        LKR {(pkg.PackagePrice || pkg.price || 0).toLocaleString()}
+                        LKR {(pkg.PackagePrice || 0).toLocaleString()}
                       </span>
-                      {pkg.PackageDuration || pkg.duration ? (
-                        <span className="text-gray-500 ml-2">
-                          / {pkg.PackageDuration || pkg.duration}
-                        </span>
-                      ) : null}
                     </div>
-                    
+
                     <h4 className="font-semibold text-lg mb-3">Includes:</h4>
                     <ul className="space-y-3 mb-8">
-                      {(pkg.PackageItems || pkg.items || []).map((item, i) => (
-                        <li key={i} className="flex items-start">
-                          <svg
-                            className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                          <span className="text-gray-700">{item}</span>
-                        </li>
-                      ))}
+                      {(pkg.PackageItems || '')
+                        .split('\n')
+                        .filter(item => item.trim() !== '')
+                        .map((item, i) => (
+                          <li key={i} className="flex items-start">
+                            <svg
+                              className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                            <span className="text-gray-700">{item}</span>
+                          </li>
+                        ))}
                     </ul>
-                    
-                    {pkg.PackageBenefits || pkg.benefits ? (
-                      <>
-                        <h4 className="font-semibold text-lg mb-3">Benefits:</h4>
-                        <ul className="space-y-2 mb-6">
-                          {(pkg.PackageBenefits || pkg.benefits).map((benefit, i) => (
-                            <li key={i} className="flex items-start">
-                              <svg
-                                className="h-5 w-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                                />
-                              </svg>
-                              <span className="text-gray-700">{benefit}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    ) : null}
-                    
-                    
-                    
-                    {pkg.PackageNotes || pkg.notes ? (
-                      <div className="mt-4 text-sm text-gray-500">
-                        <p>{pkg.PackageNotes || pkg.notes}</p>
-                      </div>
-                    ) : null}
                   </div>
                 </div>
               ))}
@@ -208,7 +161,6 @@ export default function Packages() {
         </div>
       </section>
 
-      {/* Additional Info */}
       <section className="bg-gray-100 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
@@ -217,18 +169,8 @@ export default function Packages() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
               <div className="text-blue-500 mb-4">
-                <svg
-                  className="h-10 w-10 mx-auto"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
+                <svg className="h-10 w-10 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2">Quick Service</h3>
@@ -238,12 +180,7 @@ export default function Packages() {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
               <div className="text-blue-500 mb-4">
-                <svg
-                  className="h-10 w-10 mx-auto"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                <svg className="h-10 w-10 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -259,12 +196,7 @@ export default function Packages() {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
               <div className="text-blue-500 mb-4">
-                <svg
-                  className="h-10 w-10 mx-auto"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                <svg className="h-10 w-10 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -282,7 +214,6 @@ export default function Packages() {
         </div>
       </section>
 
-      {/* Footer */}
       <Footer />
     </div>
   );
