@@ -155,3 +155,33 @@ export const bulkDeleteInvoices = async (req, res) => {
     res.status(500).json({ message: "Bulk delete failed", error });
   }
 };
+
+
+
+// Update status after accountant finalizes the invoice
+export const finalizeServiceInvoice = async (req, res) => {
+  try {
+    const invoiceId = req.params.id;
+
+    const updatedInvoice = await ServiceInvoice.findByIdAndUpdate(
+      invoiceId,
+      {
+        status: "Finalized",   // ✅ Status set to Finalized
+        isApproved: false      // ✅ Remove from approved list
+      },
+      { new: true }
+    );
+
+    if (!updatedInvoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    res.status(200).json({
+      message: "Invoice finalized successfully",
+      invoice: updatedInvoice,
+    });
+  } catch (error) {
+    console.error("Error finalizing invoice:", error);
+    res.status(500).json({ message: "Failed to finalize invoice", error });
+  }
+};

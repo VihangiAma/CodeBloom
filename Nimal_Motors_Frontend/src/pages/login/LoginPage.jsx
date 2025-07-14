@@ -128,7 +128,13 @@ export default function Login() {
         backgroundPosition: "center",
       }}
     >
-      <NavBar />
+{/* Background image */}
+<div
+  className="absolute inset-0 bg-cover bg-center brightness-75"
+  style={{ backgroundImage: `url("/newbg.png")` }}
+></div>
+
+<NavBar />
 
       <div className="flex-grow flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div className="bg-white/80 p-8 rounded-xl shadow-lg w-full max-w-md">

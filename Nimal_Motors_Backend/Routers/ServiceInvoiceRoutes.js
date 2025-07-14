@@ -8,7 +8,9 @@ import {
   deleteInvoice,
   approveInvoice,
   rejectInvoice,
-  bulkDeleteInvoices
+  bulkDeleteInvoices,
+  finalizeServiceInvoice
+  
  // getAllApprovedInvoices
 } from "../Controllers/ServiceInvoiceController.js";
 
@@ -32,6 +34,7 @@ router.patch("/:id/approve", approveInvoice);
 router.patch("/:id/reject", rejectInvoice);  
 router.delete("/", bulkDeleteInvoices);
 
+router.put("/:id/finalize", finalizeServiceInvoice);
 
 
 export default router;

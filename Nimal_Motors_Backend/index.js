@@ -42,7 +42,7 @@ import summaryRoutes from "./Routers/summary.js"; // Import summary routes
 import accountantInvoiceRoutes from "./Routers/InvoiceRoutes.js";
 
 
-
+import serviceInvoiceRoutes from "./Routers/ServiceInvoiceRoutes.js"; // Import service invoice routes
 
 
 
@@ -91,7 +91,7 @@ app.use("/api/mechanical", MechanicalRouter);
 app.use("/api/electrical", ElectricalRouter);
 app.use("/api/bodyshop", BodyShopRouter);
 app.use("/api/expenses", expenseRoutes);
-app.use("/api/service-invoices", invoiceRoutes); 
+app.use("/api/service-invoices", serviceInvoiceRoutes); 
 app.use("/api/history", historyRoutes);
 app.use("/api/history", PremiumCompletedHistoryRoutes);
 
