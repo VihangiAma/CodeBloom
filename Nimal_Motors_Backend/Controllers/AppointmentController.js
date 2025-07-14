@@ -1,5 +1,48 @@
 
 import Appointment from "../Models/Appointment.js";
+import nodemailer from "nodemailer";
+
+
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.example.com", // e.g. smtp.gmail.com
+//   port: 587,
+//   secure: false, // true for 465, false for other ports
+//   auth: {
+//     user: "dulanjaneeanurudddhika123@gmail.com",
+//     pass: "cdxp evpg xwoj xsep",
+//   },
+// });
+
+const transporter = nodemailer.createTransport({
+  host: "gmail", 
+  auth: {
+    user: "dulanjaneeanurudddhika123@gmail.com",
+    pass: "cdxp evpg xwoj xsep",
+  },
+});
+
+
+
+// // Test email sending route
+
+//   const mailOptions = {
+//     from: '"Motor Garage" <dulanjaneeanuruddhika123@.com>', // sender address
+//     to:user.email,                      
+//     subject: "Test Email from Motor Garage Backend",
+//     text: "Hello! This is a test email to verify SMTP configuration.",
+//   }
+//  try {
+//    // Send test email
+//     await transporter.sendMail(mailOptions);
+//     console.log("Test email sent successfully!");
+//   } catch (error) {
+//     console.error("Error sending test email:", error);
+//     console.error("Failed to send test email. Please check your SMTP configuration.");
+
+//   }
+
+ 
+
 export const createAppointment = async (req, res) => {
   const { contact, vehicleNumber, serviceDate, time } = req.body;
 
@@ -63,7 +106,23 @@ export const getAppointmentById = async (req, res) => {
   }
 };
 
-// Update an appointment by serviceID
+// // Update an appointment by serviceID
+// export const updateAppointment = async (req, res) => {
+//   try {
+//     const updatedAppointment = await Appointment.findOneAndUpdate(
+//       { serviceID: Number(req.params.id) },
+//       { $set: req.body },
+//       { new: true }
+//     );
+//     if (!updatedAppointment) {
+//       return res.status(404).json({ message: "Appointment not found" });
+//     }
+//     res.status(200).json(updatedAppointment);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
 export const updateAppointment = async (req, res) => {
   try {
     const updatedAppointment = await Appointment.findOneAndUpdate(
@@ -74,6 +133,31 @@ export const updateAppointment = async (req, res) => {
     if (!updatedAppointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
+
+    // Send email notification on status change
+    if (req.body.status === "Approved" || req.body.status === "Rejected") {
+      const mailOptions = {
+        from: '"Motor Garage" <dulanjaneeanuruddhika123@.com>',
+        to: updatedAppointment.contact.email, // customer email
+        subject: `Your Appointment ${updatedAppointment.displayID} is ${req.body.status}`,
+        text: `Dear ${updatedAppointment.customerName},
+
+Your appointment scheduled on ${updatedAppointment.serviceDate.toDateString()} at ${updatedAppointment.time} for your vehicle (${updatedAppointment.vehicleNumber}) has been ${req.body.status.toLowerCase()}.
+
+Thank you for choosing our service.
+
+Best regards,
+Motor Garage Team`,
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log("Notification email sent successfully");
+      } catch (emailError) {
+        console.error("Error sending email notification:", emailError);
+      }
+    }
+
     res.status(200).json(updatedAppointment);
   } catch (error) {
     res.status(400).json({ message: error.message });

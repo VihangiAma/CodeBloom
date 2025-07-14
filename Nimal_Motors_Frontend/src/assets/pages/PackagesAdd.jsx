@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { FiPlus, FiX, FiUpload, FiCheck } from 'react-icons/fi';
+import { FiCheck } from 'react-icons/fi';
 
 const PackagesAdd = () => {
   const [packageData, setPackageData] = useState({
     PackageName: '',
     PackagePrice: '',
-    PackageItems: [],
-    PackageFeatured: false,
-    PackageImage: '',
+    PackageItems: '',
+    PackageFeatured: false
   });
-  const [currentItem, setCurrentItem] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -23,52 +20,22 @@ const PackagesAdd = () => {
     });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setPackageData({...packageData, PackageImage: reader.result});
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAddItem = () => {
-    if (currentItem.trim()) {
-      setPackageData({
-        ...packageData,
-        PackageItems: [...packageData.PackageItems, currentItem.trim()],
-      });
-      setCurrentItem('');
-    }
-  };
-
-  const handleRemoveItem = (index) => {
-    const newItems = packageData.PackageItems.filter((_, i) => i !== index);
-    setPackageData({ ...packageData, PackageItems: newItems });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
-      // Create a new object with the package data
       const dataToSend = {
         ...packageData,
-        PackagePrice: Number(packageData.PackagePrice), // Ensure price is a number
-        PackageItems: packageData.PackageItems // The array should be sent as-is
+        PackagePrice: Number(packageData.PackagePrice)
       };
-      
+
       await axios.post('http://localhost:5001/api/Package', dataToSend);
-      
-      // Success state without navigation
+
       setTimeout(() => {
         setIsSubmitting(false);
       }, 1500);
-      
+
     } catch (error) {
       console.error('Error adding package:', error);
       setIsSubmitting(false);
@@ -104,7 +71,7 @@ const PackagesAdd = () => {
                 name="PackageName"
                 value={packageData.PackageName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500"
                 placeholder="Premium Service Package"
                 required
               />
@@ -122,97 +89,30 @@ const PackagesAdd = () => {
                   name="PackagePrice"
                   value={packageData.PackagePrice}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500"
                   placeholder="45000"
                   required
                 />
               </div>
             </div>
 
-            {/* Package Items */}
+            {/* Package Items (TextArea) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Included Items
+                Included Items (one per line)
               </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={currentItem}
-                  onChange={(e) => setCurrentItem(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                  placeholder="Add an item (e.g., Engine oil change)"
-                  onKeyPress={(e) => e.key === 'Enter' && handleAddItem()}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddItem}
-                  className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 rounded-lg transition flex items-center gap-2"
-                >
-                  <FiPlus /> Add
-                </button>
-              </div>
-              
-              {packageData.PackageItems.length > 0 && (
-                <ul className="mt-3 space-y-2">
-                  {packageData.PackageItems.map((item, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="flex justify-between items-center bg-gray-50 p-3 rounded-lg"
-                    >
-                      <span>{item}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveItem(index)}
-                        className="text-red-500 hover:text-red-700 transition"
-                      >
-                        <FiX />
-                      </button>
-                    </motion.li>
-                  ))}
-                </ul>
-              )}
+              <textarea
+                name="PackageItems"
+                value={packageData.PackageItems}
+                onChange={handleChange}
+                rows={6}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500"
+                placeholder="e.g.\nEngine oil change\nAC filter replacement"
+                required
+              />
             </div>
 
-            {/* Image Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Package Image
-              </label>
-              <div className="flex items-center gap-4">
-                <label className="cursor-pointer">
-                  <div className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 transition">
-                    {imagePreview ? (
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-lg" />
-                    ) : (
-                      <>
-                        <FiUpload className="text-gray-400 text-2xl mb-2" />
-                        <span className="text-sm text-gray-500">Upload Image</span>
-                      </>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </label>
-                <div className="flex-1">
-                  <input
-                    type="url"
-                    name="PackageImage"
-                    value={packageData.PackageImage}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    placeholder="Or enter image URL"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Featured Package */}
+            {/* Featured Checkbox */}
             <div className="flex items-center">
               <label className="flex items-center cursor-pointer">
                 <div className="relative">
@@ -224,9 +124,7 @@ const PackagesAdd = () => {
                     className="sr-only"
                   />
                   <div className={`block w-14 h-8 rounded-full ${packageData.PackageFeatured ? 'bg-indigo-600' : 'bg-gray-300'}`}></div>
-                  <div
-                    className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${packageData.PackageFeatured ? 'transform translate-x-6' : ''}`}
-                  ></div>
+                  <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${packageData.PackageFeatured ? 'transform translate-x-6' : ''}`}></div>
                 </div>
                 <div className="ml-3 text-gray-700 font-medium">
                   Featured Package
@@ -234,7 +132,7 @@ const PackagesAdd = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <div className="pt-4">
               <button
                 type="submit"

@@ -99,3 +99,32 @@ export const deleteService = async (req, res) => {
   }
 };
 
+// Update the advance paid amount for a service
+export const updateAdvance = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { advancePaid } = req.body;
+    const updated = await MechanicalSection.findByIdAndUpdate(id, { advancePaid }, { new: true });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update advance" });
+  }
+};
+
+// GET Mechanical Service by Service ID (like MS001)
+export const getMechanicalByServiceID = async (req, res) => {
+  try {
+    const { serviceID } = req.params;
+    const service = await MechanicalSection.findOne({ displayID: serviceID });
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    res.json(service);
+  } catch (error) {
+    console.error("Error fetching service by ID:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

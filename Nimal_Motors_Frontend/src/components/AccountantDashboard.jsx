@@ -411,6 +411,13 @@ useEffect(() => {
           >
             <FaFileInvoice /> Repair Packages
           </button>
+          <button
+  onClick={() => navigate("/advance-payments")}
+  className="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#5A5A5A] text-white"
+>
+  <FaMoneyBillWave /> Manage Advance Payments
+</button>
+
         </nav>
       </aside>
 
@@ -432,49 +439,51 @@ useEffect(() => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-[#FFFFFF] p-4 rounded shadow flex items-center gap-4">
-            <FaMoneyBillWave className="text-[#B30000] text-3xl" />
-            <div>
-              <p className="text-sm text-[#000000]">Total Stock Value</p>
-              <h2 className="text-xl font-semibold text-[#000000]">
-                Rs.{" "}
-                {Number(summary.stockValue).toLocaleString("en-LK", {
-                  minimumFractionDigits: 2,
-                })}
-              </h2>
-            </div>
-          </div>
-          <div className="bg-[#FFFFFF] p-4 rounded shadow flex items-center gap-4">
-            <FaReceipt className="text-[#B30000] text-3xl" />
-            <div>
-              <p className="text-sm text-[#000000]">Expence/Purchase Records</p>
-              <h2 className="text-xl font-semibold text-[#000000]">
-                {summary.purchases}
-              </h2>
-            </div>
-          </div>
-          <div className="bg-[#FFFFFF] p-4 rounded shadow flex items-center gap-4">
-            <FaFileInvoice className="text-[#B30000] text-3xl" />
-            <div>
-              <p className="text-sm text-[#000000]">Invoices</p>
-              <h2 className="text-xl font-semibold text-[#000000]">
-                {totalInvoicesCount}
-              </h2>
-            </div>
-          </div>
-          <div className="bg-[#FFFFFF] p-4 rounded shadow flex items-center gap-4">
-            <FaChartBar className="text-[#B30000] text-3xl" />
-            <div>
-              <p className="text-sm text-[#000000]">Outstanding Payments</p>
-              <h2 className="text-xl font-semibold text-[#000000]">
-                Rs.{" "}
-                {Number(summary.outstanding).toLocaleString("en-LK", {
-                  minimumFractionDigits: 2,
-                })}
-              </h2>
-            </div>
-          </div>
-        </div>
+  {/* Total Stock Value */}
+  <div className="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 hover:shadow-lg transition-shadow duration-200">
+    <div className="bg-[#FDEDED] p-3 rounded-full">
+      <FaMoneyBillWave className="text-[#B30000] text-2xl" />
+    </div>
+    <div>
+      <p className="text-sm text-gray-600 font-medium">Total Stock Value</p>
+      <h2 className="text-xl font-bold text-[#2C2C2C]">
+        Rs.{" "}
+        {Number(summary.stockValue).toLocaleString("en-LK", {
+          minimumFractionDigits: 2,
+        })}
+      </h2>
+    </div>
+  </div>
+
+  {/* Expense / Purchase Records */}
+  <div className="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 hover:shadow-lg transition-shadow duration-200">
+    <div className="bg-[#FDEDED] p-3 rounded-full">
+      <FaReceipt className="text-[#B30000] text-2xl" />
+    </div>
+    <div>
+      <p className="text-sm text-gray-600 font-medium">Purchase Records</p>
+      <h2 className="text-xl font-bold text-[#2C2C2C]">
+        {summary.purchases}
+      </h2>
+    </div>
+  </div>
+
+  {/* Invoices */}
+  <div className="bg-white rounded-2xl shadow-md p-5 flex items-center space-x-4 hover:shadow-lg transition-shadow duration-200">
+    <div className="bg-[#FDEDED] p-3 rounded-full">
+      <FaFileInvoice className="text-[#B30000] text-2xl" />
+    </div>
+    <div>
+      <p className="text-sm text-gray-600 font-medium">Invoices</p>
+      <h2 className="text-xl font-bold text-[#2C2C2C]">
+        {totalInvoicesCount}
+      </h2>
+    </div>
+  </div>
+
+  {/* You can add another card here if needed */}
+</div>
+
 
         
         {/* Approved Repairs Table for Invoice Generation */}

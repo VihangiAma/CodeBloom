@@ -23,7 +23,8 @@ const bodyShopSchema = new mongoose.Schema({
     type: String,
     enum: ["Pending", "In Progress", "Completed"],
     default: "Pending"
-  }
+  },
+  advancePaid: { type: Number, default: 0 },
 });
 
 // Auto-increment plugin for serviceID

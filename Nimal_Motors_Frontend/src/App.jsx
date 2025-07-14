@@ -79,6 +79,9 @@ import ManageBodyshopBookings from "./pages/Appointments/ManageBodyshopBookings"
 // Inside your route config:
 
 import GenerateInvoicePage from "./components/GenerateInvoicePage ";
+import AdvancePaymentsPage from "./components/AdvancePayementPage";
+
+import OperationDashboard from "./assets/pages/OperationDashbord";
 
 // Protected Route Components
 const PrivateRoute = ({ children }) => {
@@ -428,6 +431,9 @@ function App() {
         <Route path="*" element={<Navigate to="/login" />} />
         <>
           <Route path="admin-invoice-view" element={<AdminInvoiceView />} />
+          <Route path="/advance-payments" element={<AdvancePaymentsPage />} />
+
+          <Route  path="/operation-dashboard" element={<OperationDashboard />} />
         </>
       </Routes>
     </Router>

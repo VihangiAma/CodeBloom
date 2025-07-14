@@ -19,25 +19,37 @@ const AddStockItemForm = ({ supplierList = [], categoryList = [], onClose, onIte
 
   const [isNewCategory, setIsNewCategory] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
+const [isBarcodeTaken, setIsBarcodeTaken] = useState(false);
 
   
 
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = async (e) => {
+  const { name, value } = e.target;
 
-    if (name === "category") {
-      if (value === "__new__") {
-        setIsNewCategory(true);
-        setFormData(prev => ({ ...prev, category: "" }));
-      } else {
-        setIsNewCategory(false);
-        setFormData(prev => ({ ...prev, category: value }));
-      }
+  if (name === "category") {
+    if (value === "__new__") {
+      setIsNewCategory(true);
+      setFormData(prev => ({ ...prev, category: "" }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setIsNewCategory(false);
+      setFormData(prev => ({ ...prev, category: value }));
     }
-  };
+  } else {
+    setFormData(prev => ({ ...prev, [name]: value }));
+
+    if (name === "barcode" && value.trim()) {
+      try {
+        const res = await axios.get(`http://localhost:5001/api/stock/check-barcode/${value}`);
+        setIsBarcodeTaken(res.data.exists);
+      } catch (err) {
+        console.error("Barcode check failed", err);
+        setIsBarcodeTaken(false); // Fail-safe
+      }
+    }
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,6 +72,11 @@ const AddStockItemForm = ({ supplierList = [], categoryList = [], onClose, onIte
       if (duplicate) {
         return toast.error("Item with the same ID or Barcode already exists.");
       }
+
+      if (isBarcodeTaken) {
+  return toast.error("This barcode is already in use.");
+}
+
 
       await axios.post("http://localhost:5001/api/stock/add", {
         ...formData,
@@ -143,7 +160,13 @@ return (
     required
     className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
   />
+  {isBarcodeTaken && (
+    <p className="text-red-600 text-sm mt-1">
+      ⚠️ This barcode already exists. Please enter a different one.
+    </p>
+  )}
 </div>
+
 
 
     {/* Category Dropdown */}
