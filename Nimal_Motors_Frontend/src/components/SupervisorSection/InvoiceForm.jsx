@@ -73,20 +73,24 @@ const InvoiceForm = ({
     ]);
 
   const updateItem = (idx, field, value) =>
-    setItems((prev) =>
-      prev.map((row, i) =>
-        i === idx
-          ? (() => {
-              const r = { ...row, [field]: value };
-              if (field === "item" && !r.custom) {
-                const found = stock.find((st) => st.itemName === value);
-                r.pricePerUnit = found ? found.pricePerUnit : 0;
+  setItems((prev) =>
+    prev.map((row, i) =>
+      i === idx
+        ? (() => {
+            const r = { ...row, [field]: value };
+            if (field === "item" && !r.custom) {
+              const found = stock.find((st) => st.itemName === value);
+              if (found) {
+                r.pricePerUnit = found.pricePerUnit;
+                r.currentStockQty = found.stockQuantity; // 🔴 Add this
               }
-              return r;
-            })()
-          : row
-      )
-    );
+            }
+            return r;
+          })()
+        : row
+    )
+  );
+
 
   const removeItem = (idx) => setItems((p) => p.filter((_, i) => i !== idx));
 
@@ -142,6 +146,8 @@ const InvoiceForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
+
+
     const mappedRepairs = repairs.map((r) => ({
       package: r.package || "Custom",
       repairs: r.repairs.map((rep) => ({
@@ -195,6 +201,16 @@ const InvoiceForm = ({
         onSubmit();
       })
       .catch((err) => alert("Save failed: " + err));
+
+      const hasQuantityIssue = items.some(
+  (i) => !i.custom && i.qty > (i.currentStockQty || 0)
+);
+
+if (hasQuantityIssue) {
+  alert("One or more items exceed available stock quantity!");
+  return;
+}
+
   };
 
   return (
@@ -453,16 +469,31 @@ const InvoiceForm = ({
                   )}
                 </td>
                 <td className="border p-1">
-                  <input
-                    type="number"
-                    min="1"
-                    value={row.qty}
-                    onChange={(e) =>
-                      updateItem(idx, "qty", num(e.target.value))
-                    }
-                    className="w-20 border p-1 rounded"
-                  />
-                </td>
+  <input
+    type="number"
+    min="1"
+    value={row.qty}
+    onChange={(e) =>
+      updateItem(idx, "qty", num(e.target.value))
+    }
+    className={`w-20 border p-1 rounded ${
+      !row.custom && row.qty > row.currentStockQty
+        ? "border-red-600"
+        : ""
+    }`}
+  />
+  {!row.custom && row.item && (
+    <div className="text-xs text-gray-600 mt-1">
+      Available: {row.currentStockQty ?? "?"}
+    </div>
+  )}
+  {!row.custom && row.qty > row.currentStockQty && (
+    <div className="text-xs text-red-600 mt-1">
+      Quantity exceeds stock!
+    </div>
+  )}
+</td>
+
                 <td className="border p-1">
                   <input
                     type="number"
