@@ -4,8 +4,10 @@ export default function Footer() {
   const [formData, setFormData] = useState({
     Name: "",
     Email: "",
-    description: ""
+    description: "",
+    rating: 0 // Added rating field
   });
+  const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
@@ -26,7 +28,7 @@ export default function Footer() {
       if (response.ok) {
         const data = await response.json();
         setSubmitStatus({ success: true, message: 'Thank you for your feedback!' });
-        setFormData({ Name: "", Email: "", description: "" });
+        setFormData({ Name: "", Email: "", description: "", rating: 0 });
       } else {
         const errorData = await response.json();
         setSubmitStatus({ 
@@ -147,6 +149,25 @@ export default function Footer() {
               required
               className="border border-gray-600 bg-gray-700 text-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
+            {/* Star Rating */}
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  type="button"
+                  key={star}
+                  onClick={() => setFormData({ ...formData, rating: star })}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  className="text-2xl focus:outline-none"
+                >
+                  {star <= (hoverRating || formData.rating) ? (
+                    <span className="text-yellow-400">★</span>
+                  ) : (
+                    <span className="text-gray-400">☆</span>
+                  )}
+                </button>
+              ))}
+            </div>
             <textarea
               name="description"
               placeholder="Your Feedback"

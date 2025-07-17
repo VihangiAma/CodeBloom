@@ -4,10 +4,12 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
   const [remarks, setRemarks] = useState(invoice.adminRemarks || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [actionType, setActionType] = useState(""); // 'approve' or 'reject'
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (action) => {
     setIsSubmitting(true);
     setError("");
+    setActionType(action);
 
     if (!invoice?._id) {
       setError("Invoice ID is missing. Cannot submit.");
@@ -15,18 +17,13 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
       return;
     }
 
-    const hasRemarks = remarks.trim().length > 0;
-    const url = `http://localhost:5001/api/invoice/${invoice._id}/${
-      hasRemarks ? "reject" : "approve"
-    }`;
+    const url = `http://localhost:5001/api/invoice/${invoice._id}/${action}`;
     const method = "PATCH";
 
     const fetchOptions = {
       method,
-      headers: hasRemarks ? { "Content-Type": "application/json" } : {},
-      body: hasRemarks
-        ? JSON.stringify({ adminRemarks: remarks.trim() })
-        : undefined,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ adminRemarks: remarks.trim() }),
     };
 
     try {
@@ -37,7 +34,7 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
         throw new Error(data?.message || "Failed to update invoice");
       }
 
-      onSubmit(data); // Send updated invoice to parent
+      onSubmit(data); // Send updated invoice back
     } catch (e) {
       console.error("Error submitting review:", e);
       setError(e.message || "Something went wrong.");
@@ -122,8 +119,7 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
           {remarks.length}/500 characters
         </p>
         <p className="text-xs text-blue-600 mt-1">
-          ⚠️ If you enter remarks, the invoice will be rejected and sent back to
-          the supervisor. Leave blank to approve.
+          ⚠️ Use "Accept" to send to accountant. Use "Reject" to send to supervisor with remarks.
         </p>
       </div>
 
@@ -137,14 +133,22 @@ const RemarkAdd = ({ invoice, onCancel, onSubmit }) => {
           Cancel
         </button>
         <button
-          onClick={handleSubmit}
+          onClick={() => handleSubmit("reject")}
           disabled={isSubmitting}
-          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+          className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700"
         >
-          {isSubmitting && (
-            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-          )}
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting && actionType === "reject"
+            ? "Rejecting..."
+            : "Reject"}
+        </button>
+        <button
+          onClick={() => handleSubmit("approve")}
+          disabled={isSubmitting}
+          className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          {isSubmitting && actionType === "approve"
+            ? "Accepting..."
+            : "Accept"}
         </button>
       </div>
     </div>
