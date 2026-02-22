@@ -22,7 +22,7 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
-    "mongodb": "^6.15.0",
+    "mongodb": "^7.1.0",
     "mongoose": "^8.12.1",
     "mongoose-sequence": "^6.0.1",
     "nodemailer": "^7.0.5",
