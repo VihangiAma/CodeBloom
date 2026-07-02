@@ -77,9 +77,10 @@ app.use(bodyParser.json());     // Then parse body
 app.use(express.json());        // Also parse JSON body (redundant with bodyParser but okay)
 
 // ✅ Connect to MongoDB
-connectDB();
+const startServer = async () => {
+  await connectDB();
 
-// ✅ Routes
+  // ✅ Routes
 app.use("/api/user", userRoutes);
 app.use("/api/StockReport", StockRoter);
 app.use("/api/NewSalesReports", SalesRouter);
@@ -136,4 +137,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+};
+
+startServer();
 
