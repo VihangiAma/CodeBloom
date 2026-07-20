@@ -107,7 +107,7 @@ const PackagesAdd = () => {
                 onChange={handleChange}
                 rows={6}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500"
-                placeholder="e.g.\nEngine oil change\nAC filter replacement"
+                placeholder="e.g.Engine oil change , AC filter replacement"
                 required
               />
             </div>
